@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/p50"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Démarrer avec RankStop"
+            android:textColor="#000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:gravity="center"
+            android:text="@string/lorem"
+            android:textSize="14sp" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/input_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_email"
+                android:inputType="textEmailAddress" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/rs_login_btn"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="Se connecter" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="or connect with"
+            android:textSize="14sp" />
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/fb_login_btn"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="@dimen/btn_login_width"
+            android:layout_height="wrap_content"
+            android:text="Facebook"
+            app:backgroundTint="#3B5998"
+            app:icon="@drawable/ic_email_24dp" />
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/google_login_btn"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="@dimen/btn_login_width"
+            android:layout_height="wrap_content"
+            android:text="Google"
+            app:backgroundTint="#DB4A39"
+            app:icon="@drawable/ic_email_24dp" />
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/linkedin_login_btn"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="@dimen/btn_login_width"
+            android:layout_height="wrap_content"
+            android:text="Linkedin"
+            app:backgroundTint="#0077B5"
+            app:icon="@drawable/ic_email_24dp" />
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

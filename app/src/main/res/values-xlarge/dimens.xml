@@ -3,4 +3,9 @@
     <dimen name="p50">50dp</dimen>
     <dimen name="_40dp">40dp</dimen>
     <dimen name="_50dp">50dp</dimen>
+    <dimen name="app_bar_height">300dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="image_small_width">50dp</dimen>
+    <dimen name="image_width">130dp</dimen>
+    <dimen name="btn_login_width">300dp</dimen>
 </resources>

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="rankstop.steeringit.com.rankstop">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,6 +25,54 @@
             android:name=".Activities.ContainerActivity"
             android:label="@string/title_activity_container"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.NotificationsActivity"
+            android:parentActivityName=".Activities.ContainerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.ContainerActivity" />
+        </activity>
+
+        <activity
+            android:name=".Activities.EditProfileActivity"
+            android:parentActivityName=".Activities.ContainerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.ContainerActivity" />
+        </activity>
+
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:parentActivityName=".Activities.ContainerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.ContainerActivity" />
+        </activity>
+
+        <activity
+            android:name=".Activities.ItemOwned"
+            android:parentActivityName=".Activities.ContainerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.ContainerActivity" />
+        </activity>
+
+        <activity
+            android:name=".Activities.ItemCreatedActivity"
+            android:parentActivityName=".Activities.ContainerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.ContainerActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.ItemFollowedActivity"
+            android:parentActivityName=".Activities.ContainerActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.ContainerActivity" />
+        </activity>
+
     </application>
 
 </manifest>

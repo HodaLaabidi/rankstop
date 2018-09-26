@@ -2,8 +2,29 @@
 <resources>
     <string name="title_home">Accueil</string>
     <string name="title_add_item">Nouveau item</string>
-    <string name="title_settings">Paramètres</string>
+    <string name="title_my_evals">Mes évaluations</string>
     <string name="title_profile">Profil</string>
     <string name="hint_email">E-mail</string>
     <string name="btn_signup_text">Se connecter</string>
+    <string name="text_settings">Paramètres</string>
+    <string name="text_edit_profile">Modifier le profil</string>
+    <string name="notifications">Notications</string>
+    <string name="evals_title">Evaluations</string>
+    <string name="comments_title">Comments</string>
+    <string name="pics_title">Pictures</string>
+    <string name="text_page_owned">Page owned</string>
+    <string name="text_more">plus</string>
+    <string name="text_page_created">Page created</string>
+    <string name="text_page_followed">Page followed</string>
+    <string name="text_page_top_ranked">Top ranked</string>
+    <string name="text_page_top_viewed">Top viewed</string>
+    <string name="text_page_top_commented">Top commented</string>
+    <string name="text_page_top_followed">Top followed</string>
+    <string name="next_btn">Suivant</string>
+    <string name="cancel_btn">Retour</string>
+    <string name="login_btn">Se connecter</string>
+    <string name="register_btn">S\'inscrire</string>
+    <string name="lorem">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.</string>
+    <string name="hint_password">Mot de passe</string>
+    <string name="hint_confirm_password">Confirmer le mot de passe</string>
 </resources>

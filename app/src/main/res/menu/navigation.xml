@@ -13,8 +13,8 @@
 
     <item
         android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="@string/title_settings" />
+        android:icon="@drawable/ic_my_evals2_black_24dp"
+        android:title="@string/title_my_evals" />
 
     <item
         android:id="@+id/navigation_profile"

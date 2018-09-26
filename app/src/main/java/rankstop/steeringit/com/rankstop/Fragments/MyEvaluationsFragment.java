@@ -11,20 +11,19 @@ import android.view.ViewGroup;
 
 import rankstop.steeringit.com.rankstop.R;
 
-public class AddItemFragment extends Fragment {
+public class MyEvaluationsFragment extends Fragment {
 
-    final String TAG = "ADD ITEM FRAGMENT";
+    final String TAG = "SETTINGS FRAGMENT";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i("LIFE_CYCLE",""+TAG+" onCreateView");
-        return  inflater.inflate(R.layout.fragment_add_item, container, false);
+        return inflater.inflate(R.layout.fragment_my_evaluations, container, false);
     }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.i("LIFE_CYCLE",""+TAG+": onAttach");
+        Log.i("LIFE_CYCLE",""+TAG+" onAttach");
     }
 
     @Override
@@ -80,5 +79,4 @@ public class AddItemFragment extends Fragment {
         Log.i("LIFE_CYCLE",""+TAG+" onDetach");
         super.onDetach();
     }
-
 }
