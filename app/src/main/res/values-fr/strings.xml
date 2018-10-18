@@ -27,4 +27,13 @@
     <string name="lorem">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.</string>
     <string name="hint_password">Mot de passe</string>
     <string name="hint_confirm_password">Confirmer le mot de passe</string>
+    <string name="login_dialog_empty_password">Password must contain at least 6 characters</string>
+    <string name="login_dialog_invalid_password">Password invalid, try again!</string>
+    <string name="register_dialog_matching_password">Password confirm doesn\'t match password</string>
+    <string name="add_review">Add review</string>
+    <string name="add_item">Add Page</string>
+    <string name="welcome">Welcome back Samir</string>
+    <string name="forgot_pwd">Mot de passe oublié</string>
+    <string name="cancel">Cancel</string>
+    <string name="connect">Connecter</string>
 </resources>

@@ -25,7 +25,7 @@
                 <ImageView
                     android:id="@+id/imageview_placeholder"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="@dimen/height_image_bg"
                     android:contentDescription="@string/app_name"
                     android:scaleType="centerCrop"
                     android:tint="#11000000"
@@ -35,7 +35,7 @@
                 <FrameLayout
                     android:id="@+id/framelayout_title"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="@dimen/height_frame_layout"
                     android:layout_gravity="bottom|center_horizontal"
                     android:background="@android:color/transparent"
                     android:orientation="vertical"
@@ -56,23 +56,40 @@
             app:layout_anchor="@id/framelayout_title"
             app:theme="@style/ThemeOverlay.AppCompat.Dark"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:elevation="4dp"
+            android:elevation="@dimen/elevation"
+            android:contentInsetStart="@dimen/content_start_inset_toolbar"
+            android:contentInsetLeft="@dimen/content_start_inset_toolbar"
+            android:contentInsetRight="@dimen/content_end_inset_toolbar"
+            android:contentInsetEnd="@dimen/content_end_inset_toolbar"
+            app:contentInsetLeft="@dimen/content_start_inset_toolbar"
+            app:contentInsetStart="@dimen/content_start_inset_toolbar"
+            app:contentInsetRight="@dimen/content_end_inset_toolbar"
+            app:contentInsetEnd="@dimen/content_end_inset_toolbar"
             app:title="">
 
             <android.support.design.button.MaterialButton
                 android:id="@+id/material_icon_button"
                 style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="@dimen/search_button_height"
                 android:gravity="center_vertical"
                 android:text="Que cherchez-vous ?"
                 app:icon="@drawable/ic_search_black_24dp"
                 app:iconTint="@color/colorPrimary"
                 app:backgroundTint="@android:color/white"
                 android:textColor="@color/colorPrimary"
-                android:elevation="4dp"/>
+                android:elevation="@dimen/elevation"/>
 
         </android.support.v7.widget.Toolbar>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:tint="@android:color/white"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
 
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

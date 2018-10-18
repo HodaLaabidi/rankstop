@@ -1,14 +1,13 @@
-<android.support.v4.widget.NestedScrollView android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:scrollbars="none"
-    android:layout_marginTop="@dimen/activity_horizontal_margin"
-    app:behavior_overlapTop="50dp"
-    android:layout_marginBottom="58dp"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/fragment_home"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:scrollbars="none"
+    app:behavior_overlapTop="@dimen/behaviour_overlap_top"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/fragment_home">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,9 +17,11 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardElevation="8dp"
-            app:contentPadding="8dp">
+            android:layout_marginLeft="@dimen/mlr_card_view"
+            android:layout_marginRight="@dimen/mlr_card_view"
+            android:layout_marginBottom="@dimen/mtb_card_view"
+            app:cardElevation="@dimen/elevation"
+            app:contentPadding="@dimen/p_card_rv_item">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -30,113 +31,181 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_page_top_ranked"
                     android:enabled="false"
-                    android:textColor="@color/colorPrimary"/>
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/text_page_top_ranked"
+                    android:textColor="@color/colorPrimary" />
+
                 <android.support.design.button.MaterialButton
                     android:id="@+id/more_page_top_ranked"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_more"
-                    android:layout_alignParentEnd="true"/>
-                <LinearLayout
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/text_more" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_top_ranked"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_top_ranked"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_below="@id/title_page_top_ranked"/>
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:layout_below="@id/title_page_top_ranked"
+                    android:nestedScrollingEnabled="false" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardElevation="8dp"
-            app:contentPadding="8dp">
+            app:cardElevation="@dimen/elevation"
+            app:contentPadding="@dimen/p_card_rv_item"
+            android:layout_marginRight="@dimen/mlr_card_view"
+            android:layout_marginLeft="@dimen/mlr_card_view"
+            android:layout_marginBottom="@dimen/mtb_card_view">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <android.support.design.button.MaterialButton
                     android:id="@+id/title_page_top_viewed"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_page_top_viewed"
                     android:enabled="false"
-                    android:textColor="@color/colorPrimary"/>
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/text_page_top_viewed"
+                    android:textColor="@color/colorPrimary" />
+
                 <android.support.design.button.MaterialButton
                     android:id="@+id/more_page_top_viewed"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_more"
-                    android:layout_alignParentEnd="true"/>
-                <LinearLayout
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/text_more" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_top_viewed"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_top_viewed"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_below="@id/title_page_top_viewed"/>
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:layout_below="@id/title_page_top_viewed"
+                    android:nestedScrollingEnabled="false" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardElevation="8dp"
-            app:contentPadding="8dp">
+            app:cardElevation="@dimen/elevation"
+            app:contentPadding="@dimen/p_card_rv_item"
+            android:layout_marginLeft="@dimen/mlr_card_view"
+            android:layout_marginBottom="@dimen/mtb_card_view"
+            android:layout_marginRight="@dimen/mtb_card_view">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <android.support.design.button.MaterialButton
                     android:id="@+id/title_page_top_commented"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_page_top_commented"
                     android:enabled="false"
-                    android:textColor="@color/colorPrimary"/>
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/text_page_top_commented"
+                    android:textColor="@color/colorPrimary" />
+
                 <android.support.design.button.MaterialButton
                     android:id="@+id/more_page_top_commented"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_more"
-                    android:layout_alignParentEnd="true"/>
-                <LinearLayout
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/text_more" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_top_commented"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_top_commented"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_below="@id/title_page_top_commented"/>
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:layout_below="@id/title_page_top_commented"
+                    android:nestedScrollingEnabled="false" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardElevation="8dp"
-            app:contentPadding="8dp">
+            app:cardElevation="@dimen/elevation"
+            app:contentPadding="@dimen/p_card_rv_item"
+            android:layout_marginLeft="@dimen/mlr_card_view"
+            android:layout_marginBottom="@dimen/mtb_card_view"
+            android:layout_marginRight="@dimen/mtb_card_view">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <android.support.design.button.MaterialButton
                     android:id="@+id/title_page_top_followed"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_page_top_followed"
                     android:enabled="false"
-                    android:textColor="@color/colorPrimary"/>
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/text_page_top_followed"
+                    android:textColor="@color/colorPrimary" />
+
                 <android.support.design.button.MaterialButton
                     android:id="@+id/more_page_top_followed"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_more"
-                    android:layout_alignParentEnd="true"/>
-                <LinearLayout
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/text_more" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_top_followed"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_top_followed"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_below="@id/title_page_top_followed"/>
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:layout_below="@id/title_page_top_followed"
+                    android:nestedScrollingEnabled="false" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>

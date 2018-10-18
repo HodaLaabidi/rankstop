@@ -7,7 +7,6 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -25,54 +24,61 @@
             android:name=".Activities.ContainerActivity"
             android:label="@string/title_activity_container"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Activities.NotificationsActivity"
-            android:parentActivityName=".Activities.ContainerActivity">
+            android:parentActivityName=".Activities.ContainerActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.ContainerActivity" />
         </activity>
-
         <activity
             android:name=".Activities.EditProfileActivity"
-            android:parentActivityName=".Activities.ContainerActivity">
+            android:parentActivityName=".Activities.ContainerActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.ContainerActivity" />
         </activity>
-
         <activity
             android:name=".Activities.SettingsActivity"
-            android:parentActivityName=".Activities.ContainerActivity">
+            android:parentActivityName=".Activities.ContainerActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.ContainerActivity" />
         </activity>
-
         <activity
-            android:name=".Activities.ItemOwned"
-            android:parentActivityName=".Activities.ContainerActivity">
+            android:name=".Activities.ItemOwnedActivity"
+            android:parentActivityName=".Activities.ContainerActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.ContainerActivity" />
         </activity>
-
         <activity
             android:name=".Activities.ItemCreatedActivity"
-            android:parentActivityName=".Activities.ContainerActivity">
+            android:parentActivityName=".Activities.ContainerActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.ContainerActivity" />
         </activity>
         <activity
             android:name=".Activities.ItemFollowedActivity"
-            android:parentActivityName=".Activities.ContainerActivity">
+            android:parentActivityName=".Activities.ContainerActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.ContainerActivity" />
         </activity>
-
+        <activity
+            android:name=".Activities.ItemDetailsActivity"
+            android:label="@string/add_review"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Activities.AddReviewActivity" />
+        <activity android:name=".Activities.AddItemActivity" />
+        <activity android:name=".Activities.SearchActivity"></activity>
     </application>
 
 </manifest>

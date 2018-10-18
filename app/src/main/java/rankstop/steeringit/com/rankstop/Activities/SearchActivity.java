@@ -5,11 +5,11 @@ import android.os.Bundle;
 
 import rankstop.steeringit.com.rankstop.R;
 
-public class ItemOwned extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_owned);
+        setContentView(R.layout.activity_search);
     }
 }

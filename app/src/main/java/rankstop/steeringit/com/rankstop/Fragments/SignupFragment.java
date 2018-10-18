@@ -16,11 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import rankstop.steeringit.com.rankstop.DialogFragment.LoginDialog;
+import rankstop.steeringit.com.rankstop.DialogFragment.RegisterDialog;
 import rankstop.steeringit.com.rankstop.R;
 
 public class SignupFragment extends Fragment {
 
-    final String TAG = "SIGNUP FRAGMENT";
+    private static final String TAG = "SIGNUP FRAGMENT";
+    private static final String LOGIN_DIALOG_TAG = "game_dialog_tag";
+    private static final String REGISTER_DIALOG_TAG = "game_dialog_tag";
 
     private MaterialButton loginBtn;
 
@@ -62,53 +66,27 @@ public class SignupFragment extends Fragment {
     }
 
     public void dialogLogin(String email) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogLayout = inflater.inflate(R.layout.alert_dialog_login, null);
-        ((TextInputEditText) dialogLayout.findViewById(R.id.input_email)).setText(email);
-        //Toast.makeText(getContext(), ""+((TextInputEditText)dialogLayout.findViewById(R.id.input_password)).getText().toString(), Toast.LENGTH_SHORT).show();
-        builder.setView(dialogLayout);
-        builder.setCancelable(false);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        ((MaterialButton)dialogLayout.findViewById(R.id.negative_btn)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "hide dialog from login", Toast.LENGTH_SHORT).show();
-                alertDialog.dismiss();
-            }
-        });
-        ((MaterialButton)dialogLayout.findViewById(R.id.positive_btn)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        LoginDialog dialog = LoginDialog.newInstance(this, ((TextInputEditText)getActivity().findViewById(R.id.input_email)).getText().toString().trim());
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), LOGIN_DIALOG_TAG);
     }
 
     public void dialogRegister(String email) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogLayout = inflater.inflate(R.layout.alert_dialog_register, null);
-        ((TextInputEditText) dialogLayout.findViewById(R.id.input_email)).setText(email);
-        builder.setView(dialogLayout);
-        builder.setCancelable(false);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        ((MaterialButton)dialogLayout.findViewById(R.id.negative_btn)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "hide dialog from register", Toast.LENGTH_SHORT).show();
-                alertDialog.dismiss();
-            }
-        });
-        ((MaterialButton)dialogLayout.findViewById(R.id.positive_btn)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        RegisterDialog dialog = RegisterDialog.newInstance(this, ((TextInputEditText)getActivity().findViewById(R.id.input_email)).getText().toString().trim());
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), REGISTER_DIALOG_TAG);
     }
+
+    public boolean isLoginSuccess(String password){
+        return password.equals("azerty");
+    }
+    public boolean isRegisteredSuccess(String password) {
+        return password.equals("azerty");
+    }
+
+
+
+
 
     @Override
     public void onStart() {

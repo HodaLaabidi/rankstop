@@ -24,7 +24,7 @@ public class ContainerActivity extends AppCompatActivity {
     private BottomNavigationView navigation;
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
-    private boolean isLoggedIn = true;
+    private boolean isLoggedIn = false;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -35,14 +35,11 @@ public class ContainerActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     replaceFragment(new HomeFragment());
                     return true;
-                case R.id.navigation_add_item:
-                    replaceFragment(new AddItemFragment());
-                    return true;
                 case R.id.navigation_settings:
                     replaceFragment(new MyEvaluationsFragment());
                     return true;
                 case R.id.navigation_profile:
-                    if(!isLoggedIn)
+                    if(isLoggedIn)
                         replaceFragment(new ProfileFragment());
                         else
                         replaceFragment(new SignupFragment());

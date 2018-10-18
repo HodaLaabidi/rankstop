@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">RankStop</string>
-    <string name="title_activity_container">RankStop</string>
+    <string name="app_name" translatable="false">RankStop</string>
+    <string name="title_activity_container" translatable="false">RankStop</string>
     <string name="title_home">Home</string>
     <string name="title_add_item">Add item</string>
     <string name="title_my_evals">My evaluations</string>
     <string name="title_profile">Profile</string>
     <string name="hint_email">E-mail</string>
     <string name="btn_signup_text">Se connecter</string>
-    <string name="large_text">
+    <string name="large_text" translatable="false">
         "Material is the metaphor.\n\n"
 
         "A material metaphor is the unifying theory of a rationalized space and a system of motion."
@@ -99,8 +99,6 @@
     <string name="text_settings">Settings</string>
     <string name="text_edit_profile">Edit profile</string>
     <string name="notifications">Notications</string>
-    <string name="small_text">"Material is the metaphor.\n"
-    "20"</string>
     <string name="evals_title">Evaluations</string>
     <string name="comments_title">Comments</string>
     <string name="pics_title">Pictures</string>
@@ -119,4 +117,15 @@
     <string name="lorem">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm password</string>
+    <string name="login_dialog_empty_password">Password must contain at least 6 characters</string>
+    <string name="login_dialog_invalid_password">Password invalid, try again!</string>
+    <string name="register_dialog_matching_password">Password confirm doesn\'t match password</string>
+    <string name="add_review">Add review</string>
+    <string name="add_item">Add Page</string>
+    <string name="welcome">Welcome back Samir</string>
+    <string name="forgot_pwd">Mot de passe oublié</string>
+    <string name="cancel">Cancel</string>
+    <string name="connect">Connecter</string>
+    <string name="transition_title">transition_title</string>
+    <string name="transition_pie">transition_pie</string>
 </resources>

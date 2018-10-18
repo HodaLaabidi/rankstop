@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="mlr_card_view">8dp</dimen>
+    <dimen name="mtb_card_view">8dp</dimen>
+    <dimen name="content_start_inset_toolbar">10dp</dimen>
+    <dimen name="content_end_inset_toolbar">0dp</dimen>
+</resources>
