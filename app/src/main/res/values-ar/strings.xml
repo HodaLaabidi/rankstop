@@ -36,4 +36,37 @@
     <string name="forgot_pwd">Mot de passe oublié</string>
     <string name="cancel">Cancel</string>
     <string name="connect">Connecter</string>
+    <string name="transition_title">transition_title</string>
+    <string name="transition_pie">transition_pie</string>
+    <string name="signup_email_format_invalid">Invalid email format</string>
+    <string name="hint_item_name">Name</string>
+    <string name="hint_item_description">Description</string>
+    <string name="hint_item_address">Address</string>
+    <string name="text_add_item">Add</string>
+    <string name="text_category">Category</string>
+    <string name="hint_review_comment">Comment</string>
+    <string name="flash_auto">Flash auto</string>
+    <string name="flash_off">Flash off</string>
+    <string name="flash_on">Flash on</string>
+    <string name="camera_permission_not_granted">Camera app cannot do anything without camera permission.</string>
+    <string name="camera_permission_confirmation">This app demonstrates the usage of CameraView. In order to do that, it needs permission to access camera.</string>
+    <string name="picture_taken">Picture taken</string>
+    <string name="switch_camera">Switch_camera</string>
+    <string name="text_history">History</string>
+    <string name="text_logout">Logout</string>
+    <string name="title_login">Login</string>
+    <string name="search_text">Que recherchez-vous?</string>
+    <string name="title_add_review">Add review</string>
+    <string name="text_contact">Contact</string>
+    <string name="title_edit_profile">Edit profile</string>
+
+    <string-array name="labels">
+        <item>Not set</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 </resources>

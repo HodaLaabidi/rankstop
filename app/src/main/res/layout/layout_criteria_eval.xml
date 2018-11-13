@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_marginLeft="@dimen/m_activity"
+    android:layout_marginRight="@dimen/m_activity"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_margin="8dp">
+        <TextView
+            android:id="@+id/tv_criteria_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semi_bold_font"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_criteria"/>
+
+        <LinearLayout
+            android:id="@+id/layout_importance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="5dp">
+            <TextView
+                android:id="@+id/importance_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_medium_font"
+                android:textColor="@color/colorGray"
+                android:textSize="14sp"
+                android:layout_marginEnd="5dp"
+                android:text="Importance:"/>
+
+            <RadioGroup
+                android:id="@+id/importance_toggle"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:checkedButton="@+id/importance_normal"
+                android:background="@drawable/rs_view_outline"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/importance_normal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:background="@drawable/toggle_widget_background"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="Normal"
+                    android:textSize="12sp"
+                    android:layout_margin="1dp"
+                    android:textColor="@android:color/white" />
+
+                <RadioButton
+                    android:id="@+id/importance_high"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/toggle_widget_background"
+                    android:button="@null"
+                    android:padding="2dp"
+                    android:gravity="center"
+                    android:text="High"
+                    android:textSize="12sp"
+                    android:layout_margin="1dp"
+                    android:textColor="@color/colorAccent" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <com.zhouyou.view.seekbar.SignSeekBar
+            android:id="@+id/seek_bar"
+            android:layout_below="@id/layout_importance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semi_bold_font"
+            app:ssb_auto_adjust_section_mark="true"
+            app:ssb_second_track_color="@color/colorPrimary"
+            app:ssb_second_track_size="@dimen/second_track_size"
+            app:ssb_show_section_mark="true"
+            app:ssb_show_section_text="false"
+            app:ssb_show_thumb_shadow="true"
+            app:ssb_show_thumb_text="false"
+            app:ssb_sides_labels="@array/labels"
+            app:ssb_show_sign="true"
+            app:ssb_sign_color="@android:color/white"
+            app:ssb_sign_show_border="true"
+            app:ssb_sign_border_size="1dp"
+            app:ssb_sign_border_color="@color/colorPrimary"
+            app:ssb_sign_text_color="@color/colorPrimary"
+            app:ssb_text_space="0dp"
+            app:ssb_thumb_bg_alpha="0.3"
+            app:ssb_thumb_radius="@dimen/thumb_raduis"
+            app:ssb_thumb_radius_on_dragging="@dimen/thumb_raduis_on_dragging"
+            app:ssb_thumb_ratio="0.7"
+            app:ssb_thumb_text_size="@dimen/thumb_text_size"
+            app:ssb_touch_to_seek="true"
+            app:ssb_track_color="@color/colorLightGray"
+            app:ssb_track_size="@dimen/track_size"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

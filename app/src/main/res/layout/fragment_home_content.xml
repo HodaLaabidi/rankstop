@@ -3,16 +3,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/activity_horizontal_margin"
     android:scrollbars="none"
-    app:behavior_overlapTop="@dimen/behaviour_overlap_top"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/fragment_home">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="270dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RankStop"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="rankstop rankstop rankstop"
+                android:textSize="15sp" />
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:focusedByDefault="false">
+
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/search_text" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -26,6 +59,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <android.support.design.button.MaterialButton
                     android:id="@+id/title_page_top_ranked"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -42,34 +76,49 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:visibility="gone"
                     android:fontFamily="@font/montserrat_bold_font"
-                    android:text="@string/text_more" />
-
-                <ProgressBar
-                    android:id="@+id/progress_bar_top_ranked"
-                    android:layout_width="@dimen/width_progress_bar"
-                    android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true"/>
+                    android:text="@string/text_more"
+                    android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_top_ranked"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
                     android:layout_below="@id/title_page_top_ranked"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_view_top_ranked"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/min_height_card"
+                    android:layout_below="@id/title_page_top_ranked"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="There is no item"/>
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_top_ranked"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item"
-            android:layout_marginRight="@dimen/mlr_card_view"
             android:layout_marginLeft="@dimen/mlr_card_view"
-            android:layout_marginBottom="@dimen/mtb_card_view">
+            android:layout_marginRight="@dimen/mlr_card_view"
+            android:layout_marginBottom="@dimen/mtb_card_view"
+            app:cardElevation="@dimen/elevation"
+            app:contentPadding="@dimen/p_card_rv_item">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -91,34 +140,49 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:visibility="gone"
                     android:fontFamily="@font/montserrat_bold_font"
-                    android:text="@string/text_more" />
-
-                <ProgressBar
-                    android:id="@+id/progress_bar_top_viewed"
-                    android:layout_width="@dimen/width_progress_bar"
-                    android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true"/>
+                    android:text="@string/text_more"
+                    android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_top_viewed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
                     android:layout_below="@id/title_page_top_viewed"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layout_view_top_viewed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/min_height_card"
+                    android:layout_below="@id/title_page_top_viewed"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="There is no item"/>
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_top_viewed"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item"
             android:layout_marginLeft="@dimen/mlr_card_view"
+            android:layout_marginRight="@dimen/mtb_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
-            android:layout_marginRight="@dimen/mtb_card_view">
+            app:cardElevation="@dimen/elevation"
+            app:contentPadding="@dimen/p_card_rv_item">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -140,34 +204,49 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:visibility="gone"
                     android:fontFamily="@font/montserrat_bold_font"
-                    android:text="@string/text_more" />
-
-                <ProgressBar
-                    android:id="@+id/progress_bar_top_commented"
-                    android:layout_width="@dimen/width_progress_bar"
-                    android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true"/>
+                    android:text="@string/text_more"
+                    android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_top_commented"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
                     android:layout_below="@id/title_page_top_commented"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layout_view_top_commented"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/min_height_card"
+                    android:layout_below="@id/title_page_top_commented"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="There is no item"/>
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_top_commented"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item"
             android:layout_marginLeft="@dimen/mlr_card_view"
+            android:layout_marginRight="@dimen/mtb_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
-            android:layout_marginRight="@dimen/mtb_card_view">
+            app:cardElevation="@dimen/elevation"
+            app:contentPadding="@dimen/p_card_rv_item">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -189,23 +268,38 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:visibility="gone"
                     android:fontFamily="@font/montserrat_bold_font"
-                    android:text="@string/text_more" />
-
-                <ProgressBar
-                    android:id="@+id/progress_bar_top_followed"
-                    android:layout_width="@dimen/width_progress_bar"
-                    android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true"/>
+                    android:text="@string/text_more"
+                    android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_top_followed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
                     android:layout_below="@id/title_page_top_followed"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layout_view_top_followed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/min_height_card"
+                    android:layout_below="@id/title_page_top_followed"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="There is no item"/>
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_top_followed"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>

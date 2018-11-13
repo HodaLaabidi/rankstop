@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "919911753860",
+    "firebase_url": "https://rankstop-206809.firebaseio.com",
+    "project_id": "rankstop-206809",
+    "storage_bucket": "rankstop-206809.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919911753860:android:fe14ea911cd637ed",
+        "android_client_info": {
+          "package_name": "com.steeringit.rankstop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919911753860-h8b2mk25j9rolc6e3mu6quh11o7crbs6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.steeringit.rankstop",
+            "certificate_hash": "ca8753037e59e5a30b9c1792cef13dcacef98a2d"
+          }
+        },
+        {
+          "client_id": "919911753860-cdl4iriust9prbu3q4s6rf3jt4ut9nru.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgXEIwXPiBcnvKQEO8Hgczbym9msDBGcA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919911753860-cdl4iriust9prbu3q4s6rf3jt4ut9nru.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

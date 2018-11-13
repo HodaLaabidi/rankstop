@@ -15,6 +15,7 @@
     <dimen name="elevation">4dp</dimen>
     <dimen name="search_button_height">60dp</dimen>
     <dimen name="width_pie_item">150dp</dimen>
+    <dimen name="min_height_card">150dp</dimen>
     <dimen name="width_item_rv">190dp</dimen>
     <dimen name="text_size_title_item_rv">13sp</dimen>
     <dimen name="p_card_rv_item">8dp</dimen>
@@ -31,4 +32,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="width_galery_pic">80dp</dimen>
     <dimen name="raduis_galery_pic">5dp</dimen>
+    <dimen name="m_activity">8dp</dimen>
 </resources>

@@ -1,11 +1,10 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/activity_horizontal_margin"
     android:scrollbars="none"
-    app:behavior_overlapTop="@dimen/behaviour_overlap_top"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/fragment_profile">
 
@@ -14,10 +13,38 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:orientation="vertical">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/avatar"
+                android:layout_width="@dimen/image_width"
+                android:layout_height="@dimen/image_width"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                app:roundingBorderColor="@android:color/white"
+                app:roundingBorderWidth="2dp"
+                fresco:roundAsCircle="true" />
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="50dp"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/mlr_card_view"
+            android:layout_marginTop="-35dp"
             android:layout_marginRight="@dimen/mlr_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
             app:cardElevation="@dimen/elevation"
@@ -44,12 +71,12 @@
                         android:textSize="@dimen/text_size_title_profile" />
 
                     <TextView
+                        android:id="@+id/tv_evals_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/mt_title_profile"
                         android:fontFamily="@font/montserrat_medium_font"
                         android:lineSpacingExtra="@dimen/line_space_extra"
-                        android:text="20"
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/text_size_title_profile" />
                 </LinearLayout>
@@ -71,12 +98,12 @@
                         android:textSize="@dimen/text_size_title_profile" />
 
                     <TextView
+                        android:id="@+id/tv_comments_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/mt_title_profile"
                         android:fontFamily="@font/montserrat_medium_font"
                         android:lineSpacingExtra="@dimen/line_space_extra"
-                        android:text="15"
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/text_size_title_profile" />
                 </LinearLayout>
@@ -98,12 +125,12 @@
                         android:textSize="@dimen/text_size_title_profile" />
 
                     <TextView
+                        android:id="@+id/tv_pix_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/mt_title_profile"
                         android:fontFamily="@font/montserrat_medium_font"
                         android:lineSpacingExtra="@dimen/line_space_extra"
-                        android:text="30"
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/text_size_title_profile" />
                 </LinearLayout>
@@ -116,8 +143,7 @@
             android:layout_marginLeft="@dimen/mlr_card_view"
             android:layout_marginRight="@dimen/mlr_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item">
+            app:cardElevation="@dimen/elevation">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -139,22 +165,44 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:visibility="gone"
                     android:fontFamily="@font/montserrat_bold_font"
                     android:text="@string/text_more" />
-
-                <ProgressBar
-                    android:id="@+id/progress_bar_page_owned"
-                    android:layout_width="@dimen/width_progress_bar"
-                    android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_page_owned"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
                     android:layout_below="@id/title_page_owned"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layout_view_page_owned"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/min_height_card"
+                    android:layout_below="@id/title_page_owned"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Contact us if there is an item present your product, brand, shop, ..."/>
+                    <android.support.design.button.MaterialButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textAllCaps="false"
+                        android:text="Contact us"/>
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_page_owned"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -164,8 +212,7 @@
             android:layout_marginLeft="@dimen/mlr_card_view"
             android:layout_marginRight="@dimen/mlr_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item">
+            app:cardElevation="@dimen/elevation">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -187,22 +234,44 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:visibility="gone"
                     android:fontFamily="@font/montserrat_bold_font"
                     android:text="@string/text_more" />
-
-                <ProgressBar
-                    android:id="@+id/progress_bar_page_created"
-                    android:layout_width="@dimen/width_progress_bar"
-                    android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_page_created"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
                     android:layout_below="@id/title_page_created"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layout_view_page_created"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/min_height_card"
+                    android:layout_below="@id/title_page_created"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="If you want to evaluate any product, shop, brand, doctor and you don't find it in Rankstop data base, you can add it and evaluate it."/>
+                    <android.support.design.button.MaterialButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Add Item"
+                        android:textAllCaps="false"/>
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_page_created"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -212,8 +281,7 @@
             android:layout_marginLeft="@dimen/mlr_card_view"
             android:layout_marginRight="@dimen/mlr_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item">
+            app:cardElevation="@dimen/elevation">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -235,22 +303,38 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:visibility="gone"
                     android:fontFamily="@font/montserrat_bold_font"
                     android:text="@string/text_more" />
-
-                <ProgressBar
-                    android:id="@+id/progress_bar_page_followed"
-                    android:layout_width="@dimen/width_progress_bar"
-                    android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_page_followed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
                     android:layout_below="@id/title_page_followed"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layout_view_page_followed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/min_height_card"
+                    android:layout_below="@id/title_page_followed"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="You don't follow any item"/>
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_page_followed"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>
