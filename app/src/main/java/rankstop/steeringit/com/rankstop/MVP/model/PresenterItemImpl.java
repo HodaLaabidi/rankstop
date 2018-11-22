@@ -221,6 +221,28 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
+    public void loadCategoriesList() {
+        //standardView.showProgressBar(RSConstants.MY_EVALS);
+
+        WebService.getInstance().getApi().loadCategoriesList().enqueue(new Callback<RSResponse>() {
+            @Override
+            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                if (response.body().getStatus() == 1) {
+                    standardView.onSuccess(RSConstants.MY_EVALS, response.body().getData());
+                } else if (response.body().getStatus() == 0) {
+                    standardView.onFailure(RSConstants.MY_EVALS);
+                }
+                //standardView.hideProgressBar(RSConstants.MY_EVALS);
+            }
+
+            @Override
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                //standardView.hideProgressBar(RSConstants.MY_EVALS);
+            }
+        });
+    }
+
+    @Override
     public void followItem(RSFollow rsFollow) {
         WebService.getInstance().getApi().followItem(rsFollow).enqueue(new Callback<RSResponse>() {
             @Override

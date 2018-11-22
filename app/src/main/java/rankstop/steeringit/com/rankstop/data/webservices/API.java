@@ -36,6 +36,10 @@ public interface API {
     @GET("criteria/getCriterias")
     Call<RSResponse> loadCriteriaList();
 
+    // load categories list
+    @GET("categories/getCategory")
+    Call<RSResponse> loadCategoriesList();
+
     // load list of items created by user
     @POST("items/getItemAllByUser")
     Call<RSResponse> loadItemCreated(@Body RSRequestListItem rsRequestListItem);

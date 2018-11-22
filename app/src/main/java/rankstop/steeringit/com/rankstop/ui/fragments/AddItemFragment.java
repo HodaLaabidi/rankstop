@@ -36,16 +36,21 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Locale;
 
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
 
-public class AddItemFragment extends Fragment implements AdapterView.OnItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class AddItemFragment extends Fragment implements RSView.StandardView, AdapterView.OnItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     final String TAG = "ADD ITEM FRAGMENT";
 
@@ -65,6 +70,9 @@ public class AddItemFragment extends Fragment implements AdapterView.OnItemSelec
     private GoogleApiClient googleApiClient;
     private MarkerOptions currentUserLocation;
     private boolean isMapInitialized = false;
+
+
+    private RSPresenter.ItemPresenter itemPresenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -90,7 +98,14 @@ public class AddItemFragment extends Fragment implements AdapterView.OnItemSelec
         super.onActivityCreated(savedInstanceState);
         Log.i("LIFE_CYCLE",""+TAG+" onActivityCreated");
 
+
+        itemPresenter = new PresenterItemImpl(AddItemFragment.this);
+
         bindViews();
+
+        loadCategoriesList();
+
+
 
         categorySpinner.setOnItemSelectedListener(this);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -107,6 +122,10 @@ public class AddItemFragment extends Fragment implements AdapterView.OnItemSelec
                 fragmentActionListener.startFragment(AddReviewFragment.getInstance());
             }
         });
+    }
+
+    private void loadCategoriesList() {
+        itemPresenter.loadCategoriesList();
     }
 
     private void bindViews() {
@@ -395,5 +414,33 @@ public class AddItemFragment extends Fragment implements AdapterView.OnItemSelec
     public void onDetach() {
         Log.i("LIFE_CYCLE",""+TAG+" onDetach");
         super.onDetach();
+    }
+
+
+
+
+    @Override
+    public void onSuccess(String target, Object data) {
+        RSResponseListingItem listingItemResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
+    }
+
+    @Override
+    public void onFailure(String target) {
+
+    }
+
+    @Override
+    public void showProgressBar(String target) {
+
+    }
+
+    @Override
+    public void hideProgressBar(String target) {
+
+    }
+
+    @Override
+    public void showMessage(String target, String message) {
+
     }
 }

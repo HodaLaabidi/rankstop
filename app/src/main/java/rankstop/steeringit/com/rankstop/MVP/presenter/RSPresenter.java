@@ -36,6 +36,7 @@ public interface RSPresenter {
         void loadItemOwned(RSRequestListItem rsRequestListItem);
         void loadItemFollowed(RSRequestListItem rsRequestListItem);
         void loadMyEvals(RSRequestListItem rsRequestListItem);
+        void loadCategoriesList();
         void followItem(RSFollow rsFollow);
         void unfollowItem(RSFollow rsFollow);
         void onDestroyItem();
