@@ -40,7 +40,7 @@
                 android:id="@+id/importance_toggle"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:checkedButton="@+id/importance_normal"
+                android:checkedButton="@id/importance_normal"
                 android:background="@drawable/rs_view_outline"
                 android:orientation="horizontal">
 

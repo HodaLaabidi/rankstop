@@ -1,17 +1,27 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Item implements Serializable {
     private String scoreItem;
-    private Comment[] comments;
+    private List<Comment> comments;
     private int bad, good, neutral;
     private ItemDetails itemDetails;
-    private Picture[] pictures;
-    private CriteriaNote[] tabCritereDetails;
+    private List<Picture> pictures;
+    private List<CriteriaNote> tabCritereDetails;
     private Evaluation lastEvalUser;
+    private Evaluation myEval;
     private int numberEval;
     private boolean isFollow;
+
+    public Evaluation getMyEval() {
+        return myEval;
+    }
+
+    public void setMyEval(Evaluation myEval) {
+        this.myEval = myEval;
+    }
 
     public String getScoreItem() {
         return scoreItem;
@@ -19,14 +29,6 @@ public class Item implements Serializable {
 
     public void setScoreItem(String scoreItem) {
         this.scoreItem = scoreItem;
-    }
-
-    public Comment[] getComments() {
-        return comments;
-    }
-
-    public void setComments(Comment[] comments) {
-        this.comments = comments;
     }
 
     public int getBad() {
@@ -61,22 +63,6 @@ public class Item implements Serializable {
         this.itemDetails = itemDetails;
     }
 
-    public Picture[] getPictures() {
-        return pictures;
-    }
-
-    public void setPictures(Picture[] pictures) {
-        this.pictures = pictures;
-    }
-
-    public CriteriaNote[] getTabCritereDetails() {
-        return tabCritereDetails;
-    }
-
-    public void setTabCritereDetails(CriteriaNote[] tabCritereDetails) {
-        this.tabCritereDetails = tabCritereDetails;
-    }
-
     public Evaluation getLastEvalUser() {
         return lastEvalUser;
     }
@@ -99,5 +85,29 @@ public class Item implements Serializable {
 
     public void setFollow(boolean follow) {
         isFollow = follow;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<CriteriaNote> getTabCritereDetails() {
+        return tabCritereDetails;
+    }
+
+    public void setTabCritereDetails(List<CriteriaNote> tabCritereDetails) {
+        this.tabCritereDetails = tabCritereDetails;
+    }
+
+    public List<Picture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<Picture> pictures) {
+        this.pictures = pictures;
     }
 }

@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.data.webservices;
 
 import rankstop.steeringit.com.rankstop.data.model.User;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponse;
 import retrofit2.Call;
@@ -16,10 +17,6 @@ public interface API {
     @Headers({
             "Accept: application/json"
     })
-
-    /*@FormUrlEncoded
-    @POST("users/signIn/email")
-    Call<RSResponse> findEmail(@Field("email") String email);*/
 
     // vérifier l'existance d'un email
     @POST("users/signIn/findemail")
@@ -66,4 +63,21 @@ public interface API {
     // load list of top followed items
     @POST("items/getListItemByTopFollowed")
     Call<RSResponse> loadTopFollowedItems(@Body RSRequestListItem rsRequestListItem);
+
+    // load list of my evals
+    @POST("items/getItemAllByUserEvaluated")
+    Call<RSResponse> loadMyEvals(@Body RSRequestListItem rsRequestListItem);
+
+    // follow item
+    @POST("follows/follow")
+    Call<RSResponse> followItem(@Body RSFollow rsFollow);
+
+    // unfollow item
+    @POST("follows/unfollow")
+    Call<RSResponse> unfollowItem(@Body RSFollow rsFollow);
+
+    // load item by id
+    @FormUrlEncoded
+    @POST("items/getItemByIdAndIdUser")
+    Call<RSResponse> loadItem(@Field("itemId") String itemId, @Field("userId") String userId);
 }

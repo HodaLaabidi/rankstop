@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 
 public class ItemCreatedFragment extends Fragment {
@@ -46,6 +48,7 @@ public class ItemCreatedFragment extends Fragment {
     }
 
     private void bindViews() {
+        setFragmentActionListener((ContainerActivity)getActivity());
         toolbar = rootView.findViewById(R.id.toolbar);
     }
 
@@ -59,13 +62,13 @@ public class ItemCreatedFragment extends Fragment {
 
         switch (itemId) {
             case android.R.id.home:
-                //getActivity().onBackPressed();
+                getActivity().onBackPressed();
                 break;
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance());
                 break;
             case R.id.logout:
-                /*RSSession.removeToken(getContext());
+                /*RSSession.cancelSession(getContext());
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:

@@ -47,4 +47,5 @@
     <dimen name="thumb_raduis_on_dragging">7dp</dimen>
     <dimen name="m_activity">8dp</dimen>
     <dimen name="width_add_review_pic">100dp</dimen>
+    <dimen name="w_dialog_ask_login">400dp</dimen>
 </resources>

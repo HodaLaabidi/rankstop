@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
-public class CriteriaNote {
+import java.io.Serializable;
+
+public class CriteriaNote implements Serializable {
     private String idCritere, nameCritere, crit_good, crit_neutral, crit_bad;
 
     public CriteriaNote(String idCritere, String nameCritere, String crit_good, String crit_neutral, String crit_bad) {

@@ -35,19 +35,35 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.google.gson.Gson;
 
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.data.model.CriteriaNote;
+import rankstop.steeringit.com.rankstop.data.model.Gallery;
+import rankstop.steeringit.com.rankstop.data.model.Item;
+import rankstop.steeringit.com.rankstop.data.model.User;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.GalleryAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.ViewPagerAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.data.model.Picture;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
-public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener {
+public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener, RSView.StandardView {
 
     private PieChart pieChart;
     private Toolbar toolbar;
@@ -67,7 +83,16 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     private boolean isTransparentBg = true;
 
-    private boolean isFavorite = true;
+    private boolean isFavorite = false;
+    private User user;
+    private Item item;
+    private String itemId;
+    private int currentColor;
+
+    private RSPresenter.ItemPresenter itemPresenter;
+
+
+    private WeakReference<ItemDetailsFragment> fragmentContext;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +103,8 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        fragmentContext = new WeakReference<ItemDetailsFragment>(this);
         rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
         return rootView;
     }
@@ -86,6 +113,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        itemPresenter = new PresenterItemImpl(ItemDetailsFragment.this);
         bindViews();
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -97,19 +125,15 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         addReviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentActionListener.startFragment(AddReviewFragment.getInstance());
+                if (RSSession.isLoggedIn(getContext())){
+                    fragmentActionListener.startFragment(AddReviewFragment.getInstance());
+                } else {
+                    openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_add_review));
+                }
             }
         });
 
-        ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-        mViewPagerAdapter.addFragment(ItemEvalsFragment.getInstance(), getResources().getString(R.string.evals_title));
-        mViewPagerAdapter.addFragment(ItemCommentsFragment.getInstance(), getResources().getString(R.string.comments_title));
-        mViewPagerAdapter.addFragment(ItemPicsFragment.getInstance(), getResources().getString(R.string.pics_title));
-        mViewPager.setAdapter(mViewPagerAdapter);
-
-        tabLayout.setupWithViewPager(mViewPager);
-
-        getItemData();
+        loadItemData();
 
     }
 
@@ -123,28 +147,22 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         tabLayout = rootView.findViewById(R.id.tabs);
         mViewPager = rootView.findViewById(R.id.viewpager);
         addReviewBtn = rootView.findViewById(R.id.btn_add_review);
+
+        setFragmentActionListener((ContainerActivity) getActivity());
     }
 
-    private void getItemData() {
-
-        itemNameTV.setText("Baguette et baguette ariana");
-        itemDescriptionTV.setText("But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system");
-        initPieChart();
-        List<Picture> listGalleryPics = new ArrayList<>();
-        listGalleryPics.add(new Picture("", "", "", "", "", "https://scontent.ftun1-1.fna.fbcdn.net/v/t1.0-9/15940845_1300951476615258_4049671823041162693_n.jpg?_nc_cat=0&oh=95ce10869da2541a750ba3c6a7023b41&oe=5C164B7E"));
-        listGalleryPics.add(new Picture("", "", "", "", "", "https://scontent.fnbe1-1.fna.fbcdn.net/v/t1.0-9/32186668_103965590479958_7688992294594150400_n.jpg?_nc_cat=105&oh=839705afb5e544316c6e377fe2f8e20a&oe=5C16F2F8"));
-        listGalleryPics.add(new Picture("", "", "", "", "", "https://scontent.fnbe1-1.fna.fbcdn.net/v/t1.0-9/13606533_1160694717286450_2226770478468605775_n.jpg?_nc_cat=101&oh=ac41c9c9232bb6ee65ed3bcf6683a3c7&oe=5C54E504"));
-        listGalleryPics.add(new Picture("", "", "", "", "", "https://scontent.fnbe1-1.fna.fbcdn.net/v/t1.0-9/43300281_2392097027473991_2378636348329295872_n.jpg?_nc_cat=109&oh=5e66ae825824d196f94ff90913bce570&oe=5C547218"));
-        listGalleryPics.add(new Picture("", "", "", "", "", "https://scontent.ftun1-1.fna.fbcdn.net/v/t1.0-9/15940845_1300951476615258_4049671823041162693_n.jpg?_nc_cat=0&oh=95ce10869da2541a750ba3c6a7023b41&oe=5C164B7E"));
-        listGalleryPics.add(new Picture("", "", "", "", "", "https://scontent.ftun1-1.fna.fbcdn.net/v/t1.0-9/15940845_1300951476615258_4049671823041162693_n.jpg?_nc_cat=0&oh=95ce10869da2541a750ba3c6a7023b41&oe=5C164B7E"));
-        listGalleryPics.add(new Picture("", "", "", "", "", "https://scontent.ftun1-1.fna.fbcdn.net/v/t1.0-9/15940845_1300951476615258_4049671823041162693_n.jpg?_nc_cat=0&oh=95ce10869da2541a750ba3c6a7023b41&oe=5C164B7E"));
-
-        if (listGalleryPics.size() > 0) {
-            initGallery(listGalleryPics);
+    private void loadItemData() {
+        String userId = "";
+        if (RSSession.isLoggedIn(getContext())) {
+            user = RSSession.getCurrentUser(getContext());
+            userId = user.get_id();
         }
+        itemId = getArguments().getString(RSConstants._ID);
+
+        itemPresenter.loadItem(itemId, userId);
     }
 
-    private void initGallery(List<Picture> listGalleryPics) {
+    private void initGallery(List<Gallery> listGalleryPics) {
         recyclerViewGallery.setVisibility(View.VISIBLE);
         RecyclerViewClickListener listener = (view, position) -> {
             Toast.makeText(getContext(), "Position " + position, Toast.LENGTH_SHORT).show();
@@ -154,18 +172,18 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         recyclerViewGallery.addItemDecoration(new HorizontalSpace(10));
     }
 
-    private void initPieChart() {
+    private void initPieChart(Item item) {
 
         // values of the pie
         ArrayList<PieEntry> pieEntry = new ArrayList<>();
-        pieEntry.add(new PieEntry(34f, ""));
-        pieEntry.add(new PieEntry(14f, ""));
-        pieEntry.add(new PieEntry(71f, ""));
+        pieEntry.add(new PieEntry(item.getBad(), ""));
+        pieEntry.add(new PieEntry(item.getNeutral(), ""));
+        pieEntry.add(new PieEntry(item.getGood(), ""));
 
 
         pieChart.setUsePercentValues(true);
         // define center text of the pie
-        pieChart.setCenterText("1.2 \n out of 5");
+        pieChart.setCenterText(item.getScoreItem()+" \n out of 5");
         pieChart.setCenterTextSize(17f);
         pieChart.setCenterTextColor(getResources().getColor(R.color.colorPrimary));
 
@@ -226,11 +244,9 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-
-        switch (itemId) {
+        switch (item.getItemId()) {
             case android.R.id.home:
-                //getActivity().onBackPressed();
+                getActivity().onBackPressed();
                 break;
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance());
@@ -249,10 +265,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance());
                 break;
             case R.id.action_favorite:
-                if (isTransparentBg)
-                    manageBtnLike(isFavorite, R.color.colorPrimary);
-                else
-                    manageBtnLike(isFavorite, android.R.color.white);
+                manageFollow(itemId, !isFavorite);
                 break;
             case R.id.action_share:
                 break;
@@ -264,7 +277,6 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     private void initToolbarStyle() {
         lightColorFilter = new PorterDuffColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
         darkColorFilter = new PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
-        manageBtnLike(isFavorite, R.color.colorPrimary);
 
         listMenuItem = new ArrayList<>();
         MenuItem menuItem;
@@ -283,7 +295,30 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             menuItem.setIcon(R.drawable.ic_favorite_border);
             tintMenuIcon(menuItem, color);
         }
-        this.isFavorite = !isFavorite;
+        this.isFavorite = isFavorite;
+    }
+    private void manageFollow(String itemId, boolean isFollow) {
+        if (isTransparentBg)
+            currentColor = R.color.colorPrimary;
+        else
+            currentColor = android.R.color.white;
+
+        if (RSSession.isLoggedIn(getContext())){
+            RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
+            if (isFollow)
+                itemPresenter.followItem(rsFollow);
+            else
+                itemPresenter.unfollowItem(rsFollow);
+            isFavorite = isFollow;
+        } else {
+            openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_follow));
+        }
+    }
+
+    private void openAlertDialog(String message) {
+        AskToLoginDialog dialog = AskToLoginDialog.newInstance(fragmentContext.get(), message);
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), "");
     }
 
     private void tintMenuIcon(MenuItem item, @ColorRes int color) {
@@ -309,7 +344,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f;
         if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
             if (isTransparentBg) {
-                toolbar.setTitle("Baguette et baguette Ariana");
+                toolbar.setTitle(item.getItemDetails().getTitle());
                 isTransparentBg = false;
                 for (int i = 0; i < listMenuItem.size(); i++) {
                     tintMenuIcon(listMenuItem.get(i), android.R.color.white);
@@ -341,6 +376,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         fragmentActionListener = null;
         for (int i = 0; i < listMenuItem.size(); i++) {
             tintMenuIcon(listMenuItem.get(i), android.R.color.white);
+
         }
         super.onDestroyView();
     }
@@ -353,10 +389,70 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     private static ItemDetailsFragment instance;
 
-    public static ItemDetailsFragment getInstance() {
+    public static ItemDetailsFragment getInstance(String id) {
+        Bundle args = new Bundle();
+        args.putString(RSConstants._ID, id);
         if (instance == null) {
             instance = new ItemDetailsFragment();
         }
+        instance.setArguments(args);
         return instance;
+    }
+
+    private void bindData(Item item) {
+        manageBtnLike(item.isFollow(), R.color.colorPrimary);
+        itemNameTV.setText(item.getItemDetails().getTitle());
+        itemDescriptionTV.setText(item.getItemDetails().getDescription());
+        initPieChart(item);
+        List<Gallery> listGalleryPics = new ArrayList<>();
+        listGalleryPics = item.getItemDetails().getGallery();
+        if (listGalleryPics.size() > 0) {
+            initGallery(listGalleryPics);
+        }else {
+
+        }
+
+        ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+        mViewPagerAdapter.addFragment(ItemEvalsFragment.getInstance(item.getTabCritereDetails()), getResources().getString(R.string.evals_title));
+        mViewPagerAdapter.addFragment(ItemCommentsFragment.getInstance(item.getComments()), getResources().getString(R.string.comments_title));
+        mViewPagerAdapter.addFragment(ItemPicsFragment.getInstance(item.getPictures()), getResources().getString(R.string.pics_title));
+        mViewPager.setAdapter(mViewPagerAdapter);
+        tabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    public void onSuccess(String target, Object data) {
+        item = new Gson().fromJson(new Gson().toJson(data), Item.class);
+        switch (target) {
+            case RSConstants.ONE_ITEM:
+                bindData(item);
+                break;
+            case RSConstants.FOLLOW_ITEM:
+                manageBtnLike(isFavorite, currentColor);
+                break;
+            case RSConstants.UNFOLLOW_ITEM:
+                manageBtnLike(isFavorite, currentColor);
+                break;
+        }
+    }
+
+    @Override
+    public void onFailure(String target) {
+
+    }
+
+    @Override
+    public void showProgressBar(String target) {
+
+    }
+
+    @Override
+    public void hideProgressBar(String target) {
+
+    }
+
+    @Override
+    public void showMessage(String target, String message) {
+
     }
 }

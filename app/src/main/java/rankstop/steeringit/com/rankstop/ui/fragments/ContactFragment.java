@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 
 public class ContactFragment extends Fragment {
@@ -46,6 +47,8 @@ public class ContactFragment extends Fragment {
     }
 
     private void bindViews() {
+
+        setFragmentActionListener((ContainerActivity)getActivity());
         toolbar = rootView.findViewById(R.id.toolbar);
     }
 
@@ -59,7 +62,7 @@ public class ContactFragment extends Fragment {
 
         switch (itemId) {
             case android.R.id.home:
-                //getActivity().onBackPressed();
+                getActivity().onBackPressed();
                 break;
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance());

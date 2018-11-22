@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,23 +17,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterHomeImpl;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.User;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.data.model.Item;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
@@ -52,11 +58,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
     private FragmentActionListener fragmentActionListener;
 
-    private RSPresenter.HomePresenter homePresenter;
+    private RSPresenter.ItemPresenter itemPresenter;
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
     private User user;
 
     private LinearLayout layoutTopFollowed, layoutTopViewed, layoutTopCommented, layoutTopRanked;
+
+
+    private WeakReference<HomeFragment> fragmentContext;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +75,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        fragmentContext = new WeakReference<HomeFragment>(this);
         rootView = inflater.inflate(R.layout.fragment_home, container, false);
         return rootView;
     }
@@ -106,9 +117,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
         toolbar.setTitle(getResources().getString(R.string.app_name));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+    }
 
-        homePresenter = new PresenterHomeImpl(HomeFragment.this);
+    @Override
+    public void onResume() {
+        super.onResume();
 
+        Log.i("TAG_HOME","home created 2");
+
+        setFragmentActionListener((ContainerActivity)getActivity());
+        itemPresenter = new PresenterItemImpl(HomeFragment.this);
         loadHomeData();
     }
 
@@ -126,25 +144,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     }
 
     private void loadTopRankedItem() {
-        homePresenter.loadTopRankedItems(rsRequestListItem);
+        itemPresenter.loadTopRankedItems(rsRequestListItem);
     }
 
     private void loadTopViewedItem() {
-        homePresenter.loadTopViewedItems(rsRequestListItem);
+        itemPresenter.loadTopViewedItems(rsRequestListItem);
     }
 
     private void loadTopFollowedItem() {
-        homePresenter.loadTopFollowedItems(rsRequestListItem);
+        itemPresenter.loadTopFollowedItems(rsRequestListItem);
     }
 
     private void loadTopCommentedItem() {
-        homePresenter.loadTopCommentedItems(rsRequestListItem);
+        itemPresenter.loadTopCommentedItems(rsRequestListItem);
     }
 
     private void initTopRanked(List<Item> listTopRankedItem) {
         recyclerViewTopRanked.setVisibility(View.VISIBLE);
-        RecyclerViewClickListener listener = (view, position) -> {
-            fragmentActionListener.startFragment(ItemDetailsFragment.getInstance());
+        ItemPieListener listener = new ItemPieListener() {
+            @Override
+            public void onFollowChanged(boolean isFollow, int position) {
+                manageFollow(listTopRankedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopRankedItem.get(position).getItemDetails().get_id()));
+            }
         };
         recyclerViewTopRanked.setLayoutManager(new LinearLayoutManager(recyclerViewTopRanked.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewTopRanked.setAdapter(new PieAdapter(listTopRankedItem, listener, getContext()));
@@ -154,8 +180,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
     private void initTopViewed(List<Item> listTopViewedItem) {
         recyclerViewTopViewed.setVisibility(View.VISIBLE);
-        RecyclerViewClickListener listener = (view, position) -> {
-            fragmentActionListener.startFragment(ItemDetailsFragment.getInstance());
+        ItemPieListener listener = new ItemPieListener() {
+            @Override
+            public void onFollowChanged(boolean isFollow, int position) {
+                manageFollow(listTopViewedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopViewedItem.get(position).getItemDetails().get_id()));
+            }
         };
         recyclerViewTopViewed.setLayoutManager(new LinearLayoutManager(recyclerViewTopViewed.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewTopViewed.setAdapter(new PieAdapter(listTopViewedItem, listener, getContext()));
@@ -165,8 +199,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
     private void initTopFollowed(List<Item> listTopFollowedItem) {
         recyclerViewTopFollowed.setVisibility(View.VISIBLE);
-        RecyclerViewClickListener listener = (view, position) -> {
-            fragmentActionListener.startFragment(ItemDetailsFragment.getInstance());
+        ItemPieListener listener = new ItemPieListener() {
+            @Override
+            public void onFollowChanged(boolean isFollow, int position) {
+                manageFollow(listTopFollowedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopFollowedItem.get(position).getItemDetails().get_id()));
+            }
         };
         recyclerViewTopFollowed.setLayoutManager(new LinearLayoutManager(recyclerViewTopFollowed.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewTopFollowed.setAdapter(new PieAdapter(listTopFollowedItem, listener, getContext()));
@@ -176,13 +218,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
     private void initTopCommented(List<Item> listTopCommentedItem) {
         recyclerViewTopCommented.setVisibility(View.VISIBLE);
-        RecyclerViewClickListener listener = (view, position) -> {
-            fragmentActionListener.startFragment(ItemDetailsFragment.getInstance());
+        ItemPieListener listener = new ItemPieListener() {
+            @Override
+            public void onFollowChanged(boolean isFollow, int position) {
+                manageFollow(listTopCommentedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopCommentedItem.get(position).getItemDetails().get_id()));
+            }
         };
         recyclerViewTopCommented.setLayoutManager(new LinearLayoutManager(recyclerViewTopCommented.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewTopCommented.setAdapter(new PieAdapter(listTopCommentedItem, listener, getContext()));
         recyclerViewTopCommented.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         recyclerViewTopCommented.setNestedScrollingEnabled(false);
+    }
+
+    private void manageFollow(String itemId, boolean isFollow) {
+        if (RSSession.isLoggedIn(getContext())){
+            RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
+            if (isFollow)
+                itemPresenter.followItem(rsFollow);
+            else
+                itemPresenter.unfollowItem(rsFollow);
+        } else {
+            openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_follow));
+        }
     }
 
     @Override
@@ -249,6 +311,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
         instance = null;
         fragmentActionListener = null;
         rootView = null;
+        itemPresenter.onDestroyItem();
         super.onDestroyView();
     }
 
@@ -374,5 +437,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     @Override
     public void showMessage(String target, String message) {
 
+    }
+
+    private void openAlertDialog(String message) {
+        AskToLoginDialog dialog = AskToLoginDialog.newInstance(fragmentContext.get(), message);
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), "");
     }
 }

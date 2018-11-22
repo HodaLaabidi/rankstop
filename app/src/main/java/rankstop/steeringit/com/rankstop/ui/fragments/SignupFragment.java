@@ -19,8 +19,9 @@ import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
 
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseFindEmail;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.LoginDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.RegisterDialog;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -73,7 +74,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
         inputLayoutEmail = rootView.findViewById(R.id.input_layout_email);
 
-        signupPresenter = new PresenterUserImpl(fragmentContext.get());
+        signupPresenter = new PresenterAuthImpl(fragmentContext.get());
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override

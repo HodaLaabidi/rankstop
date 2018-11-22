@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.ui.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -44,14 +45,17 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
     private boolean isLoggedIn = false;
+    private Handler handler;
+    private Runnable runnable;
 
-    private WeakReference<ContainerActivity> activity;
+    public WeakReference<ContainerActivity> activity;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Log.d("TAG_UI", "" + Thread.currentThread().getId());
             Fragment fragment = fragmentManager.findFragmentById(R.id.container);
             switch (item.getItemId()) {
                 case R.id.navigation_home:
@@ -68,7 +72,7 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
                     return true;
                 case R.id.navigation_profile:
                     if (isLoggedIn) {
-                        if (!(fragment instanceof ProfileFragment)){
+                        if (!(fragment instanceof ProfileFragment)) {
                             replaceFragment(ProfileFragment.getInstance());
                             item.setTitle(getResources().getString(R.string.title_profile));
                         }
@@ -104,8 +108,7 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
         fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                Log.i("BACK STACK", "fragment count in back stack: " + fragmentManager.getBackStackEntryCount());
-                Toast.makeText(activity.get(), ""+fragmentManager.getBackStackEntryCount(), Toast.LENGTH_SHORT).show();
+                Log.i("BACK_STACK", "fragment count in back stack: " + fragmentManager.getBackStackEntryCount());
             }
         });
 
@@ -133,108 +136,38 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
     }
 
     public void replaceFragment(Fragment fragment) {
-        if (fragment instanceof AddItemFragment)
-            AddItemFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof AddReviewFragment)
-            AddReviewFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ContactFragment)
-            ContactFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof EditProfileFragment)
-            EditProfileFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof HistoryFragment)
-            HistoryFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof HomeFragment)
-            HomeFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemCommentsFragment)
-            ItemCommentsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemCreatedFragment)
-            ItemCreatedFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemDetailsFragment)
-            ItemDetailsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemEvalsFragment)
-            ItemEvalsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemFollowedFragment)
-            ItemFollowedFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemOwnedFragment)
-            ItemOwnedFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemPicsFragment)
-            ItemPicsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ListNotifFragment)
-            ListNotifFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof MyEvaluationsFragment)
-            MyEvaluationsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ProfileFragment)
-            ProfileFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof SettingsFragment)
-            SettingsFragment.getInstance().setFragmentActionListener(activity.get());
-        /*else if (fragment instanceof SignupFragment)
-            SignupFragment.getInstance().setFragmentActionListener(activity.get());*/
-
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-
-    public void replaceAndSaveFragment(Fragment fragment) {
-        if (fragment instanceof AddItemFragment)
-            AddItemFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof AddReviewFragment)
-            AddReviewFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ContactFragment)
-            ContactFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof EditProfileFragment)
-            EditProfileFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof HistoryFragment)
-            HistoryFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof HomeFragment)
-            HomeFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemCommentsFragment)
-            ItemCommentsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemCreatedFragment)
-            ItemCreatedFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemDetailsFragment)
-            ItemDetailsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemEvalsFragment)
-            ItemEvalsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemFollowedFragment)
-            ItemFollowedFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemOwnedFragment)
-            ItemOwnedFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ItemPicsFragment)
-            ItemPicsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ListNotifFragment)
-            ListNotifFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof MyEvaluationsFragment)
-            MyEvaluationsFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof ProfileFragment)
-            ProfileFragment.getInstance().setFragmentActionListener(activity.get());
-        else if (fragment instanceof SettingsFragment)
-            SettingsFragment.getInstance().setFragmentActionListener(activity.get());
-        /*else if (fragment instanceof SignupFragment)
-            SignupFragment.getInstance().setFragmentActionListener(activity.get());*/
-
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment);
-        fragmentTransaction.addToBackStack("replace " + fragment.toString());
+        fragmentTransaction.addToBackStack(fragment.toString());
         fragmentTransaction.commit();
     }
 
     @Override
     public void onBackPressed() {
         Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-        if (fragment instanceof HomeFragment){
-            fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (fragment instanceof HomeFragment) {
+            fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             finish();
-        }else {
+        } else {
             if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof ProfileFragment) {
-                fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                navigation.setSelectedItemId(R.id.navigation_home);
-            }else {
+                fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                Log.d("TAG_BACK_STACK", "" + Thread.currentThread().getId());
+                if (handler == null)
+                    handler = new Handler();
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        navigation.setSelectedItemId(R.id.navigation_home);
+                    }
+                };
+                handler.postDelayed(runnable, 200);
+
+            } else {
                 fragmentManager.popBackStack();
             }
         }
-        Toast.makeText(this, ""+fragmentManager.getBackStackEntryCount(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, ""+fragmentManager.getBackStackEntryCount(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -245,6 +178,7 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
     @Override
     protected void onDestroy() {
         activity.clear();
+        handler.removeCallbacks(runnable);
         super.onDestroy();
     }
 }

@@ -17,7 +17,7 @@ import android.view.View;
 
 import com.google.gson.Gson;
 
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseLogin;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
@@ -26,7 +26,7 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.utils.RSJWTParser;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class LoginDialog extends DialogFragment implements RSView.LoginView{
 
@@ -49,7 +49,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
         LoginDialog dialog = new LoginDialog();
         dialog.fragment = fragment;
         Bundle args = new Bundle();
-        args.putString("email", email);
+        args.putString(RSConstants.EMAIL, email);
         dialog.setArguments(args);
         return dialog;
     }
@@ -91,14 +91,14 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
         loginBtn = rootView.findViewById(R.id.positive_btn);
         resetPassword = rootView.findViewById(R.id.forget_password_btn);
 
-        emailEditText.setText(getArguments().getString("email"));
+        emailEditText.setText(getArguments().getString(RSConstants.EMAIL));
 
         addTextWatchers();
     }
 
     private void onDialogShow(AlertDialog dialog) {
 
-        loginPresenter = new PresenterUserImpl( LoginDialog.this);
+        loginPresenter = new PresenterAuthImpl( LoginDialog.this);
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +115,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
 
                 User user = new User();
                 user.setPassword(password);
-                user.setEmail(getArguments().getString("email"));
+                user.setEmail(getArguments().getString(RSConstants.EMAIL));
                 loginPresenter.performLogin(user);
             }
         });

@@ -1,5 +1,11 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
+import com.google.gson.Gson;
+
+import java.util.List;
+
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
+
 public class ItemDetails {
 
     private Category category;
@@ -7,6 +13,7 @@ public class ItemDetails {
     private String title, description, urlFacebook, urlGooglePlus, urlTwitter, _id;
     private Object creator, owner;
     private int evaluations, numberView;
+    private List<Gallery> gallery;
 
     public ItemDetails(Category category, String createdAt, String lastDateView, String updatedAt, String title, String description, String urlFacebook, String urlGooglePlus, String urlTwitter, String _id, Object creator, Object owner, int evaluations, int numberView) {
         this.category = category;
@@ -42,7 +49,7 @@ public class ItemDetails {
     }
 
     public String getLastDateView() {
-        return lastDateView;
+        return RSDateParser.convertToDateFormat(lastDateView);
     }
 
     public void setLastDateView(String lastDateView) {
@@ -109,7 +116,7 @@ public class ItemDetails {
         if (creator instanceof String)
             return (String)creator;
         else
-            return (User) creator;
+            return new Gson().fromJson(new Gson().toJson(creator), User.class);
     }
 
     public void setCreator(Object creator) {
@@ -123,7 +130,7 @@ public class ItemDetails {
         if (owner instanceof String)
             return (String)owner;
         else
-            return (User) owner;
+            return new Gson().fromJson(new Gson().toJson(owner), User.class);
     }
 
     public void setOwner(Object owner) {
@@ -147,5 +154,13 @@ public class ItemDetails {
 
     public void setNumberView(int numberView) {
         this.numberView = numberView;
+    }
+
+    public List<Gallery> getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(List<Gallery> gallery) {
+        this.gallery = gallery;
     }
 }

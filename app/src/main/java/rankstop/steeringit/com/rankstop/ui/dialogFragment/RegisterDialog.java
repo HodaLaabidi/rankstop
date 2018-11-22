@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseLogin;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
@@ -103,7 +103,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
 
     private void onDialogShow(AlertDialog dialog) {
 
-        registerPresenter = new PresenterUserImpl( RegisterDialog.this);
+        registerPresenter = new PresenterAuthImpl( RegisterDialog.this);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

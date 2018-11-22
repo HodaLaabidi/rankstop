@@ -4,13 +4,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.data.model.Item;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
@@ -31,8 +32,16 @@ public class SearchActivity extends AppCompatActivity {
 
     private void initListItems() {
         listItems = new ArrayList<>();
-        RecyclerViewClickListener listener = (view, position) -> {
-            //startActivity(intent, optionsCompat.toBundle());
+        ItemPieListener listener = new ItemPieListener() {
+            @Override
+            public void onFollowChanged(boolean isFollow, int position) {
+
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+
+            }
         };
         recyclerViewItems.setLayoutManager(new GridLayoutManager(recyclerViewItems.getContext(), getResources().getInteger(R.integer.count_item_per_row)));
         recyclerViewItems.setAdapter(new PieAdapter(listItems, listener, this));

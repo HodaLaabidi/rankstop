@@ -1,20 +1,26 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
-public class Picture {
+import java.io.Serializable;
 
-    private String date, _id, url, color, userId, pictureEval;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
-    public Picture(String date, String _id, String url, String color, String userId, String pictureEval) {
+public class Picture implements Serializable {
+
+    private String date, _id, url, color, pictureEval;
+    private User user;
+
+    public Picture(String date, String _id, String url, String color, User user, String pictureEval) {
         this.date = date;
         this._id = _id;
         this.url = url;
         this.color = color;
-        this.userId = userId;
+        this.user = user;
         this.pictureEval = pictureEval;
     }
 
     public String getDate() {
-        return date;
+        return RSDateParser.convertToDateFormat(date);
     }
 
     public void setDate(String date) {
@@ -37,20 +43,28 @@ public class Picture {
         this.url = url;
     }
 
-    public String getColor() {
-        return color;
+    public int getColor() {
+        switch(color){
+            case "green":
+                return R.color.colorGreenPie;
+            case "red":
+                return R.color.colorRedPie;
+            case "yellow":
+                return R.color.colorOrangePie;
+        }
+        return R.color.colorGray;
     }
 
     public void setColor(String color) {
         this.color = color;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getPictureEval() {

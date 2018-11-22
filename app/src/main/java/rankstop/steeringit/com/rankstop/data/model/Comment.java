@@ -1,19 +1,25 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
-public class Comment {
+import java.io.Serializable;
 
-    private String date, _id, text, color, userId;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
-    public Comment(String date, String _id, String text, String color, String userId) {
+public class Comment implements Serializable {
+
+    private String date, _id, text, color;
+    private User user;
+
+    public Comment(String date, String _id, String text, String color, User user) {
         this.date = date;
         this._id = _id;
         this.text = text;
         this.color = color;
-        this.userId = userId;
+        this.user = user;
     }
 
     public String getDate() {
-        return date;
+        return RSDateParser.convertToDateFormat(date);
     }
 
     public void setDate(String date) {
@@ -36,19 +42,27 @@ public class Comment {
         this.text = text;
     }
 
-    public String getColor() {
-        return color;
+    public int getColor() {
+        switch(color){
+            case "green":
+                return R.color.colorGreenPie;
+            case "red":
+                return R.color.colorRedPie;
+            case "yellow":
+                return R.color.colorOrangePie;
+        }
+        return R.color.colorGray;
     }
 
     public void setColor(String color) {
         this.color = color;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String authorId) {
-        this.userId = authorId;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

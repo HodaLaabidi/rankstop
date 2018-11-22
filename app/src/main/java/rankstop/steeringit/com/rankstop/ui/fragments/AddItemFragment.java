@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
 
@@ -119,6 +120,10 @@ public class AddItemFragment extends Fragment implements AdapterView.OnItemSelec
         addItemBtn = rootView.findViewById(R.id.btn_add_item);
 
         toolbar.setTitle(getResources().getString(R.string.add_item));
+
+
+        setFragmentActionListener((ContainerActivity)getActivity());
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 

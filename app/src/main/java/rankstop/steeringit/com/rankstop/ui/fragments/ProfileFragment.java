@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,30 +20,33 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterProfileImpl;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
 import rankstop.steeringit.com.rankstop.data.model.UserInfo;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSLocalStorage;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.data.model.Item;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.User;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
@@ -96,12 +100,18 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
     private List<Item> listOwnedItem, listFollowedItem, listCreatedItem;
 
-    private RSPresenter.ProfilePresenter profilePresenter;
+    private RSPresenter.ItemPresenter itemPresenter;
+    private RSPresenter.UserPresenter userPresenter;
 
-    RSResponseListingItem listingItemResponse;
+    private RSResponseListingItem listingItemResponse;
+    private PieAdapter adapterOwnedItem, adapterFollowedItem, adapterCreatedItem;
+
+
+    private WeakReference<ProfileFragment> fragmentContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        fragmentContext = new WeakReference<ProfileFragment>(this);
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
@@ -122,6 +132,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         super.onActivityCreated(savedInstanceState);
 
         bindViews();
+        Log.i("TAG_HOME","profile created");
 
     }
 
@@ -131,7 +142,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
-        profilePresenter = new PresenterProfileImpl( ProfileFragment.this);
+        itemPresenter = new PresenterItemImpl(ProfileFragment.this);
+        userPresenter = new PresenterUserImpl(ProfileFragment.this);
+        setFragmentActionListener((ContainerActivity)getActivity());
 
         // init data
         userInfo = RSSession.getCurrentUserInfo(getContext());
@@ -144,7 +157,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     private void bindLocalData() {
         setUserPic(userInfo.getUser().getPictureProfile());
-        setUserName(userInfo.getUser().getFacebook().getName());
+        setUserName(userInfo.getUser().getUsername());
         setEvalsNumber(userInfo.getCountEval());
         setCommentsNumber(userInfo.getCountComments());
         setPixNumber(userInfo.getCountPictures());
@@ -168,52 +181,92 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     }
 
     private void loadProfileData() {
-        profilePresenter.loadUserInfo(userInfo.getUser().get_id());
+        userPresenter.loadUserInfo(userInfo.getUser().get_id());
     }
 
     private void loadOwnedItem() {
-        profilePresenter.loadItemOwned(rsRequestListItem);
+        itemPresenter.loadItemOwned(rsRequestListItem);
     }
 
     private void loadCreatedItem() {
-        profilePresenter.loadItemCreated(rsRequestListItem);
+        itemPresenter.loadItemCreated(rsRequestListItem);
     }
 
     private void loadFollowedItem() {
-        profilePresenter.loadItemFollowed(rsRequestListItem);
+        itemPresenter.loadItemFollowed(rsRequestListItem);
     }
 
     private void initOwnedItem(List<Item> listOwnedItem) {
         recyclerViewOwnedItem.setVisibility(View.VISIBLE);
-        RecyclerViewClickListener listener = (view, position) -> {
-            fragmentActionListener.startFragment(ItemDetailsFragment.getInstance());
+        ItemPieListener listener = new ItemPieListener() {
+            @Override
+            public void onFollowChanged(boolean isFollow, int position) {
+                manageFollow(listOwnedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listOwnedItem.get(position).getItemDetails().get_id()));
+            }
         };
+        adapterOwnedItem = new PieAdapter(listOwnedItem, listener, getContext());
         recyclerViewOwnedItem.setLayoutManager(new LinearLayoutManager(recyclerViewOwnedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewOwnedItem.setAdapter(new PieAdapter(listOwnedItem, listener, getContext()));
+        recyclerViewOwnedItem.setAdapter(adapterOwnedItem);
         recyclerViewOwnedItem.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         recyclerViewOwnedItem.setNestedScrollingEnabled(false);
     }
 
     private void initCreatedItem(List<Item> listCreatedItem) {
         recyclerViewCreatedItem.setVisibility(View.VISIBLE);
-        RecyclerViewClickListener listener = (view, position) -> {
-            fragmentActionListener.startFragment(ItemDetailsFragment.getInstance());
+        ItemPieListener listener = new ItemPieListener() {
+            @Override
+            public void onFollowChanged(boolean isFollow, int position) {
+                manageFollow(listCreatedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listCreatedItem.get(position).getItemDetails().get_id()));
+            }
         };
+        adapterCreatedItem = new PieAdapter(listCreatedItem, listener, getContext());
         recyclerViewCreatedItem.setLayoutManager(new LinearLayoutManager(recyclerViewCreatedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewCreatedItem.setAdapter(new PieAdapter(listCreatedItem, listener, getContext()));
+        recyclerViewCreatedItem.setAdapter(adapterCreatedItem);
         recyclerViewCreatedItem.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         recyclerViewCreatedItem.setNestedScrollingEnabled(false);
     }
 
     private void initFollowedItem(List<Item> listFollowedItem) {
         recyclerViewFollowedItem.setVisibility(View.VISIBLE);
-        RecyclerViewClickListener listener = (view, position) -> {
-            fragmentActionListener.startFragment(ItemDetailsFragment.getInstance());
+        ItemPieListener listener = new ItemPieListener() {
+            @Override
+            public void onFollowChanged(boolean isFollow, int position) {
+                manageFollow(listFollowedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listFollowedItem.get(position).getItemDetails().get_id()));
+            }
         };
+        adapterFollowedItem = new PieAdapter(listFollowedItem, listener, getContext());
         recyclerViewFollowedItem.setLayoutManager(new LinearLayoutManager(recyclerViewFollowedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewFollowedItem.setAdapter(new PieAdapter(listFollowedItem, listener, getContext()));
+        recyclerViewFollowedItem.setAdapter(adapterFollowedItem);
         recyclerViewFollowedItem.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         recyclerViewFollowedItem.setNestedScrollingEnabled(false);
+    }
+
+    private void manageFollow(String itemId, boolean isFollow) {
+        if (RSSession.isLoggedIn(getContext())){
+            RSFollow rsFollow = new RSFollow(userInfo.getUser().get_id(), itemId);
+            if (isFollow) {
+                itemPresenter.followItem(rsFollow);
+            }else {
+                itemPresenter.unfollowItem(rsFollow);
+            }
+        } else {
+            openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_follow));
+        }
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -274,7 +327,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         if (listCreatedItem != null)
             listCreatedItem.clear();
 
-        profilePresenter.onDestroy();
+        itemPresenter.onDestroyItem();
+        userPresenter.onDestroyUser();
         unbinder.unbind();
         super.onDestroyView();
     }
@@ -418,9 +472,11 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     }
 
-
-
-
+    private void openAlertDialog(String message) {
+        AskToLoginDialog dialog = AskToLoginDialog.newInstance(fragmentContext.get(), message);
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), "");
+    }
 
 
 

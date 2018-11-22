@@ -4,10 +4,13 @@ package rankstop.steeringit.com.rankstop.ui.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -19,6 +22,8 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.data.model.Item;
 import rankstop.steeringit.com.rankstop.R;
@@ -27,18 +32,18 @@ import rankstop.steeringit.com.rankstop.R;
 public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
 
     private List<Item> items = new ArrayList<>();
-    private RecyclerViewClickListener listener;
+    private ItemPieListener pieListener;
     private Context context;
 
-    public PieAdapter(List<Item> items, RecyclerViewClickListener listener, Context context) {
+    public PieAdapter(List<Item> items, ItemPieListener pieListener, Context context) {
         this.items = items;
-        this.listener = listener;
+        this.pieListener = pieListener;
         this.context = context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_pie_chart, parent, false), listener); // TODO
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_pie_chart, parent, false), pieListener); // TODO
     }
 
     @Override
@@ -55,20 +60,19 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
 
         // TODO - Your view members
         public Item item;
-        private RecyclerViewClickListener mListener;
+        private ItemPieListener pieListener;
         private PieChart pieChart;
         private TextView itemName, countReviewsTV;
         private CheckBox likeIcon;
 
-        public ViewHolder(View itemView, RecyclerViewClickListener listener) {
+        public ViewHolder(View itemView, ItemPieListener pieListener) {
             super(itemView);
-            this.mListener = listener;
+            this.pieListener = pieListener;
 
             pieChart = itemView.findViewById(R.id.pie_chart);
             itemName = itemView.findViewById(R.id.item_name);
             countReviewsTV = itemView.findViewById(R.id.tv_count_reviews);
             likeIcon = itemView.findViewById(R.id.icon_like);
-
             itemView.setOnClickListener(this);
             // TODO instantiate/assign view members
         }
@@ -78,8 +82,18 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             // TODO set data to view
             //itemName.setText(item.getItemDetails().getTitle());
             itemName.setText(item.getItemDetails().getTitle());
-            countReviewsTV.setText(""+item.getNumberEval()+" reviews");
+            countReviewsTV.setText(String.valueOf(item.getNumberEval())+" reviews");
             likeIcon.setChecked(item.isFollow());
+            // add listener to like icon
+            likeIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (!RSSession.isLoggedIn(context)){
+                        likeIcon.setChecked(!isChecked);
+                    }
+                    pieListener.onFollowChanged(isChecked, getAdapterPosition());
+                }
+            });
             initPieChart(item);
         }
 
@@ -150,7 +164,7 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            mListener.onClick(v, getAdapterPosition());
+            pieListener.onClick(v, getAdapterPosition());
         }
     }
 

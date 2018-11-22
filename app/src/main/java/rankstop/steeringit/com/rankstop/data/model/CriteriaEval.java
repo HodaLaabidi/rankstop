@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
+import com.google.gson.Gson;
+
 public class CriteriaEval {
 
     private int note, coefficient;
@@ -28,10 +30,11 @@ public class CriteriaEval {
     }
 
     public Object getCriteria() {
-        if (criteria instanceof String)
-            return (String)criteria;
-        else
-            return (Criteria) criteria;
+        if (criteria instanceof String) {
+            return (String) criteria;
+        }else {
+            return new Gson().fromJson(new Gson().toJson(criteria), Criteria.class);
+        }
     }
 
     public void setCriteria(Object criteria) {

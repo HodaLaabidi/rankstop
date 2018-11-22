@@ -52,7 +52,6 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private RecyclerViewClickListener mListener;
         private CriteriaEvalListener noteListener;
         private Criteria criteria;
         private boolean isGray = true, isRed = false, isGreen = false, isOrange = false;

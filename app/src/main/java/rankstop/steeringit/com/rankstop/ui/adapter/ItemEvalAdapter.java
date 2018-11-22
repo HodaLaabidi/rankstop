@@ -25,13 +25,13 @@ import rankstop.steeringit.com.rankstop.data.model.CriteriaNote;
 import rankstop.steeringit.com.rankstop.R;
 
 
-public class CriteriaAdapter extends RecyclerView.Adapter<CriteriaAdapter.ViewHolder> {
+public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHolder> {
 
     private List<CriteriaNote> criterias = new ArrayList<>();
     private RecyclerViewClickListener listener;
     private Context context;
 
-    public CriteriaAdapter(List<CriteriaNote> criterias, RecyclerViewClickListener listener, Context context) {
+    public ItemEvalAdapter(List<CriteriaNote> criterias, RecyclerViewClickListener listener, Context context) {
         this.criterias = criterias;
         this.listener = listener;
         this.context = context;

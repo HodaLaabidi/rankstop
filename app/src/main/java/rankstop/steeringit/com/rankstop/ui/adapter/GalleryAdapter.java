@@ -13,18 +13,18 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
+import rankstop.steeringit.com.rankstop.data.model.Gallery;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
-import rankstop.steeringit.com.rankstop.data.model.Picture;
 import rankstop.steeringit.com.rankstop.R;
 
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
 
-    private List<Picture> picsGallery = new ArrayList<>();
+    private List<Gallery> picsGallery = new ArrayList<>();
     private RecyclerViewClickListener listener;
     private Context context;
 
-    public GalleryAdapter(List<Picture> picsGallery, RecyclerViewClickListener listener, Context context) {
+    public GalleryAdapter(List<Gallery> picsGallery, RecyclerViewClickListener listener, Context context) {
         this.picsGallery = picsGallery;
         this.listener = listener;
         this.context = context;
@@ -48,7 +48,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // TODO - Your view members
-        public Picture picsGallery;
+        public Gallery picsGallery;
         private RecyclerViewClickListener mListener;
         private SimpleDraweeView imageView;
 
@@ -61,10 +61,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             // TODO instantiate/assign view members
         }
 
-        public void setData(Picture picsGallery) {
+        public void setData(Gallery picsGallery) {
             this.picsGallery = picsGallery;
 
-            Uri imageUri = Uri.parse(picsGallery.getPictureEval());
+            Uri imageUri = Uri.parse(picsGallery.getUrlPicture());
             imageView.setImageURI(imageUri);
         }
 

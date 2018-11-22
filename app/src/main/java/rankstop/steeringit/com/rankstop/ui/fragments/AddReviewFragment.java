@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.activities.TakePictureActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.EvalCriteriasAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.ReviewPixAdapter;
@@ -88,6 +89,8 @@ public class AddReviewFragment extends Fragment {
         takePicBtn = rootView.findViewById(R.id.btn_take_pic);
         addPixTV = rootView.findViewById(R.id.tv_add_pix);
         toolbar = rootView.findViewById(R.id.toolbar);
+
+        setFragmentActionListener((ContainerActivity)getActivity());
     }
 
     private void initCriteriasList() {
@@ -154,7 +157,7 @@ public class AddReviewFragment extends Fragment {
 
         switch (itemId) {
             case android.R.id.home:
-                //getActivity().onBackPressed();
+                getActivity().onBackPressed();
                 break;
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance());
