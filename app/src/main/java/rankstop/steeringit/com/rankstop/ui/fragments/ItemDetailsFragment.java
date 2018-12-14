@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -50,7 +51,9 @@ import rankstop.steeringit.com.rankstop.data.model.CriteriaNote;
 import rankstop.steeringit.com.rankstop.data.model.Gallery;
 import rankstop.steeringit.com.rankstop.data.model.Item;
 import rankstop.steeringit.com.rankstop.data.model.User;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
@@ -60,6 +63,7 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.data.model.Picture;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ReportAbuseDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
@@ -68,18 +72,19 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     private PieChart pieChart;
     private Toolbar toolbar;
     private AppBarLayout appBarLayout;
-    private TextView itemDescriptionTV, itemNameTV;
+    private TextView itemDescriptionTV, itemNameTV, itemCategoryTV;
     private View rootView;
     private RecyclerView recyclerViewGallery;
     private TabLayout tabLayout;
     private ViewPager mViewPager;
-    private MaterialButton addReviewBtn;
+    private MaterialButton addReviewBtn, addItemPixBtn, reportAbuseBTN;
 
     private MenuItem menuItem;
 
     private PorterDuffColorFilter lightColorFilter, darkColorFilter;
 
     private List<MenuItem> listMenuItem;
+    private RSNavigationData rsNavigationData;
 
     private boolean isTransparentBg = true;
 
@@ -125,11 +130,36 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         addReviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (RSSession.isLoggedIn(getContext())){
-                    fragmentActionListener.startFragment(AddReviewFragment.getInstance());
+                if (RSSession.isLoggedIn(getContext())) {
+                    RSAddReview rsAddReview = new RSAddReview();
+                    rsAddReview.setItemId(item.getItemDetails().get_id());
+                    rsAddReview.setCategoryId(item.getItemDetails().getCategory().get_id());
+                    fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddReview, item.getLastEvalUser(), ""), RSConstants.FRAGMENT_ADD_REVIEW);
                 } else {
-                    openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_add_review));
+                    RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ADD_REVIEW, RSConstants.ACTION_ADD_REVIEW, fragmentContext.get().getResources().getString(R.string.alert_login_to_add_review), itemId, "", item.getItemDetails().getCategory().get_id());
+                    askToLoginDialog(rsNavigationData);
                 }
+            }
+        });
+
+        reportAbuseBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (RSSession.isLoggedIn(getContext())) {
+                    RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ITEM_DETAILS, RSConstants.ACTION_REPORT_ABUSE, "", itemId, "", "");
+                    openAbusesDialog(rsNavigationData);
+                } else {
+                    RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ITEM_DETAILS, RSConstants.ACTION_REPORT_ABUSE, fragmentContext.get().getResources().getString(R.string.alert_login_to_report_abuse), itemId, "", item.getItemDetails().getCategory().get_id());
+                    askToLoginDialog(rsNavigationData);
+                }
+            }
+        });
+
+        addItemPixBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "okay", Toast.LENGTH_SHORT).show();
+                fragmentActionListener.startFragment(UpdateItemFragment.getInstance(item.getItemDetails()), RSConstants.FRAGMENT_UPDATE_ITEM);
             }
         });
 
@@ -141,12 +171,16 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         toolbar = rootView.findViewById(R.id.toolbar);
         pieChart = rootView.findViewById(R.id.pie_chart);
         itemNameTV = rootView.findViewById(R.id.tv_item_name);
+        itemCategoryTV = rootView.findViewById(R.id.tv_item_category);
+        itemCategoryTV.setPaintFlags(itemCategoryTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         itemDescriptionTV = rootView.findViewById(R.id.tv_item_description);
         recyclerViewGallery = rootView.findViewById(R.id.recycler_view_gallery);
         appBarLayout = rootView.findViewById(R.id.app_bar);
         tabLayout = rootView.findViewById(R.id.tabs);
         mViewPager = rootView.findViewById(R.id.viewpager);
         addReviewBtn = rootView.findViewById(R.id.btn_add_review);
+        addItemPixBtn = rootView.findViewById(R.id.btn_add_pix);
+        reportAbuseBTN = rootView.findViewById(R.id.btn_report_abuse);
 
         setFragmentActionListener((ContainerActivity) getActivity());
     }
@@ -158,6 +192,10 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             userId = user.get_id();
         }
         itemId = getArguments().getString(RSConstants._ID);
+        if (itemId == null) {
+            rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
+            itemId = rsNavigationData.getItemId();
+        }
 
         itemPresenter.loadItem(itemId, userId);
     }
@@ -176,14 +214,14 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
         // values of the pie
         ArrayList<PieEntry> pieEntry = new ArrayList<>();
-        pieEntry.add(new PieEntry(item.getBad(), ""));
-        pieEntry.add(new PieEntry(item.getNeutral(), ""));
         pieEntry.add(new PieEntry(item.getGood(), ""));
+        pieEntry.add(new PieEntry(item.getNeutral(), ""));
+        pieEntry.add(new PieEntry(item.getBad(), ""));
 
 
         pieChart.setUsePercentValues(true);
         // define center text of the pie
-        pieChart.setCenterText(item.getScoreItem()+" \n out of 5");
+        pieChart.setCenterText(item.getScoreItem() + " \n out of 5");
         pieChart.setCenterTextSize(17f);
         pieChart.setCenterTextColor(getResources().getColor(R.color.colorPrimary));
 
@@ -249,20 +287,20 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 getActivity().onBackPressed();
                 break;
             case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance());
+                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.logout:
                 /*RSSession.removeToken(getContext());
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance());
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance());
+                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
                 break;
             case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance());
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
             case R.id.action_favorite:
                 manageFollow(itemId, !isFavorite);
@@ -297,13 +335,14 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         }
         this.isFavorite = isFavorite;
     }
+
     private void manageFollow(String itemId, boolean isFollow) {
         if (isTransparentBg)
             currentColor = R.color.colorPrimary;
         else
             currentColor = android.R.color.white;
 
-        if (RSSession.isLoggedIn(getContext())){
+        if (RSSession.isLoggedIn(getContext())) {
             RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
             if (isFollow)
                 itemPresenter.followItem(rsFollow);
@@ -311,12 +350,19 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 itemPresenter.unfollowItem(rsFollow);
             isFavorite = isFollow;
         } else {
-            openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_follow));
+            RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ADD_REVIEW, RSConstants.ACTION_FOLLOW, fragmentContext.get().getResources().getString(R.string.alert_login_to_follow), itemId, "", "");
+            askToLoginDialog(rsNavigationData);
         }
     }
 
-    private void openAlertDialog(String message) {
-        AskToLoginDialog dialog = AskToLoginDialog.newInstance(fragmentContext.get(), message);
+    private void askToLoginDialog(RSNavigationData rsNavigationData) {
+        AskToLoginDialog dialog = AskToLoginDialog.newInstance(rsNavigationData);
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), "");
+    }
+
+    private void openAbusesDialog(RSNavigationData rsNavigationData) {
+        ReportAbuseDialog dialog = ReportAbuseDialog.newInstance(rsNavigationData);
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), "");
     }
@@ -374,6 +420,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         darkColorFilter = null;
         pieChart.clear();
         fragmentActionListener = null;
+        itemPresenter.onDestroyItem();
         for (int i = 0; i < listMenuItem.size(); i++) {
             tintMenuIcon(listMenuItem.get(i), android.R.color.white);
 
@@ -399,35 +446,91 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         return instance;
     }
 
+    public static ItemDetailsFragment getInstance(RSNavigationData rsNavigationData) {
+        Bundle args = new Bundle();
+        args.putSerializable(RSConstants.NAVIGATION_DATA, rsNavigationData);
+        if (instance == null) {
+            instance = new ItemDetailsFragment();
+        }
+        instance.setArguments(args);
+        return instance;
+    }
+
     private void bindData(Item item) {
+
+        // manage btn report abuse
+        if (!item.isReportAbuse()) {
+            reportAbuseBTN.setVisibility(View.VISIBLE);
+        }
+
+        // manage color and state of btn like
         manageBtnLike(item.isFollow(), R.color.colorPrimary);
+        try {
+            if (rsNavigationData != null) {
+                if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
+                    if (item.isFollow()) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
+                    } else {
+                        //manageFollow(itemId, true);
+                    }
+                } else if (rsNavigationData.getAction().equals(RSConstants.ACTION_REPORT_ABUSE)) {
+                    if (!item.isReportAbuse()) {
+                        RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ITEM_DETAILS, RSConstants.ACTION_REPORT_ABUSE, "", itemId, "", "");
+                        openAbusesDialog(rsNavigationData);
+                    } else {
+                        Toast.makeText(getContext(), "Vous avez signaler cet item", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
         itemNameTV.setText(item.getItemDetails().getTitle());
+        itemCategoryTV.setText(item.getItemDetails().getCategory().getName());
         itemDescriptionTV.setText(item.getItemDetails().getDescription());
         initPieChart(item);
         List<Gallery> listGalleryPics = new ArrayList<>();
         listGalleryPics = item.getItemDetails().getGallery();
-        if (listGalleryPics.size() > 0) {
-            initGallery(listGalleryPics);
-        }else {
-
+        if (RSSession.isLoggedIn(getContext())) {
+            if (listGalleryPics.size() > 0) {
+                initGallery(listGalleryPics);
+                addItemPixBtn.setText(getResources().getString(R.string.update_item_pics));
+            }
+            if (item.getItemDetails().getOwner() == null) {
+                if (((User) item.getItemDetails().getCreator()).get_id().equals(RSSession.getCurrentUser(getContext()).get_id())) {
+                    addItemPixBtn.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (((User) item.getItemDetails().getOwner()).get_id().equals(RSSession.getCurrentUser(getContext()).get_id())) {
+                    addItemPixBtn.setVisibility(View.VISIBLE);
+                }
+            }
+        } else {
+            if (listGalleryPics.size() > 0) {
+                initGallery(listGalleryPics);
+            }
         }
 
         ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         mViewPagerAdapter.addFragment(ItemEvalsFragment.getInstance(item.getTabCritereDetails()), getResources().getString(R.string.evals_title));
-        mViewPagerAdapter.addFragment(ItemCommentsFragment.getInstance(item.getComments()), getResources().getString(R.string.comments_title));
-        mViewPagerAdapter.addFragment(ItemPicsFragment.getInstance(item.getPictures()), getResources().getString(R.string.pics_title));
+        mViewPagerAdapter.addFragment(ItemCommentsFragment.getInstance(item.getItemDetails().get_id()), getResources().getString(R.string.comments_title));
+        mViewPagerAdapter.addFragment(ItemPicsFragment.getInstance(item.getItemDetails().get_id()), getResources().getString(R.string.pics_title));
         mViewPager.setAdapter(mViewPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
     public void onSuccess(String target, Object data) {
-        item = new Gson().fromJson(new Gson().toJson(data), Item.class);
         switch (target) {
             case RSConstants.ONE_ITEM:
+                item = new Gson().fromJson(new Gson().toJson(data), Item.class);
                 bindData(item);
                 break;
             case RSConstants.FOLLOW_ITEM:
+                if (data.equals("1")) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.follow), Toast.LENGTH_SHORT).show();
+                } else if (data.equals("0")) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
+                }
                 manageBtnLike(isFavorite, currentColor);
                 break;
             case RSConstants.UNFOLLOW_ITEM:

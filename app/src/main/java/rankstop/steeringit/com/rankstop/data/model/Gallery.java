@@ -1,8 +1,10 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
+import java.io.Serializable;
+
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
-public class Gallery {
+public class Gallery implements Serializable {
 
     private String _id, date, url, urlPicture;
 

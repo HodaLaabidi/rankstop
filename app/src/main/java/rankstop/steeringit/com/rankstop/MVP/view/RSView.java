@@ -10,6 +10,10 @@ public interface RSView {
 
         void loginError();
 
+        void onFollowSuccess(String target, Object data);
+
+        void onFollowFailure(String target);
+
         void showProgressBar();
 
         void hideProgressBar();
@@ -22,6 +26,10 @@ public interface RSView {
         void registerSuccess(Object o);
 
         void registerError();
+
+        void onFollowSuccess(String target, Object data);
+
+        void onFollowFailure(String target);
 
         void showProgressBar();
 
@@ -44,6 +52,36 @@ public interface RSView {
     }
 
     interface StandardView {
+
+        void onSuccess(String target, Object data);
+
+        void onFailure(String target);
+
+        void showProgressBar(String target);
+
+        void hideProgressBar(String target);
+
+        void showMessage(String target, String message);
+    }
+
+    interface UpdateItemView {
+
+        void onSuccess(String target, Object data);
+
+        void onFailure(String target);
+
+        void onError(String target);
+
+        void showProgressBar();
+
+        void hideProgressBar();
+    }
+
+    interface AbuseView {
+
+        void onReportClicked();
+
+        void onDialogCanceled();
 
         void onSuccess(String target, Object data);
 

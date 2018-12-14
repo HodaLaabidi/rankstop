@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,61 +17,62 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.fragments.HomeFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ItemDetailsFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.MyEvaluationsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ProfileFragment;
+import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
-public class AskToLoginDialog extends DialogFragment{
+public class AskToLoginDialog extends DialogFragment {
 
     private View rootView;
     private MaterialButton cancelBtn, loginBtn;
     private TextView messageTV;
     private ColorStateList colorStateList;
     private LinearLayout.LayoutParams layoutParams;
-    private ItemDetailsFragment itemDetailsFragment;
-    private ProfileFragment profileFragment;
-    private HomeFragment homeFragment;
-    private MyEvaluationsFragment myEvaluationsFragment;
+    private FragmentActionListener fragmentActionListener;
 
-    public static AskToLoginDialog newInstance(ItemDetailsFragment fragment, String message) {
-        AskToLoginDialog dialog = new AskToLoginDialog();
-        dialog.itemDetailsFragment = fragment;
+    private static AskToLoginDialog instance;
+
+    public static AskToLoginDialog newInstance(RSNavigationData rsNavigationData) {
+        if (instance == null) {
+            instance = new AskToLoginDialog();
+        }
         Bundle args = new Bundle();
-        args.putString(RSConstants.MESSAGE_TO_LOGIN, message);
-        dialog.setArguments(args);
-        return dialog;
+        args.putSerializable(RSConstants.NAVIGATION_DATA, rsNavigationData);
+        instance.setArguments(args);
+        return instance;
     }
-    public static AskToLoginDialog newInstance(ProfileFragment fragment, String message) {
-        AskToLoginDialog dialog = new AskToLoginDialog();
-        dialog.profileFragment = fragment;
+
+    /*public static AskToLoginDialog newInstance(RSNavigationData rsNavigationData) {
+        if (instance == null) {
+            instance = new AskToLoginDialog();
+        }
         Bundle args = new Bundle();
-        args.putString(RSConstants.MESSAGE_TO_LOGIN, message);
-        dialog.setArguments(args);
-        return dialog;
+        args.putSerializable(RSConstants.NAVIGATION_DATA, rsNavigationData);
+        instance.setArguments(args);
+        return instance;
     }
-    public static AskToLoginDialog newInstance(HomeFragment fragment, String message) {
-        AskToLoginDialog dialog = new AskToLoginDialog();
-        dialog.homeFragment = fragment;
+
+    public static AskToLoginDialog newInstance(RSNavigationData rsNavigationData) {
+        if (instance == null) {
+            instance = new AskToLoginDialog();
+        }
         Bundle args = new Bundle();
-        args.putString(RSConstants.MESSAGE_TO_LOGIN, message);
-        dialog.setArguments(args);
-        return dialog;
-    }
-    public static AskToLoginDialog newInstance(MyEvaluationsFragment fragment, String message) {
-        AskToLoginDialog dialog = new AskToLoginDialog();
-        dialog.myEvaluationsFragment = fragment;
-        Bundle args = new Bundle();
-        args.putString(RSConstants.MESSAGE_TO_LOGIN, message);
-        dialog.setArguments(args);
-        return dialog;
-    }
+        args.putSerializable(RSConstants.NAVIGATION_DATA, rsNavigationData);
+        instance.setArguments(args);
+        return instance;
+    }*/
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        rootView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_ask_for_login, null, false);
         initViews();
+        setFragmentActionListener((ContainerActivity)getActivity());
 
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
@@ -86,14 +88,13 @@ public class AskToLoginDialog extends DialogFragment{
                 rootView = null;
                 colorStateList = null;
                 layoutParams = null;
+                instance = null;
             }
         });
         return alertDialog;
     }
 
     private void initViews() {
-        rootView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_ask_for_login, null, false);
-
         cancelBtn = rootView.findViewById(R.id.negative_btn);
         loginBtn = rootView.findViewById(R.id.positive_btn);
         messageTV = rootView.findViewById(R.id.tv_message);
@@ -101,22 +102,24 @@ public class AskToLoginDialog extends DialogFragment{
 
     private void onDialogShow(AlertDialog dialog) {
 
-        dialog.getWindow().setLayout((int)getContext().getResources().getDimension(R.dimen.w_dialog_ask_login), LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout((int) getContext().getResources().getDimension(R.dimen.w_dialog_ask_login), LinearLayout.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
-        colorStateList = new ColorStateList(new int[][] {{0}}, new int[] {getResources().getColor(R.color.colorGray)}); // 0xAARRGGBB
+        colorStateList = new ColorStateList(new int[][]{{0}}, new int[]{getResources().getColor(R.color.colorGray)}); // 0xAARRGGBB
         cancelBtn.setBackgroundTintList(colorStateList);
 
-        if (loginBtn.getWidth() > cancelBtn.getWidth()){
-            layoutParams = new LinearLayout.LayoutParams(loginBtn.getWidth(),ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMarginEnd(10);
+        if (loginBtn.getWidth() > cancelBtn.getWidth()) {
+            layoutParams = new LinearLayout.LayoutParams(loginBtn.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMarginEnd((int) getResources().getDimension(R.dimen.margin_end_btn_dialog));
             cancelBtn.setLayoutParams(layoutParams);
-        }else if (loginBtn.getWidth() < cancelBtn.getWidth()) {
-            layoutParams = new LinearLayout.LayoutParams(cancelBtn.getWidth(),ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMarginStart(10);
+        } else if (loginBtn.getWidth() < cancelBtn.getWidth()) {
+            layoutParams = new LinearLayout.LayoutParams(cancelBtn.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.margin_end_btn_dialog));
             loginBtn.setLayoutParams(layoutParams);
         }
 
-        messageTV.setText(getArguments().getString(RSConstants.MESSAGE_TO_LOGIN));
+        RSNavigationData rsNavigationData  = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
+
+        messageTV.setText(rsNavigationData.getMessage());
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,8 +130,17 @@ public class AskToLoginDialog extends DialogFragment{
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                navigateToSignUp((RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA));
                 dismiss();
             }
         });
+    }
+
+    public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
+        this.fragmentActionListener = fragmentActionListener;
+    }
+
+    private void navigateToSignUp(RSNavigationData rsNavigationData) {
+        fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
     }
 }

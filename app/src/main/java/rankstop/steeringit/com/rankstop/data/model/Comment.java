@@ -7,15 +7,19 @@ import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class Comment implements Serializable {
 
-    private String date, _id, text, color;
-    private User user;
+    private String date, _id, text, color, evaluations;
+    private User userId;
 
-    public Comment(String date, String _id, String text, String color, User user) {
+    public Comment(String date, String _id, String text, String color, String evaluations, User userId) {
         this.date = date;
         this._id = _id;
         this.text = text;
         this.color = color;
-        this.user = user;
+        this.evaluations = evaluations;
+        this.userId = userId;
+    }
+
+    public Comment() {
     }
 
     public String getDate() {
@@ -43,7 +47,7 @@ public class Comment implements Serializable {
     }
 
     public int getColor() {
-        switch(color){
+        switch (color) {
             case "green":
                 return R.color.colorGreenPie;
             case "red":
@@ -58,11 +62,19 @@ public class Comment implements Serializable {
         this.color = color;
     }
 
-    public User getUser() {
-        return user;
+    public User getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(User userId) {
+        this.userId = userId;
+    }
+
+    public String getEvaluations() {
+        return evaluations;
+    }
+
+    public void setEvaluations(String evaluations) {
+        this.evaluations = evaluations;
     }
 }

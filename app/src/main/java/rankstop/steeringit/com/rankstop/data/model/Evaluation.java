@@ -1,10 +1,11 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
-public class Evaluation {
+public class Evaluation implements Serializable {
     private String date;
     private List<Comment> comments;
     private List<Picture> pictures;

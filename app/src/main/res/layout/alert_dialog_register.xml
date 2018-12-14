@@ -2,12 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_50dp"
+        android:layout_height="@dimen/height_dialog_header"
         android:background="@color/colorPrimary"
         android:gravity="center">
 
@@ -16,17 +15,14 @@
             android:layout_height="wrap_content"
             android:text="Create your account"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/text_size_header_dialog" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="16dp">
+        android:padding="@dimen/padding_dialog">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_layout_email"
@@ -40,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:hint="@string/hint_email"
-                android:inputType="textEmailAddress"/>
+                android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -56,6 +52,7 @@
                 android:hint="@string/hint_password"
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
+
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_layout_confirm_password"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -69,36 +66,32 @@
                 android:hint="@string/hint_confirm_password"
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:paddingEnd="@dimen/padding_dialog">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/forget_password_btn"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="20dp">
+        <android.support.design.button.MaterialButton
+            android:id="@+id/negative_btn"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_end_btn_dialog"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary" />
 
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/negative_btn"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Annuler"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_marginEnd="5dp"/>
-
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/positive_btn"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Connecter"
-                    android:textColor="@color/colorPrimary" />
-            </LinearLayout>
-        </RelativeLayout>
+        <android.support.design.button.MaterialButton
+            android:id="@+id/positive_btn"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/connect"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 
 </LinearLayout>

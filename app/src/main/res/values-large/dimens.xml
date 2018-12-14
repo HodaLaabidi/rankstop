@@ -52,4 +52,16 @@
     <dimen name="thumb_raduis_on_dragging">7dp</dimen>
     <dimen name="m_activity">8dp</dimen>
     <dimen name="width_add_review_pic">100dp</dimen>
+    <dimen name="w_dialog_login">450dp</dimen>
+    <dimen name="min_height_report_dialog">150dp</dimen>
+    <dimen name="padding_dialog">8dp</dimen>
+    <dimen name="height_dialog_header">50dp</dimen>
+    <dimen name="progress_bar_width">50dp</dimen>
+    <dimen name="raduis_btn_dialog">10dp</dimen>
+    <dimen name="margin_end_btn_dialog">10dp</dimen>
+    <dimen name="text_size_dialog">17sp</dimen>
+    <dimen name="text_size_header_dialog">18sp</dimen>
+    <dimen name="height_scroll_view">400dp</dimen>
+    <dimen name="width_scroll_bar">4dp</dimen>
+    <dimen name="text_size_category_item_details">13sp</dimen>
 </resources>

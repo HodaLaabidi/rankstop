@@ -13,6 +13,8 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
 
     private RSView.StandardView standardView;
 
+    private Call<RSResponse> callUserInfo;
+
     public PresenterUserImpl(RSView.StandardView standardView) {
         this.standardView = standardView;
     }
@@ -21,7 +23,8 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
     public void loadUserInfo(String id) {
         standardView.showProgressBar(RSConstants.USER_INFO);
 
-        WebService.getInstance().getApi().loadUserInfo(id).enqueue(new Callback<RSResponse>() {
+        callUserInfo = WebService.getInstance().getApi().loadUserInfo(id);
+        callUserInfo.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -34,13 +37,17 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.USER_INFO);
+                if (!call.isCanceled())
+                    standardView.hideProgressBar(RSConstants.USER_INFO);
             }
         });
     }
 
     @Override
     public void onDestroyUser() {
+        if (callUserInfo != null)
+            if (callUserInfo.isExecuted())
+                callUserInfo.cancel();
         standardView = null;
     }
 }

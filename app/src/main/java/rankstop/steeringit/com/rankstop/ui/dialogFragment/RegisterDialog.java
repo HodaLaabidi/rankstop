@@ -15,11 +15,14 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseLogin;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
@@ -28,6 +31,7 @@ import rankstop.steeringit.com.rankstop.data.model.User;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class RegisterDialog extends DialogFragment  implements RSView.RegisterView{
 
@@ -42,27 +46,30 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
     private MaterialButton cancelBtn, registerBtn;
 
     private String password, confirmPassword;
+    private RSNavigationData rsNavigationData;
 
     private View rootView;
-    private SignupFragment fragment;
 
     private RSPresenter.RegisterPresenter registerPresenter;
+    private static RegisterDialog instance;
 
-    public static RegisterDialog newInstance(SignupFragment fragment, String email) {
+    public static RegisterDialog newInstance(String email, RSNavigationData rsNavigationData) {
 
-        RegisterDialog dialog = new RegisterDialog();
-        dialog.fragment = fragment;
+        if (instance == null) {
+            instance = new RegisterDialog();
+        }
         Bundle args = new Bundle();
-        args.putString("email", email);
-        dialog.setArguments(args);
-        return dialog;
+        args.putString(RSConstants.EMAIL, email);
+        args.putSerializable(RSConstants.NAVIGATION_DATA, rsNavigationData);
+        instance.setArguments(args);
+        return instance;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         initViews();
-
+        rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setCancelable(false);
@@ -75,6 +82,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
+                instance = null;
                 registerPresenter.onDestroyRegister();
             }
         });
@@ -96,12 +104,15 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
         cancelBtn = rootView.findViewById(R.id.negative_btn);
         registerBtn = rootView.findViewById(R.id.positive_btn);
 
-        emailEditText.setText(getArguments().getString("email"));
+        emailEditText.setText(getArguments().getString(RSConstants.EMAIL));
 
         addTextWatchers();
     }
 
     private void onDialogShow(AlertDialog dialog) {
+
+        dialog.getWindow().setLayout((int) getContext().getResources().getDimension(R.dimen.w_dialog_login), LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
 
         registerPresenter = new PresenterAuthImpl( RegisterDialog.this);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +127,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
                 if (isValidPassword(passwordLayout, password) && isValidPassword(confirmPasswordLayout, confirmPassword)) {
                     User user = new User();
                     user.setPassword(password);
-                    user.setEmail(getArguments().getString("email"));
+                    user.setEmail(getArguments().getString(RSConstants.EMAIL));
                     registerPresenter.performRegister(user);
                 }
             }
@@ -193,14 +204,36 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
         RSSession.startSession(getContext(), token);
-        Toast.makeText(getContext(), "register success", Toast.LENGTH_SHORT).show();
-        dismiss();
-        ((ContainerActivity)getActivity()).manageSession(true);
+        //Toast.makeText(getContext(), "register success", Toast.LENGTH_SHORT).show();
+
+        if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
+            registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser(getContext()).get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER);
+        }else {
+            dismiss();
+            ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+        }
     }
 
     @Override
     public void registerError() {
         Toast.makeText(getContext(), "register failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFollowSuccess(String target, Object data) {
+        if (data.equals("1")) {
+            Toast.makeText(getContext(), getResources().getString(R.string.follow), Toast.LENGTH_SHORT).show();
+        } else if (data.equals("0")) {
+            Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
+        }
+        dismiss();
+        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+    }
+
+    @Override
+    public void onFollowFailure(String target) {
+        dismiss();
+        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
     }
 
     @Override

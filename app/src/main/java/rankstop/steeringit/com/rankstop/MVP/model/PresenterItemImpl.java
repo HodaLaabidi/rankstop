@@ -1,11 +1,11 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
-import android.util.Log;
-
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestReportAbuse;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
@@ -17,8 +17,11 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
     private RSView.StandardView standardView;
 
+    private Call<RSResponse> callLoadItem, callTopRankedItems, callTopViewedItems, callTopCommentedItems, callTopFollowedItems,
+            callItemCreated, callItemOwned, callItemFollowed, callMyEvals, callCategoriesList, callFollowItem, callUnfollowItem,
+            callItemComments, callItemPix, callAbusesList, callReportAbuse;
+
     public PresenterItemImpl(RSView.StandardView standardView) {
-        Log.i("TAG_HOME","home created");
         this.standardView = standardView;
     }
 
@@ -26,7 +29,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadItem(String itemId, String userId) {
         standardView.showProgressBar(RSConstants.ONE_ITEM);
 
-        WebService.getInstance().getApi().loadItem(itemId, userId).enqueue(new Callback<RSResponse>() {
+        callLoadItem = WebService.getInstance().getApi().loadItem(itemId, userId);
+        callLoadItem.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -39,7 +43,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.ONE_ITEM);
+                if (!call.isCanceled())
+                    standardView.hideProgressBar(RSConstants.ONE_ITEM);
             }
         });
     }
@@ -48,7 +53,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadTopRankedItems(RSRequestListItem rsRequestListItem) {
         standardView.showProgressBar(RSConstants.TOP_RANKED_ITEMS);
 
-        WebService.getInstance().getApi().loadTopRankedItems(rsRequestListItem).enqueue(new Callback<RSResponse>() {
+        callTopRankedItems = WebService.getInstance().getApi().loadTopRankedItems(rsRequestListItem);
+        callTopRankedItems.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -61,7 +67,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.TOP_RANKED_ITEMS);
+                if (!callTopRankedItems.isCanceled())
+                    standardView.hideProgressBar(RSConstants.TOP_RANKED_ITEMS);
             }
         });
     }
@@ -70,7 +77,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadTopViewedItems(RSRequestListItem rsRequestListItem) {
         standardView.showProgressBar(RSConstants.TOP_VIEWED_ITEMS);
 
-        WebService.getInstance().getApi().loadTopViewedItems(rsRequestListItem).enqueue(new Callback<RSResponse>() {
+        callTopViewedItems = WebService.getInstance().getApi().loadTopViewedItems(rsRequestListItem);
+        callTopViewedItems.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -83,7 +91,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.TOP_VIEWED_ITEMS);
+                if (!callTopViewedItems.isCanceled())
+                    standardView.hideProgressBar(RSConstants.TOP_VIEWED_ITEMS);
             }
         });
     }
@@ -92,7 +101,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadTopCommentedItems(RSRequestListItem rsRequestListItem) {
         standardView.showProgressBar(RSConstants.TOP_COMMENTED_ITEMS);
 
-        WebService.getInstance().getApi().loadTopCommentedItems(rsRequestListItem).enqueue(new Callback<RSResponse>() {
+        callTopCommentedItems = WebService.getInstance().getApi().loadTopCommentedItems(rsRequestListItem);
+        callTopCommentedItems.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -105,7 +115,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.TOP_COMMENTED_ITEMS);
+                if (!callTopCommentedItems.isCanceled())
+                    standardView.hideProgressBar(RSConstants.TOP_COMMENTED_ITEMS);
             }
         });
     }
@@ -114,7 +125,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadTopFollowedItems(RSRequestListItem rsRequestListItem) {
         standardView.showProgressBar(RSConstants.TOP_FOLLOWED_ITEMS);
 
-        WebService.getInstance().getApi().loadTopFollowedItems(rsRequestListItem).enqueue(new Callback<RSResponse>() {
+        callTopFollowedItems = WebService.getInstance().getApi().loadTopFollowedItems(rsRequestListItem);
+        callTopFollowedItems.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -127,7 +139,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.TOP_FOLLOWED_ITEMS);
+                if (!callTopFollowedItems.isCanceled())
+                    standardView.hideProgressBar(RSConstants.TOP_FOLLOWED_ITEMS);
             }
         });
     }
@@ -136,7 +149,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadItemCreated(RSRequestListItem rsRequestListItem) {
         standardView.showProgressBar(RSConstants.ITEM_CREATED);
 
-        WebService.getInstance().getApi().loadItemCreated(rsRequestListItem).enqueue(new Callback<RSResponse>() {
+        callItemCreated = WebService.getInstance().getApi().loadItemCreated(rsRequestListItem);
+        callItemCreated.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -149,7 +163,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.ITEM_CREATED);
+                if (!callItemCreated.isCanceled())
+                    standardView.hideProgressBar(RSConstants.ITEM_CREATED);
             }
         });
     }
@@ -158,7 +173,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadItemOwned(RSRequestListItem rsRequestListItem) {
         standardView.showProgressBar(RSConstants.ITEM_OWNED);
 
-        WebService.getInstance().getApi().loadItemOwned(rsRequestListItem).enqueue(new Callback<RSResponse>() {
+        callItemOwned = WebService.getInstance().getApi().loadItemOwned(rsRequestListItem);
+        callItemOwned.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -171,7 +187,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.ITEM_OWNED);
+                if (!callItemOwned.isCanceled())
+                    standardView.hideProgressBar(RSConstants.ITEM_OWNED);
             }
         });
     }
@@ -180,7 +197,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadItemFollowed(RSRequestListItem rsRequestListItem) {
         standardView.showProgressBar(RSConstants.ITEM_FOLLOWED);
 
-        WebService.getInstance().getApi().loadItemFollowed(rsRequestListItem).enqueue(new Callback<RSResponse>() {
+        callItemFollowed = WebService.getInstance().getApi().loadItemFollowed(rsRequestListItem);
+        callItemFollowed.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -193,7 +211,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.ITEM_FOLLOWED);
+                if (!callItemFollowed.isCanceled())
+                    standardView.hideProgressBar(RSConstants.ITEM_FOLLOWED);
             }
         });
     }
@@ -202,7 +221,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadMyEvals(RSRequestListItem rsRequestListItem) {
         standardView.showProgressBar(RSConstants.MY_EVALS);
 
-        WebService.getInstance().getApi().loadMyEvals(rsRequestListItem).enqueue(new Callback<RSResponse>() {
+        callMyEvals = WebService.getInstance().getApi().loadMyEvals(rsRequestListItem);
+        callMyEvals.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -215,53 +235,63 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                standardView.hideProgressBar(RSConstants.MY_EVALS);
+                if (!callMyEvals.isCanceled())
+                    standardView.hideProgressBar(RSConstants.MY_EVALS);
             }
         });
     }
 
     @Override
     public void loadCategoriesList() {
-        //standardView.showProgressBar(RSConstants.MY_EVALS);
+        //standardView.showProgressBar(RSConstants.LOAD_CATEGORIES);
 
-        WebService.getInstance().getApi().loadCategoriesList().enqueue(new Callback<RSResponse>() {
+        callCategoriesList = WebService.getInstance().getApi().loadCategoriesList();
+        callCategoriesList.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
-                    standardView.onSuccess(RSConstants.MY_EVALS, response.body().getData());
+                    standardView.onSuccess(RSConstants.LOAD_CATEGORIES, response.body().getData());
                 } else if (response.body().getStatus() == 0) {
-                    standardView.onFailure(RSConstants.MY_EVALS);
+                    standardView.onFailure(RSConstants.LOAD_CATEGORIES);
                 }
-                //standardView.hideProgressBar(RSConstants.MY_EVALS);
+                //standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
             }
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                //standardView.hideProgressBar(RSConstants.MY_EVALS);
+                if (!callCategoriesList.isCanceled()) {
+                    //standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
+                }
             }
         });
     }
 
     @Override
     public void followItem(RSFollow rsFollow) {
-        WebService.getInstance().getApi().followItem(rsFollow).enqueue(new Callback<RSResponse>() {
+        callFollowItem = WebService.getInstance().getApi().followItem(rsFollow);
+        callFollowItem.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
-                    standardView.onSuccess(RSConstants.FOLLOW_ITEM, null);
+                    standardView.onSuccess(RSConstants.FOLLOW_ITEM, "1");
                 } else if (response.body().getStatus() == 0) {
-                    standardView.onFailure(RSConstants.FOLLOW_ITEM);
+                    standardView.onSuccess(RSConstants.FOLLOW_ITEM, "0");
                 }
             }
 
             @Override
-            public void onFailure(Call<RSResponse> call, Throwable t) {}
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                if (!callFollowItem.isCanceled()) {
+
+                }
+            }
         });
     }
 
     @Override
     public void unfollowItem(RSFollow rsFollow) {
-        WebService.getInstance().getApi().unfollowItem(rsFollow).enqueue(new Callback<RSResponse>() {
+        callUnfollowItem = WebService.getInstance().getApi().unfollowItem(rsFollow);
+        callUnfollowItem.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                 if (response.body().getStatus() == 1) {
@@ -272,12 +302,131 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             }
 
             @Override
-            public void onFailure(Call<RSResponse> call, Throwable t) {}
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                if (!callUnfollowItem.isCanceled()) {
+                }
+            }
+        });
+    }
+
+    @Override
+    public void loadItemComments(RSRequestItemData rsRequestItemData) {
+        standardView.showProgressBar(RSConstants.ITEM_COMMENTS);
+
+        callItemComments = WebService.getInstance().getApi().loadItemComments(rsRequestItemData);
+        callItemComments.enqueue(new Callback<RSResponse>() {
+            @Override
+            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                if (response.body().getStatus() == 1) {
+                    standardView.onSuccess(RSConstants.ITEM_COMMENTS, response.body().getData());
+                } else if (response.body().getStatus() == 0) {
+                    standardView.onFailure(RSConstants.ITEM_COMMENTS);
+                }
+                standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
+            }
+
+            @Override
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                if (!callItemComments.isCanceled()) {
+                    standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
+                    standardView.showMessage(RSConstants.ITEM_COMMENTS, "failure com");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void loadItemPix(RSRequestItemData rsRequestItemData) {
+        standardView.showProgressBar(RSConstants.ITEM_PIX);
+
+        callItemPix = WebService.getInstance().getApi().loadItemPix(rsRequestItemData);
+        callItemPix.enqueue(new Callback<RSResponse>() {
+            @Override
+            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                if (response.body().getStatus() == 1) {
+                    standardView.onSuccess(RSConstants.ITEM_PIX, response.body().getData());
+                } else if (response.body().getStatus() == 0) {
+                    standardView.onFailure(RSConstants.ITEM_PIX);
+                }
+                standardView.hideProgressBar(RSConstants.ITEM_PIX);
+            }
+
+            @Override
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                if (!callItemPix.isCanceled()) {
+                    standardView.hideProgressBar(RSConstants.ITEM_PIX);
+                    standardView.showMessage(RSConstants.ITEM_PIX, "failure");
+                }
+            }
         });
     }
 
     @Override
     public void onDestroyItem() {
+        if (callLoadItem != null)
+            if (callLoadItem.isExecuted())
+                callLoadItem.cancel();
+
+        if (callTopRankedItems != null)
+            if (callTopRankedItems.isExecuted())
+                callTopRankedItems.cancel();
+
+        if (callTopViewedItems != null)
+            if (callTopViewedItems.isExecuted())
+                callTopViewedItems.cancel();
+
+        if (callTopCommentedItems != null)
+            if (callTopCommentedItems.isExecuted())
+                callTopCommentedItems.cancel();
+
+        if (callTopFollowedItems != null)
+            if (callTopFollowedItems.isExecuted())
+                callTopFollowedItems.cancel();
+
+        if (callItemCreated != null)
+            if (callItemCreated.isExecuted())
+                callItemCreated.cancel();
+
+        if (callItemOwned != null)
+            if (callItemOwned.isExecuted())
+                callItemOwned.cancel();
+
+        if (callItemFollowed != null)
+            if (callItemFollowed.isExecuted())
+                callItemFollowed.cancel();
+
+        if (callMyEvals != null)
+            if (callMyEvals.isExecuted())
+                callMyEvals.cancel();
+
+        if (callCategoriesList != null)
+            if (callCategoriesList.isExecuted())
+                callCategoriesList.cancel();
+
+        if (callFollowItem != null)
+            if (callFollowItem.isExecuted())
+                callFollowItem.cancel();
+
+        if (callUnfollowItem != null)
+            if (callUnfollowItem.isExecuted())
+                callUnfollowItem.cancel();
+
+        if (callItemComments != null)
+            if (callItemComments.isExecuted())
+                callItemComments.cancel();
+
+        if (callItemPix != null)
+            if (callItemPix.isExecuted())
+                callItemPix.cancel();
+
+        if (callAbusesList != null)
+            if (callAbusesList.isExecuted())
+                callAbusesList.cancel();
+
+        if (callReportAbuse != null)
+            if (callReportAbuse.isExecuted())
+                callReportAbuse.cancel();
+
         standardView = null;
     }
 }

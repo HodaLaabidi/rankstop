@@ -2,20 +2,21 @@ package rankstop.steeringit.com.rankstop.data.model;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
-public class ItemDetails {
+public class ItemDetails implements Serializable {
 
     private Category category;
     private String createdAt, lastDateView, updatedAt;
-    private String title, description, urlFacebook, urlGooglePlus, urlTwitter, _id;
+    private String title, description, urlFacebook, urlInstagram, urlGooglePlus, urlLinkedIn, urlTwitter, _id;
     private Object creator, owner;
     private int evaluations, numberView;
     private List<Gallery> gallery;
 
-    public ItemDetails(Category category, String createdAt, String lastDateView, String updatedAt, String title, String description, String urlFacebook, String urlGooglePlus, String urlTwitter, String _id, Object creator, Object owner, int evaluations, int numberView) {
+    public ItemDetails(Category category, String createdAt, String lastDateView, String updatedAt, String title, String description, String urlFacebook, String urlGooglePlus, String urlInstagram, String urlLinkedIn, String urlTwitter, String _id, Object creator, Object owner, int evaluations, int numberView) {
         this.category = category;
         this.createdAt = createdAt;
         this.lastDateView = lastDateView;
@@ -25,6 +26,8 @@ public class ItemDetails {
         this.urlFacebook = urlFacebook;
         this.urlGooglePlus = urlGooglePlus;
         this.urlTwitter = urlTwitter;
+        this.urlLinkedIn = urlLinkedIn;
+        this.urlInstagram = urlInstagram;
         this._id = _id;
         this.creator = creator;
         this.owner = owner;
@@ -162,5 +165,21 @@ public class ItemDetails {
 
     public void setGallery(List<Gallery> gallery) {
         this.gallery = gallery;
+    }
+
+    public String getUrlInstagram() {
+        return urlInstagram;
+    }
+
+    public void setUrlInstagram(String urlInstagram) {
+        this.urlInstagram = urlInstagram;
+    }
+
+    public String getUrlLinkedIn() {
+        return urlLinkedIn;
+    }
+
+    public void setUrlLinkedIn(String urlLinkedIn) {
+        this.urlLinkedIn = urlLinkedIn;
     }
 }

@@ -1,6 +1,5 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +34,7 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
 import rankstop.steeringit.com.rankstop.data.model.UserInfo;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
@@ -46,48 +45,65 @@ import rankstop.steeringit.com.rankstop.data.model.Item;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 
 public class ProfileFragment extends Fragment implements RSView.StandardView {
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.avatar) SimpleDraweeView avatar;
-    @BindView(R.id.tv_user_name) TextView userNameTV;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.avatar)
+    SimpleDraweeView avatar;
+    @BindView(R.id.tv_user_name)
+    TextView userNameTV;
 
-    @BindView(R.id.progress_bar_page_owned) ProgressBar progressBarOwnedItem;
-    @BindView(R.id.progress_bar_page_created) ProgressBar progressBarCreatedItem;
-    @BindView(R.id.progress_bar_page_followed) ProgressBar progressBarFollowedItem;
+    @BindView(R.id.progress_bar_page_owned)
+    ProgressBar progressBarOwnedItem;
+    @BindView(R.id.progress_bar_page_created)
+    ProgressBar progressBarCreatedItem;
+    @BindView(R.id.progress_bar_page_followed)
+    ProgressBar progressBarFollowedItem;
 
-    @BindView(R.id.recycler_view_page_owned) RecyclerView recyclerViewOwnedItem;
-    @BindView(R.id.recycler_view_page_created) RecyclerView recyclerViewCreatedItem;
-    @BindView(R.id.recycler_view_page_followed) RecyclerView recyclerViewFollowedItem;
+    @BindView(R.id.recycler_view_page_owned)
+    RecyclerView recyclerViewOwnedItem;
+    @BindView(R.id.recycler_view_page_created)
+    RecyclerView recyclerViewCreatedItem;
+    @BindView(R.id.recycler_view_page_followed)
+    RecyclerView recyclerViewFollowedItem;
 
-    @BindView(R.id.more_page_owned) MaterialButton moreOwnedBtn;
-    @BindView(R.id.more_page_created) MaterialButton moreCreatedBtn;
-    @BindView(R.id.more_page_followed) MaterialButton moreFollowedBtn;
+    @BindView(R.id.more_page_owned)
+    MaterialButton moreOwnedBtn;
+    @BindView(R.id.more_page_created)
+    MaterialButton moreCreatedBtn;
+    @BindView(R.id.more_page_followed)
+    MaterialButton moreFollowedBtn;
 
-    @BindView(R.id.layout_view_page_created) LinearLayout layoutItemCreated;
-    @BindView(R.id.layout_view_page_owned) LinearLayout layoutItemOwned;
-    @BindView(R.id.layout_view_page_followed) LinearLayout layoutItemFollowed;
+    @BindView(R.id.layout_view_page_created)
+    LinearLayout layoutItemCreated;
+    @BindView(R.id.layout_view_page_owned)
+    LinearLayout layoutItemOwned;
+    @BindView(R.id.layout_view_page_followed)
+    LinearLayout layoutItemFollowed;
 
-    @BindView(R.id.tv_evals_number) TextView evalsNumberTV;
-    @BindView(R.id.tv_comments_number) TextView commentsNumberTV;
-    @BindView(R.id.tv_pix_number) TextView pixNumberTV;
+    @BindView(R.id.tv_evals_number)
+    TextView evalsNumberTV;
+    @BindView(R.id.tv_comments_number)
+    TextView commentsNumberTV;
+    @BindView(R.id.tv_pix_number)
+    TextView pixNumberTV;
 
     @OnClick({R.id.more_page_created, R.id.more_page_owned, R.id.more_page_followed})
     public void manageBtn(MaterialButton v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.more_page_created:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance());
+                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
                 break;
             case R.id.more_page_owned:
-                fragmentActionListener.startFragment(ItemOwnedFragment.getInstance());
+                fragmentActionListener.startFragment(ItemOwnedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_OWNED);
                 break;
             case R.id.more_page_followed:
-                fragmentActionListener.startFragment(ItemFollowedFragment.getInstance());
+                fragmentActionListener.startFragment(ItemFollowedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_FOLLOWED);
                 break;
         }
     }
@@ -105,7 +121,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     private RSResponseListingItem listingItemResponse;
     private PieAdapter adapterOwnedItem, adapterFollowedItem, adapterCreatedItem;
-
+    private String itemIdToFollow;
 
     private WeakReference<ProfileFragment> fragmentContext;
 
@@ -115,10 +131,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
-    }
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
     }
 
     @Override
@@ -132,27 +144,23 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         super.onActivityCreated(savedInstanceState);
 
         bindViews();
-        Log.i("TAG_HOME","profile created");
-
+        bindLocalData();
+        loadData();
     }
 
     private void bindViews() {
-
         toolbar.setTitle("Profile");
-
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         itemPresenter = new PresenterItemImpl(ProfileFragment.this);
         userPresenter = new PresenterUserImpl(ProfileFragment.this);
-        setFragmentActionListener((ContainerActivity)getActivity());
-
+        setFragmentActionListener((ContainerActivity) getActivity());
         // init data
-        userInfo = RSSession.getCurrentUserInfo(getContext());
+        if (RSSession.isLoggedIn(getContext())) {
+            userInfo = RSSession.getCurrentUserInfo(getContext());
+            rsRequestListItem.setUserId(userInfo.getUser().get_id());
+        }
         rsRequestListItem.setPage(1);
         rsRequestListItem.setPerPage(RSConstants.MAX_ITEM_TO_LOAD);
-        rsRequestListItem.setUserId(userInfo.getUser().get_id());
-        bindLocalData();
-        loadData();
     }
 
     private void bindLocalData() {
@@ -201,12 +209,17 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         ItemPieListener listener = new ItemPieListener() {
             @Override
             public void onFollowChanged(boolean isFollow, int position) {
-                manageFollow(listOwnedItem.get(position).getItemDetails().get_id(), isFollow);
+                //manageFollow(listOwnedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onFollowChanged(int position) {
+                manageFollow(listOwnedItem.get(position).getItemDetails().get_id(), !listOwnedItem.get(position).isFollow());
             }
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listOwnedItem.get(position).getItemDetails().get_id()));
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listOwnedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             }
         };
         adapterOwnedItem = new PieAdapter(listOwnedItem, listener, getContext());
@@ -221,12 +234,17 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         ItemPieListener listener = new ItemPieListener() {
             @Override
             public void onFollowChanged(boolean isFollow, int position) {
-                manageFollow(listCreatedItem.get(position).getItemDetails().get_id(), isFollow);
+                //manageFollow(listCreatedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onFollowChanged(int position) {
+                manageFollow(listCreatedItem.get(position).getItemDetails().get_id(), !listCreatedItem.get(position).isFollow());
             }
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listCreatedItem.get(position).getItemDetails().get_id()));
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listCreatedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             }
         };
         adapterCreatedItem = new PieAdapter(listCreatedItem, listener, getContext());
@@ -241,12 +259,17 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         ItemPieListener listener = new ItemPieListener() {
             @Override
             public void onFollowChanged(boolean isFollow, int position) {
-                manageFollow(listFollowedItem.get(position).getItemDetails().get_id(), isFollow);
+                //manageFollow(listFollowedItem.get(position).getItemDetails().get_id(), isFollow);
+            }
+
+            @Override
+            public void onFollowChanged(int position) {
+                manageFollow(listFollowedItem.get(position).getItemDetails().get_id(), !listFollowedItem.get(position).isFollow());
             }
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listFollowedItem.get(position).getItemDetails().get_id()));
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listFollowedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             }
         };
         adapterFollowedItem = new PieAdapter(listFollowedItem, listener, getContext());
@@ -257,15 +280,12 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     }
 
     private void manageFollow(String itemId, boolean isFollow) {
-        if (RSSession.isLoggedIn(getContext())){
-            RSFollow rsFollow = new RSFollow(userInfo.getUser().get_id(), itemId);
-            if (isFollow) {
-                itemPresenter.followItem(rsFollow);
-            }else {
-                itemPresenter.unfollowItem(rsFollow);
-            }
+        itemIdToFollow = itemId;
+        RSFollow rsFollow = new RSFollow(userInfo.getUser().get_id(), itemId);
+        if (isFollow) {
+            itemPresenter.followItem(rsFollow);
         } else {
-            openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_follow));
+            itemPresenter.unfollowItem(rsFollow);
         }
     }
 
@@ -279,20 +299,20 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
         switch (itemId) {
             case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance());
+                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.logout:
                 RSSession.cancelSession(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);
+                ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.FRAGMENT_SIGN_UP, ""));
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance());
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance());
+                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
                 break;
             case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance());
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -300,9 +320,11 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     }
 
     private FragmentActionListener fragmentActionListener;
+
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
+
     private static ProfileFragment instance;
 
     public static ProfileFragment getInstance() {
@@ -315,7 +337,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     @Override
     public void onDestroyView() {
         instance = null;
-        rootView=null;
+        rootView = null;
         fragmentActionListener = null;
         recyclerViewOwnedItem = null;
         recyclerViewCreatedItem = null;
@@ -336,13 +358,13 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     @Override
     public void onSuccess(String target, Object data) {
 
-        switch (target){
+        switch (target) {
             case RSConstants.ITEM_CREATED:
                 listingItemResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
                 listCreatedItem = listingItemResponse.getItems();
                 if (listCreatedItem.size() == 0) {
                     layoutItemCreated.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     initCreatedItem(listCreatedItem);
                     if (listingItemResponse.getPages() > 1)
                         moreCreatedBtn.setVisibility(View.VISIBLE);
@@ -355,7 +377,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 listOwnedItem = listingItemResponse.getItems();
                 if (listOwnedItem.size() == 0) {
                     layoutItemOwned.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     initOwnedItem(listOwnedItem);
                     if (listingItemResponse.getPages() > 1)
                         moreOwnedBtn.setVisibility(View.VISIBLE);
@@ -368,7 +390,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 listFollowedItem = listingItemResponse.getItems();
                 if (listFollowedItem.size() == 0) {
                     layoutItemFollowed.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     initFollowedItem(listFollowedItem);
                     if (listingItemResponse.getPages() > 1)
                         moreFollowedBtn.setVisibility(View.VISIBLE);
@@ -387,16 +409,56 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 if (this.userInfo.getCountPictures() != userInfo.getCountPictures()) {
                     setPixNumber(userInfo.getCountPictures());
                 }
-                if (!this.userInfo.getUser().getPictureProfile().equals(userInfo.getUser().getPictureProfile())){
+                if (!this.userInfo.getUser().getPictureProfile().equals(userInfo.getUser().getPictureProfile())) {
                     setUserPic(userInfo.getUser().getPictureProfile());
                 }
-                if (!this.userInfo.getUser().getUsername().equals(userInfo.getUser().getUsername())){
+                if (!this.userInfo.getUser().getUsername().equals(userInfo.getUser().getUsername())) {
                     setUserName(userInfo.getUser().getUsername());
                 }
                 this.userInfo = userInfo;
                 RSSession.refreshLocalStorage(userInfo, getContext());
                 break;
+            case RSConstants.FOLLOW_ITEM:
+                if (data.equals("1")) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.follow), Toast.LENGTH_SHORT).show();
+                    changeIconFollow(itemIdToFollow, true);
+                } else if (data.equals("0")) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case RSConstants.UNFOLLOW_ITEM:
+                Toast.makeText(getContext(), getResources().getString(R.string.unfollow), Toast.LENGTH_SHORT).show();
+                changeIconFollow(itemIdToFollow, false);
+                break;
         }
+    }
+
+    private void changeIconFollow(String itemId, boolean follow) {
+        int indexIntoOwnedList = findItemIndex(listOwnedItem, itemId);
+        if (indexIntoOwnedList != -1) {
+            listOwnedItem.get(indexIntoOwnedList).setFollow(follow);
+            adapterOwnedItem.notifyItemChanged(indexIntoOwnedList, "icon");
+        }
+
+        int indexIntoCreatedList = findItemIndex(listCreatedItem, itemId);
+        if (indexIntoCreatedList != -1) {
+            listCreatedItem.get(indexIntoCreatedList).setFollow(follow);
+            adapterCreatedItem.notifyItemChanged(indexIntoCreatedList, "icon");
+        }
+
+        int indexIntoFollowedList = findItemIndex(listFollowedItem, itemId);
+        if (indexIntoFollowedList != -1) {
+            listFollowedItem.get(indexIntoFollowedList).setFollow(follow);
+            adapterFollowedItem.notifyItemChanged(indexIntoFollowedList, "icon");
+        }
+    }
+
+    private int findItemIndex(List<Item> itemList, String itemId) {
+        for (int i = 0; i < itemList.size(); i++) {
+            if (itemList.get(i).getItemDetails().get_id().equals(itemId))
+                return i;
+        }
+        return -1;
     }
 
     private void setEvalsNumber(int value) {
@@ -413,7 +475,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void onFailure(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.ITEM_CREATED:
                 recyclerViewCreatedItem.setVisibility(View.GONE);
                 layoutItemCreated.setVisibility(View.VISIBLE);
@@ -439,7 +501,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void showProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.ITEM_CREATED:
                 progressBarCreatedItem.setVisibility(View.VISIBLE);
                 break;
@@ -454,7 +516,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void hideProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.ITEM_CREATED:
                 progressBarCreatedItem.setVisibility(View.GONE);
                 break;
@@ -471,21 +533,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     public void showMessage(String target, String message) {
 
     }
-
-    private void openAlertDialog(String message) {
-        AskToLoginDialog dialog = AskToLoginDialog.newInstance(fragmentContext.get(), message);
-        dialog.setCancelable(false);
-        dialog.show(getFragmentManager(), "");
-    }
-
-
-
-
-
-
-
-
-
 
     @Override
     public void onStart() {

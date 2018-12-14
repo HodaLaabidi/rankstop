@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
-public class Criteria {
+import java.io.Serializable;
+
+public class Criteria implements Serializable {
 
     private String name, _id;
 

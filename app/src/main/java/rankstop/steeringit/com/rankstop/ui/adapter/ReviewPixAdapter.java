@@ -21,11 +21,11 @@ import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 
 public class ReviewPixAdapter extends RecyclerView.Adapter<ReviewPixAdapter.ViewHolder> {
-    private List<byte[]> pixList = new ArrayList<>();
+    private List<Uri> pixList = new ArrayList<>();
     private RecyclerViewClickListener listener;
     private Context context;
 
-    public ReviewPixAdapter(List<byte[]> pixList, RecyclerViewClickListener listener, Context context) {
+    public ReviewPixAdapter(List<Uri> pixList, RecyclerViewClickListener listener, Context context) {
         this.pixList = pixList;
         this.listener = listener;
         this.context = context;
@@ -49,7 +49,7 @@ public class ReviewPixAdapter extends RecyclerView.Adapter<ReviewPixAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public byte[] byteArray;
+        public Uri uri;
         private RecyclerViewClickListener mListener;
 
         private SimpleDraweeView imageView;
@@ -67,14 +67,10 @@ public class ReviewPixAdapter extends RecyclerView.Adapter<ReviewPixAdapter.View
 
         }
 
-        public void setData(byte[] byteArray) {
-            this.byteArray = byteArray;
+        public void setData(Uri uri) {
+            this.uri = uri;
             // TODO set data to view
-
-            Bitmap bm = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bm, "Image Description", null);
-            Uri imageUri = Uri.parse(path);
-            imageView.setImageURI(imageUri);
+            imageView.setImageURI(uri);
         }
 
         @Override

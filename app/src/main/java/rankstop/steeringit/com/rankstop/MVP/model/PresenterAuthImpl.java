@@ -5,8 +5,10 @@ import android.text.TextUtils;
 import rankstop.steeringit.com.rankstop.data.model.User;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,6 +38,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
         return true;
     }
 
+    private Call<RSResponse> callFindEmail, callLogin, callRegister, callFollowItem;
+
     @Override
     public void performFindEmail(String email) {
         if (isValidEmail(email)) {
@@ -44,7 +48,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
             User user = new User();
             user.setEmail(email);
 
-            WebService.getInstance().getApi().findEmail(user).enqueue(new Callback<RSResponse>() {
+            callFindEmail = WebService.getInstance().getApi().findEmail(user);
+            callFindEmail.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                     if (response.body().getStatus() == 2) {
@@ -57,7 +62,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
 
                 @Override
                 public void onFailure(Call<RSResponse> call, Throwable t) {
-                    signupView.hideProgressBar();
+                    if (!call.isCanceled())
+                        signupView.hideProgressBar();
                 }
             });
         } else {
@@ -68,6 +74,9 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     @Override
     public void onDestroyFindEmail() {
         signupView = null;
+        if (callFindEmail != null)
+            if (callFindEmail.isExecuted())
+                callFindEmail.cancel();
     }
 
     @Override
@@ -75,7 +84,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
         if (isValidPassword(user.getPassword())) {
             loginView.showProgressBar();
 
-            WebService.getInstance().getApi().loginUser(user).enqueue(new Callback<RSResponse>() {
+            callLogin = WebService.getInstance().getApi().loginUser(user);
+            callLogin.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                     if (response.body().getStatus() == 0) {
@@ -88,7 +98,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
 
                 @Override
                 public void onFailure(Call<RSResponse> call, Throwable t) {
-                    loginView.hideProgressBar();
+                    if (!call.isCanceled())
+                        loginView.hideProgressBar();
                 }
             });
         } else {
@@ -97,8 +108,46 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
+    public void followItem(RSFollow rsFollow, String target) {
+        callFollowItem = WebService.getInstance().getApi().followItem(rsFollow);
+        callFollowItem.enqueue(new Callback<RSResponse>() {
+            @Override
+            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                if (response.body().getStatus() == 1) {
+                    if (target.equals(RSConstants.LOGIN))
+                        loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                    else if (target.equals(RSConstants.REGISTER))
+                        registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                } else if (response.body().getStatus() == 0) {
+                    if (target.equals(RSConstants.LOGIN))
+                        loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                    else if (target.equals(RSConstants.REGISTER))
+                        registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                if (!callFollowItem.isCanceled()) {
+                    if (target.equals(RSConstants.LOGIN))
+                        loginView.onFollowFailure(RSConstants.FOLLOW_ITEM);
+                    else if (target.equals(RSConstants.REGISTER))
+                        registerView.onFollowFailure(RSConstants.FOLLOW_ITEM);
+                }
+            }
+        });
+    }
+
+    @Override
     public void onDestroyLogin() {
         loginView = null;
+        if (callLogin != null)
+            if (callLogin.isExecuted())
+                callLogin.cancel();
+
+        if (callFollowItem != null)
+            if (callFollowItem.isExecuted())
+                callFollowItem.cancel();
     }
 
     private boolean isValidEmail(String value) {
@@ -113,7 +162,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
         if (isValidPassword(user.getPassword())) {
             registerView.showProgressBar();
 
-            WebService.getInstance().getApi().registerUser(user).enqueue(new Callback<RSResponse>() {
+            callRegister = WebService.getInstance().getApi().registerUser(user);
+            callRegister.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                     if (response.body().getStatus() == 0) {
@@ -126,7 +176,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
 
                 @Override
                 public void onFailure(Call<RSResponse> call, Throwable t) {
-                    registerView.hideProgressBar();
+                    if (!call.isCanceled())
+                        registerView.hideProgressBar();
                 }
             });
         } else {
@@ -137,5 +188,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     @Override
     public void onDestroyRegister() {
         registerView = null;
+        if (callRegister != null)
+            if (callRegister.isExecuted())
+                callRegister.cancel();
     }
 }

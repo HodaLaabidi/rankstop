@@ -5,6 +5,15 @@ public class RSRequestListItem {
     private int perPage, page;
     private String userId;
 
+    public RSRequestListItem(int perPage, int page, String userId) {
+        this.perPage = perPage;
+        this.page = page;
+        this.userId = userId;
+    }
+
+    public RSRequestListItem() {
+    }
+
     public int getPerPage() {
         return perPage;
     }

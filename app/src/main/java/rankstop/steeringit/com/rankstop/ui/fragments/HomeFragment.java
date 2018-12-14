@@ -3,7 +3,9 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -29,6 +32,7 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.User;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.session.RSSession;
@@ -49,23 +53,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     private Toolbar toolbar;
     private View rootView;
     private ProgressBar progressBarTopRanked, progressBarTopViewed, progressBarTopFollowed, progressBarTopCommented;
+    private RecyclerView recyclerViewTopRanked, recyclerViewTopViewed, recyclerViewTopFollowed, recyclerViewTopCommented;
+    private MaterialButton moreTopRankedBtn, moreTopViewedBtn, moreTopCommentedBtn, moreTopFollowedBtn, searchBTN;
+    private LinearLayout layoutTopFollowed, layoutTopViewed, layoutTopCommented, layoutTopRanked;
 
     private List<Item> listTopRankedItem, listTopViewedItem, listTopFollowedItem, listTopCommentedItem;
-
-    private RecyclerView recyclerViewTopRanked, recyclerViewTopViewed, recyclerViewTopFollowed, recyclerViewTopCommented;
-
-    private MaterialButton moreTopRankedBtn, moreTopViewedBtn, moreTopCommentedBtn, moreTopFollowedBtn;
-
     private FragmentActionListener fragmentActionListener;
-
+    private PieAdapter topRankedAdapter, topViewedAdapter, topCommentedAdapter, topFollowedAdapter;
     private RSPresenter.ItemPresenter itemPresenter;
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
     private User user;
-
-    private LinearLayout layoutTopFollowed, layoutTopViewed, layoutTopCommented, layoutTopRanked;
-
-
+    private String itemIdToFollow;
+    private RSNavigationData rsNavigationData;
     private WeakReference<HomeFragment> fragmentContext;
+    private TextInputEditText searchET;
+    private NestedScrollView scrollView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +87,29 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         bindViews();
+        getCurrentUser();
+        loadHomeData();
+
+        searchBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentActionListener.startFragment(SearchFragment.getInstance(), RSConstants.FRAGMENT_SEARCH);
+            }
+        });
+
+        /*try {
+            rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
+            Toast.makeText(getContext(), "" + (rsNavigationData == null), Toast.LENGTH_SHORT).show();
+            //manageFollow(rsNavigationData.getItemId(), true);
+        } catch (Exception e) {
+        }*/
+    }
+
+    private void getCurrentUser() {
+        if (RSSession.isLoggedIn(getContext())) {
+            user = RSSession.getCurrentUser(getContext());
+            rsRequestListItem.setUserId(user.get_id());
+        }
     }
 
     private void bindViews() {
@@ -95,10 +120,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
         recyclerViewTopFollowed = rootView.findViewById(R.id.recycler_view_top_followed);
         recyclerViewTopCommented = rootView.findViewById(R.id.recycler_view_top_commented);
 
+        searchET = rootView.findViewById(R.id.et_search);
+        scrollView = rootView.findViewById(R.id.scroll_view);
+
         progressBarTopRanked = rootView.findViewById(R.id.progress_bar_top_ranked);
         progressBarTopViewed = rootView.findViewById(R.id.progress_bar_top_viewed);
         progressBarTopCommented = rootView.findViewById(R.id.progress_bar_top_commented);
         progressBarTopFollowed = rootView.findViewById(R.id.progress_bar_top_followed);
+
+        searchBTN = rootView.findViewById(R.id.btn_search);
 
         moreTopRankedBtn = rootView.findViewById(R.id.more_page_top_ranked);
         moreTopViewedBtn = rootView.findViewById(R.id.more_page_top_viewed);
@@ -117,24 +147,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
         toolbar.setTitle(getResources().getString(R.string.app_name));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Log.i("TAG_HOME","home created 2");
-
-        setFragmentActionListener((ContainerActivity)getActivity());
+        setFragmentActionListener((ContainerActivity) getActivity());
         itemPresenter = new PresenterItemImpl(HomeFragment.this);
-        loadHomeData();
     }
 
     private void loadHomeData() {
-        if (RSSession.isLoggedIn(getContext())){
-            user = RSSession.getCurrentUser(getContext());
-            rsRequestListItem.setUserId(user.get_id());
-        }
         rsRequestListItem.setPage(1);
         rsRequestListItem.setPerPage(RSConstants.MAX_ITEM_TO_LOAD);
         loadTopRankedItem();
@@ -164,16 +182,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
         ItemPieListener listener = new ItemPieListener() {
             @Override
             public void onFollowChanged(boolean isFollow, int position) {
-                manageFollow(listTopRankedItem.get(position).getItemDetails().get_id(), isFollow);
+
+            }
+
+            @Override
+            public void onFollowChanged(int position) {
+                manageFollow(listTopRankedItem.get(position).getItemDetails().get_id(), !listTopRankedItem.get(position).isFollow());
             }
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopRankedItem.get(position).getItemDetails().get_id()));
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopRankedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             }
         };
+        topRankedAdapter = new PieAdapter(listTopRankedItem, listener, getContext());
         recyclerViewTopRanked.setLayoutManager(new LinearLayoutManager(recyclerViewTopRanked.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewTopRanked.setAdapter(new PieAdapter(listTopRankedItem, listener, getContext()));
+        recyclerViewTopRanked.setAdapter(topRankedAdapter);
         recyclerViewTopRanked.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         recyclerViewTopRanked.setNestedScrollingEnabled(false);
     }
@@ -183,16 +207,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
         ItemPieListener listener = new ItemPieListener() {
             @Override
             public void onFollowChanged(boolean isFollow, int position) {
-                manageFollow(listTopViewedItem.get(position).getItemDetails().get_id(), isFollow);
+
+            }
+
+            @Override
+            public void onFollowChanged(int position) {
+                manageFollow(listTopViewedItem.get(position).getItemDetails().get_id(), !listTopViewedItem.get(position).isFollow());
             }
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopViewedItem.get(position).getItemDetails().get_id()));
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopViewedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             }
         };
+        topViewedAdapter = new PieAdapter(listTopViewedItem, listener, getContext());
         recyclerViewTopViewed.setLayoutManager(new LinearLayoutManager(recyclerViewTopViewed.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewTopViewed.setAdapter(new PieAdapter(listTopViewedItem, listener, getContext()));
+        recyclerViewTopViewed.setAdapter(topViewedAdapter);
         recyclerViewTopViewed.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         recyclerViewTopViewed.setNestedScrollingEnabled(false);
     }
@@ -202,16 +232,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
         ItemPieListener listener = new ItemPieListener() {
             @Override
             public void onFollowChanged(boolean isFollow, int position) {
-                manageFollow(listTopFollowedItem.get(position).getItemDetails().get_id(), isFollow);
+
+            }
+
+            @Override
+            public void onFollowChanged(int position) {
+                manageFollow(listTopFollowedItem.get(position).getItemDetails().get_id(), !listTopFollowedItem.get(position).isFollow());
             }
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopFollowedItem.get(position).getItemDetails().get_id()));
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopFollowedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             }
         };
+        topFollowedAdapter = new PieAdapter(listTopFollowedItem, listener, getContext());
         recyclerViewTopFollowed.setLayoutManager(new LinearLayoutManager(recyclerViewTopFollowed.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewTopFollowed.setAdapter(new PieAdapter(listTopFollowedItem, listener, getContext()));
+        recyclerViewTopFollowed.setAdapter(topFollowedAdapter);
         recyclerViewTopFollowed.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         recyclerViewTopFollowed.setNestedScrollingEnabled(false);
     }
@@ -221,29 +257,36 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
         ItemPieListener listener = new ItemPieListener() {
             @Override
             public void onFollowChanged(boolean isFollow, int position) {
-                manageFollow(listTopCommentedItem.get(position).getItemDetails().get_id(), isFollow);
+
+            }
+
+            @Override
+            public void onFollowChanged(int position) {
+                manageFollow(listTopCommentedItem.get(position).getItemDetails().get_id(), !listTopCommentedItem.get(position).isFollow());
             }
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopCommentedItem.get(position).getItemDetails().get_id()));
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopCommentedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             }
         };
+        topCommentedAdapter = new PieAdapter(listTopCommentedItem, listener, getContext());
         recyclerViewTopCommented.setLayoutManager(new LinearLayoutManager(recyclerViewTopCommented.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewTopCommented.setAdapter(new PieAdapter(listTopCommentedItem, listener, getContext()));
+        recyclerViewTopCommented.setAdapter(topCommentedAdapter);
         recyclerViewTopCommented.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         recyclerViewTopCommented.setNestedScrollingEnabled(false);
     }
 
     private void manageFollow(String itemId, boolean isFollow) {
-        if (RSSession.isLoggedIn(getContext())){
+        itemIdToFollow = itemId;
+        if (RSSession.isLoggedIn(getContext())) {
             RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
             if (isFollow)
                 itemPresenter.followItem(rsFollow);
             else
                 itemPresenter.unfollowItem(rsFollow);
         } else {
-            openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_follow));
+            openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_follow), itemId);
         }
     }
 
@@ -251,16 +294,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.more_page_top_ranked:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance());
+                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
                 break;
             case R.id.more_page_top_viewed:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance());
+                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
                 break;
             case R.id.more_page_top_commented:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance());
+                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
                 break;
             case R.id.more_page_top_followed:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance());
+                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
                 break;
         }
     }
@@ -275,20 +318,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
         switch (itemId) {
             case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance());
+                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.logout:
                 /*RSSession.removeToken(getContext());
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance());
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance());
+                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
                 break;
             case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance());
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -306,6 +349,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
         return instance;
     }
 
+    public static HomeFragment getInstance(RSNavigationData rsNavigationData) {
+        Bundle args = new Bundle();
+        args.putSerializable(RSConstants.NAVIGATION_DATA, rsNavigationData);
+        if (instance == null) {
+            instance = new HomeFragment();
+        }
+        instance.setArguments(args);
+        return instance;
+    }
+
     @Override
     public void onDestroyView() {
         instance = null;
@@ -318,7 +371,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
     @Override
     public void onSuccess(String target, Object data) {
-        RSResponseListingItem listingItemResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
+        RSResponseListingItem listingItemResponse = null;
+        if (!(data instanceof String)) {
+            listingItemResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
+        }
 
         switch (target) {
             case RSConstants.TOP_RANKED_ITEMS:
@@ -369,7 +425,53 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
                         moreTopFollowedBtn.setVisibility(View.GONE);
                 }
                 break;
+            case RSConstants.FOLLOW_ITEM:
+                if (data.equals("1")) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.follow), Toast.LENGTH_SHORT).show();
+                    changeIconFollow(itemIdToFollow, true);
+                } else if (data.equals("0")) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case RSConstants.UNFOLLOW_ITEM:
+                Toast.makeText(getContext(), getResources().getString(R.string.unfollow), Toast.LENGTH_SHORT).show();
+                changeIconFollow(itemIdToFollow, false);
+                break;
         }
+    }
+
+    private void changeIconFollow(String itemId, boolean follow) {
+        int indexIntoRankedList = findItemIndex(listTopRankedItem, itemId);
+        if (indexIntoRankedList != -1) {
+            listTopRankedItem.get(indexIntoRankedList).setFollow(follow);
+            topRankedAdapter.notifyItemChanged(indexIntoRankedList, "icon");
+        }
+
+        int indexIntoViewedList = findItemIndex(listTopViewedItem, itemId);
+        if (indexIntoViewedList != -1) {
+            listTopViewedItem.get(indexIntoViewedList).setFollow(follow);
+            topViewedAdapter.notifyItemChanged(indexIntoViewedList, "icon");
+        }
+
+        int indexIntoCommentedList = findItemIndex(listTopCommentedItem, itemId);
+        if (indexIntoCommentedList != -1) {
+            listTopCommentedItem.get(indexIntoCommentedList).setFollow(follow);
+            topCommentedAdapter.notifyItemChanged(indexIntoCommentedList, "icon");
+        }
+
+        int indexIntoFollowedList = findItemIndex(listTopFollowedItem, itemId);
+        if (indexIntoFollowedList != -1) {
+            listTopFollowedItem.get(indexIntoFollowedList).setFollow(follow);
+            topFollowedAdapter.notifyItemChanged(indexIntoFollowedList, "icon");
+        }
+    }
+
+    private int findItemIndex(List<Item> itemList, String itemId) {
+        for (int i = 0; i < itemList.size(); i++) {
+            if (itemList.get(i).getItemDetails().get_id().equals(itemId))
+                return i;
+        }
+        return -1;
     }
 
     @Override
@@ -439,8 +541,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
     }
 
-    private void openAlertDialog(String message) {
-        AskToLoginDialog dialog = AskToLoginDialog.newInstance(fragmentContext.get(), message);
+    private void openAlertDialog(String message, String itemId) {
+        RSNavigationData data = new RSNavigationData(RSConstants.FRAGMENT_HOME, RSConstants.ACTION_FOLLOW, message, itemId, "", "");
+        AskToLoginDialog dialog = AskToLoginDialog.newInstance(data);
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), "");
     }

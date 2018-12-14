@@ -39,6 +39,11 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onFollowChanged(int position) {
+
+            }
+
+            @Override
             public void onClick(View view, int position) {
 
             }

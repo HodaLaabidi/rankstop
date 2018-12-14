@@ -14,10 +14,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseLogin;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
@@ -39,19 +43,25 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
     private MaterialButton cancelBtn, loginBtn, resetPassword;
 
     private String password;
+    private RSNavigationData rsNavigationData;
 
     private View rootView;
-    private SignupFragment fragment;
+    //private SignupFragment fragment;
 
     private RSPresenter.LoginPresenter loginPresenter;
 
-    public static LoginDialog newInstance(SignupFragment fragment, String email) {
-        LoginDialog dialog = new LoginDialog();
-        dialog.fragment = fragment;
+    private static LoginDialog instance;
+
+    public static LoginDialog newInstance(String email, RSNavigationData rsNavigationData) {
+        if (instance == null) {
+            instance = new LoginDialog();
+        }
+        //instance.fragment = fragment;
         Bundle args = new Bundle();
         args.putString(RSConstants.EMAIL, email);
-        dialog.setArguments(args);
-        return dialog;
+        args.putSerializable(RSConstants.NAVIGATION_DATA, rsNavigationData);
+        instance.setArguments(args);
+        return instance;
     }
 
     @NonNull
@@ -59,6 +69,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         initViews();
 
+        rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setCancelable(false);
@@ -71,6 +82,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
+                instance = null;
                 loginPresenter.onDestroyLogin();
             }
         });
@@ -97,6 +109,9 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
     }
 
     private void onDialogShow(AlertDialog dialog) {
+
+        dialog.getWindow().setLayout((int) getContext().getResources().getDimension(R.dimen.w_dialog_login), LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
 
         loginPresenter = new PresenterAuthImpl( LoginDialog.this);
 
@@ -169,14 +184,35 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
         RSSession.startSession(getContext(), token);
-        dismiss();
-        ((ContainerActivity)getActivity()).manageSession(true);
+        if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
+            loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser(getContext()).get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN);
+        }else {
+            dismiss();
+            ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+        }
     }
 
     @Override
     public void loginError() {
         passwordLayout.setErrorEnabled(true);
         passwordLayout.setError(getString(R.string.login_dialog_invalid_password));
+    }
+
+    @Override
+    public void onFollowSuccess(String target, Object data) {
+        if (data.equals("1")) {
+            Toast.makeText(getContext(), getResources().getString(R.string.follow), Toast.LENGTH_SHORT).show();
+        } else if (data.equals("0")) {
+            Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
+        }
+        dismiss();
+        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+    }
+
+    @Override
+    public void onFollowFailure(String target) {
+        dismiss();
+        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
     }
 
     @Override

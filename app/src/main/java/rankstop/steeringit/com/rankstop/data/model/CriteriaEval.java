@@ -2,15 +2,33 @@ package rankstop.steeringit.com.rankstop.data.model;
 
 import com.google.gson.Gson;
 
-public class CriteriaEval {
+import java.io.Serializable;
+
+public class CriteriaEval implements Serializable {
 
     private int note, coefficient;
     private Object criteria;
+    private String criteriaName;
 
     public CriteriaEval(int note, int coefficient, Object criteria) {
         this.note = note;
         this.coefficient = coefficient;
         this.criteria = criteria;
+    }
+
+    public CriteriaEval(int note, int coefficient, Object criteria, String criteriaName) {
+        this.note = note;
+        this.coefficient = coefficient;
+        this.criteria = criteria;
+        this.criteriaName = criteriaName;
+    }
+
+    public String getCriteriaName() {
+        return criteriaName;
+    }
+
+    public void setCriteriaName(String criteriaName) {
+        this.criteriaName = criteriaName;
     }
 
     public int getNote() {

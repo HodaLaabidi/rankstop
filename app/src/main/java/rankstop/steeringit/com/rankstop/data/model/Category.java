@@ -1,15 +1,17 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
-public class Category {
+import com.google.gson.Gson;
+
+import java.io.Serializable;
+import java.util.Arrays;
+
+public class Category implements Serializable {
 
     private String name, _id;
-    private String[] criterias;
+    private boolean location;
+    private Object criterias;
 
-    public Category(String name, String _id, String[] criterias) {
-        this.name = name;
-        this._id = _id;
-        this.criterias = criterias;
-    }
+
 
     public String getName() {
         return name;
@@ -27,11 +29,25 @@ public class Category {
         this._id = _id;
     }
 
-    public String[] getCriterias() {
-        return criterias;
+    public boolean isLocation() {
+        return location;
     }
 
-    public void setCriterias(String[] criterias) {
+    public void setLocation(boolean location) {
+        this.location = location;
+    }
+
+    public Object getCriterias() {
+
+        if (criterias instanceof String[]) {
+            return Arrays.asList((String[]) criterias);
+        }else {
+            Criteria[] criteriasArray = new Gson().fromJson(new Gson().toJson(criterias), Criteria[].class);
+            return Arrays.asList(criteriasArray);
+        }
+    }
+
+    public void setCriterias(Object[] criterias) {
         this.criterias = criterias;
     }
 }

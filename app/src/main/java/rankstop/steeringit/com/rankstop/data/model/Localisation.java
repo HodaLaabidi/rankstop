@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
-public class Localisation {
+import java.io.Serializable;
+
+public class Localisation implements Serializable {
 
     private String address;
     private float longitude, latitude;

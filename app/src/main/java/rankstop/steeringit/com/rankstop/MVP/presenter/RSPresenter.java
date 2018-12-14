@@ -1,18 +1,24 @@
 package rankstop.steeringit.com.rankstop.MVP.presenter;
 
 import rankstop.steeringit.com.rankstop.data.model.User;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestReportAbuse;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSUpdateItem;
 
 public interface RSPresenter {
 
     interface LoginPresenter {
         void performLogin(User user);
+        void followItem(RSFollow rsFollow, String target);
         void onDestroyLogin();
     }
 
     interface RegisterPresenter {
         void performRegister(User user);
+        void followItem(RSFollow rsFollow, String target);
         void onDestroyRegister();
     }
 
@@ -39,7 +45,31 @@ public interface RSPresenter {
         void loadCategoriesList();
         void followItem(RSFollow rsFollow);
         void unfollowItem(RSFollow rsFollow);
+        void loadItemComments(RSRequestItemData rsRequestItemData);
+        void loadItemPix(RSRequestItemData rsRequestItemData);
         void onDestroyItem();
+    }
+
+    interface AddReviewPresenter {
+        void loadCategory(String id);
+        void addReview(RSAddReview rsAddReview);
+        void updateReview(RSAddReview rsAddReview);
+        void addItem(RSAddReview rsAddReview);
+        void loadMyEval(String userId, String itemId);
+        void onDestroy();
+    }
+
+    interface UpdateItemPresenter{
+        void updateItem(RSUpdateItem rsUpdateItem);
+        void onDestroy();
+    }
+
+    interface abusePresenter{
+        void loadAbusesList(String langue);
+        void reportAbuse(RSRequestReportAbuse rsRequestReportAbuse);
+        void onOkClick();
+        void onCancelClick();
+        void onDestroy();
     }
 
 

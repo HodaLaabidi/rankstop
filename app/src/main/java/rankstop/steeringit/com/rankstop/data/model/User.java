@@ -2,9 +2,11 @@ package rankstop.steeringit.com.rankstop.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import rankstop.steeringit.com.rankstop.data.model.custom.SocialNetwork;
 
-public class User {
+public class User implements Serializable {
 
     @SerializedName("_id")
     private String _id;

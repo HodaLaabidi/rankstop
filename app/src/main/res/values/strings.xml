@@ -122,7 +122,7 @@
     <string name="register_dialog_matching_password">Password confirm doesn\'t match password</string>
     <string name="add_review">Add review</string>
     <string name="add_item">Add Page</string>
-    <string name="welcome">Welcome back Samir</string>
+    <string name="welcome">Welcome back</string>
     <string name="forgot_pwd">Mot de passe oublié</string>
     <string name="cancel">Cancel</string>
     <string name="connect">Connecter</string>
@@ -167,4 +167,23 @@
     <string name="ok">Ok</string>
     <string name="alert_login_to_follow">To follow this item you should login before</string>
     <string name="alert_login_to_add_review">To evaluate this item you should login before</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="already_followed">you already follow this item</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="add_item_pix">Ajouter des photos</string>
+    <string name="update_item_pics">Modifier la gallery</string>
+    <string name="report_abuse">Report abuse</string>
+    <string name="alert_login_to_report_abuse">Connectez vous pour signaler cet item</string>
+    <string name="hint_facebook">Facebook</string>
+    <string name="update_item_title">Modifier item</string>
+    <string name="hint_instagram">Instagram</string>
+    <string name="hint_twitter">Twitter</string>
+    <string name="hint_google">Google</string>
+    <string name="hint_linkedin">LinkedIn</string>
+    <string name="save_changes">Save changes</string>
+    <string name="improve_review_pix">improve your review by adding pictures</string>
+    <string name="add_pix">Présentez votre item avec des photos (max 5)</string>
+    <string name="take_pix">Take picture</string>
+    <string name="gallery">Gallery</string>
 </resources>

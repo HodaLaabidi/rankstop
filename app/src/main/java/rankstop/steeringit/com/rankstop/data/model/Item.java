@@ -5,15 +5,14 @@ import java.util.List;
 
 public class Item implements Serializable {
     private String scoreItem;
-    private List<Comment> comments;
     private int bad, good, neutral;
     private ItemDetails itemDetails;
-    private List<Picture> pictures;
     private List<CriteriaNote> tabCritereDetails;
     private Evaluation lastEvalUser;
     private Evaluation myEval;
     private int numberEval;
-    private boolean isFollow;
+    private boolean isFollow, isReportAbuse;
+    private Localisation location;
 
     public Evaluation getMyEval() {
         return myEval;
@@ -87,14 +86,6 @@ public class Item implements Serializable {
         isFollow = follow;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
     public List<CriteriaNote> getTabCritereDetails() {
         return tabCritereDetails;
     }
@@ -103,11 +94,19 @@ public class Item implements Serializable {
         this.tabCritereDetails = tabCritereDetails;
     }
 
-    public List<Picture> getPictures() {
-        return pictures;
+    public Localisation getLocation() {
+        return location;
     }
 
-    public void setPictures(List<Picture> pictures) {
-        this.pictures = pictures;
+    public void setLocation(Localisation location) {
+        this.location = location;
+    }
+
+    public boolean isReportAbuse() {
+        return isReportAbuse;
+    }
+
+    public void setReportAbuse(boolean reportAbuse) {
+        isReportAbuse = reportAbuse;
     }
 }

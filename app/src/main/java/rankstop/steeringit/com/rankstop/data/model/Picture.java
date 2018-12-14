@@ -19,6 +19,9 @@ public class Picture implements Serializable {
         this.pictureEval = pictureEval;
     }
 
+    public Picture() {
+    }
+
     public String getDate() {
         return RSDateParser.convertToDateFormat(date);
     }

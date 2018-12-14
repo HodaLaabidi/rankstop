@@ -1,6 +1,5 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.location.Location;
@@ -15,7 +14,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,20 +36,24 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.data.model.Category;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCategoryAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
 
 public class AddItemFragment extends Fragment implements RSView.StandardView, AdapterView.OnItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    final String TAG = "ADD ITEM FRAGMENT";
 
     private static AddItemFragment instance;
 
@@ -70,21 +71,18 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     private GoogleApiClient googleApiClient;
     private MarkerOptions currentUserLocation;
     private boolean isMapInitialized = false;
+    private Category selectedCategory;
+
+    private double currentLatitude, currentLongitude;
+    private RSAddReview rsAddItem = new RSAddReview();
 
 
     private RSPresenter.ItemPresenter itemPresenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.i("LIFE_CYCLE",""+TAG+" onCreateView");
         rootView = inflater.inflate(R.layout.fragment_add_item, container, false);
         return rootView;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.i("LIFE_CYCLE",""+TAG+": onAttach");
     }
 
     @Override
@@ -96,30 +94,22 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i("LIFE_CYCLE",""+TAG+" onActivityCreated");
-
-
-        itemPresenter = new PresenterItemImpl(AddItemFragment.this);
 
         bindViews();
-
         loadCategoriesList();
-
-
-
-        categorySpinner.setOnItemSelectedListener(this);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, loadCategoryList());
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        categorySpinner.setAdapter(adapter);
 
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // pour valider l'ajout du cet item, tu dois l'évaluer
-                fragmentActionListener.startFragment(AddReviewFragment.getInstance());
+                rsAddItem.setCategoryId(selectedCategory.get_id());
+                rsAddItem.setTitle(nameET.getText().toString());
+                rsAddItem.setDescription(descriptionET.getText().toString());
+                rsAddItem.setAddress(addressET.getText().toString());
+                rsAddItem.setLatitude(""+currentLatitude);
+                rsAddItem.setLongitude(""+currentLongitude);
+
+                fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddItem, null, ""), RSConstants.FRAGMENT_ADD_REVIEW);
             }
         });
     }
@@ -129,6 +119,8 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     }
 
     private void bindViews() {
+        itemPresenter = new PresenterItemImpl(AddItemFragment.this);
+
         toolbar = rootView.findViewById(R.id.toolbar);
         nameET = rootView.findViewById(R.id.input_title);
         descriptionET = rootView.findViewById(R.id.input_description);
@@ -139,23 +131,19 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         addItemBtn = rootView.findViewById(R.id.btn_add_item);
 
         toolbar.setTitle(getResources().getString(R.string.add_item));
-
-
-        setFragmentActionListener((ContainerActivity)getActivity());
-
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-    }
 
-    private String[] loadCategoryList() {
-        String[] categories_array = {"Categ 1", "Categ 2", "Categ 3"};
-        return categories_array;
+        setFragmentActionListener((ContainerActivity) getActivity());
+
+        categorySpinner.setOnItemSelectedListener(this);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position == 1) {
+        selectedCategory = (Category) parent.getItemAtPosition(position);
+        if (selectedCategory.isLocation()) {
             locationLayout.setVisibility(View.VISIBLE);
-            if(isMapInitialized == false)
+            if (isMapInitialized == false)
                 isMapInitialized = true;
             initMaps();
         } else {
@@ -178,9 +166,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             }
         });
 
-        /*LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        /*LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Toast.makeText(this, "GPS is Enabled in your device", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "GPS is Enabled in your device", Toast.LENGTH_SHORT).show();
         } else {
             showGPSDisabledAlertToUser();
         }*/
@@ -211,10 +199,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             public void onMarkerDragStart(Marker marker) {
 
             }
+
             @Override
             public void onMarkerDrag(Marker marker) {
 
             }
+
             @Override
             public void onMarkerDragEnd(Marker marker) {
                 addressET.setText(getAddress(marker.getPosition()));
@@ -276,6 +266,8 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         mMap.addMarker(currentUserLocation);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentUserLatLang, 12));
         addressET.setText(getAddress(currentUserLatLang));
+        currentLatitude = latitude;
+        currentLongitude = longitude;
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -288,20 +280,20 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
         switch (itemId) {
             case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance());
+                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.logout:
                 /*RSSession.removeToken(getContext());
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance());
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance());
+                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
                 break;
             case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance());
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -309,6 +301,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     }
 
     private FragmentActionListener fragmentActionListener;
+
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
@@ -321,7 +314,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     }
 
     /*private void showGPSDisabledAlertToUser() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
         alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Goto Settings Page To Enable GPS",
@@ -343,54 +336,27 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     }*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public void onStart() {
         super.onStart();
-        Log.i("LIFE_CYCLE",""+TAG+" onStart");
+        //Log.i("LIFE_CYCLE", "" + TAG + " onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("LIFE_CYCLE",""+TAG+" onResume");
+        //Log.i("LIFE_CYCLE", "" + TAG + " onResume");
     }
 
     @Override
     public void onPause() {
-        Log.i("LIFE_CYCLE",""+TAG+" onPause");
+        //Log.i("LIFE_CYCLE", "" + TAG + " onPause");
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        Log.i("LIFE_CYCLE",""+TAG+" onStop");
+        //Log.i("LIFE_CYCLE", "" + TAG + " onStop");
         if (googleApiClient != null)
             googleApiClient.disconnect();
         super.onStop();
@@ -399,29 +365,38 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     @Override
     public void onDestroyView() {
         instance = null;
-        rootView=null;
+        rootView = null;
         fragmentActionListener = null;
+        itemPresenter.onDestroyItem();
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
-        Log.i("LIFE_CYCLE",""+TAG+" onDestroy");
+        //Log.i("LIFE_CYCLE", "" + TAG + " onDestroy");
         super.onDestroy();
     }
 
     @Override
     public void onDetach() {
-        Log.i("LIFE_CYCLE",""+TAG+" onDetach");
+        //Log.i("LIFE_CYCLE", "" + TAG + " onDetach");
         super.onDetach();
     }
 
 
-
-
     @Override
     public void onSuccess(String target, Object data) {
-        RSResponseListingItem listingItemResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
+        switch (target) {
+            case RSConstants.LOAD_CATEGORIES:
+                Category[] categories = new Gson().fromJson(new Gson().toJson(data), Category[].class);
+                List<Category> categoryList = Arrays.asList(categories);
+
+                SpinnerCategoryAdapter spinnerCategoryAdapter = new SpinnerCategoryAdapter(getContext(), categoryList);
+                categorySpinner.setAdapter(spinnerCategoryAdapter);
+
+                //Toast.makeText(getContext(), "size = "+((List<Criteria>)categoryList.get(0).getCriterias()).get(0).getName(), Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     @Override

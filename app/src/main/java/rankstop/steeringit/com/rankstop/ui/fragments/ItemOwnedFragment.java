@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class ItemOwnedFragment extends Fragment {
 
@@ -64,20 +65,20 @@ public class ItemOwnedFragment extends Fragment {
                 getActivity().onBackPressed();
                 break;
             case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance());
+                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.logout:
                 /*RSSession.removeToken(getContext());
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance());
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance());
+                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
                 break;
             case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance());
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 

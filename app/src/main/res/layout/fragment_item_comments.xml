@@ -8,71 +8,84 @@
         android:id="@+id/filter_toggle"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:checkedButton="@id/all_comment"
-        android:background="@drawable/rs_filter_view_gray"
-        android:orientation="horizontal"
+        android:layout_gravity="end"
         android:layout_marginTop="@dimen/mlr_card_view"
         android:layout_marginEnd="@dimen/mlr_card_view"
-        android:layout_gravity="end">
+        android:background="@drawable/rs_filter_view_gray"
+        android:checkedButton="@id/all_comment"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/all_comment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="2dp"
             android:layout_weight="1"
-            android:button="@null"
             android:background="@drawable/toggle_all_bg"
+            android:button="@null"
             android:gravity="center"
             android:padding="2dp"
             android:text="All"
-            android:textSize="12sp"
-            android:layout_margin="2dp"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
         <RadioButton
             android:id="@+id/good_comment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="2dp"
             android:layout_weight="1"
             android:background="@drawable/toggle_good_bg"
             android:button="@null"
-            android:padding="2dp"
             android:gravity="center"
+            android:padding="2dp"
             android:text="Good"
-            android:textSize="12sp"
-            android:layout_margin="2dp"
-            android:textColor="@color/colorGreenPie" />
+            android:textColor="@color/colorGreenPie"
+            android:textSize="12sp" />
+
         <RadioButton
             android:id="@+id/neutral_comment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="2dp"
             android:layout_weight="1"
             android:background="@drawable/toggle_neutral_bg"
             android:button="@null"
-            android:padding="2dp"
             android:gravity="center"
+            android:padding="2dp"
             android:text="Neutral"
-            android:textSize="12sp"
-            android:layout_margin="2dp"
-            android:textColor="@color/colorOrangePie" />
+            android:textColor="@color/colorOrangePie"
+            android:textSize="12sp" />
+
         <RadioButton
             android:id="@+id/bad_comment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_margin="2dp"
             android:layout_weight="1"
             android:background="@drawable/toggle_bad_bg"
             android:button="@null"
-            android:padding="2dp"
             android:gravity="center"
+            android:padding="2dp"
             android:text="Bad"
-            android:textSize="12sp"
-            android:layout_margin="2dp"
-            android:textColor="@color/colorRedPie" />
+            android:textColor="@color/colorRedPie"
+            android:textSize="12sp" />
     </RadioGroup>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_comments"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_comments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/main_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 
 </LinearLayout>

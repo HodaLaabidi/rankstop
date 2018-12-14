@@ -4,9 +4,7 @@ package rankstop.steeringit.com.rankstop.ui.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -24,7 +22,6 @@ import java.util.List;
 
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.data.model.Item;
 import rankstop.steeringit.com.rankstop.R;
 
@@ -49,6 +46,15 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payload) {
+        if (!payload.isEmpty()){
+            holder.changeIcon(items.get(position));
+        }else {
+            super.onBindViewHolder(holder, position, payload);
+        }
     }
 
     @Override
@@ -80,18 +86,23 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
         public void setData(Item item) {
             this.item = item;
             // TODO set data to view
-            //itemName.setText(item.getItemDetails().getTitle());
             itemName.setText(item.getItemDetails().getTitle());
-            countReviewsTV.setText(String.valueOf(item.getNumberEval())+" reviews");
+            countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " reviews");
             likeIcon.setChecked(item.isFollow());
+
+            likeIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pieListener.onFollowChanged(getAdapterPosition());
+                }
+            });
             // add listener to like icon
             likeIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (!RSSession.isLoggedIn(context)){
+                    if (!RSSession.isLoggedIn(context)) {
                         likeIcon.setChecked(!isChecked);
                     }
-                    pieListener.onFollowChanged(isChecked, getAdapterPosition());
                 }
             });
             initPieChart(item);
@@ -107,7 +118,7 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
 
             pieChart.setUsePercentValues(true);
             // define center text of the pie
-            pieChart.setCenterText(item.getScoreItem()+" \n out of 5");
+            pieChart.setCenterText(item.getScoreItem() + " \n out of 5");
             pieChart.setCenterTextSize(17f);
             pieChart.setCenterTextColor(context.getResources().getColor(R.color.colorPrimary));
 
@@ -165,6 +176,11 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             pieListener.onClick(v, getAdapterPosition());
+        }
+
+        public void changeIcon(Item item) {
+            this.item = item;
+            likeIcon.setChecked(item.isFollow());
         }
     }
 

@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model;
 
-public class UserInfo {
+import java.io.Serializable;
+
+public class UserInfo implements Serializable {
 
     private User user;
     private int countComments, countPictures, countEval;

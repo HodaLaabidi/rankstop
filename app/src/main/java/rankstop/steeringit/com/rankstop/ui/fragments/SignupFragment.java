@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import java.lang.ref.WeakReference;
 
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseFindEmail;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.LoginDialog;
@@ -27,6 +28,7 @@ import rankstop.steeringit.com.rankstop.ui.dialogFragment.RegisterDialog;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class SignupFragment extends Fragment implements RSView.SignupView {
 
@@ -42,33 +44,21 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     private TextInputLayout inputLayoutEmail;
 
     private WeakReference<SignupFragment> fragmentContext;
+    private RSNavigationData rsNavigationData;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i("LIFE_CYCLE", "" + TAG + " onCreateView");
-
         fragmentContext = new WeakReference<SignupFragment>(this);
         rootView = inflater.inflate(R.layout.fragment_signup, container, false);
         return rootView;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.i("LIFE_CYCLE", "" + TAG + " onAttach");
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i("LIFE_CYCLE", "" + TAG + " onCreate");
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i("LIFE_CYCLE", "" + TAG + " onActivityCreated");
+
+        rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
 
         loginBtn = rootView.findViewById(R.id.rs_login_btn);
 
@@ -87,13 +77,13 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     }
 
     public void dialogLogin(String email) {
-        LoginDialog dialog = LoginDialog.newInstance(fragmentContext.get(), ((TextInputEditText) rootView.findViewById(R.id.input_email)).getText().toString().trim());
+        LoginDialog dialog = LoginDialog.newInstance(((TextInputEditText) rootView.findViewById(R.id.input_email)).getText().toString().trim(), rsNavigationData);
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), LOGIN_DIALOG_TAG);
     }
 
     public void dialogRegister(String email) {
-        RegisterDialog dialog = RegisterDialog.newInstance(fragmentContext.get(), ((TextInputEditText) rootView.findViewById(R.id.input_email)).getText().toString().trim());
+        RegisterDialog dialog = RegisterDialog.newInstance(((TextInputEditText) rootView.findViewById(R.id.input_email)).getText().toString().trim(), rsNavigationData);
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), REGISTER_DIALOG_TAG);
     }
@@ -101,9 +91,12 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     private static SignupFragment instance;
 
-    public static SignupFragment getInstance() {
+    public static SignupFragment getInstance(RSNavigationData data) {
+        Bundle args = new Bundle();
+        args.putSerializable(RSConstants.NAVIGATION_DATA, data);
         if (instance == null)
             instance = new SignupFragment();
+        instance.setArguments(args);
         return instance;
     }
 
@@ -115,44 +108,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         signupPresenter.onDestroyFindEmail();
         super.onDestroyView();
     }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.i("LIFE_CYCLE", "" + TAG + " onStart");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i("LIFE_CYCLE", "" + TAG + " onResume");
-    }
-
-    @Override
-    public void onPause() {
-        Log.i("LIFE_CYCLE", "" + TAG + " onPause");
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        Log.i("LIFE_CYCLE", "" + TAG + " onStop");
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.i("LIFE_CYCLE", "" + TAG + " onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDetach() {
-        Log.i("LIFE_CYCLE", "" + TAG + " onDetach");
-        super.onDetach();
-    }
-
 
     @Override
     public void findEmailValidations() {

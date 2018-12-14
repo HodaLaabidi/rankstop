@@ -6,7 +6,6 @@ import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -32,20 +31,18 @@ import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.data.model.Item;
 import rankstop.steeringit.com.rankstop.data.model.User;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.MyEvalsAdapter;
-import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
-import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
-public class MyEvaluationsFragment extends Fragment implements RSView.StandardView {
+public class MyEvaluationsFragment extends Fragment implements RSView.StandardView, View.OnClickListener {
 
     private Toolbar toolbar;
     private View rootView;
@@ -54,6 +51,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     private TextView nodataTV;
     private MaterialButton noDataBtn;
     private ProgressBar progressBar;
+    private boolean isLoggedIn;
 
     private RSPresenter.ItemPresenter itemPresenter;
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
@@ -79,12 +77,13 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
         super.onActivityCreated(savedInstanceState);
         bindViews();
 
-        if (RSSession.isLoggedIn(getContext())) {
+        isLoggedIn = RSSession.isLoggedIn(getContext());
+        noDataBtn.setOnClickListener(this);
+        if (isLoggedIn) {
             user = RSSession.getCurrentUser(getContext());
             rsRequestListItem.setPage(1);
             rsRequestListItem.setPerPage(RSConstants.MAX_ITEM_TO_LOAD);
             rsRequestListItem.setUserId(user.get_id());
-            //rsRequestListItem.setUserId("5be9a0d5a1a78a31781fffb3");
             loadMyEvals();
         } else {
             noDataBtn.setText(getResources().getString(R.string.login_btn));
@@ -107,8 +106,12 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
             }
 
             @Override
+            public void onFollowChanged(int position) {
+            }
+
+            @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listMyEvals.get(position).getItemDetails().get_id()));
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listMyEvals.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             }
         };
         recyclerViewMyEvals.setLayoutManager(new GridLayoutManager(recyclerViewMyEvals.getContext(), 1));
@@ -118,15 +121,12 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     }
 
     private void manageFollow(String itemId, boolean isFollow) {
-        if (RSSession.isLoggedIn(getContext())) {
-            RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
-            if (isFollow)
-                itemPresenter.followItem(rsFollow);
-            else
-                itemPresenter.unfollowItem(rsFollow);
-        } else {
-            openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_follow));
-        }
+        RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
+        if (isFollow)
+            itemPresenter.followItem(rsFollow);
+        else
+            itemPresenter.unfollowItem(rsFollow);
+
     }
 
     private void bindViews() {
@@ -142,7 +142,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         itemPresenter = new PresenterItemImpl(MyEvaluationsFragment.this);
-        setFragmentActionListener((ContainerActivity)getActivity());
+        setFragmentActionListener((ContainerActivity) getActivity());
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -155,20 +155,20 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
         switch (itemId) {
             case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance());
+                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.logout:
                 /*RSSession.removeToken(getContext());
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance());
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance());
+                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
                 break;
             case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance());
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -213,6 +213,18 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
                     initMyEvals(listMyEvals);
                 }
                 break;
+            case RSConstants.FOLLOW_ITEM:
+                if (data.equals("1")) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.follow), Toast.LENGTH_SHORT).show();
+                    //changeIconFollow(itemIdToFollow, true);
+                } else if (data.equals("0")) {
+                    Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case RSConstants.UNFOLLOW_ITEM:
+                Toast.makeText(getContext(), getResources().getString(R.string.unfollow), Toast.LENGTH_SHORT).show();
+                //changeIconFollow(itemIdToFollow, false);
+                break;
         }
     }
 
@@ -236,9 +248,25 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     }
 
-    private void openAlertDialog(String message) {
-        AskToLoginDialog dialog = AskToLoginDialog.newInstance(fragmentContext.get(), message);
-        dialog.setCancelable(false);
-        dialog.show(getFragmentManager(), "");
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_login_or_search:
+                if (!isLoggedIn) {
+                    RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_MY_EVALS, RSConstants.ACTION_CONNECT, "", "", "", "");
+                    navigateToSignUp(rsNavigationData);
+                } else {
+                    navigateToHome();
+                }
+                break;
+        }
+    }
+
+    private void navigateToSignUp(RSNavigationData rsNavigationData) {
+        fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
+    }
+
+    private void navigateToHome() {
+        fragmentActionListener.startFragment(HomeFragment.getInstance(), RSConstants.FRAGMENT_HOME);
     }
 }
