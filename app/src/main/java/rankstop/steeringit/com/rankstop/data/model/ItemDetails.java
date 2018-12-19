@@ -15,6 +15,7 @@ public class ItemDetails implements Serializable {
     private Object creator, owner;
     private int evaluations, numberView;
     private List<Gallery> gallery;
+    private Localisation location;
 
     public ItemDetails(Category category, String createdAt, String lastDateView, String updatedAt, String title, String description, String urlFacebook, String urlGooglePlus, String urlInstagram, String urlLinkedIn, String urlTwitter, String _id, Object creator, Object owner, int evaluations, int numberView) {
         this.category = category;
@@ -181,5 +182,13 @@ public class ItemDetails implements Serializable {
 
     public void setUrlLinkedIn(String urlLinkedIn) {
         this.urlLinkedIn = urlLinkedIn;
+    }
+
+    public Localisation getLocation() {
+        return location;
+    }
+
+    public void setLocation(Localisation location) {
+        this.location = location;
     }
 }

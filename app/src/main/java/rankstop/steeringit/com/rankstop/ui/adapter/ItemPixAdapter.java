@@ -3,6 +3,7 @@ package rankstop.steeringit.com.rankstop.ui.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,21 +21,24 @@ import java.util.List;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.data.model.Picture;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHolder> {
 
     private RecyclerViewClickListener listener;
     private List<Picture> pictures;
     private Context context;
+    private String target;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemPixAdapter(RecyclerViewClickListener listener, Context context) {
+    public ItemPixAdapter(RecyclerViewClickListener listener, Context context, String target) {
         this.listener = listener;
         this.context = context;
         this.pictures = new ArrayList<>();
+        this.target = target;
     }
 
     @NonNull
@@ -95,6 +99,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
         private TextView noteColorView;
         private SimpleDraweeView imageView;
         private LinearLayout pixContainer;
+        private CardView cardView;
 
         public ViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
             super(itemView);
@@ -103,13 +108,25 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
             noteColorView = itemView.findViewById(R.id.view_note);
             imageView = itemView.findViewById(R.id.pic_review);
             pixContainer = itemView.findViewById(R.id.pix_container);
+            cardView = itemView.findViewById(R.id.card_view);
+
+            if (target.equals(RSConstants.MINE)){
+                try{
+                    RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(200, 200);
+                    cardView.setLayoutParams(layoutParams);
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    pixContainer.setLayoutParams(params);
+                }catch(Exception e){}
+            }
 
             itemView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     try {
-                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, pixContainer.getWidth());
-                        pixContainer.setLayoutParams(layoutParams);
+                        if (target.equals(RSConstants.OTHER)) {
+                            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, pixContainer.getWidth());
+                            pixContainer.setLayoutParams(layoutParams);
+                        }
                     }catch(Exception e){}
                 }
             });

@@ -93,4 +93,17 @@ public interface RSView {
 
         void showMessage(String target, String message);
     }
+
+    interface SearchView {
+
+        void onSuccess(String target, Object data);
+
+        void onFailure(String target);
+
+        void onError(String target);
+
+        void showProgressBar(String target);
+
+        void hideProgressBar(String target);
+    }
 }

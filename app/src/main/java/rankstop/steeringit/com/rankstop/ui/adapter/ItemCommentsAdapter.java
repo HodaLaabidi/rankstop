@@ -2,6 +2,8 @@ package rankstop.steeringit.com.rankstop.ui.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +25,17 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
     private RecyclerViewClickListener listener;
     private List<Comment> comments;
     private Context context;
+    private String target;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemCommentsAdapter(RecyclerViewClickListener listener, Context context) {
+    public ItemCommentsAdapter(RecyclerViewClickListener listener, Context context, String target) {
         this.listener = listener;
         this.context = context;
         this.comments = new ArrayList<>();
+        this.target = target;
     }
 
     @NonNull
@@ -91,6 +95,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
         private RecyclerViewClickListener mListener;
         private TextView noteColorView, commentTV;
         private LinearLayout commentContainer;
+        private CardView cardView;
 
         public ViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
             super(itemView);
@@ -99,13 +104,25 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
             noteColorView = itemView.findViewById(R.id.view_note);
             commentTV = itemView.findViewById(R.id.tv_comment);
             commentContainer = itemView.findViewById(R.id.comment_container);
+            cardView = itemView.findViewById(R.id.card_view);
+
+            if (target.equals("mine")){
+                try{
+                    RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(200, 200);
+                    cardView.setLayoutParams(layoutParams);
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    commentContainer.setLayoutParams(params);
+                }catch(Exception e){}
+            }
 
             itemView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     try {
-                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, commentContainer.getWidth());
-                        commentContainer.setLayoutParams(layoutParams);
+                        if (target.equals("other")){
+                            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, commentContainer.getWidth());
+                            commentContainer.setLayoutParams(layoutParams);
+                        }
                     }catch(Exception e){}
                 }
             });
@@ -119,8 +136,10 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
         }
 
         public void setData(Comment comment) {
-            noteColorView.setBackgroundColor(context.getResources().getColor(comment.getColor()));
-            commentTV.setText(comment.getText());
+            try{
+                noteColorView.setBackgroundColor(context.getResources().getColor(comment.getColor()));
+                commentTV.setText(comment.getText());
+            }catch(Exception e){}
         }
     }
 

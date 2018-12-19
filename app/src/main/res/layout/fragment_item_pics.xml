@@ -70,19 +70,93 @@
             android:textColor="@color/colorRedPie" />
     </RadioGroup>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_pics"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/main_progress"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/rl_my_pix"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>
+            android:visibility="gone"
+            android:minHeight="170dp">
+
+            <TextView
+                android:id="@+id/title_my_pix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My pictures:"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/m_activity"
+                android:layout_marginStart="@dimen/m_activity"
+                android:layout_marginBottom="@dimen/m_activity"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_my_pix"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_my_pix"/>
+
+            <LinearLayout
+                android:id="@+id/ll_add_pix"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_add_pix"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_pics_text"
+                    android:gravity="center"/>
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btn_add_pix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_pics_btn"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/mp_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/title_other_pix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Other pictures:"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/m_activity"
+                android:layout_marginStart="@dimen/m_activity"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/m_activity"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_pics"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/title_other_pix"/>
+
+            <ProgressBar
+                android:id="@+id/main_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

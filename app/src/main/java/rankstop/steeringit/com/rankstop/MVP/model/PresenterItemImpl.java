@@ -19,7 +19,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
     private Call<RSResponse> callLoadItem, callTopRankedItems, callTopViewedItems, callTopCommentedItems, callTopFollowedItems,
             callItemCreated, callItemOwned, callItemFollowed, callMyEvals, callCategoriesList, callFollowItem, callUnfollowItem,
-            callItemComments, callItemPix, callAbusesList, callReportAbuse;
+            callItemComments, callItemPix, callItemPixByUser, callItemCommentsByUser;
 
     public PresenterItemImpl(RSView.StandardView standardView) {
         this.standardView = standardView;
@@ -336,6 +336,32 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
+    public void loadItemCommentsByUser(RSRequestItemData rsRequestItemData) {
+        standardView.showProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
+
+        callItemCommentsByUser = WebService.getInstance().getApi().loadItemCommentsByUser(rsRequestItemData);
+        callItemCommentsByUser.enqueue(new Callback<RSResponse>() {
+            @Override
+            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                if (response.body().getStatus() == 1) {
+                    standardView.onSuccess(RSConstants.ITEM_COMMENTS_BY_USER, response.body().getData());
+                } else if (response.body().getStatus() == 0) {
+                    standardView.onFailure(RSConstants.ITEM_COMMENTS_BY_USER);
+                }
+                standardView.hideProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
+            }
+
+            @Override
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                if (!callItemCommentsByUser.isCanceled()) {
+                    standardView.hideProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
+                    standardView.showMessage(RSConstants.ITEM_COMMENTS_BY_USER, "failure com");
+                }
+            }
+        });
+    }
+
+    @Override
     public void loadItemPix(RSRequestItemData rsRequestItemData) {
         standardView.showProgressBar(RSConstants.ITEM_PIX);
 
@@ -356,6 +382,32 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                 if (!callItemPix.isCanceled()) {
                     standardView.hideProgressBar(RSConstants.ITEM_PIX);
                     standardView.showMessage(RSConstants.ITEM_PIX, "failure");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void loadItemPixByUser(RSRequestItemData rsRequestItemData) {
+        standardView.showProgressBar(RSConstants.ITEM_PIX_BY_USER);
+
+        callItemPixByUser = WebService.getInstance().getApi().loadItemPixByUser(rsRequestItemData);
+        callItemPixByUser.enqueue(new Callback<RSResponse>() {
+            @Override
+            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                if (response.body().getStatus() == 1) {
+                    standardView.onSuccess(RSConstants.ITEM_PIX_BY_USER, response.body().getData());
+                } else if (response.body().getStatus() == 0) {
+                    standardView.onFailure(RSConstants.ITEM_PIX_BY_USER);
+                }
+                standardView.hideProgressBar(RSConstants.ITEM_PIX_BY_USER);
+            }
+
+            @Override
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                if (!callItemPixByUser.isCanceled()) {
+                    standardView.hideProgressBar(RSConstants.ITEM_PIX_BY_USER);
+                    standardView.showMessage(RSConstants.ITEM_PIX_BY_USER, "failure");
                 }
             }
         });
@@ -415,17 +467,17 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             if (callItemComments.isExecuted())
                 callItemComments.cancel();
 
+        if (callItemCommentsByUser != null)
+            if (callItemCommentsByUser.isExecuted())
+                callItemCommentsByUser.cancel();
+
         if (callItemPix != null)
             if (callItemPix.isExecuted())
                 callItemPix.cancel();
 
-        if (callAbusesList != null)
-            if (callAbusesList.isExecuted())
-                callAbusesList.cancel();
-
-        if (callReportAbuse != null)
-            if (callReportAbuse.isExecuted())
-                callReportAbuse.cancel();
+        if (callItemPixByUser != null)
+            if (callItemPixByUser.isExecuted())
+                callItemPixByUser.cancel();
 
         standardView = null;
     }

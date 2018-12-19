@@ -5,17 +5,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -27,35 +32,55 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.data.model.Item;
 import rankstop.steeringit.com.rankstop.data.model.Picture;
+import rankstop.steeringit.com.rankstop.data.model.User;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseItemData;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.adapter.ItemCommentsAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemPixAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
+import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
+import rankstop.steeringit.com.rankstop.utils.LinearScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class ItemPicsFragment extends Fragment implements RSView.StandardView {
 
-    private RecyclerView recyclerViewPics;
     private View rootView;
-    private List<Picture> pictures;
+    private RecyclerView pixRV, myPixRV;
+    private List<Picture> pictures, myPictures;
+    private RecyclerViewClickListener listener, myListener;
+    private TextView titleOtherPix;
+    private ItemPixAdapter itemPicsAdapter, myItemPixAdapter;
+    private MaterialButton addPixBTN;
+    private ProgressBar progressBar, mpProgressBar;
+    private RelativeLayout myPixLayout;
+    private LinearLayout addPixLayout;
+
+
+    private String itemId, userId ="";
+    private Item currentItem;
+    private RSPresenter.ItemPresenter itemPresenter;
     private RadioGroup filterToggle;
     private int lastCheckedId = R.id.all_comment;
-    private ItemPixAdapter itemPicsAdapter;
-    private String itemId, userId;
-    private RSPresenter.ItemPresenter itemPresenter;
-    private RecyclerViewClickListener listener;
+    private RSRequestItemData rsRequestItemData;
 
-    private ProgressBar progressBar;
     private int currentPage = 1;
     private boolean isLastPage = false;
     private boolean isLoading = false;
     private int PAGES_COUNT;
+
+    // *mp: my pictures
+    private int mpCurrentPage = 1;
+    private boolean mpIsLastPage = false;
+    private boolean mpIsLoading = false;
+    private int MP_PAGES_COUNT = 1;
 
     public ItemPicsFragment() {
     }
@@ -76,25 +101,46 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
         isLoading = false;
         if (pictures == null)
             pictures = new ArrayList<>();
-        itemId = getArguments().getString(RSConstants.ITEM_ID);
+        if (myPictures == null)
+            myPictures = new ArrayList<>();
+        currentItem = (Item) getArguments().getSerializable(RSConstants.ITEM);
+        itemId = currentItem.getItemDetails().get_id();
         if (RSSession.isLoggedIn(getContext())) {
+            myPixLayout.setVisibility(View.VISIBLE);
             userId = RSSession.getCurrentUser(getContext()).get_id();
+            myPixLayout.setVisibility(View.VISIBLE);
+            titleOtherPix.setVisibility(View.VISIBLE);
         }
-        loadItemPix(currentPage);
+        rsRequestItemData = new RSRequestItemData(itemId, userId, RSConstants.MAX_FIELD_TO_LOAD, 1);
         setFragmentActionListener((ContainerActivity) getActivity());
         listener = (view, position) -> {
         };
+        myListener = (view, position) -> {
+        };
+        loadItemPix(currentPage);
+        loadMyItemPix(mpCurrentPage);
         initPixList();
+        initMyPixList();
         setFilterListener();
+
+        addPixBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RSAddReview rsAddReview = new RSAddReview();
+                rsAddReview.setItemId(currentItem.getItemDetails().get_id());
+                rsAddReview.setCategoryId(currentItem.getItemDetails().getCategory().get_id());
+                fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddReview, currentItem.getLastEvalUser(), ""), RSConstants.FRAGMENT_ADD_REVIEW);
+            }
+        });
     }
 
     private void initPixList() {
-        GridLayoutManager layoutManager = new GridLayoutManager(recyclerViewPics.getContext(), getResources().getInteger(R.integer.count_item_per_row));
-        itemPicsAdapter = new ItemPixAdapter(listener, getContext());
-        recyclerViewPics.setLayoutManager(layoutManager);
-        recyclerViewPics.setAdapter(itemPicsAdapter);
-        recyclerViewPics.addItemDecoration(new VerticalSpace(getResources().getInteger(R.integer.m_card_view), getResources().getInteger(R.integer.count_item_per_row)));
-        recyclerViewPics.addOnScrollListener(new EndlessScrollListener(layoutManager) {
+        GridLayoutManager layoutManager = new GridLayoutManager(pixRV.getContext(), getResources().getInteger(R.integer.count_item_per_row));
+        itemPicsAdapter = new ItemPixAdapter(listener, getContext(), RSConstants.OTHER);
+        pixRV.setLayoutManager(layoutManager);
+        pixRV.setAdapter(itemPicsAdapter);
+        pixRV.addItemDecoration(new VerticalSpace(getResources().getInteger(R.integer.m_card_view), getResources().getInteger(R.integer.count_item_per_row)));
+        pixRV.addOnScrollListener(new EndlessScrollListener(layoutManager) {
             @Override
             protected void loadMoreItems() {
                 isLoading = true;
@@ -127,16 +173,70 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
         });
     }
 
+    private void initMyPixList() {
+        myItemPixAdapter = new ItemPixAdapter(myListener, getContext(), RSConstants.MINE);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(myPixRV.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        myPixRV.setLayoutManager(layoutManager);
+        myPixRV.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
+        myPixRV.setAdapter(myItemPixAdapter);
+        myPixRV.addOnScrollListener(new LinearScrollListener(layoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                mpIsLoading = true;
+                mpCurrentPage += 1;
+
+                // mocking network delay for API call
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadMyItemPix(mpCurrentPage);
+                    }
+                }, 1000);
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return MP_PAGES_COUNT;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return mpIsLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return mpIsLoading;
+            }
+        });
+    }
+
     private void bindViews() {
-        recyclerViewPics = rootView.findViewById(R.id.recycler_view_pics);
+        pixRV = rootView.findViewById(R.id.recycler_view_pics);
         filterToggle = rootView.findViewById(R.id.filter_toggle);
         progressBar = rootView.findViewById(R.id.main_progress);
         itemPresenter = new PresenterItemImpl(ItemPicsFragment.this);
+
+        myPixRV = rootView.findViewById(R.id.recycler_view_my_pix);
+        mpProgressBar = rootView.findViewById(R.id.mp_progress);
+        myPixLayout = rootView.findViewById(R.id.rl_my_pix);
+        addPixLayout = rootView.findViewById(R.id.ll_add_pix);
+        titleOtherPix = rootView.findViewById(R.id.title_other_pix);
+        addPixBTN = rootView.findViewById(R.id.btn_add_pix);
     }
 
     private void loadItemPix(int pageNumber) {
-        RSRequestItemData rsRequestItemData = new RSRequestItemData(itemId, userId, RSConstants.MAX_FIELD_TO_LOAD, pageNumber);
+        rsRequestItemData.setPage(pageNumber);
         itemPresenter.loadItemPix(rsRequestItemData);
+    }
+
+    private void loadMyItemPix(int pageNumber) {
+        rsRequestItemData.setPage(pageNumber);
+        /*Toast.makeText(getContext(), "userId = " + rsRequestItemData.getUserId()
+                + "\nitemId = " + rsRequestItemData.getItemId()
+                + "\npage = " + rsRequestItemData.getPage()
+                + "\nperPage = " + rsRequestItemData.getPerPage(), Toast.LENGTH_LONG).show();*/
+        itemPresenter.loadItemPixByUser(rsRequestItemData);
     }
 
     private List<Picture> getFilterOutput(List<Picture> pictures, int filter) {
@@ -157,9 +257,9 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
 
     private static ItemPicsFragment instance;
 
-    public static ItemPicsFragment getInstance(String itemId) {
+    public static ItemPicsFragment getInstance(Item item) {
         Bundle args = new Bundle();
-        args.putString(RSConstants.ITEM_ID, itemId);
+        args.putSerializable(RSConstants.ITEM, item);
         if (instance == null) {
             instance = new ItemPicsFragment();
         }
@@ -175,6 +275,8 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
         fragmentActionListener = null;
         pictures.clear();
         pictures = null;
+        myPictures.clear();
+        myPictures = null;
         //itemPresenter.onDestroyItem();
         super.onDestroyView();
     }
@@ -188,6 +290,20 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
                     managePicsList(rsResponseItemData);
                 } catch (Exception e) {
                 }
+                break;
+            case RSConstants.ITEM_PIX_BY_USER:
+                RSResponseItemData response = new Gson().fromJson(new Gson().toJson(data), RSResponseItemData.class);
+                try {
+                    if (response.getPictures().size() == 0){
+                        addPixLayout.setVisibility(View.VISIBLE);
+                        myPixRV.setVisibility(View.GONE);
+                        mpProgressBar.setVisibility(View.GONE);
+                    }else {
+                        manageMyPixList(response);
+                    }
+                } catch (Exception e) {
+                }
+                break;
         }
     }
 
@@ -213,7 +329,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
 
             Log.i("TAG_PIX", "current page from pix == " + currentPage);
             Log.i("TAG_PIX", "page count from pix == " + PAGES_COUNT);
-            if (currentPage <= PAGES_COUNT) {
+            if (currentPage < PAGES_COUNT) {
                 itemPicsAdapter.addLoadingFooter();
             } else {
                 isLastPage = true;
@@ -240,6 +356,54 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
             } else {
                 isLastPage = true;
             }
+        }
+    }
+
+    private void manageMyPixList(RSResponseItemData rsResponseItemData) {
+        myPictures.addAll(rsResponseItemData.getPictures());
+
+        if (rsResponseItemData.getCurrent() == 1) {
+            mpProgressBar.setVisibility(View.GONE);
+            switch (lastCheckedId) {
+                case R.id.all_comment:
+                    myItemPixAdapter.addAll(rsResponseItemData.getPictures());
+                    break;
+                case R.id.good_comment:
+                    myItemPixAdapter.addAll(getFilterOutput(rsResponseItemData.getPictures(), RSConstants.PIE_GREEN));
+                    break;
+                case R.id.neutral_comment:
+                    myItemPixAdapter.addAll(getFilterOutput(rsResponseItemData.getPictures(), RSConstants.PIE_ORANGE));
+                    break;
+                case R.id.bad_comment:
+                    myItemPixAdapter.addAll(getFilterOutput(rsResponseItemData.getPictures(), RSConstants.PIE_RED));
+                    break;
+            }
+            MP_PAGES_COUNT = rsResponseItemData.getPages();
+
+            if (mpCurrentPage < MP_PAGES_COUNT) {
+                myItemPixAdapter.addLoadingFooter();
+            } else {
+                mpIsLastPage = true;
+            }
+        } else if (rsResponseItemData.getCurrent() > 1) {
+            myItemPixAdapter.removeLoadingFooter();
+            mpIsLoading = false;
+            switch (lastCheckedId) {
+                case R.id.all_comment:
+                    myItemPixAdapter.addAll(rsResponseItemData.getPictures());
+                    break;
+                case R.id.good_comment:
+                    myItemPixAdapter.addAll(getFilterOutput(rsResponseItemData.getPictures(), RSConstants.PIE_GREEN));
+                    break;
+                case R.id.neutral_comment:
+                    myItemPixAdapter.addAll(getFilterOutput(rsResponseItemData.getPictures(), RSConstants.PIE_ORANGE));
+                    break;
+                case R.id.bad_comment:
+                    myItemPixAdapter.addAll(getFilterOutput(rsResponseItemData.getPictures(), RSConstants.PIE_RED));
+                    break;
+            }
+            if (mpCurrentPage != MP_PAGES_COUNT) myItemPixAdapter.addLoadingFooter();
+            else mpIsLastPage = true;
         }
     }
 
@@ -287,18 +451,22 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
                     case R.id.all_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_gray);
                         itemPicsAdapter.refreshData(pictures);
+                        myItemPixAdapter.refreshData(pictures);
                         break;
                     case R.id.good_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_green);
                         itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_GREEN));
+                        myItemPixAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_GREEN));
                         break;
                     case R.id.neutral_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_orange);
                         itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_ORANGE));
+                        myItemPixAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_ORANGE));
                         break;
                     case R.id.bad_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_red);
                         itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_RED));
+                        myItemPixAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_RED));
                         break;
                 }
             }

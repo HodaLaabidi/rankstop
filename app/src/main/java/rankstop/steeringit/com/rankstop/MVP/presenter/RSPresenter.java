@@ -3,6 +3,7 @@ package rankstop.steeringit.com.rankstop.MVP.presenter;
 import rankstop.steeringit.com.rankstop.data.model.User;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestReportAbuse;
@@ -46,7 +47,9 @@ public interface RSPresenter {
         void followItem(RSFollow rsFollow);
         void unfollowItem(RSFollow rsFollow);
         void loadItemComments(RSRequestItemData rsRequestItemData);
+        void loadItemCommentsByUser(RSRequestItemData rsRequestItemData);
         void loadItemPix(RSRequestItemData rsRequestItemData);
+        void loadItemPixByUser(RSRequestItemData rsRequestItemData);
         void onDestroyItem();
     }
 
@@ -69,6 +72,12 @@ public interface RSPresenter {
         void reportAbuse(RSRequestReportAbuse rsRequestReportAbuse);
         void onOkClick();
         void onCancelClick();
+        void onDestroy();
+    }
+
+    interface SearchPresenter{
+        void search(String query);
+        void searchItems(RSRequestItemByCategory rsRequestSearch);
         void onDestroy();
     }
 

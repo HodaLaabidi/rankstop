@@ -1,15 +1,15 @@
 package rankstop.steeringit.com.rankstop.utils;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-public abstract class EndlessScrollListener extends RecyclerView.OnScrollListener {
+public abstract class LinearScrollListener extends RecyclerView.OnScrollListener {
 
-    GridLayoutManager layoutManager;
+    LinearLayoutManager layoutManager;
 
-    public EndlessScrollListener(GridLayoutManager layoutManager) {
+    public LinearScrollListener(LinearLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
     }
 

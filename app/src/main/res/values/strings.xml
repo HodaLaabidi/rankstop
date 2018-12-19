@@ -186,4 +186,10 @@
     <string name="add_pix">Présentez votre item avec des photos (max 5)</string>
     <string name="take_pix">Take picture</string>
     <string name="gallery">Gallery</string>
+    <string name="search_hint">Que cherchez-vous</string>
+    <string name="category_title">Categories:</string>
+    <string name="items_title">Items:</string>
+    <string name="add_comments">Add comment</string>
+    <string name="add_pics_text">Add pictures</string>
+    <string name="add_pics_btn">Add pictures</string>
 </resources>

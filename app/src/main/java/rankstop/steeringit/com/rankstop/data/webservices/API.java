@@ -7,6 +7,7 @@ import okhttp3.RequestBody;
 import rankstop.steeringit.com.rankstop.data.model.CriteriaEval;
 import rankstop.steeringit.com.rankstop.data.model.User;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestReportAbuse;
@@ -20,6 +21,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Query;
 
 public interface API {
 
@@ -103,9 +105,17 @@ public interface API {
     @POST("eval/getComments")
     Call<RSResponse> loadItemComments(@Body RSRequestItemData rsRequestItemData);
 
+    // load user's item comments
+    @POST("eval/getCommentsByUser")
+    Call<RSResponse> loadItemCommentsByUser(@Body RSRequestItemData rsRequestItemData);
+
     // load item pictures
     @POST("eval/getPictures")
     Call<RSResponse> loadItemPix(@Body RSRequestItemData rsRequestItemData);
+
+    // load user's item pictures
+    @POST("eval/getPicturesByUser")
+    Call<RSResponse> loadItemPixByUser(@Body RSRequestItemData rsRequestItemData);
 
     // add item with review
     @Multipart
@@ -179,4 +189,12 @@ public interface API {
             @Part("urlLinkedIn") RequestBody urlLinkedIn,
             @Part("urlGooglePlus") RequestBody urlGooglePlus
     );
+
+    // search items
+    @GET("items/searchKey")
+    Call<RSResponse> search(@Query("q") String query);
+
+    // report abuse
+    @POST("items/search")
+    Call<RSResponse> searchItems(@Body RSRequestItemByCategory rsRequestSearch);
 }

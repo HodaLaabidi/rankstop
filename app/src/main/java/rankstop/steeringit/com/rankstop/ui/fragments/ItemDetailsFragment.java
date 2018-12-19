@@ -512,8 +512,8 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
         ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         mViewPagerAdapter.addFragment(ItemEvalsFragment.getInstance(item.getTabCritereDetails()), getResources().getString(R.string.evals_title));
-        mViewPagerAdapter.addFragment(ItemCommentsFragment.getInstance(item.getItemDetails().get_id()), getResources().getString(R.string.comments_title));
-        mViewPagerAdapter.addFragment(ItemPicsFragment.getInstance(item.getItemDetails().get_id()), getResources().getString(R.string.pics_title));
+        mViewPagerAdapter.addFragment(ItemCommentsFragment.getInstance(item), getResources().getString(R.string.comments_title));
+        mViewPagerAdapter.addFragment(ItemPicsFragment.getInstance(item), getResources().getString(R.string.pics_title));
         mViewPager.setAdapter(mViewPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }
