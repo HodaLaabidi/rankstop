@@ -10,7 +10,7 @@ public class Item implements Serializable {
     private List<CriteriaNote> tabCritereDetails;
     private Evaluation lastEvalUser;
     private Evaluation myEval;
-    private int numberEval;
+    private int numberEval, numberFollows;
     private boolean isFollow, isReportAbuse;
     private Localisation location;
 
@@ -108,5 +108,13 @@ public class Item implements Serializable {
 
     public void setReportAbuse(boolean reportAbuse) {
         isReportAbuse = reportAbuse;
+    }
+
+    public int getNumberFollows() {
+        return numberFollows;
+    }
+
+    public void setNumberFollows(int numberFollows) {
+        this.numberFollows = numberFollows;
     }
 }

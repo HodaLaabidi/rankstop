@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activities.ItemDetailsActivity">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -26,9 +24,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
-                android:paddingLeft="@dimen/pl_pie_details"
+                android:paddingStart="@dimen/pl_pie_details"
                 android:paddingTop="@dimen/pt_pie_details"
-                android:paddingRight="@dimen/pr_pie_details"
+                android:paddingEnd="@dimen/pr_pie_details"
                 android:paddingBottom="@dimen/pb_pie_details"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax">
@@ -37,13 +35,15 @@
                     android:id="@+id/pie_chart"
                     android:layout_width="@dimen/width_pie_details"
                     android:layout_height="@dimen/width_pie_details"
+                    android:layout_centerHorizontal="true"
                     android:transitionName="@string/transition_pie" />
 
                 <LinearLayout
+                    android:id="@+id/info_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_left_details"
-                    android:layout_toRightOf="@id/pie_chart"
+                    android:layout_marginStart="@dimen/margin_left_details"
+                    android:layout_below="@id/pie_chart"
                     android:orientation="vertical">
 
                     <TextView
@@ -56,6 +56,15 @@
                         android:transitionName="@string/transition_title" />
 
                     <TextView
+                        android:id="@+id/tv_item_category"
+                        style="@style/montserrat_bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/mb_text_category"
+                        android:textColor="@color/colorGray"
+                        android:textSize="@dimen/text_size_category_item_details" />
+
+                    <TextView
                         android:id="@+id/tv_item_description"
                         style="@style/montserrat_medium"
                         android:layout_width="match_parent"
@@ -63,23 +72,49 @@
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/text_size_subtitle_item_details" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <android.support.design.button.MaterialButton
+                            android:id="@+id/btn_report_abuse"
+                            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/mt_btn_item_details"
+                            android:text="@string/report_abuse"
+                            android:textAllCaps="false"
+                            android:visibility="gone"
+                            app:icon="@drawable/ic_flag" />
+
+                        <android.support.design.button.MaterialButton
+                            android:id="@+id/btn_add_review"
+                            style="@style/Widget.MaterialComponents.Button.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/mt_btn_item_details"
+                            android:text="@string/add_review"
+                            android:textAllCaps="false" />
+                    </LinearLayout>
+
                     <android.support.design.button.MaterialButton
-                        android:id="@+id/btn_add_review"
+                        android:id="@+id/btn_add_pix"
+                        style="@style/Widget.MaterialComponents.Button.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.MaterialComponents.Button.Icon"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="@dimen/mt_btn_item_details"
+                        android:text="@string/add_item_pix"
                         android:textAllCaps="false"
-                        android:text="@string/add_review"/>
-
-
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_gallery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/pie_chart"
+                    android:layout_below="@id/info_item"
                     android:layout_marginTop="@dimen/mt_rv_details"
                     android:visibility="gone" />
             </RelativeLayout>

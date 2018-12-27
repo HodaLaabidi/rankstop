@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -20,6 +19,9 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratRegular;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.data.model.Item;
@@ -68,7 +70,8 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
         public Item item;
         private ItemPieListener pieListener;
         private PieChart pieChart;
-        private TextView itemName, countReviewsTV;
+        private RSTVMontserratRegular itemName;
+        private RSTVMontserratMedium countReviewsTV, countFollowersTV;
         private CheckBox likeIcon;
 
         public ViewHolder(View itemView, ItemPieListener pieListener) {
@@ -78,6 +81,7 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             pieChart = itemView.findViewById(R.id.pie_chart);
             itemName = itemView.findViewById(R.id.item_name);
             countReviewsTV = itemView.findViewById(R.id.tv_count_reviews);
+            countFollowersTV = itemView.findViewById(R.id.tv_count_followers);
             likeIcon = itemView.findViewById(R.id.icon_like);
             itemView.setOnClickListener(this);
             // TODO instantiate/assign view members
@@ -88,6 +92,8 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             // TODO set data to view
             itemName.setText(item.getItemDetails().getTitle());
             countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " reviews");
+            countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " followers");
+            likeIcon.setVisibility(View.VISIBLE);
             likeIcon.setChecked(item.isFollow());
 
             likeIcon.setOnClickListener(new View.OnClickListener() {

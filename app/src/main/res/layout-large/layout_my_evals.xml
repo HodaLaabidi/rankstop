@@ -24,7 +24,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/p_card_rv_item"
                 android:layout_marginTop="@dimen/p_card_rv_item"
-                android:layout_marginEnd="35dp"
+                android:layout_marginEnd="@dimen/me_item_title"
                 android:layout_marginBottom="@dimen/p_card_rv_item"
                 android:ellipsize="end"
                 android:fontFamily="@font/montserrat_semi_bold_font"
@@ -52,7 +52,7 @@
             android:id="@+id/item_stat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-8dp"
+            android:layout_marginTop="@dimen/mt_layout_stat"
             android:paddingStart="@dimen/p_card_rv_item"
             android:paddingEnd="@dimen/p_card_rv_item"
             android:layout_below="@id/item_info"
@@ -62,27 +62,24 @@
                 android:id="@+id/tv_count_reviews"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:fontFamily="@font/montserrat_semi_bold_font"
                 android:maxLines="1"
-                android:text="25 reviews"
                 android:textColor="@color/colorGray"
-                android:textSize="@dimen/text_size_title_item_rv" />
+                android:textSize="@dimen/text_size_number" />
 
             <TextView
+                android:id="@+id/tv_count_followers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:fontFamily="@font/montserrat_semi_bold_font"
                 android:gravity="end"
                 android:maxLines="1"
-                android:text="25 followers"
                 android:textColor="@color/colorGray"
-                android:textSize="@dimen/text_size_title_item_rv" />
+                android:textSize="@dimen/text_size_number" />
         </LinearLayout>
 
         <com.github.mikephil.charting.charts.PieChart
@@ -99,15 +96,15 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/item_stat"
             android:layout_toEndOf="@id/pie_chart"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="@dimen/ms_note_eval"
+            android:layout_marginEnd="@dimen/p_card_rv_item"
             android:layout_marginTop="@dimen/p_card_rv_item"
             android:layout_marginBottom="@dimen/p_card_rv_item"
             android:orientation="vertical"
             android:background="@drawable/bg_layout_my_eval"
-            android:paddingStart="10dp"
-            android:paddingEnd="0dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp">
+            android:paddingStart="@dimen/ps_note_eval"
+            android:paddingTop="@dimen/pt_layout_my_eval"
+            android:paddingBottom="@dimen/pt_layout_my_eval">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -121,7 +118,7 @@
                     android:fontFamily="@font/montserrat_semi_bold_font"
                     android:maxLines="1"
                     android:text="Note Eval:"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="@dimen/pt_layout_my_eval"
                     android:textColor="@color/colorTitleText"
                     android:textSize="@dimen/text_size_title_item_rv" />
 

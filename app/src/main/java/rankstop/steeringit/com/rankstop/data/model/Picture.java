@@ -23,7 +23,7 @@ public class Picture implements Serializable {
     }
 
     public String getDate() {
-        return RSDateParser.convertToDateFormat(date);
+        return RSDateParser.convertToDateTimeFormat(date);
     }
 
     public void setDate(String date) {

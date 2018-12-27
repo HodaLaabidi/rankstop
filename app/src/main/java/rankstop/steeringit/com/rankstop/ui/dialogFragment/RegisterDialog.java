@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -25,7 +26,6 @@ import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseLogin;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.data.model.User;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -46,7 +46,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
     private MaterialButton cancelBtn, registerBtn;
 
     private String password, confirmPassword;
-    private RSNavigationData rsNavigationData;
+    private RSNavigationData rsNavigationData = new RSNavigationData();
 
     private View rootView;
 
@@ -203,6 +203,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
 
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
+        Log.i("TAG_REGISTER",""+token);
         RSSession.startSession(getContext(), token);
         //Toast.makeText(getContext(), "register success", Toast.LENGTH_SHORT).show();
 

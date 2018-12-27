@@ -2,12 +2,14 @@ package rankstop.steeringit.com.rankstop.data.model.custom;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RSUpdateItem {
 
     private String itemId, urlFacebook, urlTwitter, urlGooglePlus, urlInstagram, urlLinkedIn;
     private List<Uri> gallery;
+    private ArrayList<String> picDelete;
 
     public String getItemId() {
         return itemId;
@@ -63,5 +65,13 @@ public class RSUpdateItem {
 
     public void setGallery(List<Uri> gallery) {
         this.gallery = gallery;
+    }
+
+    public ArrayList<String> getPicDelete() {
+        return picDelete;
+    }
+
+    public void setPicDelete(ArrayList<String> picDelete) {
+        this.picDelete = picDelete;
     }
 }

@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -19,25 +21,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindColor;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.data.model.Item;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
 
     private List<Item> items;
     private Context context;
-    private RecyclerViewClickListener pieListener;
+    private ItemPieListener pieListener;
+    private boolean showLikeBTN;
+    private boolean isPieEmpty = false;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemsAdapter(RecyclerViewClickListener pieListener, Context context) {
+    public ItemsAdapter(ItemPieListener pieListener, Context context, boolean showLikeBTN) {
         this.pieListener = pieListener;
         this.context = context;
+        this.showLikeBTN = showLikeBTN;
         items = new ArrayList<>();
     }
 
@@ -56,15 +64,30 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
                 viewHolder = new ViewHolder(v2, pieListener);
                 break;
         }
-        return  viewHolder;
+        return viewHolder;
     }
 
     @NonNull
     private ViewHolder getViewHolder(ViewGroup parent, LayoutInflater inflater) {
         ViewHolder viewHolder;
-        View v1 = inflater.inflate(R.layout.item_fetched, parent, false);
+        View v1 = inflater.inflate(R.layout.layout_pie_chart_listing, parent, false);
         viewHolder = new ViewHolder(v1, pieListener);
         return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, int position, List<Object> payload) {
+        switch (getItemViewType(position)) {
+            case ITEM:
+                if (!payload.isEmpty()) {
+                    viewHolder.changeIcon(items.get(position));
+                } else {
+                    super.onBindViewHolder(viewHolder, position, payload);
+                }
+                break;
+            case LOADING:
+                break;
+        }
     }
 
     @Override
@@ -96,7 +119,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private RecyclerViewClickListener listener;
+        private ItemPieListener listener;
         public Item item;
         /*@BindView(R.id.pie_chart)
         PieChart pieChart;
@@ -105,17 +128,33 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         @BindView(R.id.tv_count_reviews)
         TextView countReviewsTV;*/
         private PieChart pieChart;
-        private TextView itemName, countReviewsTV;
+        private TextView itemName, countReviewsTV, countFollowersTV;
+        private CheckBox likeIcon;
         @BindColor(R.color.colorPrimary)
         int primaryColor;
+        @BindString(R.string.single_review)
+        String singleReview;
+        @BindString(R.string.multiple_review)
+        String multipleReview;
+        @BindString(R.string.single_follower)
+        String singleFollower;
+        @BindString(R.string.multiple_follower)
+        String multipleFollower;
 
-        public ViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
+        public ViewHolder(@NonNull View itemView, ItemPieListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.listener = listener;
             pieChart = itemView.findViewById(R.id.pie_chart);
             itemName = itemView.findViewById(R.id.item_name);
             countReviewsTV = itemView.findViewById(R.id.tv_count_reviews);
+            countFollowersTV = itemView.findViewById(R.id.tv_count_followers);
+            likeIcon = itemView.findViewById(R.id.icon_like);
+            if (showLikeBTN)
+                try {
+                    likeIcon.setVisibility(View.VISIBLE);
+                } catch (Exception e) {
+                }
             itemView.setOnClickListener(this);
         }
 
@@ -127,17 +166,56 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         public void setData(Item item) {
             this.item = item;
             itemName.setText(item.getItemDetails().getTitle());
-            countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " reviews");
+            if (item.getNumberEval() > 1){
+                countReviewsTV.setText(String.valueOf(item.getNumberEval()) +" "+ multipleReview);
+            }else {
+                countReviewsTV.setText(String.valueOf(item.getNumberEval()) +" "+ singleReview);
+            }
+
+            if (item.getNumberFollows() > 1){
+                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) +" "+ multipleFollower);
+            }else {
+                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) +" "+ singleFollower);
+            }
+
+            likeIcon.setChecked(item.isFollow());
+
+            likeIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pieListener.onFollowChanged(getAdapterPosition());
+                }
+            });
+            // add listener to like icon
+            likeIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (!RSSession.isLoggedIn(context)) {
+                        likeIcon.setChecked(!isChecked);
+                    }
+                }
+            });
 
             initPieChart(item);
         }
 
+        public void changeIcon(Item item) {
+            this.item = item;
+            likeIcon.setChecked(item.isFollow());
+        }
+
         private void initPieChart(Item item) {
             // values of the pie
+            isPieEmpty = false;
             ArrayList<PieEntry> pieEntry = new ArrayList<>();
-            pieEntry.add(new PieEntry(item.getGood(), ""));
-            pieEntry.add(new PieEntry(item.getNeutral(), ""));
-            pieEntry.add(new PieEntry(item.getBad(), ""));
+            if (item.getGood() == 0 && item.getNeutral() == 0 && item.getBad() == 0){
+                isPieEmpty = true;
+                pieEntry.add(new PieEntry(1, ""));
+            }else {
+                pieEntry.add(new PieEntry(item.getGood(), ""));
+                pieEntry.add(new PieEntry(item.getNeutral(), ""));
+                pieEntry.add(new PieEntry(item.getBad(), ""));
+            }
 
 
             pieChart.setUsePercentValues(true);
@@ -172,13 +250,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
             // scale when select a pie slice
             dataSet.setSelectionShift(5f);
             // colors of the pie slices
-            dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, context);
+            if (isPieEmpty){
+                dataSet.setColors(new int[]{R.color.colorLightGray}, context);
+            }else {
+                dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, context);
+            }
             // initialize PieData
             PieData data = new PieData(dataSet);
             data.setValueTextSize(10f);
             data.setValueTextColor(Color.WHITE);
             // disable/ enable values on the piechart
-            dataSet.setDrawValues(true);
+            dataSet.setDrawValues(!isPieEmpty);
             // affect data to pieChart
             pieChart.setData(data);
             //pieChart.setHighlightPerTapEnabled(false);

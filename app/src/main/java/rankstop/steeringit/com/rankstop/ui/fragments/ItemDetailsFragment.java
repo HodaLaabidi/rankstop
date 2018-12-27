@@ -93,6 +93,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     private Item item;
     private String itemId;
     private int currentColor;
+    private boolean isPieEmpty = false;
 
     private RSPresenter.ItemPresenter itemPresenter;
 
@@ -214,9 +215,14 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
         // values of the pie
         ArrayList<PieEntry> pieEntry = new ArrayList<>();
-        pieEntry.add(new PieEntry(item.getGood(), ""));
-        pieEntry.add(new PieEntry(item.getNeutral(), ""));
-        pieEntry.add(new PieEntry(item.getBad(), ""));
+        if (item.getGood() == 0 && item.getNeutral() == 0 && item.getBad() == 0){
+            isPieEmpty = true;
+            pieEntry.add(new PieEntry(1, ""));
+        }else {
+            pieEntry.add(new PieEntry(item.getGood(), ""));
+            pieEntry.add(new PieEntry(item.getNeutral(), ""));
+            pieEntry.add(new PieEntry(item.getBad(), ""));
+        }
 
 
         pieChart.setUsePercentValues(true);
@@ -251,13 +257,17 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         // scale when select a pie slice
         dataSet.setSelectionShift(5f);
         // colors of the pie slices
-        dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, getContext());
+        if (isPieEmpty){
+            dataSet.setColors(new int[]{R.color.colorLightGray}, getContext());
+        }else {
+            dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, getContext());
+        }
         // initialize PieData
         PieData data = new PieData(dataSet);
         data.setValueTextSize(10f);
         data.setValueTextColor(Color.WHITE);
         // disable/ enable values on the piechart
-        dataSet.setDrawValues(true);
+        dataSet.setDrawValues(!isPieEmpty);
         // affect data to pieChart
         pieChart.setData(data);
         // add listener of value selection

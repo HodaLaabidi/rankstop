@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -22,21 +21,12 @@ import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.fragments.AddItemFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.AddReviewFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ContactFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.EditProfileFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.HistoryFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.HomeFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemCommentsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemCreatedFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ItemDetailsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemEvalsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemFollowedFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemOwnedFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemPicsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ListNotifFragment;
+import rankstop.steeringit.com.rankstop.ui.fragments.ListingItemsFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ProfileFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.MyEvaluationsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.SettingsFragment;
+import rankstop.steeringit.com.rankstop.ui.fragments.SearchFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.session.RSSession;
@@ -64,6 +54,10 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
                 case R.id.navigation_home:
                     if (!(fragment instanceof HomeFragment))
                         replaceFragment(HomeFragment.getInstance(), RSConstants.FRAGMENT_HOME);
+                    return true;
+                case R.id.navigation_search:
+                    if (!(fragment instanceof SearchFragment))
+                        replaceFragment(SearchFragment.getInstance(), RSConstants.FRAGMENT_SEARCH);
                     return true;
                 case R.id.navigation_add_item:
                     if (!(fragment instanceof AddItemFragment))
@@ -150,7 +144,11 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
                 break;
             case RSConstants.FRAGMENT_HOME:
                 //follow mel home
-                startFragment(HomeFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_ITEM_DETAILS);
+                startFragment(HomeFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_HOME);
+                break;
+            case RSConstants.FRAGMENT_LISTING_ITEMS:
+                //follow mel home
+                startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
                 break;
             case RSConstants.FRAGMENT_ADD_REVIEW:
                 if (rsNavigationData.getAction().equals(RSConstants.ACTION_ADD_REVIEW)) {
@@ -160,7 +158,7 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
                     startFragment(AddReviewFragment.getInstance(rsAddReview, null, RSConstants.FRAGMENT_SIGN_UP), RSConstants.FRAGMENT_ADD_REVIEW);
                 } else if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
                     // follow item men item details
-                    startFragment(ItemDetailsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_ITEM_DETAILS);
+                    startFragment(ItemDetailsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_ADD_REVIEW);
                 }
                 break;
             case RSConstants.FRAGMENT_ITEM_DETAILS:
@@ -194,7 +192,7 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
             fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             finish();
         } else {
-            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof ProfileFragment) {
+            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof ProfileFragment || fragment instanceof SearchFragment) {
                 fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
                 Log.d("TAG_BACK_STACK", "" + Thread.currentThread().getId());
@@ -220,6 +218,11 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
             }
         }
         //Toast.makeText(this, ""+fragmentManager.getBackStackEntryCount(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void navigateTo(int fragmentID, String tag) {
+        navigation.setSelectedItemId(fragmentID);
     }
 
     @Override

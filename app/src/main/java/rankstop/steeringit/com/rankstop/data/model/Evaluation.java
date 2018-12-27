@@ -14,7 +14,7 @@ public class Evaluation implements Serializable {
     private double noteEval;
 
     public String getDate() {
-        return RSDateParser.convertToDateFormat(date);
+        return RSDateParser.convertToDateTimeFormat(date);
     }
 
     public void setDate(String date) {

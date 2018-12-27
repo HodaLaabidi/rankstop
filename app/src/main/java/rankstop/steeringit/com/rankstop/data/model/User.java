@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 import rankstop.steeringit.com.rankstop.data.model.custom.SocialNetwork;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class User implements Serializable {
 
@@ -18,8 +19,8 @@ public class User implements Serializable {
     private String address;
     @SerializedName("username")
     private String username;
-    @SerializedName("fullname")
-    private String fullname;
+    @SerializedName("fullName")
+    private String fullName;
     @SerializedName("phone")
     private String phone;
     @SerializedName("photo")
@@ -72,12 +73,12 @@ public class User implements Serializable {
         this.address = address;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPhone() {
@@ -113,7 +114,9 @@ public class User implements Serializable {
     }
 
     public String getBirthDate() {
-        return birthDate;
+        if (birthDate != null)
+            return RSDateParser.convertToDateFormat(birthDate);
+        return null;
     }
 
     public void setBirthDate(String birthDate) {

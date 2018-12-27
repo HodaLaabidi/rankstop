@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/rs_toolbar" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/m_activity">
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/m_activity"
+                android:layout_marginBottom="@dimen/m_activity"
+                android:gravity="center"
+                android:text="@string/profile_pix"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/avatar"
+                android:layout_width="@dimen/image_width"
+                android:layout_height="@dimen/image_width"
+                android:layout_gravity="center"
+                app:roundingBorderColor="@android:color/white"
+                app:roundingBorderWidth="2dp"
+                fresco:placeholderImage="@drawable/placeholder"
+                fresco:roundAsCircle="true" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_username"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_username"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_first_name"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_first_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_nom"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_last_name"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_prenom"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_pays"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_pays"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_country"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_city"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_city"
+                    android:inputType="text" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btn_use_c_location"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:textAllCaps="false"
+                android:fontFamily="@font/montserrat_bold_font"
+                android:text="@string/use_c_location" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_phone"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_phone"
+                    android:inputType="phone" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btn_cancel_changes"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/cancel"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp" />
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btn_save_changes"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold_font"
+                    android:text="@string/save_changes"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>

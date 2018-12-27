@@ -26,12 +26,15 @@ import com.google.gson.Gson;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
+import rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratRegular;
 import rankstop.steeringit.com.rankstop.data.model.UserInfo;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
@@ -56,7 +59,21 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     @BindView(R.id.avatar)
     SimpleDraweeView avatar;
     @BindView(R.id.tv_user_name)
-    TextView userNameTV;
+    RSTVMontserratRegular userNameTV;
+    @BindView(R.id.tv_full_name)
+    RSTVMontserratRegular fullNameTV;
+    @BindView(R.id.tv_email)
+    RSTVMontserratRegular emailTV;
+    @BindView(R.id.tv_phone)
+    RSTVMontserratRegular phoneTV;
+    @BindView(R.id.tv_gender)
+    RSTVMontserratRegular genderTV;
+    @BindView(R.id.tv_birthday)
+    RSTVMontserratRegular birthdayTV;
+    @BindView(R.id.tv_country)
+    RSTVMontserratRegular countryTV;
+    @BindView(R.id.tv_city)
+    RSTVMontserratRegular cityTV;
 
     @BindView(R.id.progress_bar_page_owned)
     ProgressBar progressBarOwnedItem;
@@ -73,11 +90,13 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     RecyclerView recyclerViewFollowedItem;
 
     @BindView(R.id.more_page_owned)
-    MaterialButton moreOwnedBtn;
+    RSMBMontserratBold moreOwnedBtn;
     @BindView(R.id.more_page_created)
-    MaterialButton moreCreatedBtn;
+    RSMBMontserratBold moreCreatedBtn;
     @BindView(R.id.more_page_followed)
-    MaterialButton moreFollowedBtn;
+    RSMBMontserratBold moreFollowedBtn;
+    @BindView(R.id.btn_update_profile)
+    RSMBMontserratBold updateProfileBTN;
 
     @BindView(R.id.layout_view_page_created)
     LinearLayout layoutItemCreated;
@@ -93,17 +112,31 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     @BindView(R.id.tv_pix_number)
     TextView pixNumberTV;
 
-    @OnClick({R.id.more_page_created, R.id.more_page_owned, R.id.more_page_followed})
+    @BindString(R.string.male)
+    String male;
+    @BindString(R.string.female)
+    String female;
+    @BindString(R.string.undefined)
+    String undefined;
+
+    @OnClick({R.id.more_page_created, R.id.more_page_owned, R.id.more_page_followed, R.id.btn_update_profile})
     public void manageBtn(MaterialButton v) {
+        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
         switch (v.getId()) {
             case R.id.more_page_created:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
+                rsNavigationData.setSection(RSConstants.ITEM_CREATED);
+                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
                 break;
             case R.id.more_page_owned:
-                fragmentActionListener.startFragment(ItemOwnedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_OWNED);
+                rsNavigationData.setSection(RSConstants.ITEM_OWNED);
+                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
                 break;
             case R.id.more_page_followed:
-                fragmentActionListener.startFragment(ItemFollowedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_FOLLOWED);
+                rsNavigationData.setSection(RSConstants.ITEM_FOLLOWED);
+                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
+                break;
+            case R.id.btn_update_profile:
+                fragmentActionListener.startFragment(UpdateProfileFragment.getInstance(userInfo.getUser()), RSConstants.FRAGMENT_UPDATE_PROFILE);
                 break;
         }
     }
@@ -122,6 +155,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     private RSResponseListingItem listingItemResponse;
     private PieAdapter adapterOwnedItem, adapterFollowedItem, adapterCreatedItem;
     private String itemIdToFollow;
+
+    private RSNavigationData rsNavigationData = new RSNavigationData();
 
     private WeakReference<ProfileFragment> fragmentContext;
 
@@ -166,13 +201,83 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     private void bindLocalData() {
         setUserPic(userInfo.getUser().getPictureProfile());
         setUserName(userInfo.getUser().getUsername());
+        setEmail(userInfo.getUser().getEmail());
+        setPhone(userInfo.getUser().getPhone());
+        setGender(userInfo.getUser().getGender());
+        setBirthDay(userInfo.getUser().getBirthDate());
+        setCountry(userInfo.getUser().getAddress());
+        setCity(userInfo.getUser().getAddress());
+        setFullName(userInfo.getUser().getFullName(), userInfo.getUser().getFullName());
         setEvalsNumber(userInfo.getCountEval());
         setCommentsNumber(userInfo.getCountComments());
         setPixNumber(userInfo.getCountPictures());
     }
 
-    private void setUserName(String username) {
-        userNameTV.setText(username);
+    private void setUserName(String value) {
+        if (value != null)
+            userNameTV.setText(value);
+        else
+            userNameTV.setText(undefined);
+    }
+
+    private void setFullName(String nom, String prenom) {
+        String fullname = "";
+        if (nom != null)
+            fullname = nom;
+        if (prenom != null)
+            fullname += " "+prenom;
+
+        if (!fullname.equals(""))
+            fullNameTV.setText(fullname);
+        else
+            fullNameTV.setText(undefined);
+    }
+
+    private void setEmail(String value) {
+        if (value != null)
+            emailTV.setText(value);
+        else
+            emailTV.setText(undefined);
+    }
+
+    private void setPhone(String value) {
+        if (value != null)
+            phoneTV.setText(value);
+        else
+            phoneTV.setText(undefined);
+    }
+
+    private void setGender(String value) {
+        if (value != null) {
+            if (value.equals("male")) {
+                genderTV.setText(male);
+            } else if (value.equals("female")) {
+                genderTV.setText(female);
+            }
+        } else {
+            genderTV.setText(undefined);
+        }
+    }
+
+    private void setBirthDay(String value) {
+        if (value != null)
+            birthdayTV.setText(value);
+        else
+            birthdayTV.setText(undefined);
+    }
+
+    private void setCountry(String value) {
+        if (value != null)
+            countryTV.setText(value);
+        else
+            countryTV.setText(undefined);
+    }
+
+    private void setCity(String value) {
+        if (value != null)
+            cityTV.setText(value);
+        else
+            cityTV.setText(undefined);
     }
 
     private void setUserPic(String picture) {
@@ -409,12 +514,61 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 if (this.userInfo.getCountPictures() != userInfo.getCountPictures()) {
                     setPixNumber(userInfo.getCountPictures());
                 }
-                if (!this.userInfo.getUser().getPictureProfile().equals(userInfo.getUser().getPictureProfile())) {
-                    setUserPic(userInfo.getUser().getPictureProfile());
+
+                if (this.userInfo.getUser().getPictureProfile() != null) {
+                    if (!this.userInfo.getUser().getPictureProfile().equals(userInfo.getUser().getPictureProfile())) {
+                        setUserPic(userInfo.getUser().getPictureProfile());
+                    }
                 }
-                if (!this.userInfo.getUser().getUsername().equals(userInfo.getUser().getUsername())) {
-                    setUserName(userInfo.getUser().getUsername());
+
+                if (this.userInfo.getUser().getUsername() != null) {
+                    if (!this.userInfo.getUser().getUsername().equals(userInfo.getUser().getUsername())) {
+                        setUserName(userInfo.getUser().getUsername());
+                    }
                 }
+
+                if (this.userInfo.getUser().getFullName() != null) {
+                    if (!this.userInfo.getUser().getFullName().equals(userInfo.getUser().getFullName()) || !this.userInfo.getUser().getFullName().equals(userInfo.getUser().getFullName())) {
+                        setFullName(userInfo.getUser().getFullName(), userInfo.getUser().getFullName());
+                    }
+                }
+
+                if (this.userInfo.getUser().getEmail() != null) {
+                    if (!this.userInfo.getUser().getEmail().equals(userInfo.getUser().getEmail())) {
+                        setEmail(userInfo.getUser().getEmail());
+                    }
+                }
+
+                if (this.userInfo.getUser().getPhone() != null) {
+                    if (!this.userInfo.getUser().getPhone().equals(userInfo.getUser().getPhone())) {
+                        setPhone(userInfo.getUser().getPhone());
+                    }
+                }
+
+                if (this.userInfo.getUser().getGender() != null) {
+                    if (!this.userInfo.getUser().getGender().equals(userInfo.getUser().getGender())) {
+                        setGender(userInfo.getUser().getGender());
+                    }
+                }
+
+                if (this.userInfo.getUser().getBirthDate() != null) {
+                    if (!this.userInfo.getUser().getBirthDate().equals(userInfo.getUser().getBirthDate())) {
+                        setBirthDay(userInfo.getUser().getBirthDate());
+                    }
+                }
+
+                if (this.userInfo.getUser().getAddress() != null) {
+                    if (!this.userInfo.getUser().getAddress().equals(userInfo.getUser().getAddress())) {
+                        setCountry(userInfo.getUser().getAddress());
+                    }
+                }
+
+                if (this.userInfo.getUser().getAddress() != null) {
+                    if (!this.userInfo.getUser().getAddress().equals(userInfo.getUser().getAddress())) {
+                        setCity(userInfo.getUser().getAddress());
+                    }
+                }
+
                 this.userInfo = userInfo;
                 RSSession.refreshLocalStorage(userInfo, getContext());
                 break;

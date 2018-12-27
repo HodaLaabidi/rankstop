@@ -51,6 +51,7 @@ import rankstop.steeringit.com.rankstop.ui.adapter.DataFetchedAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemsAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemsFetchedAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
@@ -145,11 +146,24 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     }
 
     private void initItemsList() {
-        itemsListener = (view, position) -> {
-            fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsFetched.get(position).get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+        ItemPieListener itemsListener = new ItemPieListener() {
+            @Override
+            public void onFollowChanged(boolean isFollow, int position) {
+
+            }
+
+            @Override
+            public void onFollowChanged(int position) {
+
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsFetched.get(position).get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+            }
         };
         GridLayoutManager layoutManager = new GridLayoutManager(itemsByCategoryRV.getContext(), getResources().getInteger(R.integer.count_item_per_row));
-        itemsAdapter = new ItemsAdapter(itemsListener, getContext());
+        itemsAdapter = new ItemsAdapter(itemsListener, getContext(), false);
         itemsByCategoryRV.setLayoutManager(layoutManager);
         itemsByCategoryRV.setAdapter(itemsAdapter);
         itemsByCategoryRV.addItemDecoration(new VerticalSpace(getResources().getInteger(R.integer.m_card_view), getResources().getInteger(R.integer.count_item_per_row)));
@@ -240,10 +254,11 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     }
 
     private void bindViews() {
+
         setFragmentActionListener((ContainerActivity) getActivity());
         toolbar.setTitle("Search");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         searchPresenter = new PresenterSearchImpl(SearchFragment.this);
 
@@ -256,6 +271,9 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         EditText et = searchView.findViewById(searchEditId);
         et.setTextColor(Color.WHITE);
         et.setHintTextColor(colorGray);
+
+        // expand search view
+        searchView.onActionViewExpanded();
 
         // categories fetched
         categoriesFetched = new ArrayList<>();

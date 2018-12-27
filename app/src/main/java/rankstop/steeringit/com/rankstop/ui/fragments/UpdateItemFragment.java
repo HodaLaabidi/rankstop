@@ -1,14 +1,10 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -78,6 +74,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     private PresenterUpdateItemImpl presenterUpdateItem;
 
     private List<Uri> listPics = new ArrayList<>(), listNewPics = new ArrayList<>();
+    private ArrayList<String> listDeletedPics = new ArrayList();
 
     public static UpdateItemFragment getInstance(ItemDetails itemDetails) {
         Bundle args = new Bundle();
@@ -128,11 +125,14 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         }
         RecyclerViewClickListener listener = (view, position) -> {
 
-            int index = findUriPosition(listPics.get(position));
+            int indexUri = findUriPosition(listPics.get(position));
+            int indexId = findPicIdByUri(listPics.get(position));
+            if (indexId != -1)
+                listDeletedPics.add(itemDetails.getGallery().get(indexId).get_id());
             listPics.remove(position);
 
-            if (index != -1)
-                listNewPics.remove(index);
+            if (indexUri != -1)
+                listNewPics.remove(indexUri);
 
             reviewPixAdapter.notifyDataSetChanged();
 
@@ -144,6 +144,14 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         recyclerViewPix.setAdapter(reviewPixAdapter);
         recyclerViewPix.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         recyclerViewPix.setNestedScrollingEnabled(false);
+    }
+
+    private int findPicIdByUri(Uri uri) {
+        for (int i =0; i < itemDetails.getGallery().size(); i++){
+            if (Uri.parse(itemDetails.getGallery().get(i).getUrlPicture()).equals(uri))
+                return i;
+        }
+        return -1;
     }
 
     private int findUriPosition(Uri uri) {
@@ -164,6 +172,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         rsUpdateItem.setUrlLinkedIn(inputLinkedIn.getText().toString());
         rsUpdateItem.setUrlGooglePlus(inputGoogle.getText().toString());
         rsUpdateItem.setGallery(listNewPics);
+        rsUpdateItem.setPicDelete(listDeletedPics);
         presenterUpdateItem.updateItem(rsUpdateItem);
     }
 

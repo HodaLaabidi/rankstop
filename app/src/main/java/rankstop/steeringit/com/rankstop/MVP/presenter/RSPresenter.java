@@ -81,5 +81,11 @@ public interface RSPresenter {
         void onDestroy();
     }
 
+    interface UpdateProfilePresenter{
+        void editPassword();
+        void editProfile();
+        void onDestroy();
+    }
+
 
 }

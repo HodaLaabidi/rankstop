@@ -64,7 +64,7 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
         public Item item;
         private ItemPieListener pieListener;
         private PieChart pieChart;
-        private TextView itemName, countReviewsTV, noteEvalTV, dateEvalTV;
+        private TextView itemName, countReviewsTV, noteEvalTV, dateEvalTV, countFollowersTV;
         private CheckBox likeIcon;
         private DisabledRecyclerView recyclerViewCriteriaEvaluated;
 
@@ -75,6 +75,7 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             pieChart = itemView.findViewById(R.id.pie_chart);
             itemName = itemView.findViewById(R.id.item_name);
             countReviewsTV = itemView.findViewById(R.id.tv_count_reviews);
+            countFollowersTV = itemView.findViewById(R.id.tv_count_followers);
             likeIcon = itemView.findViewById(R.id.icon_like);
             noteEvalTV = itemView.findViewById(R.id.tv_note_eval);
             dateEvalTV = itemView.findViewById(R.id.tv_date_eval);
@@ -102,6 +103,7 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             // TODO set data to view
             itemName.setText(item.getItemDetails().getTitle());
             countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " reviews");
+            countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " followers");
             likeIcon.setChecked(item.isFollow());
 
 

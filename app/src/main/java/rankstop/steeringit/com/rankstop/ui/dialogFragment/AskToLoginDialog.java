@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratMedium;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -29,8 +31,8 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 public class AskToLoginDialog extends DialogFragment {
 
     private View rootView;
-    private MaterialButton cancelBtn, loginBtn;
-    private TextView messageTV;
+    private RSMBMontserratBold cancelBtn, loginBtn;
+    private RSTVMontserratMedium messageTV;
     private ColorStateList colorStateList;
     private LinearLayout.LayoutParams layoutParams;
     private FragmentActionListener fragmentActionListener;

@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -30,6 +29,7 @@ import java.util.List;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold;
 import rankstop.steeringit.com.rankstop.data.model.User;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
@@ -54,7 +54,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     private View rootView;
     private ProgressBar progressBarTopRanked, progressBarTopViewed, progressBarTopFollowed, progressBarTopCommented;
     private RecyclerView recyclerViewTopRanked, recyclerViewTopViewed, recyclerViewTopFollowed, recyclerViewTopCommented;
-    private MaterialButton moreTopRankedBtn, moreTopViewedBtn, moreTopCommentedBtn, moreTopFollowedBtn, searchBTN;
+    private RSMBMontserratBold moreTopRankedBtn, moreTopViewedBtn, moreTopCommentedBtn, moreTopFollowedBtn, searchBTN;
     private LinearLayout layoutTopFollowed, layoutTopViewed, layoutTopCommented, layoutTopRanked;
 
     private List<Item> listTopRankedItem, listTopViewedItem, listTopFollowedItem, listTopCommentedItem;
@@ -64,9 +64,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
     private User user;
     private String itemIdToFollow;
-    private RSNavigationData rsNavigationData;
+    private RSNavigationData rsNavigationData = new RSNavigationData();
     private WeakReference<HomeFragment> fragmentContext;
-    private TextInputEditText searchET;
     private NestedScrollView scrollView;
 
     @Override
@@ -87,13 +86,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         bindViews();
-        getCurrentUser();
-        loadHomeData();
 
         searchBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentActionListener.startFragment(SearchFragment.getInstance(), RSConstants.FRAGMENT_SEARCH);
+                fragmentActionListener.navigateTo(R.id.navigation_search, RSConstants.FRAGMENT_SEARCH);
             }
         });
 
@@ -103,6 +100,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
             //manageFollow(rsNavigationData.getItemId(), true);
         } catch (Exception e) {
         }*/
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i("TAG_LISTING","on activity created");
+        itemPresenter = new PresenterItemImpl(HomeFragment.this);
+        getCurrentUser();
+        loadHomeData();
     }
 
     private void getCurrentUser() {
@@ -120,7 +126,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
         recyclerViewTopFollowed = rootView.findViewById(R.id.recycler_view_top_followed);
         recyclerViewTopCommented = rootView.findViewById(R.id.recycler_view_top_commented);
 
-        searchET = rootView.findViewById(R.id.et_search);
         scrollView = rootView.findViewById(R.id.scroll_view);
 
         progressBarTopRanked = rootView.findViewById(R.id.progress_bar_top_ranked);
@@ -149,7 +154,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         setFragmentActionListener((ContainerActivity) getActivity());
-        itemPresenter = new PresenterItemImpl(HomeFragment.this);
     }
 
     private void loadHomeData() {
@@ -292,18 +296,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
     @Override
     public void onClick(View v) {
+        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
         switch (v.getId()) {
             case R.id.more_page_top_ranked:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
+                rsNavigationData.setSection(RSConstants.TOP_RANKED_ITEMS);
+                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
                 break;
             case R.id.more_page_top_viewed:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
+                rsNavigationData.setSection(RSConstants.TOP_VIEWED_ITEMS);
+                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
                 break;
             case R.id.more_page_top_commented:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
+                rsNavigationData.setSection(RSConstants.TOP_COMMENTED_ITEMS);
+                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
                 break;
             case R.id.more_page_top_followed:
-                fragmentActionListener.startFragment(ItemCreatedFragment.getInstance(), RSConstants.FRAGMENT_ITEM_CREATED);
+                rsNavigationData.setSection(RSConstants.TOP_FOLLOWED_ITEMS);
+                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
                 break;
         }
     }
@@ -542,7 +551,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     }
 
     private void openAlertDialog(String message, String itemId) {
-        RSNavigationData data = new RSNavigationData(RSConstants.FRAGMENT_HOME, RSConstants.ACTION_FOLLOW, message, itemId, "", "");
+        RSNavigationData data = new RSNavigationData();
+        data.setMessage(message);
+        data.setItemId(itemId);
+        data.setAction(RSConstants.ACTION_FOLLOW);
+        data.setFrom(RSConstants.FRAGMENT_HOME);
         AskToLoginDialog dialog = AskToLoginDialog.newInstance(data);
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), "");

@@ -90,6 +90,30 @@
     <string name="add_comments">Add comments</string>
     <string name="add_pics_text">Add pictures</string>
     <string name="add_pics_btn">Add pictures</string>
+    <string name="profile_pix">Photo de profil</string>
+    <string name="btn_edit">Edit</string>
+    <string name="hint_phone">Phone</string>
+    <string name="hint_address">Address</string>
+    <string name="hint_username">Username</string>
+    <string name="use_c_location">Use current location</string>
+    <string name="single_review"> review</string>
+    <string name="multiple_review"> reviews</string>
+    <string name="single_follower">follower</string>
+    <string name="multiple_follower">followers</string>
+    <string name="hint_country">Country</string>
+    <string name="hint_city">City</string>
+    <string name="text_search_home_header">Que cherchez-vous ?</string>
+    <string name="start_with_rs">Démarrer avec RankStop</string>
+    <string name="or_connect_with">or connect with</string>
+    <string name="text_btn_login">Se connecter</string>
+    <string name="title_search">Search</string>
+    <string name="hint_gender">Gender</string>
+    <string name="hint_birthday">Birthday</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="undefined">not set</string>
+    <string name="hint_nom">FirstName</string>
+    <string name="hint_prenom">LastName</string>
 
     <string-array name="labels">
         <item>Not set</item>

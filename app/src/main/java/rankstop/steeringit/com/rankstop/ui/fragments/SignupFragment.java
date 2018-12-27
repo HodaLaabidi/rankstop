@@ -1,15 +1,12 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +17,9 @@ import com.google.gson.Gson;
 import java.lang.ref.WeakReference;
 
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseFindEmail;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.LoginDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.RegisterDialog;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -36,7 +33,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     private final String LOGIN_DIALOG_TAG = "game_dialog_tag";
     private final String REGISTER_DIALOG_TAG = "game_dialog_tag";
 
-    private MaterialButton loginBtn;
+    private RSMBMontserratBold loginBtn;
     private View rootView;
 
     private RSPresenter.SignupPresenter signupPresenter;

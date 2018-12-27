@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -57,7 +58,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     private static AddItemFragment instance;
 
-    private TextInputEditText nameET, descriptionET, addressET;
+    private TextInputEditText nameET, descriptionET, addressET, phoneET;
     private LinearLayout locationLayout;
     private AppCompatSpinner categorySpinner;
     private WorkaroundMapFragment mapFragment;
@@ -75,7 +76,6 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     private double currentLatitude, currentLongitude;
     private RSAddReview rsAddItem = new RSAddReview();
-
 
     private RSPresenter.ItemPresenter itemPresenter;
 
@@ -106,6 +106,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                 rsAddItem.setTitle(nameET.getText().toString());
                 rsAddItem.setDescription(descriptionET.getText().toString());
                 rsAddItem.setAddress(addressET.getText().toString());
+                rsAddItem.setPhone(phoneET.getText().toString());
                 rsAddItem.setLatitude(""+currentLatitude);
                 rsAddItem.setLongitude(""+currentLongitude);
 
@@ -125,6 +126,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         nameET = rootView.findViewById(R.id.input_title);
         descriptionET = rootView.findViewById(R.id.input_description);
         addressET = rootView.findViewById(R.id.input_address);
+        phoneET = rootView.findViewById(R.id.input_phone);
         categorySpinner = rootView.findViewById(R.id.categories_spinner);
         scrollView = rootView.findViewById(R.id.scroll_view);
         locationLayout = rootView.findViewById(R.id.layout_location);
@@ -143,8 +145,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         selectedCategory = (Category) parent.getItemAtPosition(position);
         if (selectedCategory.isLocation()) {
             locationLayout.setVisibility(View.VISIBLE);
-            if (isMapInitialized == false)
+            if (isMapInitialized == false) {
                 isMapInitialized = true;
+            }
             initMaps();
         } else {
             locationLayout.setVisibility(View.GONE);
@@ -208,6 +211,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             @Override
             public void onMarkerDragEnd(Marker marker) {
                 addressET.setText(getAddress(marker.getPosition()));
+                rsAddItem.setCity(getCity(marker.getPosition()));
+                rsAddItem.setCountry(getCountry(marker.getPosition()));
+                rsAddItem.setGovernorate(getGovernorate(marker.getPosition()));
             }
         });
     }
@@ -251,11 +257,44 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     private String getAddress(LatLng latLng) {
         geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
-            return geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1).get(0).getAddressLine(0);
+            String adr = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1).get(0).getAddressLine(0);
+            return adr != null ? adr : "";
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
+    }
+
+    private String getCity(LatLng latLng) {
+        geocoder = new Geocoder(getContext(), Locale.getDefault());
+        try {
+            String city = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1).get(0).getLocality();
+            return city != null ? city : "";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    private String getGovernorate(LatLng latLng) {
+        geocoder = new Geocoder(getContext(), Locale.getDefault());
+        try {
+            String gov = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1).get(0).getAdminArea();
+            return gov != null ? gov : "";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private String getCountry(LatLng latLng) {
+        geocoder = new Geocoder(getContext(), Locale.getDefault());
+        try {
+            String country = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1).get(0).getCountryName();
+            return country != null ? country : "";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private void addMarker(double latitude, double longitude) {
@@ -266,6 +305,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         mMap.addMarker(currentUserLocation);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentUserLatLang, 12));
         addressET.setText(getAddress(currentUserLatLang));
+        rsAddItem.setCity(getCity(currentUserLatLang));
+        rsAddItem.setCountry(getCountry(currentUserLatLang));
+        rsAddItem.setGovernorate(getGovernorate(currentUserLatLang));
         currentLatitude = latitude;
         currentLongitude = longitude;
     }
@@ -393,7 +435,6 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
                 SpinnerCategoryAdapter spinnerCategoryAdapter = new SpinnerCategoryAdapter(getContext(), categoryList);
                 categorySpinner.setAdapter(spinnerCategoryAdapter);
-
                 //Toast.makeText(getContext(), "size = "+((List<Criteria>)categoryList.get(0).getCriterias()).get(0).getName(), Toast.LENGTH_SHORT).show();
                 break;
         }

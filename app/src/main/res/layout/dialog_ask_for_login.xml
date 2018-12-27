@@ -23,11 +23,10 @@
         android:orientation="vertical"
         android:padding="@dimen/padding_dialog">
 
-        <TextView
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMontserratMedium
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_dialog" />
     </LinearLayout>
@@ -36,7 +35,7 @@
         android:layout_height="wrap_content"
         android:gravity="center">
 
-        <android.support.design.button.MaterialButton
+        <rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold
             android:id="@+id/negative_btn"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
@@ -48,7 +47,7 @@
             android:textColor="@android:color/white"
             app:cornerRadius="@dimen/raduis_btn_dialog" />
 
-        <android.support.design.button.MaterialButton
+        <rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold
             android:id="@+id/positive_btn"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"

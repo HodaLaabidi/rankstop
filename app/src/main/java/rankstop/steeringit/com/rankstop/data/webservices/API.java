@@ -1,5 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.webservices;
 
+import android.net.Uri;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -128,8 +131,12 @@ public interface API {
             @Part("description") RequestBody description,
             @Part("title") RequestBody title,
             @Part("address") RequestBody address,
+            @Part("phone") RequestBody phone,
             @Part("latitude") RequestBody latitude,
             @Part("longitude") RequestBody longitude,
+            @Part("city") RequestBody city,
+            @Part("governorate") RequestBody governorate,
+            @Part("country") RequestBody country,
             @Part("comment") RequestBody comment
     );
 
@@ -187,7 +194,8 @@ public interface API {
             @Part("urlInstagram") RequestBody urlInstagram,
             @Part("urlTwitter") RequestBody urlTwitter,
             @Part("urlLinkedIn") RequestBody urlLinkedIn,
-            @Part("urlGooglePlus") RequestBody urlGooglePlus
+            @Part("urlGooglePlus") RequestBody urlGooglePlus,
+            @Part("picDelete") ArrayList<String> picDelete
     );
 
     // search items

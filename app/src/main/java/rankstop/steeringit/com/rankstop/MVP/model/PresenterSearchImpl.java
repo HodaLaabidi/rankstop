@@ -21,59 +21,59 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
 
     @Override
     public void search(String query) {
-
-        if (callSearch != null)
-            if (callSearch.isExecuted())
-                callSearch.cancel();
-
-        searchView.showProgressBar(RSConstants.SEARCH);
-
-        callSearch = WebService.getInstance().getApi().search(query);
-        callSearch.enqueue(new Callback<RSResponse>() {
-            @Override
-            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                if (response.body().getStatus() == 1) {
-                    searchView.onSuccess(RSConstants.SEARCH, response.body().getData());
-                } else if (response.body().getStatus() == 0) {
-                    searchView.onError(RSConstants.SEARCH);
-                }
-                searchView.hideProgressBar(RSConstants.SEARCH);
-            }
-
-            @Override
-            public void onFailure(Call<RSResponse> call, Throwable t) {
-                if (!callSearch.isCanceled()) {
+        if (searchView != null) {
+            if (callSearch != null)
+                if (callSearch.isExecuted())
+                    callSearch.cancel();
+            searchView.showProgressBar(RSConstants.SEARCH);
+            callSearch = WebService.getInstance().getApi().search(query);
+            callSearch.enqueue(new Callback<RSResponse>() {
+                @Override
+                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                    if (response.body().getStatus() == 1) {
+                        searchView.onSuccess(RSConstants.SEARCH, response.body().getData());
+                    } else if (response.body().getStatus() == 0) {
+                        searchView.onError(RSConstants.SEARCH);
+                    }
                     searchView.hideProgressBar(RSConstants.SEARCH);
-                    searchView.onFailure(RSConstants.SEARCH);
                 }
-            }
-        });
+
+                @Override
+                public void onFailure(Call<RSResponse> call, Throwable t) {
+                    if (!callSearch.isCanceled()) {
+                        searchView.hideProgressBar(RSConstants.SEARCH);
+                        searchView.onFailure(RSConstants.SEARCH);
+                    }
+                }
+            });
+        }
     }
 
     @Override
     public void searchItems(RSRequestItemByCategory rsRequestSearch) {
-        searchView.showProgressBar(RSConstants.SEARCH_ITEMS);
-
-        callSearchItems = WebService.getInstance().getApi().searchItems(rsRequestSearch);
-        callSearchItems.enqueue(new Callback<RSResponse>() {
-            @Override
-            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                if (response.body().getStatus() == 1) {
-                    searchView.onSuccess(RSConstants.SEARCH_ITEMS, response.body().getData());
-                } else if (response.body().getStatus() == 0) {
-                    searchView.onError(RSConstants.SEARCH_ITEMS);
-                }
-                searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
-            }
-
-            @Override
-            public void onFailure(Call<RSResponse> call, Throwable t) {
-                if (!callSearchItems.isCanceled()) {
+        if (searchView != null) {
+            searchView.showProgressBar(RSConstants.SEARCH_ITEMS);
+            callSearchItems = WebService.getInstance().getApi().searchItems(rsRequestSearch);
+            callSearchItems.enqueue(new Callback<RSResponse>() {
+                @Override
+                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                    if (response.body().getStatus() == 1) {
+                        searchView.onSuccess(RSConstants.SEARCH_ITEMS, response.body().getData());
+                    } else if (response.body().getStatus() == 0) {
+                        searchView.onError(RSConstants.SEARCH_ITEMS);
+                    }
                     searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
-                    searchView.onFailure(RSConstants.SEARCH_ITEMS);
                 }
-            }
-        });
+
+                @Override
+                public void onFailure(Call<RSResponse> call, Throwable t) {
+                    if (!callSearchItems.isCanceled()) {
+                        searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
+                        searchView.onFailure(RSConstants.SEARCH_ITEMS);
+                    }
+                }
+            });
+        }
     }
 
     @Override

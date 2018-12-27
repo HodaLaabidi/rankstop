@@ -21,26 +21,27 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
 
     @Override
     public void loadUserInfo(String id) {
-        standardView.showProgressBar(RSConstants.USER_INFO);
-
-        callUserInfo = WebService.getInstance().getApi().loadUserInfo(id);
-        callUserInfo.enqueue(new Callback<RSResponse>() {
-            @Override
-            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                if (response.body().getStatus() == 1) {
-                    standardView.onSuccess(RSConstants.USER_INFO, response.body().getData());
-                } else if (response.body().getStatus() == 0) {
-                    standardView.onFailure(RSConstants.USER_INFO);
-                }
-                standardView.hideProgressBar(RSConstants.USER_INFO);
-            }
-
-            @Override
-            public void onFailure(Call<RSResponse> call, Throwable t) {
-                if (!call.isCanceled())
+        if (standardView != null) {
+            standardView.showProgressBar(RSConstants.USER_INFO);
+            callUserInfo = WebService.getInstance().getApi().loadUserInfo(id);
+            callUserInfo.enqueue(new Callback<RSResponse>() {
+                @Override
+                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                    if (response.body().getStatus() == 1) {
+                        standardView.onSuccess(RSConstants.USER_INFO, response.body().getData());
+                    } else if (response.body().getStatus() == 0) {
+                        standardView.onFailure(RSConstants.USER_INFO);
+                    }
                     standardView.hideProgressBar(RSConstants.USER_INFO);
-            }
-        });
+                }
+
+                @Override
+                public void onFailure(Call<RSResponse> call, Throwable t) {
+                    if (!call.isCanceled())
+                        standardView.hideProgressBar(RSConstants.USER_INFO);
+                }
+            });
+        }
     }
 
     @Override

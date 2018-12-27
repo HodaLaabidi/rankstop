@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class RSNavigationData implements Serializable {
 
-    private String from, action, message, itemId, userId, categoryId;
+    private String from, action, message, itemId, userId, categoryId, section;
 
     public RSNavigationData(String from, String action) {
         this.from = from;
@@ -69,5 +69,13 @@ public class RSNavigationData implements Serializable {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
     }
 }

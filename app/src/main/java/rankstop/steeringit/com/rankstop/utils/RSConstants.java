@@ -45,6 +45,8 @@ public class RSConstants {
     public static final String ITEM = "item";
     public static final String OTHER = "other";
     public static final String MINE = "mine";
+    public static final String CURRENT_USER = "user";
+    public static final String FRAGMENT_UPDATE_PROFILE = "fragment update profile";
     public static String _ID = "id";
 
     // parameters
@@ -71,7 +73,7 @@ public class RSConstants {
     public static final String FRAGMENT_HISTORY = "history fragment";
     public static final String FRAGMENT_CONTACT = "contact fragment";
     public static final String FRAGMENT_NOTIF = "notif fragment";
-    public static final String FRAGMENT_ITEM_CREATED = "item created fragment";
+    public static final String FRAGMENT_LISTING_ITEMS = "listing items fragment";
     public static final String FRAGMENT_ITEM_OWNED = "item owned fragment";
     public static final String FRAGMENT_ITEM_FOLLOWED = "item followed fragment";
     public static final String FRAGMENT_SEARCH = "search fragment";
