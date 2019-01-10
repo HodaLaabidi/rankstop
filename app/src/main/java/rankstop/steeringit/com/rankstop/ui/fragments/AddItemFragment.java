@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -45,8 +44,8 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Category;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.db.Category;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCategoryAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -329,7 +328,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
@@ -442,6 +441,11 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     @Override
     public void onFailure(String target) {
+
+    }
+
+    @Override
+    public void onError(String target) {
 
     }
 

@@ -17,7 +17,7 @@ import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemEvalAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
-import rankstop.steeringit.com.rankstop.data.model.CriteriaNote;
+import rankstop.steeringit.com.rankstop.data.model.db.CriteriaNote;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;

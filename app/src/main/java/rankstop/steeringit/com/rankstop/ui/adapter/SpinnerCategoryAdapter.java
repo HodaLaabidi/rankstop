@@ -12,7 +12,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Category;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.data.model.db.Category;
 
 public class SpinnerCategoryAdapter extends ArrayAdapter<Category> {
 
@@ -40,7 +41,7 @@ public class SpinnerCategoryAdapter extends ArrayAdapter<Category> {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_list_category,parent,false);
         }
-        TextView categoryNameTV = convertView.findViewById(R.id.tv_category_name);
+        RSTVMedium categoryNameTV = convertView.findViewById(R.id.text_view);
 
         Category currentCategory = categoriesList.get(position);
 

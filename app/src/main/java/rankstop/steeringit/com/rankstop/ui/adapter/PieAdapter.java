@@ -19,12 +19,11 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratBold;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratMedium;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratRegular;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.data.model.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.R;
 
 
@@ -70,8 +69,8 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
         public Item item;
         private ItemPieListener pieListener;
         private PieChart pieChart;
-        private RSTVMontserratRegular itemName;
-        private RSTVMontserratMedium countReviewsTV, countFollowersTV;
+        private RSTVRegular itemName;
+        private RSTVMedium countReviewsTV, countFollowersTV;
         private CheckBox likeIcon;
 
         public ViewHolder(View itemView, ItemPieListener pieListener) {

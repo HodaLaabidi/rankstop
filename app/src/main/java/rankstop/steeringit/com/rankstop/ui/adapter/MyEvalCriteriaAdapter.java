@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Criteria;
-import rankstop.steeringit.com.rankstop.data.model.CriteriaEval;
+import rankstop.steeringit.com.rankstop.data.model.db.Criteria;
+import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 
 public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAdapter.ViewHolder> {
 

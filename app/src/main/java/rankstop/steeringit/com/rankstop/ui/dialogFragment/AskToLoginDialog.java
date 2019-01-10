@@ -6,33 +6,27 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratMedium;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.fragments.HomeFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemDetailsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.MyEvaluationsFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class AskToLoginDialog extends DialogFragment {
 
     private View rootView;
-    private RSMBMontserratBold cancelBtn, loginBtn;
-    private RSTVMontserratMedium messageTV;
+    private RSBTNBold cancelBtn, loginBtn;
+    private RSTVMedium messageTV;
     private ColorStateList colorStateList;
     private LinearLayout.LayoutParams layoutParams;
     private FragmentActionListener fragmentActionListener;

@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,15 +34,14 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Item;
-import rankstop.steeringit.com.rankstop.data.model.Picture;
-import rankstop.steeringit.com.rankstop.data.model.User;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseItemData;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.Picture;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.adapter.ItemCommentsAdapter;
+import rankstop.steeringit.com.rankstop.ui.activities.DiaparomaActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemPixAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
@@ -64,7 +65,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
     private LinearLayout addPixLayout;
 
 
-    private String itemId, userId ="";
+    private String itemId, userId = "";
     private Item currentItem;
     private RSPresenter.ItemPresenter itemPresenter;
     private RadioGroup filterToggle;
@@ -114,8 +115,26 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
         rsRequestItemData = new RSRequestItemData(itemId, userId, RSConstants.MAX_FIELD_TO_LOAD, 1);
         setFragmentActionListener((ContainerActivity) getActivity());
         listener = (view, position) -> {
+            startActivity(
+                    new Intent(getContext(), DiaparomaActivity.class)
+                            .putExtra(RSConstants.PICTURES, pictures.size())
+                            .putExtra(RSConstants.FILTERED_PICTURES, (Serializable) itemPicsAdapter.getAll())
+                            .putExtra(RSConstants.POSITION, position)
+                            .putExtra(RSConstants.COUNT_PAGES, PAGES_COUNT)
+                            .putExtra(RSConstants.FILTER, lastCheckedId)
+                            .putExtra(RSConstants.FROM, RSConstants.ALL_PIX)
+                            .putExtra(RSConstants.RS_REQUEST_ITEM_DATA, rsRequestItemData));
         };
         myListener = (view, position) -> {
+            startActivity(
+                    new Intent(getContext(), DiaparomaActivity.class)
+                            .putExtra(RSConstants.PICTURES, myPictures.size())
+                            .putExtra(RSConstants.FILTERED_PICTURES, (Serializable) myItemPixAdapter.getAll())
+                            .putExtra(RSConstants.POSITION, position)
+                            .putExtra(RSConstants.COUNT_PAGES, MP_PAGES_COUNT)
+                            .putExtra(RSConstants.FILTER, lastCheckedId)
+                            .putExtra(RSConstants.FROM, RSConstants.MY_PIX)
+                            .putExtra(RSConstants.RS_REQUEST_ITEM_DATA, rsRequestItemData));
         };
         loadItemPix(currentPage);
         loadMyItemPix(mpCurrentPage);
@@ -153,7 +172,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
                         loadItemPix(currentPage);
                     }
                 }, 1000);
-                Toast.makeText(getContext(), "load more items at current page = " + currentPage, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), "load more items at current page = " + currentPage, Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -294,11 +313,11 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
             case RSConstants.ITEM_PIX_BY_USER:
                 RSResponseItemData response = new Gson().fromJson(new Gson().toJson(data), RSResponseItemData.class);
                 try {
-                    if (response.getPictures().size() == 0){
+                    if (response.getPictures().size() == 0) {
                         addPixLayout.setVisibility(View.VISIBLE);
                         myPixRV.setVisibility(View.GONE);
                         mpProgressBar.setVisibility(View.GONE);
-                    }else {
+                    } else {
                         manageMyPixList(response);
                     }
                 } catch (Exception e) {
@@ -413,6 +432,11 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
     }
 
     @Override
+    public void onError(String target) {
+
+    }
+
+    @Override
     public void showProgressBar(String target) {
 
     }
@@ -451,22 +475,22 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
                     case R.id.all_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_gray);
                         itemPicsAdapter.refreshData(pictures);
-                        myItemPixAdapter.refreshData(pictures);
+                        myItemPixAdapter.refreshData(myPictures);
                         break;
                     case R.id.good_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_green);
                         itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_GREEN));
-                        myItemPixAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_GREEN));
+                        myItemPixAdapter.refreshData(getFilterOutput(myPictures, RSConstants.PIE_GREEN));
                         break;
                     case R.id.neutral_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_orange);
                         itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_ORANGE));
-                        myItemPixAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_ORANGE));
+                        myItemPixAdapter.refreshData(getFilterOutput(myPictures, RSConstants.PIE_ORANGE));
                         break;
                     case R.id.bad_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_red);
                         itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_RED));
-                        myItemPixAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_RED));
+                        myItemPixAdapter.refreshData(getFilterOutput(myPictures, RSConstants.PIE_RED));
                         break;
                 }
             }

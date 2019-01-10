@@ -94,4 +94,15 @@
     <dimen name="size_text_info_title">14sp</dimen>
     <dimen name="size_text_info_value">12sp</dimen>
     <dimen name="size_btn_edit">14sp</dimen>
+    <dimen name="size_date_history">14sp</dimen>
+    <dimen name="m_btn_dialog">5dp</dimen>
+    <dimen name="p_ic_tv">5dp</dimen>
+    <dimen name="mt_contact_section">20dp</dimen>
+    <dimen name="btn_width_contact">50dp</dimen>
+    <dimen name="btn_m_contact">5dp</dimen>
+    <dimen name="ms_ic_tv">-5dp</dimen>
+    <dimen name="mb_ic_tv">10dp</dimen>
+    <dimen name="size_title_dialog">15sp</dimen>
+    <dimen name="size_label">14sp</dimen>
+    <dimen name="nb_text_size">12sp</dimen>
 </resources>

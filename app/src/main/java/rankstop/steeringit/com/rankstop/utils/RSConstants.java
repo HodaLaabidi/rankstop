@@ -20,7 +20,6 @@ public class RSConstants {
     public static final String EMAIL = "email";
     public static final String LOAD_CATEGORIES = "load categories";
     public static final String LOAD_CATEGORY = "load category";
-    public static final String ITEM_ID = "item id";
     public static final String ADD_REVIEW = "add review";
     public static final String ADD_ITEM = "add item";
     public static final String RS_ADD_REVIEW = "rs add review";
@@ -46,15 +45,32 @@ public class RSConstants {
     public static final String OTHER = "other";
     public static final String MINE = "mine";
     public static final String CURRENT_USER = "user";
-    public static final String FRAGMENT_UPDATE_PROFILE = "fragment update profile";
+    public static final String USER_HISTORY = "user history";
+    public static final String USER_ID = "user id";
+    public static final String RS_QUERY = "query";
+    public static final String CATEGORY = "category";
+    public static final String PICTURE = "picture";
+    public static final String PICTURES = "picList";
+    public static final String POSITION = "position";
+    public static final String COUNT_PAGES = "count_pages";
+    public static final String RS_REQUEST_ITEM_DATA = "rs_request_item_data";
+    public static final String FILTER = "filter";
+    public static final String FILTERED_PICTURES = "filtered pictures";
+    public static final String MY_PIX = "my pix";
+    public static final String ALL_PIX = "all pix";
+    public static final String GALLERY = "gallery";
+    public static final String COUNTRIES_LIST = "countries list";
+    public static final String CURRENT_DATE = "currentDate";
+    public static final String SOCIAL_LOGIN = "social login";
+    public static final String PROVIDER_GOOGLE = "GOOGLE";
+    public static final String PROVIDER_FB = "FACEBOOK";
+    public static final String UPDATE_PROFILE = "update profile";
     public static String _ID = "id";
 
     // parameters
     public static final int MAX_ITEM_TO_LOAD = 5;
     public static final int MAX_GALLERY_PIX = 5;
-    public static final int MAX_REVIEW_PIX = 5;
     public static final int REQUEST_CODE = 1;
-    public static final int PAGE_START = 1;
     public static final int MAX_FIELD_TO_LOAD = 5;
 
     // colors
@@ -74,8 +90,6 @@ public class RSConstants {
     public static final String FRAGMENT_CONTACT = "contact fragment";
     public static final String FRAGMENT_NOTIF = "notif fragment";
     public static final String FRAGMENT_LISTING_ITEMS = "listing items fragment";
-    public static final String FRAGMENT_ITEM_OWNED = "item owned fragment";
-    public static final String FRAGMENT_ITEM_FOLLOWED = "item followed fragment";
     public static final String FRAGMENT_SEARCH = "search fragment";
     public static final String FRAGMENT_UPDATE_ITEM = "update item";
     public static final String FRAGMENT_ADD_REVIEW = "add review fragment";
@@ -84,4 +98,5 @@ public class RSConstants {
     public static final String FRAGMENT_SIGN_UP = "signup fragment";
     public static final String FRAGMENT_HOME = "home fragment";
     public static final String FRAGMENT_ITEM_DETAILS = "item details fragment";
+    public static final String FRAGMENT_UPDATE_PROFILE = "fragment update profile";
 }

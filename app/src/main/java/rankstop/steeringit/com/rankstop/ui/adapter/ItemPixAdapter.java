@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Picture;
+import rankstop.steeringit.com.rankstop.data.model.db.Picture;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
@@ -56,7 +56,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                 viewHolder = new ViewHolder(v2, listener);
                 break;
         }
-        return  viewHolder;
+        return viewHolder;
     }
 
     @NonNull
@@ -110,13 +110,14 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
             pixContainer = itemView.findViewById(R.id.pix_container);
             cardView = itemView.findViewById(R.id.card_view);
 
-            if (target.equals(RSConstants.MINE)){
-                try{
+            if (target.equals(RSConstants.MINE)) {
+                try {
                     RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(200, 200);
                     cardView.setLayoutParams(layoutParams);
                     FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     pixContainer.setLayoutParams(params);
-                }catch(Exception e){}
+                } catch (Exception e) {
+                }
             }
 
             itemView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -127,7 +128,8 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, pixContainer.getWidth());
                             pixContainer.setLayoutParams(layoutParams);
                         }
-                    }catch(Exception e){}
+                    } catch (Exception e) {
+                    }
                 }
             });
 
@@ -136,7 +138,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
 
         @Override
         public void onClick(View v) {
-            mListener.onClick(v, getAdapterPosition());
+            listener.onClick(v, getAdapterPosition());
         }
 
         public void setData(Picture picture) {
@@ -163,6 +165,10 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
         notifyItemInserted(pictures.size() - 1);
     }
 
+    public List<Picture> getAll() {
+        return pictures;
+    }
+
     public void addLoadingFooter() {
         isLoadingAdded = true;
         add(new Picture());
@@ -172,12 +178,9 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
         isLoadingAdded = false;
 
         int position = pictures.size() - 1;
-        Picture result = getItem(position);
 
-        //if (result != null) {
-            pictures.remove(position);
-            notifyItemRemoved(position);
-        //}
+        pictures.remove(position);
+        notifyItemRemoved(position);
     }
 
     public Picture getItem(int position) {

@@ -14,7 +14,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.ItemDetails;
+import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 
 public class ItemsFetchedAdapter extends RecyclerView.Adapter<ItemsFetchedAdapter.ViewHolder> {

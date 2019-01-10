@@ -46,7 +46,7 @@
                     android:layout_below="@id/pie_chart"
                     android:orientation="vertical">
 
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                         android:id="@+id/tv_item_name"
                         style="@style/montserrat_bold"
                         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
                         android:textSize="@dimen/text_size_title_item_details"
                         android:transitionName="@string/transition_title" />
 
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                         android:id="@+id/tv_item_category"
                         style="@style/montserrat_bold"
                         android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                         android:textColor="@color/colorGray"
                         android:textSize="@dimen/text_size_category_item_details" />
 
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                         android:id="@+id/tv_item_description"
                         style="@style/montserrat_medium"
                         android:layout_width="match_parent"
@@ -78,7 +78,7 @@
                         android:gravity="end"
                         android:orientation="horizontal">
 
-                        <android.support.design.button.MaterialButton
+                        <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
                             android:id="@+id/btn_report_abuse"
                             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                             android:layout_width="wrap_content"
@@ -87,25 +87,28 @@
                             android:text="@string/report_abuse"
                             android:textAllCaps="false"
                             android:visibility="gone"
+                            android:textSize="@dimen/size_btn_edit"
                             app:icon="@drawable/ic_flag" />
 
-                        <android.support.design.button.MaterialButton
+                        <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
                             android:id="@+id/btn_add_review"
                             style="@style/Widget.MaterialComponents.Button.Icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/mt_btn_item_details"
                             android:text="@string/add_review"
+                            android:textSize="@dimen/size_btn_edit"
                             android:textAllCaps="false" />
                     </LinearLayout>
 
-                    <android.support.design.button.MaterialButton
+                    <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
                         android:id="@+id/btn_add_pix"
                         style="@style/Widget.MaterialComponents.Button.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/mt_btn_item_details"
                         android:text="@string/add_item_pix"
+                        android:textSize="@dimen/size_btn_edit"
                         android:textAllCaps="false"
                         android:visibility="gone" />
                 </LinearLayout>

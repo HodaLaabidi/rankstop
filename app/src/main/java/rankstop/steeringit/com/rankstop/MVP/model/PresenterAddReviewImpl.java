@@ -12,8 +12,8 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.FileUtils;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
@@ -245,6 +245,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 callUpdateReview.cancel();
 
         standardView = null;
+        context = null;
     }
 
 }

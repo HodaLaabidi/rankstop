@@ -1,12 +1,16 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.text.TextUtils;
+import android.util.Log;
 
-import rankstop.steeringit.com.rankstop.data.model.User;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
+import rankstop.steeringit.com.rankstop.data.webservices.Urls;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import retrofit2.Call;
@@ -38,7 +42,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
         return true;
     }
 
-    private Call<RSResponse> callFindEmail, callLogin, callRegister, callFollowItem;
+    private Call<RSResponse> callFindEmail, callLogin, callRegister, callFollowItem, callSocialLogin;
+    private Call<GeoPluginResponse> callAddress;
 
     @Override
     public void performFindEmail(String email) {
@@ -72,11 +77,43 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
+    public void performSocialLogin(RSRequestSocialLogin user) {
+        if (signupView != null) {
+            signupView.showProgressBar();
+            callSocialLogin = WebService.getInstance().getApi().socialLogin(user);
+            callSocialLogin.enqueue(new Callback<RSResponse>() {
+                @Override
+                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                    if (response.body().getStatus() == 1) {
+                        signupView.socialLoginSuccess(response.body().getData());
+                    } else if (response.body().getStatus() == 0) {
+                        signupView.socialLoginError(response.body().getMessage());
+                    }
+                    signupView.hideProgressBar();
+                }
+
+                @Override
+                public void onFailure(Call<RSResponse> call, Throwable t) {
+
+                    Log.i("TAG_REGISTER", "failure");
+                    if (!call.isCanceled())
+                        signupView.hideProgressBar();
+                }
+            });
+
+        }
+    }
+
+    @Override
     public void onDestroyFindEmail() {
         signupView = null;
         if (callFindEmail != null)
             if (callFindEmail.isExecuted())
                 callFindEmail.cancel();
+
+        if (callSocialLogin != null)
+            if (callSocialLogin.isExecuted())
+                callSocialLogin.cancel();
     }
 
     @Override
@@ -111,35 +148,39 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
 
     @Override
     public void followItem(RSFollow rsFollow, String target) {
-        if (loginView != null) {
-            callFollowItem = WebService.getInstance().getApi().followItem(rsFollow);
-            callFollowItem.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        if (target.equals(RSConstants.LOGIN))
-                            loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
-                        else if (target.equals(RSConstants.REGISTER))
-                            registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
-                    } else if (response.body().getStatus() == 0) {
-                        if (target.equals(RSConstants.LOGIN))
-                            loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
-                        else if (target.equals(RSConstants.REGISTER))
-                            registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
-                    }
+        callFollowItem = WebService.getInstance().getApi().followItem(rsFollow);
+        callFollowItem.enqueue(new Callback<RSResponse>() {
+            @Override
+            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                if (response.body().getStatus() == 1) {
+                    if (target.equals(RSConstants.LOGIN))
+                        loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                    else if (target.equals(RSConstants.REGISTER))
+                        registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                    else if (target.equals(RSConstants.SOCIAL_LOGIN))
+                        signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                } else if (response.body().getStatus() == 0) {
+                    if (target.equals(RSConstants.LOGIN))
+                        loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                    else if (target.equals(RSConstants.REGISTER))
+                        registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                    else if (target.equals(RSConstants.SOCIAL_LOGIN))
+                        signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
                 }
+            }
 
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callFollowItem.isCanceled()) {
-                        if (target.equals(RSConstants.LOGIN))
-                            loginView.onFollowFailure(RSConstants.FOLLOW_ITEM);
-                        else if (target.equals(RSConstants.REGISTER))
-                            registerView.onFollowFailure(RSConstants.FOLLOW_ITEM);
-                    }
+            @Override
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                if (!callFollowItem.isCanceled()) {
+                    if (target.equals(RSConstants.LOGIN))
+                        loginView.onFollowFailure(RSConstants.FOLLOW_ITEM);
+                    else if (target.equals(RSConstants.REGISTER))
+                        registerView.onFollowFailure(RSConstants.FOLLOW_ITEM);
+                    else if (target.equals(RSConstants.SOCIAL_LOGIN))
+                        signupView.onFollowFailure(RSConstants.FOLLOW_ITEM);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -192,10 +233,36 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
+    public void getAddress(String ip) {
+        if (registerView != null) {
+            registerView.showProgressBar();
+            callAddress = WebService.getInstance(Urls.GEO_PLUGIN_URL).getApi().getAddressFromIP(ip);
+            callAddress.enqueue(new Callback<GeoPluginResponse>() {
+                @Override
+                public void onResponse(Call<GeoPluginResponse> call, Response<GeoPluginResponse> response) {
+                    Log.i("TAG_RESPONSE", "" + response.body());
+                    registerView.onAddressFetched(response.body());
+                    registerView.hideProgressBar();
+                }
+
+                @Override
+                public void onFailure(Call<GeoPluginResponse> call, Throwable t) {
+                    if (!call.isCanceled())
+                        registerView.hideProgressBar();
+                }
+            });
+        }
+    }
+
+    @Override
     public void onDestroyRegister() {
         registerView = null;
         if (callRegister != null)
             if (callRegister.isExecuted())
                 callRegister.cancel();
+
+        if (callAddress != null)
+            if (callAddress.isExecuted())
+                callAddress.cancel();
     }
 }

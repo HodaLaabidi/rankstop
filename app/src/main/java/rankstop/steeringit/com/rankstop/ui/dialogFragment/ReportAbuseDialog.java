@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -30,11 +29,10 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterAbuseImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Abuse;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestReportAbuse;
+import rankstop.steeringit.com.rankstop.data.model.db.Abuse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
 import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemDetailsFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseView {

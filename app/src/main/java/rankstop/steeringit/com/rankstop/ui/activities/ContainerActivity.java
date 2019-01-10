@@ -16,8 +16,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.fragments.AddItemFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.AddReviewFragment;

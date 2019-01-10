@@ -19,4 +19,7 @@
     <color name="colorLinkedIn">#0077B5</color>
     <color name="colorGoogle">#DB4A39</color>
     <color name="colorFB">#3B5998</color>
+    <color name="colorInfo">#2196F3</color>
+    <color name="colorDarkBlack">#000000</color>
+    <color name="colorWhite">#ffffff</color>
 </resources>

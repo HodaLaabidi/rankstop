@@ -20,12 +20,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseLogin;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
-import rankstop.steeringit.com.rankstop.data.model.User;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.session.RSSession;

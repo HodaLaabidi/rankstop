@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Abuse;
+import rankstop.steeringit.com.rankstop.data.model.db.Abuse;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 
 public class AbusesListAdapter extends RecyclerView.Adapter<AbusesListAdapter.ViewHolder> {

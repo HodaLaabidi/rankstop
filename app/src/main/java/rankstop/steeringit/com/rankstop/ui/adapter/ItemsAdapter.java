@@ -22,13 +22,11 @@ import java.util.List;
 
 import butterknife.BindColor;
 import butterknife.BindString;
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
 

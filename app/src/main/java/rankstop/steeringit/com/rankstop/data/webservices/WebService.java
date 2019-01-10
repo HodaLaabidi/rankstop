@@ -18,9 +18,25 @@ public class WebService {
         api = retrofit.create(API.class);
     }
 
+    public WebService(String baseUrl) {
+
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        Retrofit retrofit = new Retrofit.Builder().client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(baseUrl)
+                .build();
+        api = retrofit.create(API.class);
+    }
+
     public static WebService getInstance() {
         if (instance == null)
             instance = new WebService();
+        return instance;
+    }
+
+    public static WebService getInstance(String baseUrl) {
+        if (instance == null)
+            instance = new WebService(baseUrl);
         return instance;
     }
 

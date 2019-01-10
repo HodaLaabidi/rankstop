@@ -1,11 +1,8 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
@@ -33,11 +30,11 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterAddReviewImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Category;
-import rankstop.steeringit.com.rankstop.data.model.CriteriaEval;
-import rankstop.steeringit.com.rankstop.data.model.Evaluation;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.custom.ResponseAddItem;
+import rankstop.steeringit.com.rankstop.data.model.db.Category;
+import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
+import rankstop.steeringit.com.rankstop.data.model.db.Evaluation;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.ResponseAddItem;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.activities.TakePictureActivity;
@@ -46,7 +43,7 @@ import rankstop.steeringit.com.rankstop.ui.adapter.ReviewPixAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.CriteriaEvalListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
-import rankstop.steeringit.com.rankstop.data.model.Criteria;
+import rankstop.steeringit.com.rankstop.data.model.db.Criteria;
 import rankstop.steeringit.com.rankstop.utils.Helpers;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
@@ -282,7 +279,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
@@ -374,6 +371,11 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
             case RSConstants.ADD_ITEM:
                 break;
         }
+    }
+
+    @Override
+    public void onError(String target) {
+
     }
 
     @Override

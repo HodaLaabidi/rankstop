@@ -32,11 +32,11 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Comment;
-import rankstop.steeringit.com.rankstop.data.model.Item;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseItemData;
+import rankstop.steeringit.com.rankstop.data.model.db.Comment;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemCommentsAdapter;
@@ -451,6 +451,11 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
 
     @Override
     public void onFailure(String target) {
+
+    }
+
+    @Override
+    public void onError(String target) {
 
     }
 

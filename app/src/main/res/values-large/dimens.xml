@@ -10,7 +10,7 @@
     <dimen name="btn_login_width">300dp</dimen>
     <dimen name="width_pie_details">230dp</dimen>
     <dimen name="margin_left_details">10dp</dimen>
-    <dimen name="text_size_title_item_details">18sp</dimen>
+    <dimen name="text_size_title_item_details">16sp</dimen>
     <dimen name="text_size_subtitle_item_details">13sp</dimen>
     <dimen name="mt_rv_details">15dp</dimen>
     <dimen name="pt_pie_details">60dp</dimen>
@@ -59,7 +59,7 @@
     <dimen name="progress_bar_width">50dp</dimen>
     <dimen name="raduis_btn_dialog">10dp</dimen>
     <dimen name="margin_end_btn_dialog">10dp</dimen>
-    <dimen name="text_size_dialog">17sp</dimen>
+    <dimen name="text_size_dialog">12sp</dimen>
     <dimen name="text_size_header_dialog">18sp</dimen>
     <dimen name="height_scroll_view">400dp</dimen>
     <dimen name="width_scroll_bar">4dp</dimen>
@@ -98,4 +98,15 @@
     <dimen name="size_text_info_title">14sp</dimen>
     <dimen name="size_text_info_value">12sp</dimen>
     <dimen name="size_btn_edit">14sp</dimen>
+    <dimen name="size_date_history">14sp</dimen>
+    <dimen name="m_btn_dialog">5dp</dimen>
+    <dimen name="p_ic_tv">5dp</dimen>
+    <dimen name="mt_contact_section">20dp</dimen>
+    <dimen name="btn_width_contact">50dp</dimen>
+    <dimen name="btn_m_contact">5dp</dimen>
+    <dimen name="ms_ic_tv">-5dp</dimen>
+    <dimen name="mb_ic_tv">10dp</dimen>
+    <dimen name="size_title_dialog">15sp</dimen>
+    <dimen name="size_label">14sp</dimen>
+    <dimen name="nb_text_size">12sp</dimen>
 </resources>

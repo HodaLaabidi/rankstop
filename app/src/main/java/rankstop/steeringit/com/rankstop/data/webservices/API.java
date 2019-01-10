@@ -1,20 +1,21 @@
 package rankstop.steeringit.com.rankstop.data.webservices;
 
-import android.net.Uri;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import rankstop.steeringit.com.rankstop.data.model.CriteriaEval;
-import rankstop.steeringit.com.rankstop.data.model.User;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemByCategory;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestReportAbuse;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponse;
+import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
+import rankstop.steeringit.com.rankstop.data.model.db.RSPublicUserName;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -39,13 +40,37 @@ public interface API {
     @POST("users/signIn")
     Call<RSResponse> loginUser(@Body User user);
 
+    // register by email and password
     @POST("users/signUp")
     Call<RSResponse> registerUser(@Body User user);
+
+    // register by email and password
+    @POST("users/socialLogin")
+    Call<RSResponse> socialLogin(@Body RSRequestSocialLogin user);
+
+    // register by email and password
+    @Multipart
+    @POST("users/updateUser")
+    Call<RSResponse> updateUser(@Part MultipartBody.Part part,
+                                @Part("lastName") RequestBody lastName,
+                                @Part("firstName") RequestBody firstName,
+                                @Part("gender") RequestBody gender,
+                                @Part("phone") RequestBody phone,
+                                @Part("birthDate") RequestBody birthDate,
+                                @Part("username") RequestBody username,
+                                @Part("city") RequestBody city,
+                                @Part("countryName") RequestBody countryName,
+                                @Part("countryCode") RequestBody countryCode,
+                                @Part("nameToUse") RSPublicUserName nameToUse);
 
     // load user info
     @FormUrlEncoded
     @POST("users/userInfo")
     Call<RSResponse> loadUserInfo(@Field("id") String id);
+
+    // load user history
+    @POST("history/storiesByUser")
+    Call<RSResponse> loadUserHistory(@Body RSRequestListItem rsRequestListItem);
 
     @GET("criteria/getCriterias")
     Call<RSResponse> loadCriteriaList();
@@ -202,7 +227,15 @@ public interface API {
     @GET("items/searchKey")
     Call<RSResponse> search(@Query("q") String query);
 
+    // search items
+    @GET("country/getAllCountryWorld")
+    Call<RSResponse> loadCountries();
+
     // report abuse
     @POST("items/search")
     Call<RSResponse> searchItems(@Body RSRequestItemByCategory rsRequestSearch);
+
+    //
+    @GET("json.gp")
+    Call<GeoPluginResponse> getAddressFromIP(@Query("ip") String ip);
 }

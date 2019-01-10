@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -9,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -25,7 +25,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -43,41 +42,80 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.CriteriaNote;
-import rankstop.steeringit.com.rankstop.data.model.Gallery;
-import rankstop.steeringit.com.rankstop.data.model.Item;
-import rankstop.steeringit.com.rankstop.data.model.User;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.data.model.db.Gallery;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.activities.ItemGalleryActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.GalleryAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.ViewPagerAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
-import rankstop.steeringit.com.rankstop.data.model.Picture;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ItemInfoDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.ReportAbuseDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener, RSView.StandardView {
 
-    private PieChart pieChart;
-    private Toolbar toolbar;
-    private AppBarLayout appBarLayout;
-    private TextView itemDescriptionTV, itemNameTV, itemCategoryTV;
     private View rootView;
-    private RecyclerView recyclerViewGallery;
-    private TabLayout tabLayout;
-    private ViewPager mViewPager;
-    private MaterialButton addReviewBtn, addItemPixBtn, reportAbuseBTN;
+    @BindView(R.id.pie_chart)
+    PieChart pieChart;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.app_bar)
+    AppBarLayout appBarLayout;
+
+    @BindView(R.id.tv_item_description)
+    RSTVMedium itemDescriptionTV;
+
+    @BindView(R.id.tv_item_name)
+    RSTVBold itemNameTV;
+
+    @BindView(R.id.tv_item_category)
+    RSTVBold itemCategoryTV;
+
+    @BindView(R.id.recycler_view_gallery)
+    RecyclerView recyclerViewGallery;
+
+    @BindView(R.id.tabs)
+    TabLayout tabLayout;
+
+    @BindView(R.id.viewpager)
+    ViewPager mViewPager;
+
+    @BindView(R.id.btn_add_review)
+    RSBTNMedium addReviewBtn;
+
+    @BindView(R.id.btn_add_pix)
+    RSBTNMedium addItemPixBtn;
+
+    @BindView(R.id.btn_report_abuse)
+    RSBTNMedium reportAbuseBTN;
+
+    @BindView(R.id.tv_about_item)
+    RSTVMedium aboutItemTV;
+
+    private Unbinder unbinder;
 
     private MenuItem menuItem;
 
@@ -112,6 +150,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
         fragmentContext = new WeakReference<ItemDetailsFragment>(this);
         rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
@@ -121,12 +160,6 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
         itemPresenter = new PresenterItemImpl(ItemDetailsFragment.this);
         bindViews();
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle("");
-
-        appBarLayout.addOnOffsetChangedListener(this);
 
         addReviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +173,13 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                     RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ADD_REVIEW, RSConstants.ACTION_ADD_REVIEW, fragmentContext.get().getResources().getString(R.string.alert_login_to_add_review), itemId, "", item.getItemDetails().getCategory().get_id());
                     askToLoginDialog(rsNavigationData);
                 }
+            }
+        });
+
+        aboutItemTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showItemInfo(item.getItemDetails());
             }
         });
 
@@ -164,26 +204,24 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             }
         });
 
+        itemCategoryTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentActionListener.startFragment(SearchFragment.getInstance(item.getItemDetails().getCategory()), RSConstants.FRAGMENT_SEARCH);
+            }
+        });
+
         loadItemData();
 
     }
 
     private void bindViews() {
-        toolbar = rootView.findViewById(R.id.toolbar);
-        pieChart = rootView.findViewById(R.id.pie_chart);
-        itemNameTV = rootView.findViewById(R.id.tv_item_name);
-        itemCategoryTV = rootView.findViewById(R.id.tv_item_category);
         itemCategoryTV.setPaintFlags(itemCategoryTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        itemDescriptionTV = rootView.findViewById(R.id.tv_item_description);
-        recyclerViewGallery = rootView.findViewById(R.id.recycler_view_gallery);
-        appBarLayout = rootView.findViewById(R.id.app_bar);
-        tabLayout = rootView.findViewById(R.id.tabs);
-        mViewPager = rootView.findViewById(R.id.viewpager);
-        addReviewBtn = rootView.findViewById(R.id.btn_add_review);
-        addItemPixBtn = rootView.findViewById(R.id.btn_add_pix);
-        reportAbuseBTN = rootView.findViewById(R.id.btn_report_abuse);
-
         setFragmentActionListener((ContainerActivity) getActivity());
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setTitle("");
+        appBarLayout.addOnOffsetChangedListener(this);
     }
 
     private void loadItemData() {
@@ -204,7 +242,11 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     private void initGallery(List<Gallery> listGalleryPics) {
         recyclerViewGallery.setVisibility(View.VISIBLE);
         RecyclerViewClickListener listener = (view, position) -> {
-            Toast.makeText(getContext(), "Position " + position, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), "Position " + position, Toast.LENGTH_SHORT).show();
+            startActivity(
+                    new Intent(getContext(), ItemGalleryActivity.class)
+                            .putExtra(RSConstants.PICTURES, (Serializable) listGalleryPics)
+                            .putExtra(RSConstants.POSITION, position));
         };
         recyclerViewGallery.setLayoutManager(new LinearLayoutManager(recyclerViewGallery.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewGallery.setAdapter(new GalleryAdapter(listGalleryPics, listener, getContext()));
@@ -304,7 +346,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
@@ -371,6 +413,12 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         dialog.show(getFragmentManager(), "");
     }
 
+    private void showItemInfo(ItemDetails itemDetails) {
+        ItemInfoDialog dialog = ItemInfoDialog.newInstance(itemDetails);
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), "");
+    }
+
     private void openAbusesDialog(RSNavigationData rsNavigationData) {
         ReportAbuseDialog dialog = ReportAbuseDialog.newInstance(rsNavigationData);
         dialog.setCancelable(false);
@@ -430,6 +478,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         darkColorFilter = null;
         pieChart.clear();
         fragmentActionListener = null;
+        unbinder.unbind();
         itemPresenter.onDestroyItem();
         for (int i = 0; i < listMenuItem.size(); i++) {
             tintMenuIcon(listMenuItem.get(i), android.R.color.white);
@@ -551,6 +600,11 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     @Override
     public void onFailure(String target) {
+
+    }
+
+    @Override
+    public void onError(String target) {
 
     }
 

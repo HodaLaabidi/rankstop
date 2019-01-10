@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:padding="@dimen/p_signup_container">
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVMontserratBold
+        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/mb_start_with_rs"
@@ -21,7 +21,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/size_text_start_with_rs" />
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVMontserratMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/mb_desc_app_signup"
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <rankstop.steeringit.com.rankstop.customviews.RSETMontserratRegular
+            <rankstop.steeringit.com.rankstop.customviews.RSETRegular
                 android:id="@+id/input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
             android:id="@+id/rs_login_btn"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
             android:layout_marginBottom="@dimen/mb_login_btn"
             android:text="@string/text_btn_login" />
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVMontserratMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/mb_login_btn"
@@ -63,7 +63,7 @@
             android:text="@string/or_connect_with"
             android:textSize="@dimen/size_or_connect_with" />
 
-        <rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
             android:id="@+id/fb_login_btn"
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="@dimen/btn_login_width"
@@ -72,22 +72,13 @@
             app:backgroundTint="@color/colorFB"
             app:icon="@drawable/ic_email_24dp" />
 
-        <rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
             android:id="@+id/google_login_btn"
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="@dimen/btn_login_width"
             android:layout_height="wrap_content"
             android:text="@string/gl_text"
             app:backgroundTint="@color/colorGoogle"
-            app:icon="@drawable/ic_email_24dp" />
-
-        <rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold
-            android:id="@+id/linkedin_login_btn"
-            style="@style/Widget.MaterialComponents.Button.Icon"
-            android:layout_width="@dimen/btn_login_width"
-            android:layout_height="wrap_content"
-            android:text="@string/linkedin_text"
-            app:backgroundTint="@color/colorLinkedIn"
             app:icon="@drawable/ic_email_24dp" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

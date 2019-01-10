@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -24,11 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Evaluation;
-import rankstop.steeringit.com.rankstop.data.model.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.Evaluation;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.utils.DisabledRecyclerView;
-import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHolder> {

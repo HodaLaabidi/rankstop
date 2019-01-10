@@ -33,18 +33,18 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
-import rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMontserratRegular;
-import rankstop.steeringit.com.rankstop.data.model.UserInfo;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.data.model.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.session.RSSession;
@@ -59,21 +59,21 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     @BindView(R.id.avatar)
     SimpleDraweeView avatar;
     @BindView(R.id.tv_user_name)
-    RSTVMontserratRegular userNameTV;
+    RSTVRegular userNameTV;
     @BindView(R.id.tv_full_name)
-    RSTVMontserratRegular fullNameTV;
+    RSTVRegular fullNameTV;
     @BindView(R.id.tv_email)
-    RSTVMontserratRegular emailTV;
+    RSTVRegular emailTV;
     @BindView(R.id.tv_phone)
-    RSTVMontserratRegular phoneTV;
+    RSTVRegular phoneTV;
     @BindView(R.id.tv_gender)
-    RSTVMontserratRegular genderTV;
+    RSTVRegular genderTV;
     @BindView(R.id.tv_birthday)
-    RSTVMontserratRegular birthdayTV;
+    RSTVRegular birthdayTV;
     @BindView(R.id.tv_country)
-    RSTVMontserratRegular countryTV;
+    RSTVRegular countryTV;
     @BindView(R.id.tv_city)
-    RSTVMontserratRegular cityTV;
+    RSTVRegular cityTV;
 
     @BindView(R.id.progress_bar_page_owned)
     ProgressBar progressBarOwnedItem;
@@ -90,13 +90,13 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     RecyclerView recyclerViewFollowedItem;
 
     @BindView(R.id.more_page_owned)
-    RSMBMontserratBold moreOwnedBtn;
+    RSBTNBold moreOwnedBtn;
     @BindView(R.id.more_page_created)
-    RSMBMontserratBold moreCreatedBtn;
+    RSBTNBold moreCreatedBtn;
     @BindView(R.id.more_page_followed)
-    RSMBMontserratBold moreFollowedBtn;
+    RSBTNBold moreFollowedBtn;
     @BindView(R.id.btn_update_profile)
-    RSMBMontserratBold updateProfileBTN;
+    RSBTNBold updateProfileBTN;
 
     @BindView(R.id.layout_view_page_created)
     LinearLayout layoutItemCreated;
@@ -207,7 +207,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         setBirthDay(userInfo.getUser().getBirthDate());
         setCountry(userInfo.getUser().getAddress());
         setCity(userInfo.getUser().getAddress());
-        setFullName(userInfo.getUser().getFullName(), userInfo.getUser().getFullName());
+        setFullName(userInfo.getUser().getFirstName(), userInfo.getUser().getLastName());
         setEvalsNumber(userInfo.getCountEval());
         setCommentsNumber(userInfo.getCountComments());
         setPixNumber(userInfo.getCountPictures());
@@ -411,7 +411,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.FRAGMENT_SIGN_UP, ""));
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(userInfo.getUser().get_id()), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
@@ -527,9 +527,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     }
                 }
 
-                if (this.userInfo.getUser().getFullName() != null) {
-                    if (!this.userInfo.getUser().getFullName().equals(userInfo.getUser().getFullName()) || !this.userInfo.getUser().getFullName().equals(userInfo.getUser().getFullName())) {
-                        setFullName(userInfo.getUser().getFullName(), userInfo.getUser().getFullName());
+                if (this.userInfo.getUser().getFirstName() != null) {
+                    if (!this.userInfo.getUser().getFirstName().equals(userInfo.getUser().getFirstName()) || !this.userInfo.getUser().getLastName().equals(userInfo.getUser().getLastName())) {
+                        setFullName(userInfo.getUser().getFirstName(), userInfo.getUser().getLastName());
                     }
                 }
 
@@ -651,6 +651,11 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 //pixNumberTV.setText("");
                 break;
         }
+    }
+
+    @Override
+    public void onError(String target) {
+
     }
 
     @Override

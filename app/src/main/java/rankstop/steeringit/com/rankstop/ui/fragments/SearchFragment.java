@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -40,11 +41,11 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterSearchImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Category;
-import rankstop.steeringit.com.rankstop.data.model.ItemDetails;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemByCategory;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseSearch;
+import rankstop.steeringit.com.rankstop.data.model.db.Category;
+import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseSearch;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.DataFetchedAdapter;
@@ -103,7 +104,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     private boolean isLastPage = false;
     private boolean isLoading = false;
     private int PAGES_COUNT = 1;
-    private String query="";
+    private String query = "";
 
     public static SearchFragment getInstance() {
         //Bundle args = new Bundle();
@@ -112,6 +113,16 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
             instance = new SearchFragment();
         }
         //instance.setArguments(args);
+        return instance;
+    }
+
+    public static SearchFragment getInstance(Category category) {
+        Bundle args = new Bundle();
+        args.putSerializable(RSConstants.CATEGORY, category);
+        if (instance == null) {
+            instance = new SearchFragment();
+        }
+        instance.setArguments(args);
         return instance;
     }
 
@@ -275,6 +286,12 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         // expand search view
         searchView.onActionViewExpanded();
 
+        try {
+            currentCategory = (Category) getArguments().getSerializable(RSConstants.CATEGORY);
+            loadItems(rsRequestItemData);
+        } catch (Exception e) {
+        }
+
         // categories fetched
         categoriesFetched = new ArrayList<>();
         categoriesListener = (view, position) -> {
@@ -366,12 +383,13 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     public void onDestroyView() {
         unbinder.unbind();
         instance = null;
+        searchPresenter.onDestroy();
         super.onDestroyView();
     }
 
     @Override
     public void onSuccess(String target, Object data) {
-        switch (target){
+        switch (target) {
             case RSConstants.SEARCH:
                 RSResponseSearch rsResponseSearch = new Gson().fromJson(new Gson().toJson(data), RSResponseSearch.class);
                 bindDataFetched(rsResponseSearch);
@@ -379,10 +397,10 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
             case RSConstants.SEARCH_ITEMS:
                 RSResponseListingItem rsResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
                 //itemsList.addAll(rsResponse.getItems());
-                if (rsResponse.getCurrent() == 1){
+                if (rsResponse.getCurrent() == 1) {
                     itemsAdapter.clear();
                     PAGES_COUNT = rsResponse.getPages();
-                }else if (rsResponse.getCurrent() > 1) {
+                } else if (rsResponse.getCurrent() > 1) {
                     itemsAdapter.removeLoadingFooter();
                     isLoading = false;
                 }
@@ -408,24 +426,24 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         itemsFetched = rsResponseSearch.getItem();
         categoriesFetched = rsResponseSearch.getCategory();
 
-        if (categoriesFetched.size() > 0){
+        if (categoriesFetched.size() > 0) {
 
             categoriesRV.setVisibility(View.VISIBLE);
             categoryTitleTV.setVisibility(View.VISIBLE);
 
             dataFetchedAdapter.refreshData(categoriesFetched);
-        }else {
+        } else {
             categoriesRV.setVisibility(View.GONE);
             categoryTitleTV.setVisibility(View.GONE);
         }
 
-        if (itemsFetched.size() > 0){
+        if (itemsFetched.size() > 0) {
 
             itemsRV.setVisibility(View.VISIBLE);
             itemsTitleTV.setVisibility(View.VISIBLE);
 
             itemsFetchedAdapter.refreshData(itemsFetched);
-        }else {
+        } else {
             itemsRV.setVisibility(View.GONE);
             itemsTitleTV.setVisibility(View.GONE);
         }

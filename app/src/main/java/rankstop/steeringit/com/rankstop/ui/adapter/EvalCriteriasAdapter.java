@@ -17,8 +17,7 @@ import com.zhouyou.view.seekbar.SignSeekBar;
 import java.util.ArrayList;
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.data.model.Criteria;
-import rankstop.steeringit.com.rankstop.data.model.CriteriaEval;
+import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 import rankstop.steeringit.com.rankstop.ui.callbacks.CriteriaEvalListener;
 import rankstop.steeringit.com.rankstop.R;
 

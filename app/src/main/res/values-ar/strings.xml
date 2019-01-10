@@ -114,6 +114,17 @@
     <string name="undefined">not set</string>
     <string name="hint_nom">FirstName</string>
     <string name="hint_prenom">LastName</string>
+    <string name="no_history">no history</string>
+    <string name="close">Close</string>
+    <string name="about_item">Read more</string>
+    <string name="posted_by">Posted by</string>
+    <string name="public_name">Public name:</string>
+    <string name="public_name_value">FullName</string>
+    <string name="hint_birthday_value">dd/mm/yyyy</string>
+    <string name="hint_man">Homme</string>
+    <string name="hint_woman">Femme</string>
+    <string name="title_gender">Gender:</string>
+    <string name="description_public_name">NB: Le nom public sera affiché sur vos commentaires et vos photos</string>
 
     <string-array name="labels">
         <item>Not set</item>

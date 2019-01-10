@@ -31,12 +31,12 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.Item;
-import rankstop.steeringit.com.rankstop.data.model.User;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemsAdapter;
@@ -59,7 +59,6 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     private List<Item> itemsList = new ArrayList<>();
     private String itemIdToFollow;
     private ItemsAdapter itemsAdapter;
-    private RSNavigationData navigationData;
     private EndlessScrollListener scrollListener;
     private Handler handler;
     private Runnable runnable;
@@ -96,7 +95,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         bindViews();
-        navigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
+        RSNavigationData navigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         from = navigationData.getSection();
         itemPresenter = new PresenterItemImpl(ListingItemsFragment.this);
         isLoggedIn = RSSession.isLoggedIn(getContext());
@@ -263,7 +262,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
@@ -369,6 +368,11 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
 
     @Override
     public void onFailure(String target) {
+
+    }
+
+    @Override
+    public void onError(String target) {
 
     }
 

@@ -5,9 +5,9 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
-import rankstop.steeringit.com.rankstop.data.model.User;
-import rankstop.steeringit.com.rankstop.data.model.UserInfo;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSLocalStorage;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
+import rankstop.steeringit.com.rankstop.data.model.network.RSLocalStorage;
 import rankstop.steeringit.com.rankstop.utils.RSJWTParser;
 
 import static android.content.Context.MODE_PRIVATE;

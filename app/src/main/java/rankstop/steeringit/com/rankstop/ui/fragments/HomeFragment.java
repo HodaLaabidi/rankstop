@@ -2,8 +2,6 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -29,18 +27,18 @@ import java.util.List;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.customviews.RSMBMontserratBold;
-import rankstop.steeringit.com.rankstop.data.model.User;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.data.model.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
@@ -54,7 +52,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     private View rootView;
     private ProgressBar progressBarTopRanked, progressBarTopViewed, progressBarTopFollowed, progressBarTopCommented;
     private RecyclerView recyclerViewTopRanked, recyclerViewTopViewed, recyclerViewTopFollowed, recyclerViewTopCommented;
-    private RSMBMontserratBold moreTopRankedBtn, moreTopViewedBtn, moreTopCommentedBtn, moreTopFollowedBtn, searchBTN;
+    private RSBTNBold moreTopRankedBtn, moreTopViewedBtn, moreTopCommentedBtn, moreTopFollowedBtn, searchBTN;
     private LinearLayout layoutTopFollowed, layoutTopViewed, layoutTopCommented, layoutTopRanked;
 
     private List<Item> listTopRankedItem, listTopViewedItem, listTopFollowedItem, listTopCommentedItem;
@@ -334,7 +332,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
                 ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
@@ -507,6 +505,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
                 moreTopFollowedBtn.setVisibility(View.GONE);
                 break;
         }
+    }
+
+    @Override
+    public void onError(String target) {
+
     }
 
     @Override

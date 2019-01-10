@@ -12,7 +12,7 @@ import java.util.List;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.data.model.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class SearchActivity extends AppCompatActivity {

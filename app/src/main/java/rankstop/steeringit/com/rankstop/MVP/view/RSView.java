@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.view;
 
+import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+
 public interface RSView {
 
     interface LoginView {
@@ -34,6 +36,8 @@ public interface RSView {
         void showProgressBar();
 
         void hideProgressBar();
+
+        void onAddressFetched(GeoPluginResponse response);
     }
 
     interface SignupView {
@@ -43,6 +47,14 @@ public interface RSView {
         void findEmailSuccess(boolean isEmailExist, Object data);
 
         void findEmailError();
+
+        void socialLoginSuccess(Object data);
+
+        void socialLoginError(String message);
+
+        void onFollowSuccess(String target, Object data);
+
+        void onFollowFailure(String target);
 
         void showProgressBar();
 
@@ -56,6 +68,8 @@ public interface RSView {
         void onSuccess(String target, Object data);
 
         void onFailure(String target);
+
+        void onError(String target);
 
         void showProgressBar(String target);
 

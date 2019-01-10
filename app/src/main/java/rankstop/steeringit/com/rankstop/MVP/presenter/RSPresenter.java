@@ -1,13 +1,15 @@
 package rankstop.steeringit.com.rankstop.MVP.presenter;
 
-import rankstop.steeringit.com.rankstop.data.model.User;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemByCategory;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestItemData;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestListItem;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSRequestReportAbuse;
-import rankstop.steeringit.com.rankstop.data.model.custom.RSUpdateItem;
+import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
+import rankstop.steeringit.com.rankstop.data.model.network.RSUpdateItem;
 
 public interface RSPresenter {
 
@@ -20,11 +22,14 @@ public interface RSPresenter {
     interface RegisterPresenter {
         void performRegister(User user);
         void followItem(RSFollow rsFollow, String target);
+        void getAddress(String ip);
         void onDestroyRegister();
     }
 
     interface SignupPresenter {
         void performFindEmail(String email);
+        void performSocialLogin(RSRequestSocialLogin user);
+        void followItem(RSFollow rsFollow, String target);
         void onDestroyFindEmail();
     }
 
@@ -83,7 +88,13 @@ public interface RSPresenter {
 
     interface UpdateProfilePresenter{
         void editPassword();
-        void editProfile();
+        void editProfile(RSRequestEditProfile user);
+        void loadCountriesList();
+        void onDestroy();
+    }
+
+    interface UserHistoryPresenter{
+        void loadHistory(RSRequestListItem rsRequestListItem);
         void onDestroy();
     }
 

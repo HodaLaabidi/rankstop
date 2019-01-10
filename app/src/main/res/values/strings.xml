@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">RankStop</string>
+    <string name="facebook_app_id">181280639373362</string>
+    <string name="fb_login_protocol_scheme">fb181280639373362</string>
     <string name="title_activity_container" translatable="false">RankStop</string>
     <string name="title_home">Home</string>
     <string name="title_add_item">Add item</string>
@@ -219,4 +221,15 @@
     <string name="undefined">not set</string>
     <string name="hint_nom">FirstName</string>
     <string name="hint_prenom">LastName</string>
+    <string name="no_history">no history</string>
+    <string name="close">Close</string>
+    <string name="about_item">Read more</string>
+    <string name="posted_by">Posted by</string>
+    <string name="public_name">Public name:</string>
+    <string name="public_name_value">FullName</string>
+    <string name="hint_birthday_value">dd/mm/yyyy</string>
+    <string name="hint_man">Male</string>
+    <string name="hint_woman">Female</string>
+    <string name="title_gender">Gender:</string>
+    <string name="description_public_name">NB: The public name will be shown on your comments and pictures</string>
 </resources>

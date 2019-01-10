@@ -114,6 +114,17 @@
     <string name="undefined">pas encore défini</string>
     <string name="hint_nom">Nom</string>
     <string name="hint_prenom">Prénom</string>
+    <string name="no_history">no history</string>
+    <string name="close">Fermer</string>
+    <string name="about_item">Afficher plus d\'informations</string>
+    <string name="posted_by">Ajouté par</string>
+    <string name="public_name">Nom public:</string>
+    <string name="public_name_value">Nom complet</string>
+    <string name="hint_birthday_value">jj/mm/aaaa</string>
+    <string name="hint_man">Homme</string>
+    <string name="hint_woman">Femme</string>
+    <string name="title_gender">Genre:</string>
+    <string name="description_public_name">NB: Le nom public sera affiché sur vos commentaires et vos photos</string>
 
     <string-array name="labels">
         <item>Not set</item>
