@@ -162,7 +162,7 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
                 }
                 break;
             case RSConstants.FRAGMENT_ITEM_DETAILS:
-                if (rsNavigationData.getAction().equals(RSConstants.ACTION_REPORT_ABUSE)) {
+                if (rsNavigationData.getAction().equals(RSConstants.ACTION_REPORT_ABUSE) || rsNavigationData.getAction().equals(RSConstants.ACTION_SEND_REQ_OWNERSHIP)) {
                     startFragment(ItemDetailsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_ITEM_DETAILS);
                 }
                 break;

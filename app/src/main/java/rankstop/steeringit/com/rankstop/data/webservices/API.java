@@ -7,8 +7,10 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 import rankstop.steeringit.com.rankstop.data.model.db.RSPublicUserName;
+import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
@@ -235,7 +237,15 @@ public interface API {
     @POST("items/search")
     Call<RSResponse> searchItems(@Body RSRequestItemByCategory rsRequestSearch);
 
+    // send request ownership
+    @POST("contact/sendInfoUserBuyItem")
+    Call<RSResponse> requestOwnership(@Body RequestOwnership requestOwnership);
+
     //
     @GET("json.gp")
     Call<GeoPluginResponse> getAddressFromIP(@Query("ip") String ip);
+
+    // ip finder
+    @GET("/")
+    Call<RSDeviceIP> getPublicIP(@Query("format") String format);
 }

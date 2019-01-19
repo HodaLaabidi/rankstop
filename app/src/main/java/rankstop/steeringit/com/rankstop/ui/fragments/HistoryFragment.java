@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -73,8 +72,6 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     private int PAGES_COUNT = 1;
     // scroll listener
     private EndlessScrollListener scrollListener;
-    private Handler handler;
-    private Runnable runnable;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -134,16 +131,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
                 currentPage += 1;
                 rsRequestListItem.setPage(currentPage);
                 // mocking network delay for API call
-                if (handler == null)
-                    handler = new Handler();
-                runnable = null;
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        laodData(currentPage);
-                    }
-                };
-                handler.postDelayed(runnable, 1000);
+                laodData(currentPage);
             }
 
             @Override
@@ -232,7 +220,6 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
         isLoading = false;
         PAGES_COUNT = 1;
         scrollListener = null;
-        handler.removeCallbacks(runnable);
         historyAdapter.clear();
         historyAdapter=null;
         instance = null;

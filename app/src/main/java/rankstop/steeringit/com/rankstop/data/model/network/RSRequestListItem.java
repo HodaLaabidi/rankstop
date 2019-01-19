@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
+import android.support.annotation.NonNull;
+
 public class RSRequestListItem {
 
     private int perPage, page;
@@ -36,5 +38,11 @@ public class RSRequestListItem {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "{\"perPage\":\""+perPage+"\", \"page\":\""+page+"\", \"userId\":\""+userId+"\"}";
     }
 }

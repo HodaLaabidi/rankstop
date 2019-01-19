@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.presenter;
 
 import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
+import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
@@ -22,7 +23,8 @@ public interface RSPresenter {
     interface RegisterPresenter {
         void performRegister(User user);
         void followItem(RSFollow rsFollow, String target);
-        void getAddress(String ip);
+        void getAddress(String ip, String target);
+        void getPublicIP(String format, String target);
         void onDestroyRegister();
     }
 
@@ -30,6 +32,8 @@ public interface RSPresenter {
         void performFindEmail(String email);
         void performSocialLogin(RSRequestSocialLogin user);
         void followItem(RSFollow rsFollow, String target);
+        void getAddress(String ip, String target);
+        void getPublicIP(String format, String target);
         void onDestroyFindEmail();
     }
 
@@ -95,6 +99,11 @@ public interface RSPresenter {
 
     interface UserHistoryPresenter{
         void loadHistory(RSRequestListItem rsRequestListItem);
+        void onDestroy();
+    }
+
+    interface RequestOwnerShipPresenter{
+        void requestOwnership(RequestOwnership requestOwnership);
         void onDestroy();
     }
 

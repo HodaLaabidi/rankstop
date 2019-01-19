@@ -16,6 +16,7 @@ import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
+import rankstop.steeringit.com.rankstop.data.webservices.Urls;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.FileUtils;
 import rankstop.steeringit.com.rankstop.utils.Helpers;

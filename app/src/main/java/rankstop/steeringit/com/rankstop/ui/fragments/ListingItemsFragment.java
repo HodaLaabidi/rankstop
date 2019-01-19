@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -60,8 +59,6 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     private String itemIdToFollow;
     private ItemsAdapter itemsAdapter;
     private EndlessScrollListener scrollListener;
-    private Handler handler;
-    private Runnable runnable;
 
     // panigation variables
     private int currentPage = 1;
@@ -136,17 +133,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
                 isLoading = true;
                 currentPage += 1;
                 rsRequestListItem.setPage(currentPage);
-                // mocking network delay for API call
-                if (handler == null)
-                    handler = new Handler();
-                runnable = null;
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        laodData(from, currentPage);
-                    }
-                };
-                handler.postDelayed(runnable, 1000);
+                laodData(from, currentPage);
             }
 
             @Override
@@ -308,7 +295,6 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         scrollListener = null;
         fragmentActionListener = null;
         fragmentContext.clear();
-        handler.removeCallbacks(runnable);
         itemPresenter.onDestroyItem();
         itemsAdapter.clear();
         itemsAdapter=null;

@@ -196,7 +196,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.StandardVi
     @Override
     public void onResume() {
         super.onResume();
-        presenterUpdateProfile = new PresenterUpdateProfileImpl(UpdateProfileFragment.this);
+        presenterUpdateProfile = new PresenterUpdateProfileImpl(UpdateProfileFragment.this, getContext());
 
         currentUser = (User) getArguments().getSerializable(RSConstants.CURRENT_USER);
         presenterUpdateProfile.loadCountriesList();

@@ -43,26 +43,6 @@ public class AskToLoginDialog extends DialogFragment {
         return instance;
     }
 
-    /*public static AskToLoginDialog newInstance(RSNavigationData rsNavigationData) {
-        if (instance == null) {
-            instance = new AskToLoginDialog();
-        }
-        Bundle args = new Bundle();
-        args.putSerializable(RSConstants.NAVIGATION_DATA, rsNavigationData);
-        instance.setArguments(args);
-        return instance;
-    }
-
-    public static AskToLoginDialog newInstance(RSNavigationData rsNavigationData) {
-        if (instance == null) {
-            instance = new AskToLoginDialog();
-        }
-        Bundle args = new Bundle();
-        args.putSerializable(RSConstants.NAVIGATION_DATA, rsNavigationData);
-        instance.setArguments(args);
-        return instance;
-    }*/
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

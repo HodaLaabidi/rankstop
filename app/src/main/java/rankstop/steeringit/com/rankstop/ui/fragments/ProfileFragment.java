@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,7 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
@@ -181,6 +183,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         bindViews();
         bindLocalData();
         loadData();
+
+        Log.i("USER_ID",""+userInfo.getUser().get_id());
     }
 
     private void bindViews() {
@@ -205,8 +209,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         setPhone(userInfo.getUser().getPhone());
         setGender(userInfo.getUser().getGender());
         setBirthDay(userInfo.getUser().getBirthDate());
-        setCountry(userInfo.getUser().getAddress());
-        setCity(userInfo.getUser().getAddress());
+        setCountry(userInfo.getUser().getLocation().getCountry());
+        setCity(userInfo.getUser().getLocation().getCity());
         setFullName(userInfo.getUser().getFirstName(), userInfo.getUser().getLastName());
         setEvalsNumber(userInfo.getCountEval());
         setCommentsNumber(userInfo.getCountComments());
@@ -266,9 +270,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
             birthdayTV.setText(undefined);
     }
 
-    private void setCountry(String value) {
+    private void setCountry(Country value) {
         if (value != null)
-            countryTV.setText(value);
+            countryTV.setText(value.getCountryName());
         else
             countryTV.setText(undefined);
     }
@@ -557,15 +561,15 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     }
                 }
 
-                if (this.userInfo.getUser().getAddress() != null) {
-                    if (!this.userInfo.getUser().getAddress().equals(userInfo.getUser().getAddress())) {
-                        setCountry(userInfo.getUser().getAddress());
+                if (this.userInfo.getUser().getLocation().getCountry() != null) {
+                    if (!this.userInfo.getUser().getLocation().getCountry().getCountryName().equals(userInfo.getUser().getLocation().getCountry().getCountryName())) {
+                        setCountry(userInfo.getUser().getLocation().getCountry());
                     }
                 }
 
-                if (this.userInfo.getUser().getAddress() != null) {
-                    if (!this.userInfo.getUser().getAddress().equals(userInfo.getUser().getAddress())) {
-                        setCity(userInfo.getUser().getAddress());
+                if (this.userInfo.getUser().getLocation().getCity() != null) {
+                    if (!this.userInfo.getUser().getLocation().getCity().equals(userInfo.getUser().getLocation().getCity())) {
+                        setCity(userInfo.getUser().getLocation().getCity());
                     }
                 }
 

@@ -1,8 +1,11 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +14,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +29,7 @@ import android.widget.LinearLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +38,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -51,6 +57,8 @@ import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCategoryAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 public class AddItemFragment extends Fragment implements RSView.StandardView, AdapterView.OnItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -77,6 +85,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     private RSAddReview rsAddItem = new RSAddReview();
 
     private RSPresenter.ItemPresenter itemPresenter;
+    private LocationManager locationManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,6 +105,8 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
         bindViews();
         loadCategoriesList();
+
+        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,13 +178,16 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                 scrollView.requestDisallowInterceptTouchEvent(true);
             }
         });
+        checkGPS();
+    }
 
-        /*LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Toast.makeText(getContext(), "GPS is Enabled in your device", Toast.LENGTH_SHORT).show();
+    private void checkGPS() {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            //Toast.makeText(getContext(), "GPS is Enabled in your device", Toast.LENGTH_LONG).show();
         } else {
             showGPSDisabledAlertToUser();
-        }*/
+            return;
+        }
 
         if (googleApiClient == null) {
             googleApiClient = new GoogleApiClient.Builder(getContext())
@@ -225,10 +239,26 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             requestPermissions(new String[]{
                     android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         } else {
-            Location userCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations, this can be null.
+                            if (location != null) {
+                                addMarker(location.getLatitude(), location.getLongitude());
+                            }else{
+                                addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
+                                //Toast.makeText(getContext(), "userCurrentLocation"+ location, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+            /*Location userCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (userCurrentLocation != null) {
                 addMarker(userCurrentLocation.getLatitude(), userCurrentLocation.getLongitude());
-            }
+            }else{
+                Toast.makeText(getContext(), "userCurrentLocation"+ userCurrentLocation, Toast.LENGTH_LONG).show();
+            }*/
         }
     }
 
@@ -249,7 +279,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             onConnected(null);
         } else {
             // No Permitions Granted
-            addMarker(36.7948624, 10.073238);
+            addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
         }
     }
 
@@ -354,7 +384,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         return instance;
     }
 
-    /*private void showGPSDisabledAlertToUser() {
+    private void showGPSDisabledAlertToUser() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
         alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
                 .setCancelable(false)
@@ -363,18 +393,26 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent callGPSSettingIntent = new Intent(
                                         android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(callGPSSettingIntent);
+                                startActivityForResult(callGPSSettingIntent, RSConstants.REQUEST_CODE);
                             }
                         });
         alertDialogBuilder.setNegativeButton("Cancel",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
+                        addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
                     }
                 });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
-    }*/
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == RSConstants.REQUEST_CODE) {
+            initMaps();
+        }
+    }
 
 
     @Override

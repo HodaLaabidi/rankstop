@@ -16,8 +16,6 @@ public class User implements Serializable {
     private String email;
     @SerializedName("password")
     private String password;
-    @SerializedName("address")
-    private String address;
     @SerializedName("username")
     private String username;
     @SerializedName("firstName")
@@ -77,14 +75,6 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhone() {

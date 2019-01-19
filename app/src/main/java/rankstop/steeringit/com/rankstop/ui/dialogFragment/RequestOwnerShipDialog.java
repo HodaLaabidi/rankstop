@@ -1,0 +1,211 @@
+package rankstop.steeringit.com.rankstop.ui.dialogFragment;
+
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterRequestOwnerShip;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
+import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+
+public class RequestOwnerShipDialog extends DialogFragment implements RSView.StandardView {
+
+    public static String TAG = "FullScreenDialog";
+
+    private View rootView;
+    private Unbinder unbinder;
+    private User user;
+    private String itemId, itemName, fullname, email, phoneNumber, companyName, message;
+
+    private RSPresenter.RequestOwnerShipPresenter presenter;
+
+    private ProgressDialog progressDialog;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.input_layout_fullname)
+    TextInputLayout inputLayoutFullName;
+    @BindView(R.id.input_fullname)
+    RSETMedium inputFullName;
+
+    @BindView(R.id.input_layout_email)
+    TextInputLayout inputLayoutEmail;
+    @BindView(R.id.input_email)
+    RSETMedium inputEmail;
+
+    @BindView(R.id.input_layout_phone)
+    TextInputLayout inputLayoutPhone;
+    @BindView(R.id.input_phone)
+    RSETMedium inputPhone;
+
+    @BindView(R.id.input_layout_company)
+    TextInputLayout inputLayoutCompany;
+    @BindView(R.id.input_company)
+    RSETMedium inputCompany;
+
+    @BindView(R.id.input_layout_message)
+    TextInputLayout inputLayoutMessage;
+    @BindView(R.id.input_message)
+    RSETMedium inputMessage;
+
+    @OnClick(R.id.btn_send_request)
+    void sendRequest() {
+
+        fullname = inputFullName.getText().toString();
+        email = inputEmail.getText().toString();
+        phoneNumber = inputPhone.getText().toString();
+        companyName = inputCompany.getText().toString();
+        message = inputMessage.getText().toString();
+
+        if (validForm()) {
+            RequestOwnership requestOwnerShip = new RequestOwnership();
+            requestOwnerShip.setFullName(fullname);
+            requestOwnerShip.setEmail(email);
+            requestOwnerShip.setPhone(phoneNumber);
+            requestOwnerShip.setCompany(companyName);
+            requestOwnerShip.setMessage(message);
+            requestOwnerShip.setItemId(itemId);
+            requestOwnerShip.setTitleItem(itemName);
+            requestOwnerShip.setUserId(user.get_id());
+
+            presenter.requestOwnership(requestOwnerShip);
+        }
+    }
+
+    private boolean validForm() {
+        int x = 0;
+
+        if (TextUtils.isEmpty(fullname)) {
+            inputLayoutFullName.setError("this field is required");
+            x++;
+        }
+        if (TextUtils.isEmpty(email)) {
+            inputLayoutEmail.setError("this field is required");
+            x++;
+        }
+        if (TextUtils.isEmpty(phoneNumber)) {
+            inputLayoutPhone.setError("this field is required");
+            x++;
+        }
+        if (TextUtils.isEmpty(companyName)) {
+            inputLayoutCompany.setError("this field is required");
+            x++;
+        }
+        return x == 0;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        rootView = inflater.inflate(R.layout.dialog_request_ownership, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
+
+        toolbar.setNavigationIcon(R.drawable.ic_close);
+        toolbar.setNavigationOnClickListener(view1 -> dismiss());
+        toolbar.setTitle("Request Ownership");
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading");
+        progressDialog.setCancelable(false);
+
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        user = RSSession.getCurrentUser(getContext());
+
+        inputFullName.setText(user.getFirstName() + " " + user.getLastName());
+        inputEmail.setText(user.getEmail());
+        inputPhone.setText(user.getPhone());
+
+        Bundle b = getArguments();
+
+        itemId = b.getString(RSConstants.ITEM_ID);
+        itemName = b.getString(RSConstants.ITEM_NAME);
+
+        presenter = new PresenterRequestOwnerShip(RequestOwnerShipDialog.this);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+
+        unbinder.unbind();
+        presenter.onDestroy();
+
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onSuccess(String target, Object data) {
+        switch (target) {
+            case RSConstants.SEND_REQ_OWNER_SHIP:
+
+                break;
+        }
+    }
+
+    @Override
+    public void onFailure(String target) {
+
+    }
+
+    @Override
+    public void onError(String target) {
+
+    }
+
+    @Override
+    public void showProgressBar(String target) {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideProgressBar(String target) {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void showMessage(String target, String message) {
+
+    }
+}

@@ -3,7 +3,6 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
@@ -22,7 +21,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -165,13 +163,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
                 isLoading = true;
                 currentPage += 1;
 
-                // mocking network delay for API call
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadItemPix(currentPage);
-                    }
-                }, 1000);
+                loadItemPix(currentPage);
                 //Toast.makeText(getContext(), "load more items at current page = " + currentPage, Toast.LENGTH_LONG).show();
             }
 
@@ -204,13 +196,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
                 mpIsLoading = true;
                 mpCurrentPage += 1;
 
-                // mocking network delay for API call
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadMyItemPix(mpCurrentPage);
-                    }
-                }, 1000);
+                loadMyItemPix(mpCurrentPage);
             }
 
             @Override

@@ -25,6 +25,7 @@ import java.util.List;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.data.model.db.Evaluation;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
+import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.utils.DisabledRecyclerView;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
@@ -35,26 +36,81 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
     private ItemPieListener pieListener;
     private Context context;
 
-    public MyEvalsAdapter(List<Item> items, ItemPieListener pieListener, Context context) {
-        this.items = items;
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
+    private boolean isLoadingAdded = false;
+
+    public MyEvalsAdapter(ItemPieListener pieListener, Context context) {
         this.pieListener = pieListener;
         this.context = context;
+        items = new ArrayList<>();
     }
 
     @NonNull
     @Override
-    public MyEvalsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new MyEvalsAdapter.ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_my_evals, viewGroup, false), pieListener);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ViewHolder viewHolder = null;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        switch (viewType) {
+            case ITEM:
+                viewHolder = getViewHolder(parent, inflater);
+                break;
+            case LOADING:
+                View v2 = inflater.inflate(R.layout.item_progress, parent, false);
+                viewHolder = new ViewHolder(v2, pieListener);
+                break;
+        }
+        return viewHolder;
+    }
+
+    @NonNull
+    private ViewHolder getViewHolder(ViewGroup parent, LayoutInflater inflater) {
+        ViewHolder viewHolder;
+        View v1 = inflater.inflate(R.layout.layout_my_evals, parent, false);
+        viewHolder = new ViewHolder(v1, pieListener);
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.setData(items.get(position));
+    public void onBindViewHolder(ViewHolder viewHolder, int position, List<Object> payload) {
+        switch (getItemViewType(position)) {
+            case ITEM:
+                if (!payload.isEmpty()) {
+                    //viewHolder.changeIcon(items.get(position));
+                } else {
+                    super.onBindViewHolder(viewHolder, position, payload);
+                }
+                break;
+            case LOADING:
+                break;
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        switch (getItemViewType(position)) {
+            case ITEM:
+                viewHolder.setData(items.get(position));
+                break;
+            case LOADING:
+                break;
+        }
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items == null ? 0 : items.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == items.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
+    }
+
+    public void refreshData(List<Item> items) {
+        this.items = items;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -65,6 +121,8 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
         private TextView itemName, countReviewsTV, noteEvalTV, dateEvalTV, countFollowersTV;
         private CheckBox likeIcon;
         private DisabledRecyclerView recyclerViewCriteriaEvaluated;
+
+        private MyEvalCriteriaAdapter myEvalCriteriaAdapter = new MyEvalCriteriaAdapter(context);
 
         public ViewHolder(@NonNull View itemView, ItemPieListener pieListener) {
             super(itemView);
@@ -78,21 +136,28 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             noteEvalTV = itemView.findViewById(R.id.tv_note_eval);
             dateEvalTV = itemView.findViewById(R.id.tv_date_eval);
             recyclerViewCriteriaEvaluated = itemView.findViewById(R.id.recycler_view_criteria_evaluated);
-            recyclerViewCriteriaEvaluated.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
-                @Override
-                public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                    // true: consume touch event
-                    // false: dispatch touch event
-                    return false;
-                }
-            });
-            recyclerViewCriteriaEvaluated.setLayoutFrozen(true);
-            recyclerViewCriteriaEvaluated.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return false;
-                }
-            });
+            if (recyclerViewCriteriaEvaluated != null) {
+                recyclerViewCriteriaEvaluated.setLayoutManager(new GridLayoutManager(recyclerViewCriteriaEvaluated.getContext(), 1));
+                recyclerViewCriteriaEvaluated.addItemDecoration(new VerticalSpace(context.getResources().getInteger(R.integer.m_card_view), 1));
+                recyclerViewCriteriaEvaluated.setNestedScrollingEnabled(false);
+                recyclerViewCriteriaEvaluated.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
+                    @Override
+                    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                        // true: consume touch event
+                        // false: dispatch touch event
+                        return false;
+                    }
+                });
+                recyclerViewCriteriaEvaluated.setLayoutFrozen(true);
+                recyclerViewCriteriaEvaluated.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return false;
+                    }
+                });
+                myEvalCriteriaAdapter = new MyEvalCriteriaAdapter(context);
+                recyclerViewCriteriaEvaluated.setAdapter(myEvalCriteriaAdapter);
+            }
             itemView.setOnClickListener(this);
         }
 
@@ -108,10 +173,19 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             noteEvalTV.setText(String.valueOf(item.getMyEval().getNoteEval()));
             dateEvalTV.setText(item.getMyEval().getDate());
             // add listener to like icon
+            likeIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pieListener.onFollowChanged(getAdapterPosition());
+                }
+            });
+            // add listener to like icon
             likeIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    pieListener.onFollowChanged(isChecked, getAdapterPosition());
+                    if (!RSSession.isLoggedIn(context)) {
+                        likeIcon.setChecked(!isChecked);
+                    }
                 }
             });
             initCriteriasList(item.getMyEval());
@@ -119,12 +193,10 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
         }
 
         private void initCriteriasList(Evaluation myEval) {
-
             //myEval.getEvalCriterias()
-            recyclerViewCriteriaEvaluated.setLayoutManager(new GridLayoutManager(recyclerViewCriteriaEvaluated.getContext(), 1));
-            recyclerViewCriteriaEvaluated.setAdapter(new MyEvalCriteriaAdapter(myEval.getEvalCriterias(), context));
-            recyclerViewCriteriaEvaluated.addItemDecoration(new VerticalSpace(context.getResources().getInteger(R.integer.m_card_view), 1));
-            recyclerViewCriteriaEvaluated.setNestedScrollingEnabled(false);
+            myEvalCriteriaAdapter.clear();
+            myEvalCriteriaAdapter.addAll(myEval.getEvalCriterias());
+
 
         }
 
@@ -185,5 +257,40 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
         public void onClick(View v) {
             pieListener.onClick(v, getAdapterPosition());
         }
+    }
+
+    public void addAll(List<Item> items) {
+        for (Item item : items) {
+            add(item);
+        }
+    }
+
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
+    public void add(Item item) {
+        items.add(item);
+        notifyItemInserted(items.size() - 1);
+    }
+
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        add(new Item());
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+        int position = items.size() - 1;
+        Item item = getItem(position);
+        if (item != null) {
+            items.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public Item getItem(int position) {
+        return items.get(position);
     }
 }

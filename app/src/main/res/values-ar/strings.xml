@@ -125,6 +125,15 @@
     <string name="hint_woman">Femme</string>
     <string name="title_gender">Gender:</string>
     <string name="description_public_name">NB: Le nom public sera affiché sur vos commentaires et vos photos</string>
+    <string name="hint_fullname">FullName</string>
+    <string name="hint_message">Message</string>
+    <string name="hint_company">Company</string>
+    <string name="btn_submit_request">Submit</string>
+    <string name="ownership_open">Ownership: open</string>
+    <string name="ownership_official">Ownership: official</string>
+    <string name="ownership_pending">Ownership: Pending</string>
+    <string name="alert_login_to_send_req_ownership">for send request ownership, you should be loggedin before</string>
+    <string name="choose_reason">Choose a cause</string>
 
     <string-array name="labels">
         <item>Not set</item>

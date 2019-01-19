@@ -50,7 +50,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
@@ -89,6 +93,8 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInOptions gso;
     private GoogleSignInAccount account;
+
+    private RSRequestSocialLogin user;
 
     private ProgressDialog mDialog;
 
@@ -148,11 +154,10 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                mDialog.dismiss();
 
                                 RSRequestSocialLogin user = getData(object);
                                 if (user != null){
-                                    signupPresenter.performSocialLogin(user);
+                                    performSocialLogin(user);
                                 }else {
                                     Log.i("TAG_REGISTER","user null");
                                 }
@@ -168,13 +173,16 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                     @Override
                     public void onCancel() {
                         // App code
+                        mDialog.dismiss();
                         Toast.makeText(getContext(), "cancel", Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
                         Log.i("TAG_REGISTER_ERROR",exception.getMessage());
+                        mDialog.dismiss();
                         Toast.makeText(getContext(), "error = "+exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -258,9 +266,11 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     @Override
     public void socialLoginSuccess(Object data) {
+
+        mDialog.dismiss();
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
-        Log.i("TAG_REGISTER",""+token);
+        //Log.i("TAG_REGISTER",""+token);
         RSSession.startSession(getContext(), token);
 
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
@@ -274,6 +284,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     public void socialLoginError(String message) {
         Toast.makeText(getContext(), ""+message, Toast.LENGTH_LONG).show();
         Log.i("TAG_REGISTER",""+message);
+        mDialog.dismiss();
     }
 
     @Override
@@ -294,7 +305,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        Toast.makeText(getContext(), "code  = "+requestCode, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), "code  = "+requestCode, Toast.LENGTH_LONG).show();
         if (requestCode == 1){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
@@ -329,19 +340,20 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     }
 
     private void performSocialLogin(RSRequestSocialLogin user){
-        signupPresenter.performSocialLogin(user);
+        this.user = user;
+        signupPresenter.getPublicIP("json", RSConstants.SOCIAL_LOGIN);
     }
 
     @Override
     public void showProgressBar() {
-        dialog = new ProgressDialog(getContext());
+        /*dialog = new ProgressDialog(getContext());
         dialog.setMessage("loading ...");
-        dialog.show();
+        dialog.show();*/
     }
 
     @Override
     public void hideProgressBar() {
-        dialog.dismiss();
+        //dialog.dismiss();
     }
 
     @Override
@@ -349,7 +361,29 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         Toast.makeText(getContext(), "" + message, Toast.LENGTH_LONG).show();
     }
 
-    ProgressDialog dialog;
+    @Override
+    public void onAddressFetched(GeoPluginResponse response) {
+        RSAddress address = new RSAddress();
+        address.setCountry(new Country(response.getGeoplugin_countryCode(), response.getGeoplugin_countryName()));
+        user.setLocation(address);
+        signupPresenter.performSocialLogin(user);
+    }
+
+    @Override
+    public void onAddressFailed() {
+        signupPresenter.performSocialLogin(user);
+    }
+
+    @Override
+    public void onPublicIPFetched(RSDeviceIP response) {
+        RSDeviceIP rsDeviceIP = new Gson().fromJson(new Gson().toJson(response), RSDeviceIP.class);
+        signupPresenter.getAddress(rsDeviceIP.getIp(), RSConstants.SOCIAL_LOGIN);
+    }
+
+    @Override
+    public void onPublicIPFailed() {
+        signupPresenter.performSocialLogin(user);
+    }
 
     private RSRequestSocialLogin getData(JSONObject object) {
         try{

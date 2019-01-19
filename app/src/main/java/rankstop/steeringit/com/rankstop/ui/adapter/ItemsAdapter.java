@@ -119,12 +119,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
 
         private ItemPieListener listener;
         public Item item;
-        /*@BindView(R.id.pie_chart)
-        PieChart pieChart;
-        @BindView(R.id.item_name)
-        TextView itemName;
-        @BindView(R.id.tv_count_reviews)
-        TextView countReviewsTV;*/
         private PieChart pieChart;
         private TextView itemName, countReviewsTV, countFollowersTV;
         private CheckBox likeIcon;

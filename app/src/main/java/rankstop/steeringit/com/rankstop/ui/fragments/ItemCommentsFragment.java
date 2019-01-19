@@ -2,7 +2,6 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
@@ -143,12 +142,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                 currentPage += 1;
 
                 // mocking network delay for API call
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadItemComments(currentPage);
-                    }
-                }, 1000);
+                loadItemComments(currentPage);
             }
 
             @Override
@@ -180,13 +174,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                 mcIsLoading = true;
                 mcCurrentPage += 1;
 
-                // mocking network delay for API call
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadMyItemComments(mcCurrentPage);
-                    }
-                }, 1000);
+                loadMyItemComments(mcCurrentPage);
             }
 
             @Override

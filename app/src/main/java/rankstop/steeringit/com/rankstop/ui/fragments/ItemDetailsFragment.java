@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -42,8 +43,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -70,6 +73,7 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.ItemInfoDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.ReportAbuseDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RequestOwnerShipDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
@@ -94,6 +98,30 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     @BindView(R.id.tv_item_category)
     RSTVBold itemCategoryTV;
 
+    @BindView(R.id.tv_ownership)
+    RSTVBold ownerShipTV;
+
+    @OnClick(R.id.tv_ownership)
+    void askForOwnerShip() {
+
+        if (RSSession.isLoggedIn(getContext())) {
+            Bundle bundle = new Bundle();
+            bundle.putString(RSConstants.ITEM_ID, itemId);
+            bundle.putString(RSConstants.ITEM_NAME, item.getItemDetails().getTitle());
+            openOwnershipDialog(bundle);
+        } else {
+            RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ITEM_DETAILS, RSConstants.ACTION_SEND_REQ_OWNERSHIP, fragmentContext.get().getResources().getString(R.string.alert_login_to_send_req_ownership), itemId, "", "");
+            askToLoginDialog(rsNavigationData);
+        }
+    }
+
+    private void openOwnershipDialog(Bundle bundle) {
+        RequestOwnerShipDialog dialog = new RequestOwnerShipDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.setArguments(bundle);
+        dialog.show(ft, RequestOwnerShipDialog.TAG);
+    }
+
     @BindView(R.id.recycler_view_gallery)
     RecyclerView recyclerViewGallery;
 
@@ -114,6 +142,15 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     @BindView(R.id.tv_about_item)
     RSTVMedium aboutItemTV;
+
+    @BindString(R.string.ownership_open)
+    String ownershipOpen;
+
+    @BindString(R.string.ownership_official)
+    String ownershipOfficial;
+
+    @BindString(R.string.ownership_pending)
+    String ownershipPending;
 
     private Unbinder unbinder;
 
@@ -539,6 +576,20 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                     } else {
                         Toast.makeText(getContext(), "Vous avez signaler cet item", Toast.LENGTH_SHORT).show();
                     }
+                } else if(rsNavigationData.getAction().equals(RSConstants.ACTION_SEND_REQ_OWNERSHIP)){
+                    Bundle bundle = new Bundle();
+                    bundle.putString(RSConstants.ITEM_ID, itemId);
+                    bundle.putString(RSConstants.ITEM_NAME, item.getItemDetails().getTitle());
+                    openOwnershipDialog(bundle);
+
+                    /*if (!item.isUserSendReqOwnership()) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(RSConstants.ITEM_ID, itemId);
+                        bundle.putString(RSConstants.ITEM_NAME, item.getItemDetails().getTitle());
+                        openOwnershipDialog(bundle);
+                    } else {
+                        Toast.makeText(getContext(), "Vous avez déjà envoyé une requête", Toast.LENGTH_SHORT).show();
+                    }*/
                 }
             }
         } catch (Exception e) {
@@ -549,6 +600,12 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         initPieChart(item);
         List<Gallery> listGalleryPics = new ArrayList<>();
         listGalleryPics = item.getItemDetails().getGallery();
+
+        String ownershipStatus= ownershipOpen;
+        if (item.getItemDetails().getOwner() != null){
+            ownershipStatus= ownershipOfficial;
+        }
+
         if (RSSession.isLoggedIn(getContext())) {
             if (listGalleryPics.size() > 0) {
                 initGallery(listGalleryPics);
@@ -558,6 +615,9 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 if (((User) item.getItemDetails().getCreator()).get_id().equals(RSSession.getCurrentUser(getContext()).get_id())) {
                     addItemPixBtn.setVisibility(View.VISIBLE);
                 }
+                // isUserSendRequestOwnership
+                /*if (item.isUserSendReqOwnership)
+                    ownershipStatus= ownershipPending;*/
             } else {
                 if (((User) item.getItemDetails().getOwner()).get_id().equals(RSSession.getCurrentUser(getContext()).get_id())) {
                     addItemPixBtn.setVisibility(View.VISIBLE);
@@ -568,6 +628,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 initGallery(listGalleryPics);
             }
         }
+        ownerShipTV.setText(ownershipStatus);
 
         ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         mViewPagerAdapter.addFragment(ItemEvalsFragment.getInstance(item.getTabCritereDetails()), getResources().getString(R.string.evals_title));

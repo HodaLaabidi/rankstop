@@ -7,6 +7,7 @@ import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
@@ -44,6 +45,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
 
     private Call<RSResponse> callFindEmail, callLogin, callRegister, callFollowItem, callSocialLogin;
     private Call<GeoPluginResponse> callAddress;
+    private Call<RSDeviceIP> callDeviceIP;
 
     @Override
     public void performFindEmail(String email) {
@@ -233,25 +235,65 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void getAddress(String ip) {
-        if (registerView != null) {
-            registerView.showProgressBar();
-            callAddress = WebService.getInstance(Urls.GEO_PLUGIN_URL).getApi().getAddressFromIP(ip);
+    public void getAddress(String ip, String target) {
+            callAddress = WebService.getInstance(Urls.GEO_PLUGIN_URL, null).getApi().getAddressFromIP(ip);
             callAddress.enqueue(new Callback<GeoPluginResponse>() {
                 @Override
                 public void onResponse(Call<GeoPluginResponse> call, Response<GeoPluginResponse> response) {
-                    Log.i("TAG_RESPONSE", "" + response.body());
-                    registerView.onAddressFetched(response.body());
-                    registerView.hideProgressBar();
+
+                    if (target.equals(RSConstants.REGISTER)) {
+                        if (response.body() != null) {
+                            registerView.onAddressFetched(response.body());
+                        } else {
+                            registerView.onAddressFailed();
+                        }
+                    }else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
+                        if (response.body() != null) {
+                            signupView.onAddressFetched(response.body());
+                        }else {
+                            signupView.onAddressFailed();
+                        }
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<GeoPluginResponse> call, Throwable t) {
-                    if (!call.isCanceled())
-                        registerView.hideProgressBar();
+                    if (!call.isCanceled()) {
+                        //registerView.hideProgressBar();
+                    }
                 }
             });
-        }
+    }
+
+    @Override
+    public void getPublicIP(String format, String target) {
+            callDeviceIP = WebService.getInstance(Urls.IP_FINDER).getApi().getPublicIP(format);
+            callDeviceIP.enqueue(new Callback<RSDeviceIP>() {
+                @Override
+                public void onResponse(Call<RSDeviceIP> call, Response<RSDeviceIP> response) {
+
+                    if (target.equals(RSConstants.REGISTER)) {
+                        if (response.body() != null) {
+                            registerView.onPublicIPFetched(response.body());
+                        }else {
+                            registerView.onPublicIPFailed();
+                        }
+                    }else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
+                        if (response.body() != null) {
+                            signupView.onPublicIPFetched(response.body());
+                        }else {
+                            signupView.onPublicIPFailed();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<RSDeviceIP> call, Throwable t) {
+                    if (!call.isCanceled()) {
+                        //registerView.hideProgressBar();
+                    }
+                }
+            });
     }
 
     @Override
@@ -264,5 +306,9 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
         if (callAddress != null)
             if (callAddress.isExecuted())
                 callAddress.cancel();
+
+        if (callDeviceIP != null)
+            if (callDeviceIP.isExecuted())
+                callDeviceIP.cancel();
     }
 }

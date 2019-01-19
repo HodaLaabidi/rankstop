@@ -5,7 +5,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WebService {
-    private static WebService instance;
+    private static WebService instance, instance2, instance3;
     private API api;
 
     public WebService() {
@@ -35,9 +35,15 @@ public class WebService {
     }
 
     public static WebService getInstance(String baseUrl) {
-        if (instance == null)
-            instance = new WebService(baseUrl);
-        return instance;
+        if (instance2 == null)
+            instance2 = new WebService(baseUrl);
+        return instance2;
+    }
+
+    public static WebService getInstance(String baseUrl, String ip) {
+        if (instance3 == null)
+            instance3 = new WebService(baseUrl);
+        return instance3;
     }
 
     public API getApi() {

@@ -18,11 +18,16 @@ import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 
 public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAdapter.ViewHolder> {
 
-    private List<CriteriaEval> criteriasEvaluated = new ArrayList<>();
+    private List<CriteriaEval> criteriasEvaluated;
     private Context context;
 
-    public MyEvalCriteriaAdapter(List<CriteriaEval> criteriasEvaluated, Context context) {
+    /*public MyEvalCriteriaAdapter(List<CriteriaEval> criteriasEvaluated, Context context) {
         this.criteriasEvaluated = criteriasEvaluated;
+        this.context = context;
+    }*/
+
+    public MyEvalCriteriaAdapter(Context context) {
+        this.criteriasEvaluated = new ArrayList<>();
         this.context = context;
     }
 
@@ -75,5 +80,21 @@ public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAd
                 progressBar.getProgressDrawable().setColorFilter(context.getResources().getColor(R.color.colorGreenPie), android.graphics.PorterDuff.Mode.SRC_IN);
             }
         }
+    }
+
+    public void addAll(List<CriteriaEval> items) {
+        for (CriteriaEval item : items) {
+            add(item);
+        }
+    }
+
+    public void clear() {
+        criteriasEvaluated.clear();
+        notifyDataSetChanged();
+    }
+
+    public void add(CriteriaEval item) {
+        criteriasEvaluated.add(item);
+        notifyItemInserted(criteriasEvaluated.size() - 1);
     }
 }

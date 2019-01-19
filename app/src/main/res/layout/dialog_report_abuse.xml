@@ -1,29 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_dialog_header"
-        android:background="@color/colorWarning"
-        android:gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_flag" />
-    </LinearLayout>
+    <include layout="@layout/rs_toolbar"/>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_scroll_view"
-        android:scrollbarSize="@dimen/width_scroll_bar"
-        android:scrollbarThumbVertical="@color/colorAccent"
-        android:scrollbars="vertical">
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -51,33 +38,14 @@
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <LinearLayout
+    <android.support.design.button.MaterialButton
+        android:id="@+id/positive_btn"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:text="@string/report_abuse"
+        android:textAllCaps="false"
+        android:layout_alignParentBottom="true"
+        app:cornerRadius="0dp" />
 
-        <android.support.design.button.MaterialButton
-            android:id="@+id/negative_btn"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_end_btn_dialog"
-            android:backgroundTint="@color/colorGray"
-            android:text="@string/cancel"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            app:cornerRadius="@dimen/raduis_btn_dialog" />
-
-        <android.support.design.button.MaterialButton
-            android:id="@+id/positive_btn"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/report_abuse"
-            android:textAllCaps="false"
-            android:enabled="false"
-            android:textColor="@android:color/white"
-            app:cornerRadius="@dimen/raduis_btn_dialog" />
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

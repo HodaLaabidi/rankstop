@@ -1,12 +1,14 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
 public class GeoPluginResponse implements Serializable {
 
-    @SerializedName("getGeoplugin_countryCode")
+    @SerializedName("geoplugin_countryCode")
     private String geoplugin_countryCode;
     @SerializedName("geoplugin_countryName")
     private String geoplugin_countryName;
@@ -25,5 +27,11 @@ public class GeoPluginResponse implements Serializable {
 
     public void setGeoplugin_countryName(String geoplugin_countryName) {
         this.geoplugin_countryName = geoplugin_countryName;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "geoplugin_countryCode = "+geoplugin_countryCode + ", geoplugin_countryName = "+geoplugin_countryName;
     }
 }

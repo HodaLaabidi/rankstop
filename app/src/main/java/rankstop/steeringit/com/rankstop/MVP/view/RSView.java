@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.view;
 
 import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
 
 public interface RSView {
 
@@ -38,6 +39,12 @@ public interface RSView {
         void hideProgressBar();
 
         void onAddressFetched(GeoPluginResponse response);
+
+        void onAddressFailed();
+
+        void onPublicIPFetched(RSDeviceIP response);
+
+        void onPublicIPFailed();
     }
 
     interface SignupView {
@@ -61,6 +68,14 @@ public interface RSView {
         void hideProgressBar();
 
         void showMessage(String message);
+
+        void onAddressFetched(GeoPluginResponse response);
+
+        void onAddressFailed();
+
+        void onPublicIPFetched(RSDeviceIP response);
+
+        void onPublicIPFailed();
     }
 
     interface StandardView {

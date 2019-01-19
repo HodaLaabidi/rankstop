@@ -3,6 +3,7 @@ package rankstop.steeringit.com.rankstop.MVP.model;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
+import rankstop.steeringit.com.rankstop.data.webservices.Urls;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import retrofit2.Call;

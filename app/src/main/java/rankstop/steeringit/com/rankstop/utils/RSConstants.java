@@ -65,6 +65,12 @@ public class RSConstants {
     public static final String PROVIDER_GOOGLE = "GOOGLE";
     public static final String PROVIDER_FB = "FACEBOOK";
     public static final String UPDATE_PROFILE = "update profile";
+    public static final String ITEM_ID = "item id";
+    public static final String ITEM_NAME = "item name";
+    public static final String SEND_REQ_OWNER_SHIP = "send request ownership";
+    public static final String ACTION_SEND_REQ_OWNERSHIP = "action send request ownership";
+    public static final double FAKE_LATITUDE = 36.7948624;
+    public static final double FAKE_LONGITUDE = 10.073238;
     public static String _ID = "id";
 
     // parameters

@@ -2,7 +2,7 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.google.gson.Gson;
 
@@ -184,13 +184,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
                 isLoading = true;
                 currentPage += 1;
                 rsRequestItemData.setPage(currentPage);
-                // mocking network delay for API call
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadItems(rsRequestItemData);
-                    }
-                }, 1000);
+                loadItems(rsRequestItemData);
             }
 
             @Override

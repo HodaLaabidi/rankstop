@@ -28,7 +28,10 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.data.model.db.Country;
+import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
 import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
@@ -138,29 +141,10 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
                     user.setPassword(password);
                     user.setEmail(getArguments().getString(RSConstants.EMAIL));
 
-
-                    Log.i("TAG_RESPONSE_IP",""+getLocalIpAddress());
-                    //registerPresenter.getAddress(ip);
+                    registerPresenter.getPublicIP("json", RSConstants.REGISTER);
                 }
             }
         });
-    }
-
-    public static String getLocalIpAddress() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                        return inetAddress.getHostAddress();
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            ex.printStackTrace();
-        }
-        return null;
     }
 
     private boolean isValidPassword(TextInputLayout layout, String value) {
@@ -278,9 +262,25 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
 
     @Override
     public void onAddressFetched(GeoPluginResponse response) {
-        //RSAddress address = new RSAddress();
-        //address.setCountry(new Country(response.getGeoplugin_countryCode(), response.getGeoplugin_countryName()));
-        //user.setLocation(address);
-        //registerPresenter.performRegister(user);
+        RSAddress address = new RSAddress();
+        address.setCountry(new Country(response.getGeoplugin_countryCode(), response.getGeoplugin_countryName()));
+        user.setLocation(address);
+        registerPresenter.performRegister(user);
+    }
+
+    @Override
+    public void onAddressFailed() {
+        registerPresenter.performRegister(user);
+    }
+
+    @Override
+    public void onPublicIPFetched(RSDeviceIP response) {
+        RSDeviceIP rsDeviceIP = new Gson().fromJson(new Gson().toJson(response), RSDeviceIP.class);
+        registerPresenter.getAddress(rsDeviceIP.getIp(), RSConstants.REGISTER);
+    }
+
+    @Override
+    public void onPublicIPFailed() {
+        registerPresenter.performRegister(user);
     }
 }
