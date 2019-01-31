@@ -194,8 +194,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         userPresenter = new PresenterUserImpl(ProfileFragment.this);
         setFragmentActionListener((ContainerActivity) getActivity());
         // init data
-        if (RSSession.isLoggedIn(getContext())) {
-            userInfo = RSSession.getCurrentUserInfo(getContext());
+        if (RSSession.isLoggedIn()) {
+            userInfo = RSSession.getCurrentUserInfo();
             rsRequestListItem.setUserId(userInfo.getUser().get_id());
         }
         rsRequestListItem.setPage(1);
@@ -209,7 +209,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         setPhone(userInfo.getUser().getPhone());
         setGender(userInfo.getUser().getGender());
         setBirthDay(userInfo.getUser().getBirthDate());
-        setCountry(userInfo.getUser().getLocation().getCountry());
+        setCountry(userInfo.getUser().getLocation().getCountry().getCountryName());
         setCity(userInfo.getUser().getLocation().getCity());
         setFullName(userInfo.getUser().getFirstName(), userInfo.getUser().getLastName());
         setEvalsNumber(userInfo.getCountEval());
@@ -270,9 +270,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
             birthdayTV.setText(undefined);
     }
 
-    private void setCountry(Country value) {
+    private void setCountry(String value) {
         if (value != null)
-            countryTV.setText(value.getCountryName());
+            countryTV.setText(value);
         else
             countryTV.setText(undefined);
     }
@@ -411,7 +411,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.logout:
-                RSSession.cancelSession(getContext());
+                RSSession.cancelSession();
                 ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.FRAGMENT_SIGN_UP, ""));
                 break;
             case R.id.history:
@@ -549,6 +549,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     }
                 }
 
+
                 if (this.userInfo.getUser().getGender() != null) {
                     if (!this.userInfo.getUser().getGender().equals(userInfo.getUser().getGender())) {
                         setGender(userInfo.getUser().getGender());
@@ -561,9 +562,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     }
                 }
 
-                if (this.userInfo.getUser().getLocation().getCountry() != null) {
+                if (this.userInfo.getUser().getLocation().getCountry().getCountryName() != null) {
                     if (!this.userInfo.getUser().getLocation().getCountry().getCountryName().equals(userInfo.getUser().getLocation().getCountry().getCountryName())) {
-                        setCountry(userInfo.getUser().getLocation().getCountry());
+                        setCountry(userInfo.getUser().getLocation().getCountry().getCountryName());
                     }
                 }
 
@@ -574,7 +575,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 }
 
                 this.userInfo = userInfo;
-                RSSession.refreshLocalStorage(userInfo, getContext());
+                RSSession.refreshLocalStorage(userInfo);
                 break;
             case RSConstants.FOLLOW_ITEM:
                 if (data.equals("1")) {

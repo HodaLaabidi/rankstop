@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model.db;
 
-public class SocialNetwork {
+import java.io.Serializable;
+
+public class SocialNetwork implements Serializable {
 
     private String userid, name;
 

@@ -56,6 +56,14 @@
                         android:transitionName="@string/transition_title" />
 
                     <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                        android:id="@+id/tv_ownership"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/mb_text_category"
+                        android:textColor="@color/colorGreenPie"
+                        android:textSize="@dimen/text_size_category_item_details" />
+
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                         android:id="@+id/tv_item_category"
                         style="@style/montserrat_bold"
                         android:layout_width="match_parent"
@@ -71,6 +79,18 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/text_size_subtitle_item_details" />
+
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                        android:id="@+id/tv_about_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/mb_text_category"
+                        android:textColor="@color/colorGray"
+                        android:text="@string/about_item"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="@dimen/p_ic_tv"
+                        android:textSize="@dimen/text_size_category_item_details"
+                        android:drawableStart="@drawable/ic_info_outline_gray"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"

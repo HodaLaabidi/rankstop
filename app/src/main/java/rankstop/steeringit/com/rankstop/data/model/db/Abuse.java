@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model.db;
 
-public class Abuse {
+import java.io.Serializable;
+
+public class Abuse implements Serializable {
 
     private String _id, name;
 

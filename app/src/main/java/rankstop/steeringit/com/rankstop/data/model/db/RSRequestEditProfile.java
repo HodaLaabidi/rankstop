@@ -6,9 +6,9 @@ import java.io.Serializable;
 
 public class RSRequestEditProfile implements Serializable {
 
-    private String lastName, firstName, gender, phone, birthDate, username, city, countryName, countryCode;
-    private RSPublicUserName nameToUse;
+    private String lastName, firstName, gender, phone, birthDate, username, nameToUse, oldPassword, newPassword, userId;
     private Uri file;
+    private RSAddress location;
 
     public String getLastName() {
         return lastName;
@@ -58,35 +58,19 @@ public class RSRequestEditProfile implements Serializable {
         this.username = username;
     }
 
-    public String getCity() {
-        return city;
+    public RSAddress getLocation() {
+        return location;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setLocation(String city, String countryCode, String countryName) {
+        this.location = new RSAddress(city, countryCode, countryName);
     }
 
-    public String getCountryName() {
-        return countryName;
-    }
-
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
-    public RSPublicUserName getNameToUse() {
+    public String getNameToUse() {
         return nameToUse;
     }
 
-    public void setNameToUse(RSPublicUserName nameToUse) {
+    public void setNameToUse(String nameToUse) {
         this.nameToUse = nameToUse;
     }
 
@@ -97,4 +81,30 @@ public class RSRequestEditProfile implements Serializable {
     public void setFile(Uri file) {
         this.file = file;
     }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+
 }

@@ -106,6 +106,25 @@ public interface RSView {
         void hideProgressBar();
     }
 
+    interface UpdateProfileView {
+
+        void onSuccess(String target, Object data);
+
+        void onFailure(String target);
+
+        void onError(String target);
+
+        void onOldPwdIncorrect(String message);
+
+        void onPwdMismatch(String message);
+
+        void showProgressBar(String target);
+
+        void hideProgressBar(String target);
+
+        void showMessage(String target, String message);
+    }
+
     interface AbuseView {
 
         void onReportClicked();

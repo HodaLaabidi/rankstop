@@ -105,4 +105,6 @@
     <dimen name="size_title_dialog">15sp</dimen>
     <dimen name="size_label">14sp</dimen>
     <dimen name="nb_text_size">12sp</dimen>
+    <dimen name="bottom_sheet_corner_radius">16dp</dimen>
+    <dimen name="bottom_sheet_top_padding">8dp</dimen>
 </resources>

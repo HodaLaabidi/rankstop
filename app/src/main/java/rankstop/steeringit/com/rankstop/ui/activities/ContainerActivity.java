@@ -94,7 +94,7 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
 
         activity = new WeakReference<ContainerActivity>(this);
 
-        isLoggedIn = RSSession.isLoggedIn(getApplicationContext());
+        isLoggedIn = RSSession.isLoggedIn();
 
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -130,7 +130,7 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
     public void manageSession(boolean isLoggedIn, RSNavigationData rsNavigationData) {
         this.isLoggedIn = isLoggedIn;
         if (isLoggedIn)
-            rsNavigationData.setUserId(RSSession.getCurrentUser(activity.get()).get_id());
+            rsNavigationData.setUserId(RSSession.getCurrentUser().get_id());
 
         switch (rsNavigationData.getFrom()) {
             case RSConstants.FRAGMENT_MY_EVALS:
@@ -170,15 +170,6 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
     }
 
     public void replaceFragment(Fragment fragment, String tag) {
-        /*if (handler == null)
-            handler = new Handler();
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        };
-        handler.postDelayed(runnable, 200);*/
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment);
         fragmentTransaction.addToBackStack(tag);
@@ -238,7 +229,8 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
     @Override
     protected void onDestroy() {
         activity.clear();
-        handler.removeCallbacks(runnable);
+        if (handler != null)
+            handler.removeCallbacks(runnable);
         super.onDestroy();
     }
 }

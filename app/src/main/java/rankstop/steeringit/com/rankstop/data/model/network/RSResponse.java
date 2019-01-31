@@ -2,7 +2,9 @@ package rankstop.steeringit.com.rankstop.data.model.network;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RSResponse {
+import java.io.Serializable;
+
+public class RSResponse implements Serializable {
 
     @SerializedName("status")
     private int status;

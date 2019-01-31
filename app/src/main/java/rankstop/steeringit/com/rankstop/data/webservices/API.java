@@ -6,7 +6,9 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
+import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
 import rankstop.steeringit.com.rankstop.data.model.db.RSPublicUserName;
+import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
 import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
@@ -53,17 +55,7 @@ public interface API {
     // register by email and password
     @Multipart
     @POST("users/updateUser")
-    Call<RSResponse> updateUser(@Part MultipartBody.Part part,
-                                @Part("lastName") RequestBody lastName,
-                                @Part("firstName") RequestBody firstName,
-                                @Part("gender") RequestBody gender,
-                                @Part("phone") RequestBody phone,
-                                @Part("birthDate") RequestBody birthDate,
-                                @Part("username") RequestBody username,
-                                @Part("city") RequestBody city,
-                                @Part("countryName") RequestBody countryName,
-                                @Part("countryCode") RequestBody countryCode,
-                                @Part("nameToUse") RSPublicUserName nameToUse);
+    Call<RSResponse> updateUser(@Part MultipartBody.Part part, @Part("dataToSend") RSRequestEditProfile user, @Part("userId") RequestBody userId);
 
     // load user info
     @FormUrlEncoded
@@ -241,6 +233,10 @@ public interface API {
     @POST("contact/sendInfoUserBuyItem")
     Call<RSResponse> requestOwnership(@Body RequestOwnership requestOwnership);
 
+    // send request ownership
+    @POST("contact/sendContact")
+    Call<RSResponse> contact(@Body RSContact rsContact);
+
     //
     @GET("json.gp")
     Call<GeoPluginResponse> getAddressFromIP(@Query("ip") String ip);
@@ -248,4 +244,14 @@ public interface API {
     // ip finder
     @GET("/")
     Call<RSDeviceIP> getPublicIP(@Query("format") String format);
+
+    // delete comment
+    @FormUrlEncoded
+    @POST("items/deleteComments")
+    Call<RSResponse> deleteComment(@Field("commentId") String commentId, @Field("itemId") String itemId);
+
+    // delete comment
+    @FormUrlEncoded
+    @POST("items/deletePictures")
+    Call<RSResponse> deletePicture(@Field("pictureId") String pictureId, @Field("itemId") String itemId);
 }

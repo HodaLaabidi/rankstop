@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
-public class RSRequestReportAbuse {
+import java.io.Serializable;
+
+public class RSRequestReportAbuse implements Serializable {
 
     private String userId, itemId, abuseId;
 

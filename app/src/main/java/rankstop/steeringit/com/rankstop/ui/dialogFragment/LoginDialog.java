@@ -182,9 +182,9 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
     public void loginSuccess(Object data) {
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
-        RSSession.startSession(getContext(), token);
+        RSSession.startSession(token);
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-            loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser(getContext()).get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN);
+            loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN);
         }else {
             dismiss();
             ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);

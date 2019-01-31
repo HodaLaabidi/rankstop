@@ -71,6 +71,11 @@ public class RSConstants {
     public static final String ACTION_SEND_REQ_OWNERSHIP = "action send request ownership";
     public static final double FAKE_LATITUDE = 36.7948624;
     public static final double FAKE_LONGITUDE = 10.073238;
+    public static final String COMMENT = "comment";
+    public static final String MESSAGE = "message";
+    public static final String DELETE_COMMENT = "delete comment";
+    public static final String DELETE_PICTURE = "delete picture";
+    public static final String RS_CONTACT = "rs contact";
     public static String _ID = "id";
 
     // parameters

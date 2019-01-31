@@ -134,6 +134,20 @@
     <string name="ownership_pending">Ownership: En attente</string>
     <string name="alert_login_to_send_req_ownership">for send request ownership, you should be loggedin before</string>
     <string name="choose_reason">Choisir un cause</string>
+    <string name="read_more">lire la suite</string>
+    <string name="remove_comment">Remove comment</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="message_delete_comment">Voulez-vous vraiment supprimer ce commentaire</string>
+    <string name="message_delete_picture">Voulez-vous vraiment supprimer cette photo ?</string>
+    <string name="edit_pwd">Changer le mot de passe</string>
+    <string name="hint_old_pwd">Ancien mot de passe</string>
+    <string name="hint_new_pwd">Nouveau mot de passe</string>
+    <string name="hint_confirm_new_pwd">Confirmer le mot de passe</string>
+    <string name="date_format">yyyy-MM-dd</string>
+    <string name="username_text">Nom d\'utilisateur</string>
+    <string name="fullname_text">Nom complet</string>
+    <string name="hint_subject">Sujet</string>
 
     <string-array name="labels">
         <item>Not set</item>

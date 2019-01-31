@@ -119,7 +119,7 @@ public class TakePictureActivity extends AppCompatActivity implements
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
             mCameraView.start();
-            mCameraView.setAspectRatio(AspectRatio.parse("1:1"));
+            mCameraView.setAspectRatio(AspectRatio.parse("4:3"));
 
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity.get(),
                 Manifest.permission.CAMERA)) {

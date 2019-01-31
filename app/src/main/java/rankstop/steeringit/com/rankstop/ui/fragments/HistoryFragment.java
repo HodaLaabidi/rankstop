@@ -101,6 +101,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
         userId = getArguments().getString(RSConstants.USER_ID);
         rsRequestListItem.setUserId(userId);
+        rsRequestListItem.setLang("fr");
         rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
         laodData(currentPage);
         initItemsList();

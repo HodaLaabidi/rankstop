@@ -2,10 +2,9 @@ package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -13,10 +12,7 @@ import okhttp3.RequestBody;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
-import rankstop.steeringit.com.rankstop.data.model.db.User;
-import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
-import rankstop.steeringit.com.rankstop.data.webservices.Urls;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.FileUtils;
 import rankstop.steeringit.com.rankstop.utils.Helpers;
@@ -27,11 +23,11 @@ import retrofit2.Response;
 
 public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePresenter {
 
-    private RSView.StandardView standardView;
-    private Call<RSResponse> callEditPwd, callEditProfile, callloadCountries;
+    private RSView.UpdateProfileView standardView;
+    private Call<RSResponse> callEditProfile, callloadCountries;
     private Context context;
 
-    public PresenterUpdateProfileImpl(RSView.StandardView standardView, Context context) {
+    public PresenterUpdateProfileImpl(RSView.UpdateProfileView standardView, Context context) {
         this.standardView = standardView;
         this.context = context;
     }
@@ -45,19 +41,15 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
     @Override
     public void editProfile(RSRequestEditProfile user) {
         if (standardView != null) {
-            MultipartBody.Part part = prepareFilePart("file", user.getFile());
+            Log.i("TAG_IMG_URI",""+user.getFile());
+            MultipartBody.Part part = null;
+            if (user.getFile() != null){
+                part = prepareFilePart("file", user.getFile());
+            }
             callEditProfile = WebService.getInstance().getApi().updateUser(
                     part,
-                    Helpers.createPartFormString(user.getLastName()),
-                    Helpers.createPartFormString(user.getFirstName()),
-                    Helpers.createPartFormString(user.getGender()),
-                    Helpers.createPartFormString(user.getPhone()),
-                    Helpers.createPartFormString(user.getBirthDate()),
-                    Helpers.createPartFormString(user.getUsername()),
-                    Helpers.createPartFormString(user.getCity()),
-                    Helpers.createPartFormString(user.getCountryName()),
-                    Helpers.createPartFormString(user.getCountryCode()),
-                    user.getNameToUse()
+                    user,
+                    Helpers.createPartFormString(user.getUserId())
             );
             callEditProfile.enqueue(new Callback<RSResponse>() {
                 @Override
@@ -68,6 +60,8 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                     } else if (response.body().getStatus() == 0) {
                         standardView.onFailure(RSConstants.UPDATE_PROFILE);
                         standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                    } else if (response.body().getStatus() == 2) {
+                        standardView.onOldPwdIncorrect(response.body().getMessage());
                     }
                     //standardView.hideProgressBar(RSConstants.ADD_ITEM);
                 }
@@ -111,9 +105,6 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
 
     @Override
     public void onDestroy() {
-        if (callEditPwd != null)
-            if (callEditPwd.isExecuted())
-                callEditPwd.cancel();
         if (callEditProfile != null)
             if (callEditProfile.isExecuted())
                 callEditProfile.cancel();

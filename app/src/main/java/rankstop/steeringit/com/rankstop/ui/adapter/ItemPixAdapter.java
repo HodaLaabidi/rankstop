@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -19,13 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHolder> {
 
-    private RecyclerViewClickListener listener;
+    private ReviewCardListener listener;
     private List<Picture> pictures;
     private Context context;
     private String target;
@@ -34,7 +38,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemPixAdapter(RecyclerViewClickListener listener, Context context, String target) {
+    public ItemPixAdapter(ReviewCardListener listener, Context context, String target) {
         this.listener = listener;
         this.context = context;
         this.pictures = new ArrayList<>();
@@ -93,29 +97,42 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+    public void removePicture(Picture picture) {
+        this.pictures.remove(picture);
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private RecyclerViewClickListener mListener;
-        private TextView noteColorView;
+        private ReviewCardListener mListener;
+        private RSTVMedium usernameTV, dateTV;
+        private RelativeLayout layout;
+        private ImageButton removePicBTN;
+        private SimpleDraweeView avatar;
         private SimpleDraweeView imageView;
         private LinearLayout pixContainer;
         private CardView cardView;
 
-        public ViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
+        public ViewHolder(@NonNull View itemView, ReviewCardListener listener) {
             super(itemView);
             mListener = listener;
 
-            noteColorView = itemView.findViewById(R.id.view_note);
             imageView = itemView.findViewById(R.id.pic_review);
             pixContainer = itemView.findViewById(R.id.pix_container);
             cardView = itemView.findViewById(R.id.card_view);
+            layout = itemView.findViewById(R.id.layout);
+            usernameTV = itemView.findViewById(R.id.tv_username);
+            dateTV = itemView.findViewById(R.id.tv_date);
+            removePicBTN = itemView.findViewById(R.id.btn_remove_pic);
+            avatar = itemView.findViewById(R.id.avatar);
 
             if (target.equals(RSConstants.MINE)) {
                 try {
-                    RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(200, 200);
+                    RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(240, 240);
                     cardView.setLayoutParams(layoutParams);
                     FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     pixContainer.setLayoutParams(params);
+                    removePicBTN.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
                 }
             }
@@ -128,21 +145,33 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, pixContainer.getWidth());
                             pixContainer.setLayoutParams(layoutParams);
                         }
+                        itemView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     } catch (Exception e) {
                     }
                 }
             });
 
+            try {
+                removePicBTN.setOnClickListener(this);
+            }catch(Exception e){}
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            listener.onClick(v, getAdapterPosition());
+            switch (v.getId()) {
+                case R.id.btn_remove_pic:
+                    listener.onRemoveClicked(getAdapterPosition());
+                    break;
+                default:
+                    listener.onClick(v, getAdapterPosition());
+            }
         }
 
         public void setData(Picture picture) {
-            noteColorView.setBackgroundColor(context.getResources().getColor(picture.getColor()));
+            layout.setBackgroundColor(context.getResources().getColor(picture.getColor()));
+            usernameTV.setText(picture.getUser().getNameToUse().getValue());
+            dateTV.setText(picture.getDate());
             try {
                 imageView.setImageURI(Uri.parse(picture.getPictureEval()));
             } catch (Exception e) {

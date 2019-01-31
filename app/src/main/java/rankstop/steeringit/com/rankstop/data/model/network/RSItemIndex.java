@@ -1,10 +1,11 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
+import java.io.Serializable;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 
-public class RSItemIndex {
+public class RSItemIndex implements Serializable {
     private int index;
     private List<Item> items;
 

@@ -7,6 +7,14 @@ public class RSAddress implements Serializable {
     private String city;
     private Country country;
 
+    public RSAddress() {
+    }
+
+    public RSAddress(String city, String countryCode, String countryName) {
+        this.city = city;
+        this.country = new Country(countryCode, countryName);
+    }
+
     public String getCity() {
         return city;
     }

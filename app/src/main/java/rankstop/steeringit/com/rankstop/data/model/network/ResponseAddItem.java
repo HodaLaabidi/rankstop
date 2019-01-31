@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
-public class ResponseAddItem {
+import java.io.Serializable;
+
+public class ResponseAddItem implements Serializable {
 
     private String id;
 

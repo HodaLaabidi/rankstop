@@ -105,7 +105,7 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             likeIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (!RSSession.isLoggedIn(context)) {
+                    if (!RSSession.isLoggedIn()) {
                         likeIcon.setChecked(!isChecked);
                     }
                 }

@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
-public class RSFollow {
+import java.io.Serializable;
+
+public class RSFollow implements Serializable {
 
     private String follower, following;
 

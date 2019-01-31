@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -88,7 +89,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
         super.onActivityCreated(savedInstanceState);
 
         bindViews();
-        userId = RSSession.getCurrentUser(getContext()).get_id();
+        userId = RSSession.getCurrentUser().get_id();
         rsAddReview = (RSAddReview) getArguments().getSerializable(RSConstants.RS_ADD_REVIEW);
         myEval = (Evaluation) getArguments().getSerializable(RSConstants.MY_EVAL);
         from = getArguments().getString(RSConstants.FROM);
@@ -253,7 +254,8 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
                 byte[] chartData = data.getByteArrayExtra("byte_array");
                 if (listPics.size() == 0)
                     addPixTV.setVisibility(View.GONE);
-                listPics.add(Helpers.getImageUri(chartData, getContext()));
+                Log.i("TAG_PIX_URI",""+Helpers.getImageUri(chartData));
+                listPics.add(Helpers.getImageUri(chartData));
                 reviewPixAdapter.notifyDataSetChanged();
             }
         }

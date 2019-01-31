@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,15 +40,18 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemCommentsAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.DialogConfirmationListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.AlertConfirmationDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ShowCommentDialog;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.LinearScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
-public class ItemCommentsFragment extends Fragment implements RSView.StandardView {
+public class ItemCommentsFragment extends Fragment implements RSView.StandardView, DialogConfirmationListener {
 
     private View rootView;
     private RecyclerView commentsRV, myCommentsRV;
@@ -58,7 +62,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
     private ProgressBar progressBar, mcProgressBar;
     private RelativeLayout myCommentsLayout;
     private LinearLayout addCommentLayout;
-    private RecyclerViewClickListener listener, myListener;
+    private ReviewCardListener listener, myListener;
 
 
     private RadioGroup filterToggle;
@@ -100,9 +104,9 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             myComments = new ArrayList<>();
         currentItem = (Item) getArguments().getSerializable(RSConstants.ITEM);
         itemId = currentItem.getItemDetails().get_id();
-        if (RSSession.isLoggedIn(getContext())) {
+        if (RSSession.isLoggedIn()) {
             myCommentsLayout.setVisibility(View.VISIBLE);
-            userId = RSSession.getCurrentUser(getContext()).get_id();
+            userId = RSSession.getCurrentUser().get_id();
             myCommentsLayout.setVisibility(View.VISIBLE);
             titleOtherCom.setVisibility(View.VISIBLE);
         }
@@ -110,9 +114,43 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
         loadItemComments(currentPage);
         loadMyItemComments(mcCurrentPage);
         setFragmentActionListener((ContainerActivity) getActivity());
-        listener = (view, position) -> {
+        listener = new ReviewCardListener() {
+            @Override
+            public void onRemoveClicked(int position) {
+
+            }
+
+            @Override
+            public void onReadMoreClicked(int position) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(RSConstants.COMMENT, comments.get(position));
+                bundle.putString(RSConstants.USER_ID, userId);
+                showFullComment(bundle);
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+
+            }
         };
-        myListener = (view, position) -> {
+        myListener = new ReviewCardListener() {
+            @Override
+            public void onRemoveClicked(int position) {
+                openDialogConfirmation(myComments.get(position));
+            }
+
+            @Override
+            public void onReadMoreClicked(int position) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(RSConstants.COMMENT, myComments.get(position));
+                bundle.putString(RSConstants.USER_ID, userId);
+                showFullComment(bundle);
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+
+            }
         };
         initCommentsList();
         initMyCommentsList();
@@ -127,6 +165,27 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                 fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddReview, currentItem.getLastEvalUser(), ""), RSConstants.FRAGMENT_ADD_REVIEW);
             }
         });
+    }
+
+    private void openDialogConfirmation(Comment comment) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString(RSConstants.MESSAGE, getResources().getString(R.string.message_delete_comment));
+        bundle.putString(RSConstants._ID, comment.get_id());
+        AlertConfirmationDialog dialog = new AlertConfirmationDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.setCancelable(false);
+        dialog.setArguments(bundle);
+        dialog.setTargetFragment(this, 0);
+        dialog.show(ft, AlertConfirmationDialog.TAG);
+    }
+
+    private void showFullComment(Bundle bundle) {
+        ShowCommentDialog dialog = new ShowCommentDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.setArguments(bundle);
+        dialog.setTargetFragment(this, 0);
+        dialog.show(ft, ShowCommentDialog.TAG);
     }
 
     private void initCommentsList() {
@@ -336,7 +395,32 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                 } catch (Exception e) {
                 }
                 break;
+            case RSConstants.DELETE_COMMENT:
+                removeComment(data);
+                break;
         }
+    }
+
+    private void removeComment(Object data) {
+        Comment comment = findCommentIndex(data);
+        if (comment != null) {
+            myComments.remove(comment);
+            myItemCommentsAdapter.removeComment(comment);
+            Toast.makeText(getContext(), "Comment deleted successfully", Toast.LENGTH_SHORT).show();
+            if (myComments.size() == 0){
+                addCommentLayout.setVisibility(View.VISIBLE);
+                myCommentsRV.setVisibility(View.GONE);
+                mcProgressBar.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private Comment findCommentIndex(Object data) {
+        for (int i=0; i < myComments.size(); i++){
+            if (myComments.get(i).get_id().equals(data.toString()))
+                return myComments.get(i);
+        }
+        return null;
     }
 
     private void manageCommentsList(RSResponseItemData rsResponseItemData) {
@@ -467,5 +551,14 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                 Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
                 break;
         }
+    }
+
+    @Override
+    public void onCancelClicked() {
+    }
+
+    @Override
+    public void onConfirmClicked(String targetId) {
+        itemPresenter.deleteComment(targetId, itemId);
     }
 }

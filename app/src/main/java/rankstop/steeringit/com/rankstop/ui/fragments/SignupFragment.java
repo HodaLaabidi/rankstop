@@ -271,10 +271,10 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
         //Log.i("TAG_REGISTER",""+token);
-        RSSession.startSession(getContext(), token);
+        RSSession.startSession(token);
 
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-            signupPresenter.followItem(new RSFollow(RSSession.getCurrentUser(getContext()).get_id(), rsNavigationData.getItemId()), RSConstants.SOCIAL_LOGIN);
+            signupPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.SOCIAL_LOGIN);
         }else {
             ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
         }

@@ -169,7 +169,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     @Override
     public void onReportClicked() {
         if (abuseId != null){
-            abusePresenter.reportAbuse(new RSRequestReportAbuse(RSSession.getCurrentUser(getContext()).get_id(), itemId, abuseId));
+            abusePresenter.reportAbuse(new RSRequestReportAbuse(RSSession.getCurrentUser().get_id(), itemId, abuseId));
         }else{
             Toast.makeText(getContext(), chooseReason, Toast.LENGTH_SHORT).show();
         }

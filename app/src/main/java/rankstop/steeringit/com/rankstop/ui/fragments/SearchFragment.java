@@ -147,8 +147,8 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         rsRequestItemData = new RSRequestItemByCategory();
         rsRequestItemData.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
         rsRequestItemData.setPage(currentPage);
-        if (RSSession.isLoggedIn(getContext()))
-            rsRequestItemData.setUserId(RSSession.getCurrentUser(getContext()).get_id());
+        if (RSSession.isLoggedIn())
+            rsRequestItemData.setUserId(RSSession.getCurrentUser().get_id());
 
         bindViews();
         initSearchListener();

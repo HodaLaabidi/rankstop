@@ -11,6 +11,7 @@ import java.io.File;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import rankstop.steeringit.com.rankstop.RankStop;
 
 public class Helpers {
 
@@ -26,9 +27,9 @@ public class Helpers {
         return RequestBody.create(MultipartBody.FORM, value);
     }
 
-    public static Uri getImageUri(byte[] chartData, Context context) {
+    public static Uri getImageUri(byte[] chartData) {
         Bitmap bm = BitmapFactory.decodeByteArray(chartData, 0, chartData.length);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bm, "Image Description", null);
+        String path = MediaStore.Images.Media.insertImage(RankStop.getInstance().getContentResolver(), bm, "Image Description", null);
         return Uri.parse(path);
     }
 }

@@ -1,8 +1,10 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
+import java.io.Serializable;
+
 import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
 
-public class RSLocalStorage {
+public class RSLocalStorage implements Serializable {
 
     private String token;
     private UserInfo userInfo;

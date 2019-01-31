@@ -116,9 +116,9 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
         bindViews();
 
-        isLoggedIn = RSSession.isLoggedIn(getContext());
+        isLoggedIn = RSSession.isLoggedIn();
         if (isLoggedIn) {
-            user = RSSession.getCurrentUser(getContext());
+            user = RSSession.getCurrentUser();
             rsRequestListItem.setPage(currentPage);
             rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
             rsRequestListItem.setUserId(user.get_id());

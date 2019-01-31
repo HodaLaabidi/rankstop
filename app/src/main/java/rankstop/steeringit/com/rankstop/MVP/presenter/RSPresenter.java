@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.MVP.presenter;
 
+import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
 import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
 import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
@@ -59,6 +60,8 @@ public interface RSPresenter {
         void loadItemCommentsByUser(RSRequestItemData rsRequestItemData);
         void loadItemPix(RSRequestItemData rsRequestItemData);
         void loadItemPixByUser(RSRequestItemData rsRequestItemData);
+        void deleteComment(String commentId, String itemId);
+        void deletePicture(String pictureId, String itemId);
         void onDestroyItem();
     }
 
@@ -102,8 +105,9 @@ public interface RSPresenter {
         void onDestroy();
     }
 
-    interface RequestOwnerShipPresenter{
+    interface ContactPresenter{
         void requestOwnership(RequestOwnership requestOwnership);
+        void contact(RSContact rsContact);
         void onDestroy();
     }
 

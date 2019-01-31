@@ -19,7 +19,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
     private Call<RSResponse> callLoadItem, callTopRankedItems, callTopViewedItems, callTopCommentedItems, callTopFollowedItems,
             callItemCreated, callItemOwned, callItemFollowed, callMyEvals, callCategoriesList, callFollowItem, callUnfollowItem,
-            callItemComments, callItemPix, callItemPixByUser, callItemCommentsByUser;
+            callItemComments, callItemPix, callItemPixByUser, callItemCommentsByUser, callDeletePic, callDeleteComment;
 
     public PresenterItemImpl(RSView.StandardView standardView) {
         this.standardView = standardView;
@@ -433,6 +433,60 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
+    public void deleteComment(String commentId, String itemId) {
+        if (standardView != null) {
+            standardView.showProgressBar(RSConstants.DELETE_COMMENT);
+            callDeleteComment = WebService.getInstance().getApi().deleteComment(commentId, itemId);
+            callDeleteComment.enqueue(new Callback<RSResponse>() {
+                @Override
+                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                    if (response.body().getStatus() == 1) {
+                        standardView.onSuccess(RSConstants.DELETE_COMMENT, commentId);
+                    } else if (response.body().getStatus() == 0) {
+                        standardView.onFailure(RSConstants.DELETE_COMMENT);
+                    }
+                    standardView.hideProgressBar(RSConstants.DELETE_COMMENT);
+                }
+
+                @Override
+                public void onFailure(Call<RSResponse> call, Throwable t) {
+                    if (!callDeleteComment.isCanceled()) {
+                        standardView.hideProgressBar(RSConstants.DELETE_COMMENT);
+                        standardView.showMessage(RSConstants.DELETE_COMMENT, "failure");
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void deletePicture(String pictureId, String itemId) {
+        if (standardView != null) {
+            standardView.showProgressBar(RSConstants.DELETE_PICTURE);
+            callDeletePic = WebService.getInstance().getApi().deletePicture(pictureId, itemId);
+            callDeletePic.enqueue(new Callback<RSResponse>() {
+                @Override
+                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                    if (response.body().getStatus() == 1) {
+                        standardView.onSuccess(RSConstants.DELETE_PICTURE, pictureId);
+                    } else if (response.body().getStatus() == 0) {
+                        standardView.onFailure(RSConstants.DELETE_PICTURE);
+                    }
+                    standardView.hideProgressBar(RSConstants.DELETE_PICTURE);
+                }
+
+                @Override
+                public void onFailure(Call<RSResponse> call, Throwable t) {
+                    if (!callDeletePic.isCanceled()) {
+                        standardView.hideProgressBar(RSConstants.DELETE_PICTURE);
+                        standardView.showMessage(RSConstants.DELETE_PICTURE, "failure");
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
     public void onDestroyItem() {
         if (callLoadItem != null)
             if (callLoadItem.isExecuted())
@@ -499,6 +553,14 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (callItemPixByUser != null)
             if (callItemPixByUser.isExecuted())
                 callItemPixByUser.cancel();
+
+        if (callDeleteComment != null)
+            if (callDeleteComment.isExecuted())
+                callDeleteComment.cancel();
+
+        if (callDeletePic != null)
+            if (callDeletePic.isExecuted())
+                callDeletePic.cancel();
 
         standardView = null;
     }

@@ -2,15 +2,18 @@ package rankstop.steeringit.com.rankstop.data.model.network;
 
 import android.support.annotation.NonNull;
 
-public class RSRequestListItem {
+import java.io.Serializable;
+
+public class RSRequestListItem implements Serializable {
 
     private int perPage, page;
-    private String userId;
+    private String userId, lang;
 
-    public RSRequestListItem(int perPage, int page, String userId) {
+    public RSRequestListItem(int perPage, int page, String userId, String lang) {
         this.perPage = perPage;
         this.page = page;
         this.userId = userId;
+        this.lang = lang;
     }
 
     public RSRequestListItem() {
@@ -38,6 +41,14 @@ public class RSRequestListItem {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     @NonNull

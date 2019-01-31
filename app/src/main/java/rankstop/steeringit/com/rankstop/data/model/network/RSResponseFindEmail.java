@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
-public class RSResponseFindEmail {
+import java.io.Serializable;
+
+public class RSResponseFindEmail implements Serializable {
     private boolean connectSocialMedia;
 
     public RSResponseFindEmail(boolean connectSocialMedia) {

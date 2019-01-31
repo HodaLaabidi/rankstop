@@ -191,8 +191,8 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
                 byte[] chartData = data.getByteArrayExtra("byte_array");
                 if (listPics.size() == 0)
                     addPixTV.setVisibility(View.GONE);
-                listPics.add(Helpers.getImageUri(chartData, getContext()));
-                listNewPics.add(Helpers.getImageUri(chartData, getContext()));
+                listPics.add(Helpers.getImageUri(chartData));
+                listNewPics.add(Helpers.getImageUri(chartData));
                 reviewPixAdapter.notifyDataSetChanged();
             }
         }

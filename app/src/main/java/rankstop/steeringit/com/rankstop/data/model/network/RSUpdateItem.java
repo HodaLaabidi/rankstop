@@ -2,10 +2,11 @@ package rankstop.steeringit.com.rankstop.data.model.network;
 
 import android.net.Uri;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RSUpdateItem {
+public class RSUpdateItem implements Serializable {
 
     private String itemId, urlFacebook, urlTwitter, urlGooglePlus, urlInstagram, urlLinkedIn;
     private List<Uri> gallery;

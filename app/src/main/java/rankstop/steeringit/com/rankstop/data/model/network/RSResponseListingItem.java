@@ -1,10 +1,11 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
+import java.io.Serializable;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 
-public class RSResponseListingItem {
+public class RSResponseListingItem implements Serializable {
 
     private List<Item> items;
     private int current;

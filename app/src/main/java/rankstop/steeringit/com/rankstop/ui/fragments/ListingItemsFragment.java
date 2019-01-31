@@ -95,9 +95,9 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         RSNavigationData navigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         from = navigationData.getSection();
         itemPresenter = new PresenterItemImpl(ListingItemsFragment.this);
-        isLoggedIn = RSSession.isLoggedIn(getContext());
+        isLoggedIn = RSSession.isLoggedIn();
         if (isLoggedIn){
-            currentUser = RSSession.getCurrentUser(getContext());
+            currentUser = RSSession.getCurrentUser();
             rsRequestListItem.setUserId(currentUser.get_id());
         }
         rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);

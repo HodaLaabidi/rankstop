@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterRequestOwnerShip;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterContact;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
@@ -35,7 +35,7 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
     private User user;
     private String itemId, itemName, fullname, email, phoneNumber, companyName, message;
 
-    private RSPresenter.RequestOwnerShipPresenter presenter;
+    private RSPresenter.ContactPresenter presenter;
 
     private ProgressDialog progressDialog;
 
@@ -140,7 +140,7 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        user = RSSession.getCurrentUser(getContext());
+        user = RSSession.getCurrentUser();
 
         inputFullName.setText(user.getFirstName() + " " + user.getLastName());
         inputEmail.setText(user.getEmail());
@@ -151,7 +151,7 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
         itemId = b.getString(RSConstants.ITEM_ID);
         itemName = b.getString(RSConstants.ITEM_NAME);
 
-        presenter = new PresenterRequestOwnerShip(RequestOwnerShipDialog.this);
+        presenter = new PresenterContact(RequestOwnerShipDialog.this);
 
     }
 

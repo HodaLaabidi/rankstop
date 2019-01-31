@@ -110,8 +110,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
     }
 
     private void getCurrentUser() {
-        if (RSSession.isLoggedIn(getContext())) {
-            user = RSSession.getCurrentUser(getContext());
+        if (RSSession.isLoggedIn()) {
+            user = RSSession.getCurrentUser();
             rsRequestListItem.setUserId(user.get_id());
         }
     }
@@ -281,7 +281,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, RSVi
 
     private void manageFollow(String itemId, boolean isFollow) {
         itemIdToFollow = itemId;
-        if (RSSession.isLoggedIn(getContext())) {
+        if (RSSession.isLoggedIn()) {
             RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
             if (isFollow)
                 itemPresenter.followItem(rsFollow);

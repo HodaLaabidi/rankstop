@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
-public class RSResponseLogin {
+import java.io.Serializable;
+
+public class RSResponseLogin implements Serializable {
     private String token;
 
     public String getToken() {

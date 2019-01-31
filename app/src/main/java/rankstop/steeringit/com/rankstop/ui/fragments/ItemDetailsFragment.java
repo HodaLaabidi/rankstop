@@ -104,7 +104,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     @OnClick(R.id.tv_ownership)
     void askForOwnerShip() {
 
-        if (RSSession.isLoggedIn(getContext())) {
+        if (RSSession.isLoggedIn()) {
             Bundle bundle = new Bundle();
             bundle.putString(RSConstants.ITEM_ID, itemId);
             bundle.putString(RSConstants.ITEM_NAME, item.getItemDetails().getTitle());
@@ -201,7 +201,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         addReviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (RSSession.isLoggedIn(getContext())) {
+                if (RSSession.isLoggedIn()) {
                     RSAddReview rsAddReview = new RSAddReview();
                     rsAddReview.setItemId(item.getItemDetails().get_id());
                     rsAddReview.setCategoryId(item.getItemDetails().getCategory().get_id());
@@ -223,7 +223,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         reportAbuseBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (RSSession.isLoggedIn(getContext())) {
+                if (RSSession.isLoggedIn()) {
                     RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ITEM_DETAILS, RSConstants.ACTION_REPORT_ABUSE, "", itemId, "", "");
                     openAbusesDialog(rsNavigationData);
                 } else {
@@ -263,8 +263,8 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     private void loadItemData() {
         String userId = "";
-        if (RSSession.isLoggedIn(getContext())) {
-            user = RSSession.getCurrentUser(getContext());
+        if (RSSession.isLoggedIn()) {
+            user = RSSession.getCurrentUser();
             userId = user.get_id();
         }
         itemId = getArguments().getString(RSConstants._ID);
@@ -431,7 +431,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         else
             currentColor = android.R.color.white;
 
-        if (RSSession.isLoggedIn(getContext())) {
+        if (RSSession.isLoggedIn()) {
             RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
             if (isFollow)
                 itemPresenter.followItem(rsFollow);
@@ -477,7 +477,6 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
         maxScroll = appBarLayout.getTotalScrollRange();
         percentage = (float) Math.abs(i) / (float) maxScroll;
-
         handleToolbarTitleVisibility(percentage);
     }
 
@@ -606,20 +605,20 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             ownershipStatus= ownershipOfficial;
         }
 
-        if (RSSession.isLoggedIn(getContext())) {
+        if (RSSession.isLoggedIn()) {
             if (listGalleryPics.size() > 0) {
                 initGallery(listGalleryPics);
                 addItemPixBtn.setText(getResources().getString(R.string.update_item_pics));
             }
             if (item.getItemDetails().getOwner() == null) {
-                if (((User) item.getItemDetails().getCreator()).get_id().equals(RSSession.getCurrentUser(getContext()).get_id())) {
+                if (((User) item.getItemDetails().getCreator()).get_id().equals(RSSession.getCurrentUser().get_id())) {
                     addItemPixBtn.setVisibility(View.VISIBLE);
                 }
                 // isUserSendRequestOwnership
                 /*if (item.isUserSendReqOwnership)
                     ownershipStatus= ownershipPending;*/
             } else {
-                if (((User) item.getItemDetails().getOwner()).get_id().equals(RSSession.getCurrentUser(getContext()).get_id())) {
+                if (((User) item.getItemDetails().getOwner()).get_id().equals(RSSession.getCurrentUser().get_id())) {
                     addItemPixBtn.setVisibility(View.VISIBLE);
                 }
             }

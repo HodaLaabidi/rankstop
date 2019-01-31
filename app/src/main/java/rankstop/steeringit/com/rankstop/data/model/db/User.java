@@ -1,54 +1,45 @@
 package rankstop.steeringit.com.rankstop.data.model.db;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
-import butterknife.BindString;
-import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class User implements Serializable {
 
-    @SerializedName("_id")
+    //@SerializedName("_id")
     private String _id;
-    @SerializedName("email")
+    //@SerializedName("email")
     private String email;
-    @SerializedName("password")
+    //@SerializedName("password")
     private String password;
-    @SerializedName("username")
+    //@SerializedName("username")
     private String username;
-    @SerializedName("firstName")
+    //@SerializedName("firstName")
     private String firstName;
-    @SerializedName("lastName")
+    //@SerializedName("lastName")
     private String lastName;
-    @SerializedName("phone")
+    //@SerializedName("phone")
     private String phone;
-    @SerializedName("photo")
+    //@SerializedName("photo")
     private String photo;
-    @SerializedName("gender")
+    //@SerializedName("gender")
     private String gender;
-    @SerializedName("pictureProfile")
+    //@SerializedName("pictureProfile")
     private String pictureProfile;
-    @SerializedName("birthDate")
+    //@SerializedName("birthDate")
     private String birthDate;
-    @SerializedName("facebook")
+    //@SerializedName("facebook")
     private SocialNetwork facebook;
-    @SerializedName("linkedin")
+    //@SerializedName("linkedin")
     private SocialNetwork linkedin;
-    @SerializedName("google")
+    //@SerializedName("google")
     private SocialNetwork google;
-    @SerializedName("nameToUse")
+    //@SerializedName("nameToUse")
     private RSPublicUserName nameToUse;
-    @SerializedName("isPasswordExist")
+    //@SerializedName("isPasswordExist")
     private boolean isPasswordExist;
-    @SerializedName("location")
+    //@SerializedName("location")
     private RSAddress location;
-
-    @BindString(R.string.hint_man)
-    String male;
-    @BindString(R.string.hint_woman)
-    String female;
 
     public User() {
     }
@@ -94,12 +85,6 @@ public class User implements Serializable {
     }
 
     public String getGender() {
-        if (gender != null) {
-            if (gender.equals("male"))
-                return male;
-            else if (gender.equals("female"))
-                return female;
-        }
         return gender;
     }
 
@@ -117,7 +102,7 @@ public class User implements Serializable {
 
     public String getBirthDate() {
         if (birthDate != null)
-            return RSDateParser.convertToDateFormat(birthDate, "dd/MM/yyyy");
+            return RSDateParser.convertToDateFormat(birthDate, "yyyy-MM-dd");
         return "";
     }
 

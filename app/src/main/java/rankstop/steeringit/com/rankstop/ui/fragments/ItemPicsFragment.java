@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -41,20 +43,23 @@ import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.activities.DiaparomaActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemPixAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.DialogConfirmationListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.AlertConfirmationDialog;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.LinearScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
-public class ItemPicsFragment extends Fragment implements RSView.StandardView {
+public class ItemPicsFragment extends Fragment implements RSView.StandardView, DialogConfirmationListener {
 
     private View rootView;
     private RecyclerView pixRV, myPixRV;
     private List<Picture> pictures, myPictures;
-    private RecyclerViewClickListener listener, myListener;
+    private ReviewCardListener listener, myListener;
     private TextView titleOtherPix;
     private ItemPixAdapter itemPicsAdapter, myItemPixAdapter;
     private MaterialButton addPixBTN;
@@ -104,35 +109,59 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
             myPictures = new ArrayList<>();
         currentItem = (Item) getArguments().getSerializable(RSConstants.ITEM);
         itemId = currentItem.getItemDetails().get_id();
-        if (RSSession.isLoggedIn(getContext())) {
+        if (RSSession.isLoggedIn()) {
             myPixLayout.setVisibility(View.VISIBLE);
-            userId = RSSession.getCurrentUser(getContext()).get_id();
+            userId = RSSession.getCurrentUser().get_id();
             myPixLayout.setVisibility(View.VISIBLE);
             titleOtherPix.setVisibility(View.VISIBLE);
         }
         rsRequestItemData = new RSRequestItemData(itemId, userId, RSConstants.MAX_FIELD_TO_LOAD, 1);
         setFragmentActionListener((ContainerActivity) getActivity());
-        listener = (view, position) -> {
-            startActivity(
-                    new Intent(getContext(), DiaparomaActivity.class)
-                            .putExtra(RSConstants.PICTURES, pictures.size())
-                            .putExtra(RSConstants.FILTERED_PICTURES, (Serializable) itemPicsAdapter.getAll())
-                            .putExtra(RSConstants.POSITION, position)
-                            .putExtra(RSConstants.COUNT_PAGES, PAGES_COUNT)
-                            .putExtra(RSConstants.FILTER, lastCheckedId)
-                            .putExtra(RSConstants.FROM, RSConstants.ALL_PIX)
-                            .putExtra(RSConstants.RS_REQUEST_ITEM_DATA, rsRequestItemData));
+        listener = new ReviewCardListener() {
+            @Override
+            public void onRemoveClicked(int position) {
+
+            }
+
+            @Override
+            public void onReadMoreClicked(int position) {
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                startActivity(
+                        new Intent(getContext(), DiaparomaActivity.class)
+                                .putExtra(RSConstants.PICTURES, pictures.size())
+                                .putExtra(RSConstants.FILTERED_PICTURES, (Serializable) itemPicsAdapter.getAll())
+                                .putExtra(RSConstants.POSITION, position)
+                                .putExtra(RSConstants.COUNT_PAGES, PAGES_COUNT)
+                                .putExtra(RSConstants.FILTER, lastCheckedId)
+                                .putExtra(RSConstants.FROM, RSConstants.ALL_PIX)
+                                .putExtra(RSConstants.RS_REQUEST_ITEM_DATA, rsRequestItemData));
+            }
         };
-        myListener = (view, position) -> {
-            startActivity(
-                    new Intent(getContext(), DiaparomaActivity.class)
-                            .putExtra(RSConstants.PICTURES, myPictures.size())
-                            .putExtra(RSConstants.FILTERED_PICTURES, (Serializable) myItemPixAdapter.getAll())
-                            .putExtra(RSConstants.POSITION, position)
-                            .putExtra(RSConstants.COUNT_PAGES, MP_PAGES_COUNT)
-                            .putExtra(RSConstants.FILTER, lastCheckedId)
-                            .putExtra(RSConstants.FROM, RSConstants.MY_PIX)
-                            .putExtra(RSConstants.RS_REQUEST_ITEM_DATA, rsRequestItemData));
+        myListener = new ReviewCardListener() {
+            @Override
+            public void onRemoveClicked(int position) {
+                openDialogConfirmation(myPictures.get(position));
+            }
+
+            @Override
+            public void onReadMoreClicked(int position) {
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                startActivity(
+                        new Intent(getContext(), DiaparomaActivity.class)
+                                .putExtra(RSConstants.PICTURES, myPictures.size())
+                                .putExtra(RSConstants.FILTERED_PICTURES, (Serializable) myItemPixAdapter.getAll())
+                                .putExtra(RSConstants.POSITION, position)
+                                .putExtra(RSConstants.COUNT_PAGES, MP_PAGES_COUNT)
+                                .putExtra(RSConstants.FILTER, lastCheckedId)
+                                .putExtra(RSConstants.FROM, RSConstants.MY_PIX)
+                                .putExtra(RSConstants.RS_REQUEST_ITEM_DATA, rsRequestItemData));
+            }
         };
         loadItemPix(currentPage);
         loadMyItemPix(mpCurrentPage);
@@ -149,6 +178,18 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
                 fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddReview, currentItem.getLastEvalUser(), ""), RSConstants.FRAGMENT_ADD_REVIEW);
             }
         });
+    }
+
+    private void openDialogConfirmation(Picture picture) {
+        Bundle bundle = new Bundle();
+        bundle.putString(RSConstants.MESSAGE, getResources().getString(R.string.message_delete_picture));
+        bundle.putString(RSConstants._ID, picture.get_id());
+        AlertConfirmationDialog dialog = new AlertConfirmationDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.setCancelable(false);
+        dialog.setArguments(bundle);
+        dialog.setTargetFragment(this, 0);
+        dialog.show(ft, AlertConfirmationDialog.TAG);
     }
 
     private void initPixList() {
@@ -309,7 +350,32 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
                 } catch (Exception e) {
                 }
                 break;
+            case RSConstants.DELETE_PICTURE:
+                removePicture(data);
+                break;
         }
+    }
+
+    private void removePicture(Object data) {
+        Picture picture = findCommentIndex(data);
+        if (picture != null) {
+            myPictures.remove(picture);
+            myItemPixAdapter.removePicture(picture);
+            Toast.makeText(getContext(), "Picture deleted successfully", Toast.LENGTH_SHORT).show();
+            if (myPictures.size() == 0){
+                addPixLayout.setVisibility(View.VISIBLE);
+                myPixRV.setVisibility(View.GONE);
+                mpProgressBar.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private Picture findCommentIndex(Object data) {
+        for (int i=0; i < myPictures.size(); i++){
+            if (myPictures.get(i).get_id().equals(data.toString()))
+                return myPictures.get(i);
+        }
+        return null;
     }
 
     private void managePicsList(RSResponseItemData rsResponseItemData) {
@@ -481,5 +547,15 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView {
                 }
             }
         });
+    }
+
+    @Override
+    public void onCancelClicked() {
+
+    }
+
+    @Override
+    public void onConfirmClicked(String targetId) {
+        itemPresenter.deletePicture(targetId, itemId);
     }
 }

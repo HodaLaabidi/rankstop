@@ -217,11 +217,11 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
         Log.i("TAG_REGISTER",""+token);
-        RSSession.startSession(getContext(), token);
+        RSSession.startSession(token);
         //Toast.makeText(getContext(), "register success", Toast.LENGTH_SHORT).show();
 
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-            registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser(getContext()).get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER);
+            registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER);
         }else {
             dismiss();
             ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
