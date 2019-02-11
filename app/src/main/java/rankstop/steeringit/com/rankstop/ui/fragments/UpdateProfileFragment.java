@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Geocoder;
@@ -45,7 +46,9 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -57,7 +60,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -76,6 +81,7 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterUpdateProfileImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
@@ -114,6 +120,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     private String[] genderArray, publicNameArray;
     public static Context context;
     private String currentDate;
+    private Uri userPicUri;
 
     private boolean isPwdHidden = true;
 
@@ -129,9 +136,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @BindView(R.id.avatar)
     SimpleDraweeView avatar;
-
-    @BindView(R.id.avatar2)
-    ImageView avatar2;
 
     @BindView(R.id.input_layout_username)
     TextInputLayout userNameInputLayout;
@@ -715,8 +719,8 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     }
 
     private void setUserPic(String picture) {
-        Uri imageUri = Uri.parse(picture);
-        avatar.setImageURI(imageUri);
+        userPicUri = Uri.parse(picture);
+        avatar.setImageURI(userPicUri);
     }
 
     @Override
@@ -1014,7 +1018,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     public static final int REQUEST_PERMISSION_STORAGE = 300;
     public static final int REQUEST_PERMISSION_LOCATION = 400;
     public static final int REQUEST_PERMISSION_CAMERA = 500;
-    private String imageFilePath = "";
 
     private void openCamera() {
 
@@ -1049,7 +1052,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         String imageFileName = "IMG_" + timeStamp + "_";
         File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-        imageFilePath = image.getAbsolutePath();
+        //imageFilePath = image.getAbsolutePath();
 
         return image;
     }
@@ -1070,7 +1073,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
             } else {
                 // No Permitions Granted
             }
-        } else if (requestCode == REQUEST_PERMISSION_STORAGE){
+        } else if (requestCode == REQUEST_PERMISSION_STORAGE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
             } else {
@@ -1089,9 +1092,12 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                imageUri = Uri.fromFile(mPhotoFile);
+                String path = MediaStore.Images.Media.insertImage(RankStop.getInstance().getContentResolver(), BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath()), "Image Description", null);
+                imageUri = Uri.parse(path);
+                ImagePipeline imagePipeline = Fresco.getImagePipeline();
+                imagePipeline.evictFromCache(userPicUri);
+                imagePipeline.clearCaches();
                 avatar.setImageURI(imageUri);
-                avatar2.setImageURI(imageUri);
 
 
             } else if (requestCode == REQUEST_GALLERY_PHOTO) {
@@ -1101,17 +1107,12 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
-                imageUri = Uri.fromFile(mPhotoFile);
+                String path = MediaStore.Images.Media.insertImage(RankStop.getInstance().getContentResolver(), BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath()), "Image Description", null);
+                imageUri = Uri.parse(path);
+                ImagePipeline imagePipeline = Fresco.getImagePipeline();
+                imagePipeline.evictFromCache(userPicUri);
+                imagePipeline.clearCaches();
                 avatar.setImageURI(imageUri);
-                avatar2.setImageURI(imageUri);
             }
         } else if (resultCode == RESULT_CANCELED) {
             //Toast.makeText(getContext(), "You cancelled the operation", Toast.LENGTH_SHORT).show();

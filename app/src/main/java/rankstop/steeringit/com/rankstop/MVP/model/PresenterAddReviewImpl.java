@@ -2,6 +2,7 @@ package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -247,6 +248,9 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
         File file = FileUtils.getFile(context, fileUri);
         RequestBody requestFile = RequestBody.create(MediaType.parse(context.getContentResolver().getType(fileUri)), file);
         return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
+
+        /*/storage/emulated/0/Android/data/com.steeringit.rankstop/files/Pictures/Screenshot_20190206-104436.png
+            file:///storage/emulated/0/Android/data/com.steeringit.rankstop/files/Pictures/Screenshot_20190206-104436.png*/
     }
 
     private RequestBody createPartFormString(String value) {

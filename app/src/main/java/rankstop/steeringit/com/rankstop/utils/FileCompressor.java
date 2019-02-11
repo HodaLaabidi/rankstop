@@ -2,6 +2,7 @@ package rankstop.steeringit.com.rankstop.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class FileCompressor {
 
     public FileCompressor(Context context) {
         destinationDirectoryPath = context.getCacheDir().getPath() + File.separator + "images";
+        Log.i("TAG_DESTINATION", destinationDirectoryPath);
     }
 
     public FileCompressor setMaxWidth(int maxWidth) {
