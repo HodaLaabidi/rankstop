@@ -12,16 +12,46 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
+import static rankstop.steeringit.com.rankstop.utils.LocaleManager.LANGUAGE_ENGLISH;
+import static rankstop.steeringit.com.rankstop.utils.LocaleManager.LANGUAGE_FRENSH;
+import static rankstop.steeringit.com.rankstop.utils.LocaleManager.LANGUAGE_GERMAN;
+
 public class SettingsFragment extends Fragment {
 
-    private Toolbar toolbar;
     private View rootView;
+    private Unbinder unbinder;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @OnClick(R.id.btn_en)
+    void toEN() {
+        //setNewLocale(LANGUAGE_ENGLISH, false);
+    }
+    @OnClick(R.id.btn_fr)
+    void toFR() {
+        //setNewLocale(LANGUAGE_FRENSH, false);
+    }
+    @OnClick(R.id.btn_de)
+    void toDE() {
+        //setNewLocale(LANGUAGE_GERMAN, false);
+    }
+
+    @BindString(R.string.text_settings)
+    String settingsTitle;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +63,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
@@ -42,14 +73,13 @@ public class SettingsFragment extends Fragment {
 
         bindViews();
 
-        toolbar.setTitle(getResources().getString(R.string.text_settings));
+        toolbar.setTitle(settingsTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void bindViews() {
         setFragmentActionListener((ContainerActivity)getActivity());
-        toolbar = rootView.findViewById(R.id.toolbar);
         setFragmentActionListener((ContainerActivity)getActivity());
     }
 
@@ -104,6 +134,23 @@ public class SettingsFragment extends Fragment {
         instance = null;
         rootView=null;
         fragmentActionListener = null;
+        unbinder.unbind();
         super.onDestroyView();
     }
+
+    /*private boolean setNewLocale(String language, boolean restartProcess) {
+        RankStop.localeManager.setNewLocale(getContext(), language);
+
+        fragmentActionListener.pop();
+
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+
+        if (restartProcess) {
+            System.exit(0);
+        } else {
+            Toast.makeText(getContext(), "Activity restarted", Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }*/
 }

@@ -1,47 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/rs_toolbar"/>
+    <include layout="@layout/rs_toolbar" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_below="@id/app_bar">
 
         <LinearLayout
             android:id="@+id/no_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_centerInParent="true"
+            android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone">
-            <TextView
+
+            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_login_or_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center" />
+
             <android.support.design.button.MaterialButton
                 android:id="@+id/btn_login_or_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textAllCaps="false"/>
+                android:textAllCaps="false" />
         </LinearLayout>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view_my_evals"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:visibility="gone" />
+
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="@dimen/width_progress_bar"
             android:layout_height="@dimen/width_progress_bar"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

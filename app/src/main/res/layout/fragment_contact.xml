@@ -22,7 +22,11 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/max_length_50"
+                app:counterTextAppearance="@style/counterText"
+                app:counterOverflowTextAppearance="@style/counterOverride">
 
                 <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_fullname"
@@ -52,7 +56,11 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/max_length_50"
+                app:counterTextAppearance="@style/counterText"
+                app:counterOverflowTextAppearance="@style/counterOverride">
 
                 <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_subject"
@@ -69,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 app:counterEnabled="true"
-                app:counterMaxLength="500"
+                app:counterMaxLength="@integer/max_length_500"
                 app:counterTextAppearance="@style/counterText"
                 app:counterOverflowTextAppearance="@style/counterOverride">
 

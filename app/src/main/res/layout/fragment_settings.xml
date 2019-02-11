@@ -14,31 +14,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
+                android:id="@+id/btn_en"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/english" />
+
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
+                android:id="@+id/btn_fr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/frensh" />
+
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
+                android:id="@+id/btn_de"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/german" />
+        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
-
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include layout="@layout/rs_toolbar" />
-
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-
-    </android.support.design.widget.CoordinatorLayout>
 
 </android.support.design.widget.CoordinatorLayout>

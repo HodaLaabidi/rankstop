@@ -70,13 +70,14 @@ public interface API {
     Call<RSResponse> loadCriteriaList();
 
     // load categories list
-    @GET("categories/getCategory")
-    Call<RSResponse> loadCategoriesList();
+    @FormUrlEncoded
+    @POST("categories/getCategory")
+    Call<RSResponse> loadCategoriesList(@Field("lang") String lang);
 
     // load category by id
     @FormUrlEncoded
     @POST("categories/getCategoryById")
-    Call<RSResponse> loadCategory(@Field("_id") String id);
+    Call<RSResponse> loadCategory(@Field("_id") String id, @Field("lang") String lang);
 
     // load list of items created by user
     @POST("items/getItemCreatedByUser")
@@ -121,7 +122,7 @@ public interface API {
     // load item by id
     @FormUrlEncoded
     @POST("items/getItemByIdAndIdUser")
-    Call<RSResponse> loadItem(@Field("itemId") String itemId, @Field("userId") String userId);
+    Call<RSResponse> loadItem(@Field("itemId") String itemId, @Field("userId") String userId, @Field("lang") String lang);
 
     // load item comments
     @POST("eval/getComments")
@@ -197,7 +198,7 @@ public interface API {
     // load report abuses by langue
     @FormUrlEncoded
     @POST("reportAbuses/findAbuse")
-    Call<RSResponse> loadAbusesList(@Field("langue") String langue);
+    Call<RSResponse> loadAbusesList(@Field("lang") String langue);
 
     // report abuse
     @POST("reportAbuses/addReportAbuse")
@@ -219,7 +220,7 @@ public interface API {
 
     // search items
     @GET("items/searchKey")
-    Call<RSResponse> search(@Query("q") String query);
+    Call<RSResponse> search(@Query("q") String query, @Query("lang") String lang);
 
     // search items
     @GET("country/getAllCountryWorld")

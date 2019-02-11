@@ -23,12 +23,10 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 public class ReviewPixAdapter extends RecyclerView.Adapter<ReviewPixAdapter.ViewHolder> {
     private List<Uri> pixList = new ArrayList<>();
     private RecyclerViewClickListener listener;
-    private Context context;
 
-    public ReviewPixAdapter(List<Uri> pixList, RecyclerViewClickListener listener, Context context) {
+    public ReviewPixAdapter(List<Uri> pixList, RecyclerViewClickListener listener) {
         this.pixList = pixList;
         this.listener = listener;
-        this.context = context;
     }
 
     @NonNull

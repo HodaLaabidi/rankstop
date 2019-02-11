@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
@@ -21,12 +20,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-
+import butterknife.BindInt;
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
 import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
@@ -42,28 +41,137 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
 public class RegisterDialog extends DialogFragment  implements RSView.RegisterView{
 
-    private TextInputLayout emailLayout;
-    private TextInputLayout passwordLayout;
-    private TextInputLayout confirmPasswordLayout;
+    @BindView(R.id.input_layout_password)
+    TextInputLayout passwordLayout;
+    @BindView(R.id.input_password)
+    TextInputEditText passwordEditText;
 
-    private TextInputEditText emailEditText;
-    private TextInputEditText passwordEditText;
-    private TextInputEditText confirmPasswordEditText;
+    @BindView(R.id.input_layout_confirm_password)
+    TextInputLayout confirmPasswordLayout;
+    @BindView(R.id.input_confirm_password)
+    TextInputEditText confirmPasswordEditText;
 
-    private MaterialButton cancelBtn, registerBtn;
+    @BindView(R.id.input_email)
+    TextInputEditText emailEditText;
+    @BindString(R.string.off_line)
+    String offLineMsg;
 
-    private String password, confirmPassword;
+    @OnClick(R.id.negative_btn)
+    void cancelDialog(){
+        dismiss();
+    }
+
+    @OnClick(R.id.positive_btn)
+    void onClick(View v) {
+        if (validForm(passwordEditText.getText().toString().trim(), confirmPasswordEditText.getText().toString().trim())) {
+            if (RSNetwork.isConnected()) {
+                user = new User();
+                user.setPassword(passwordEditText.getText().toString().trim());
+                user.setEmail(getArguments().getString(RSConstants.EMAIL));
+                registerPresenter.getPublicIP("json", RSConstants.REGISTER);
+            }else {
+                onOffLine();
+            }
+        }
+    }
+
+    private boolean validForm(String password, String confirmPassword) {
+        int x = 0;
+        passwordLayout.setErrorEnabled(false);
+
+        if (TextUtils.isEmpty(password)) {
+            passwordLayout.setError(requiredField);
+            x++;
+        }else if (password.length() < minLength6){
+            passwordLayout.setError(minLength6Msg);
+            x++;
+        }
+
+        if (TextUtils.isEmpty(confirmPassword)) {
+            confirmPasswordLayout.setError(requiredField);
+            x++;
+        }else if (!confirmPassword.equals(password)){
+            x++;
+        }
+        return x == 0;
+    }
+
+    @BindString(R.string.field_required)
+    String requiredField;
+    @BindString(R.string.login_dialog_empty_password)
+    String minLength6Msg;
+    @BindInt(R.integer.min_length_pwd)
+    int minLength6;
+    @BindString(R.string.register_dialog_matching_password)
+    String pwdMatching;
+
+    @BindString(R.string.loading_msg)
+    String loadingMsg;
+    private RSLoader rsLoader;
+    private void createLoader(){
+        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader.setCancelable(false);
+    }
+
     private RSNavigationData rsNavigationData = new RSNavigationData();
-
     private View rootView;
-
+    private Unbinder unbinder;
     private User user;
-
     private RSPresenter.RegisterPresenter registerPresenter;
     private static RegisterDialog instance;
+
+    private TextWatcher pwdTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().trim().length() > 0){
+                if (s.toString().trim().length() < minLength6){
+                    passwordLayout.setError(minLength6Msg);
+                }else{
+                    passwordLayout.setErrorEnabled(false);
+                }
+            }else{
+                passwordLayout.setError(requiredField);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    },
+            confirmPwdTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0){
+                        if (!s.toString().trim().equals(passwordEditText.getText().toString().trim())){
+                            confirmPasswordLayout.setError(pwdMatching);
+                        }else{
+                            confirmPasswordLayout.setErrorEnabled(false);
+                        }
+                    }else{
+                        confirmPasswordLayout.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            };
 
     public static RegisterDialog newInstance(String email, RSNavigationData rsNavigationData) {
 
@@ -91,34 +199,17 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
                 onDialogShow(alertDialog);
             }
         });
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                instance = null;
-                registerPresenter.onDestroyRegister();
-            }
-        });
         return alertDialog;
     }
 
     private void initViews() {
-        rootView = LayoutInflater.from(getContext())
-                .inflate(R.layout.alert_dialog_register, null, false);
-
-        emailLayout = rootView.findViewById(R.id.input_layout_email);
-        passwordLayout = rootView.findViewById(R.id.input_layout_password);
-        confirmPasswordLayout = rootView.findViewById(R.id.input_layout_confirm_password);
-
-        emailEditText = rootView.findViewById(R.id.input_email);
-        passwordEditText = rootView.findViewById(R.id.input_password);
-        confirmPasswordEditText = rootView.findViewById(R.id.input_confirm_password);
-
-        cancelBtn = rootView.findViewById(R.id.negative_btn);
-        registerBtn = rootView.findViewById(R.id.positive_btn);
+        rootView = LayoutInflater.from(getContext()).inflate(R.layout.alert_dialog_register, null, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
         emailEditText.setText(getArguments().getString(RSConstants.EMAIL));
 
         addTextWatchers();
+        createLoader();
     }
 
     private void onDialogShow(AlertDialog dialog) {
@@ -127,84 +218,11 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
         dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
 
         registerPresenter = new PresenterAuthImpl( RegisterDialog.this);
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-        registerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isValidPassword(passwordLayout, password) && isValidPassword(confirmPasswordLayout, confirmPassword)) {
-                    user = new User();
-                    user.setPassword(password);
-                    user.setEmail(getArguments().getString(RSConstants.EMAIL));
-
-                    registerPresenter.getPublicIP("json", RSConstants.REGISTER);
-                }
-            }
-        });
-    }
-
-    private boolean isValidPassword(TextInputLayout layout, String value) {
-        layout.setErrorEnabled(false);
-        layout.setError("");
-        if (TextUtils.isEmpty(password) || password.length() < 6) {
-            passwordLayout.setErrorEnabled(true);
-            passwordLayout.setError(getString(R.string.login_dialog_empty_password));
-            return false;
-        }
-
-        if (password.length() >= 6 && !password.equalsIgnoreCase(confirmPassword)) {
-            confirmPasswordLayout.setErrorEnabled(true);
-            confirmPasswordLayout.setError(getString(R.string.register_dialog_matching_password));
-            return false;
-        }
-
-        layout.setErrorEnabled(false);
-        layout.setError("");
-        return true;
     }
 
     private void addTextWatchers() {
-        passwordEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                password = s.toString();
-            }
-        });
-        confirmPasswordEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                confirmPassword = s.toString();
-            }
-        });
-    }
-
-    @Override
-    public void registerValidations() {
-        Toast.makeText(getContext(), "password invalid", Toast.LENGTH_SHORT).show();
+        passwordEditText.addTextChangedListener(pwdTextWatcher);
+        confirmPasswordEditText.addTextChangedListener(confirmPwdTextWatcher);
     }
 
     @Override
@@ -224,6 +242,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
             registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER);
         }else {
             dismiss();
+            rsLoader.dismiss();
             ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
         }
     }
@@ -251,13 +270,24 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
     }
 
     @Override
-    public void showProgressBar() {
-
+    public void showProgressBar(String target) {
+        switch (target){
+            case RSConstants.PUBLIC_IP:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                break;
+        }
     }
 
     @Override
-    public void hideProgressBar() {
-
+    public void hideProgressBar(String target) {
+        switch (target){
+            case RSConstants.REGISTER:
+                rsLoader.dismiss();
+                break;
+            case RSConstants.FOLLOW_ITEM:
+                rsLoader.dismiss();
+                break;
+        }
     }
 
     @Override
@@ -282,5 +312,20 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
     @Override
     public void onPublicIPFailed() {
         registerPresenter.performRegister(user);
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offLineMsg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        passwordEditText.removeTextChangedListener(pwdTextWatcher);
+        confirmPasswordEditText.removeTextChangedListener(confirmPwdTextWatcher);
+        unbinder.unbind();
+        instance = null;
+        registerPresenter.onDestroyRegister();
+        super.onDestroyView();
     }
 }

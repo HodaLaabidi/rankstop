@@ -9,8 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
@@ -18,6 +17,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +28,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -46,16 +50,29 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindDimen;
+import butterknife.BindInt;
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCategoryAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -64,14 +81,121 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
 
     private static AddItemFragment instance;
+    private String itemName, itemDescription, itemAddress, itemPhone;
 
-    private TextInputEditText nameET, descriptionET, addressET, phoneET;
-    private LinearLayout locationLayout;
-    private AppCompatSpinner categorySpinner;
+    private Unbinder unbinder;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+
+    @BindView(R.id.layout_login)
+    LinearLayout loginLayout;
+
+    @BindView(R.id.tv_login)
+    RSTVMedium loginTV;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.input_layout_title)
+    TextInputLayout inputLayoutName;
+    @BindView(R.id.input_title)
+    RSETMedium nameET;
+
+    @BindView(R.id.input_layout_description)
+    TextInputLayout inputLayoutDescription;
+    @BindView(R.id.input_description)
+    RSETMedium descriptionET;
+
+    @BindView(R.id.input_layout_address)
+    TextInputLayout inputLayoutAddress;
+    @BindView(R.id.input_address)
+    RSETMedium addressET;
+
+    @BindView(R.id.input_layout_phone)
+    TextInputLayout inputLayoutPhone;
+    @BindView(R.id.input_phone)
+    RSETMedium phoneET;
+
+    @BindView(R.id.categories_spinner)
+    AppCompatSpinner categorySpinner;
+
+    @BindView(R.id.scroll_view)
+    NestedScrollView scrollView;
+
+    @BindView(R.id.layout_location)
+    LinearLayout locationLayout;
+
+    @BindString(R.string.field_required)
+    String fieldRequired;
+    @BindString(R.string.add_item)
+    String addItemTitle;
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
+    @BindInt(R.integer.max_length_50)
+    int maxLength50;
+
+    @BindInt(R.integer.max_length_500)
+    int maxLength500;
+
+    @OnClick(R.id.btn_add_item)
+    void onClick() {
+
+        itemName = nameET.getText().toString().trim();
+        itemDescription = descriptionET.getText().toString().trim();
+        itemAddress = addressET.getText().toString().trim();
+        itemPhone = phoneET.getText().toString().trim();
+
+        if (validForm()) {
+            if (RSNetwork.isConnected()) {
+                try {
+                    // pour valider l'ajout du cet item, tu dois l'évaluer
+                    rsAddItem.setCategoryId(selectedCategory.get_id());
+                    rsAddItem.setTitle(itemName);
+                    rsAddItem.setDescription(itemDescription);
+                    rsAddItem.setAddress(itemAddress);
+                    rsAddItem.setPhone(itemPhone);
+                    rsAddItem.setLatitude("" + currentLatitude);
+                    rsAddItem.setLongitude("" + currentLongitude);
+                    fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddItem, null, ""), RSConstants.FRAGMENT_ADD_REVIEW);
+                }catch(Exception e){
+
+                }
+
+            }else {
+                onOffLine();
+            }
+        } else {
+            scrollView.scrollTo(0, 0);
+        }
+    }
+
+    private boolean validForm() {
+        int x = 0;
+
+        if (TextUtils.isEmpty(itemName)) {
+            inputLayoutName.setError(fieldRequired);
+            x++;
+        }
+        if (itemName.length() > maxLength50) {
+            x++;
+        }
+        if (itemDescription.length() > maxLength500) {
+            x++;
+        }
+        if (selectedCategory == null){
+            x++;
+        }
+        return x == 0;
+    }
+
+    @OnClick(R.id.btn_login)
+    void goToLogin() {
+        RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ADD_ITEM, RSConstants.ACTION_CONNECT, "", "", "", "");
+        navigateToSignUp(rsNavigationData);
+    }
+
     private WorkaroundMapFragment mapFragment;
-    private NestedScrollView scrollView;
-    private MaterialButton addItemBtn;
-    private Toolbar toolbar;
     private View rootView;
 
     private GoogleMap mMap;
@@ -90,6 +214,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_add_item, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
@@ -104,50 +229,50 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         super.onActivityCreated(savedInstanceState);
 
         bindViews();
-        loadCategoriesList();
-
-        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-
-        addItemBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // pour valider l'ajout du cet item, tu dois l'évaluer
-                rsAddItem.setCategoryId(selectedCategory.get_id());
-                rsAddItem.setTitle(nameET.getText().toString());
-                rsAddItem.setDescription(descriptionET.getText().toString());
-                rsAddItem.setAddress(addressET.getText().toString());
-                rsAddItem.setPhone(phoneET.getText().toString());
-                rsAddItem.setLatitude(""+currentLatitude);
-                rsAddItem.setLongitude(""+currentLongitude);
-
-                fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddItem, null, ""), RSConstants.FRAGMENT_ADD_REVIEW);
-            }
-        });
     }
 
     private void loadCategoriesList() {
-        itemPresenter.loadCategoriesList();
+        itemPresenter.loadCategoriesList(RankStop.getDeviceLanguage());
     }
 
     private void bindViews() {
-        itemPresenter = new PresenterItemImpl(AddItemFragment.this);
 
-        toolbar = rootView.findViewById(R.id.toolbar);
-        nameET = rootView.findViewById(R.id.input_title);
-        descriptionET = rootView.findViewById(R.id.input_description);
-        addressET = rootView.findViewById(R.id.input_address);
-        phoneET = rootView.findViewById(R.id.input_phone);
-        categorySpinner = rootView.findViewById(R.id.categories_spinner);
-        scrollView = rootView.findViewById(R.id.scroll_view);
-        locationLayout = rootView.findViewById(R.id.layout_location);
-        addItemBtn = rootView.findViewById(R.id.btn_add_item);
-
-        toolbar.setTitle(getResources().getString(R.string.add_item));
+        toolbar.setTitle(addItemTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
         setFragmentActionListener((ContainerActivity) getActivity());
 
-        categorySpinner.setOnItemSelectedListener(this);
+        if (RSNetwork.isConnected()) {
+            if (RSSession.isLoggedIn()) {
+                scrollView.setVisibility(View.VISIBLE);
+                itemPresenter = new PresenterItemImpl(AddItemFragment.this);
+                categorySpinner.setOnItemSelectedListener(this);
+                loadCategoriesList();
+                locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+                nameET.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (s.toString().trim().length() > 0)
+                            inputLayoutName.setErrorEnabled(false);
+                        else if (s.toString().trim().length() == 0)
+                            inputLayoutName.setError(fieldRequired);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+            } else {
+                loginLayout.setVisibility(View.VISIBLE);
+            }
+        }else {
+            onOffLine();
+        }
     }
 
     @Override
@@ -247,7 +372,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                             // Got last known location. In some rare situations, this can be null.
                             if (location != null) {
                                 addMarker(location.getLatitude(), location.getLongitude());
-                            }else{
+                            } else {
                                 addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
                                 //Toast.makeText(getContext(), "userCurrentLocation"+ location, Toast.LENGTH_LONG).show();
                             }
@@ -304,6 +429,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         }
         return "";
     }
+
     private String getGovernorate(LatLng latLng) {
         geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
@@ -446,7 +572,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         instance = null;
         rootView = null;
         fragmentActionListener = null;
-        itemPresenter.onDestroyItem();
+        unbinder.unbind();
+        if (itemPresenter != null)
+            itemPresenter.onDestroyItem();
         super.onDestroyView();
     }
 
@@ -489,16 +617,33 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     @Override
     public void showProgressBar(String target) {
-
+        switch (target) {
+            case RSConstants.LOAD_CATEGORIES:
+                progressBar.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     @Override
     public void hideProgressBar(String target) {
-
+        switch (target) {
+            case RSConstants.LOAD_CATEGORIES:
+                progressBar.setVisibility(View.GONE);
+                break;
+        }
     }
 
     @Override
     public void showMessage(String target, String message) {
 
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+    }
+
+    private void navigateToSignUp(RSNavigationData rsNavigationData) {
+        fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
     }
 }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Comment;
@@ -30,16 +31,14 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
 
     private ReviewCardListener listener;
     private List<Comment> comments;
-    private Context context;
     private String target;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemCommentsAdapter(ReviewCardListener listener, Context context, String target) {
+    public ItemCommentsAdapter(ReviewCardListener listener, String target) {
         this.listener = listener;
-        this.context = context;
         this.comments = new ArrayList<>();
         this.target = target;
     }
@@ -154,7 +153,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
             try {
                 readMoreBTN.setOnClickListener(this);
                 removeCommentBTN.setOnClickListener(this);
-                commentTV.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                /*commentTV.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         try {
@@ -171,7 +170,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
                         } catch (Exception e) {
                         }
                     }
-                });
+                });*/
             } catch (Exception e) {
             }
             itemView.setOnClickListener(this);
@@ -193,7 +192,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
 
         public void setData(Comment comment) {
             try {
-                layout.setBackgroundColor(context.getResources().getColor(comment.getColor()));
+                layout.setBackgroundColor(RankStop.getInstance().getResources().getColor(comment.getColor()));
                 commentTV.setText(comment.getText().trim());
                 usernameTV.setText(comment.getUserId().getNameToUse().getValue());
                 dateTV.setText(comment.getDate());

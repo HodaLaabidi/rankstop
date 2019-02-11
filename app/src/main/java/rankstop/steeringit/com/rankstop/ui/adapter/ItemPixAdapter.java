@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
@@ -31,16 +31,14 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
 
     private ReviewCardListener listener;
     private List<Picture> pictures;
-    private Context context;
     private String target;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemPixAdapter(ReviewCardListener listener, Context context, String target) {
+    public ItemPixAdapter(ReviewCardListener listener, String target) {
         this.listener = listener;
-        this.context = context;
         this.pictures = new ArrayList<>();
         this.target = target;
     }
@@ -169,7 +167,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
         }
 
         public void setData(Picture picture) {
-            layout.setBackgroundColor(context.getResources().getColor(picture.getColor()));
+            layout.setBackgroundColor(RankStop.getInstance().getResources().getColor(picture.getColor()));
             usernameTV.setText(picture.getUser().getNameToUse().getValue());
             dateTV.setText(picture.getDate());
             try {

@@ -29,6 +29,9 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +39,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -61,6 +65,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindDrawable;
+import butterknife.BindInt;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,9 +91,11 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.BottomSheetDialogListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.DateListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSBottomSheetDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
 import rankstop.steeringit.com.rankstop.utils.FileCompressor;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -125,18 +133,28 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     @BindView(R.id.avatar2)
     ImageView avatar2;
 
-    @BindView(R.id.input_first_name)
-    RSETMedium inputFirstNameET;
-
-    @BindView(R.id.input_last_name)
-    RSETMedium inputLastNameET;
-
+    @BindView(R.id.input_layout_username)
+    TextInputLayout userNameInputLayout;
     @BindView(R.id.input_username)
     RSETMedium inputUserNameET;
 
+    @BindView(R.id.input_layout_first_name)
+    TextInputLayout firstNameInputLayout;
+    @BindView(R.id.input_first_name)
+    RSETMedium inputFirstNameET;
+
+    @BindView(R.id.input_layout_last_name)
+    TextInputLayout lastNameInputLayout;
+    @BindView(R.id.input_last_name)
+    RSETMedium inputLastNameET;
+
+    @BindView(R.id.input_layout_city)
+    TextInputLayout cityInputLayout;
     @BindView(R.id.input_city)
     RSETMedium inputCityET;
 
+    @BindView(R.id.input_layout_phone)
+    TextInputLayout phoneInputLayout;
     @BindView(R.id.input_phone)
     RSETMedium inputPhoneET;
 
@@ -154,18 +172,18 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @BindView(R.id.input_layout_old_pwd)
     TextInputLayout inputLayoutOldPwd;
-
-    @BindView(R.id.input_layout_new_pwd)
-    TextInputLayout inputLayoutNewPwd;
-
-    @BindView(R.id.input_layout_confirm_pwd)
-    TextInputLayout inputLayoutConfirmPwd;
-
     @BindView(R.id.input_old_pwd)
     RSETMedium inputOldPasswordET;
 
+    @BindView(R.id.input_layout_new_pwd)
+    TextInputLayout inputLayoutNewPwd;
     @BindView(R.id.input_new_pwd)
     RSETMedium inputNewPasswordET;
+
+    @BindView(R.id.input_layout_confirm_pwd)
+    TextInputLayout inputLayoutConfirmPwd;
+    @BindView(R.id.input_confirm_pwd)
+    RSETMedium inputConfirmPasswordET;
 
     @BindString(R.string.hint_man)
     String male;
@@ -173,38 +191,308 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     String female;
     @BindString(R.string.date_format)
     String dateFormat;
+    @BindString(R.string.old_pwd_error)
+    String oldPwdErrorMsg;
+    @BindString(R.string.title_edit_profile)
+    String editProfileTitle;
 
     @BindString(R.string.username_text)
     String usernameText;
     @BindString(R.string.fullname_text)
     String fullNameText;
+    @BindString(R.string.field_required)
+    String requiredField;
+    @BindString(R.string.login_dialog_empty_password)
+    String minLength6Msg;
+    @BindInt(R.integer.min_length_pwd)
+    int minLength6;
+    @BindString(R.string.register_dialog_matching_password)
+    String pwdMatching;
+
+    @BindString(R.string.edit_pwd)
+    String editPwdText;
+    @BindString(R.string.cancel_edit_pwd)
+    String cancelEditPwdText;
 
     @BindView(R.id.btn_change_pwd)
     RSBTNBold changePwdBTN;
 
+    @BindString(R.string.loading_msg)
+    String loadingMsg;
+    private RSLoader rsLoader;
+
+    private void createLoader() {
+        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader.setCancelable(false);
+    }
+
+    private TextWatcher userNameTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().trim().length() > 0) {
+                userNameInputLayout.setErrorEnabled(false);
+            } else {
+                userNameInputLayout.setError(requiredField);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    },
+            firstNameTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        firstNameInputLayout.setErrorEnabled(false);
+                    } else {
+                        firstNameInputLayout.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            },
+            lastNameTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        lastNameInputLayout.setErrorEnabled(false);
+                    } else {
+                        lastNameInputLayout.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            },
+            phoneTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        phoneInputLayout.setErrorEnabled(false);
+                    } else {
+                        phoneInputLayout.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            },
+            cityTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        cityInputLayout.setErrorEnabled(false);
+                    } else {
+                        cityInputLayout.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            },
+            oldPwdTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        if (s.toString().trim().length() < minLength6) {
+                            inputLayoutOldPwd.setError(minLength6Msg);
+                        } else {
+                            inputLayoutOldPwd.setErrorEnabled(false);
+                        }
+                    } else {
+                        inputLayoutOldPwd.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            },
+            newPwdTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        if (s.toString().trim().length() < minLength6) {
+                            inputLayoutNewPwd.setError(minLength6Msg);
+                        } else {
+                            inputLayoutNewPwd.setErrorEnabled(false);
+                        }
+                    } else {
+                        inputLayoutNewPwd.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            },
+            confPwdTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        if (!s.toString().trim().equals(inputNewPasswordET.getText().toString().trim())) {
+                            inputLayoutConfirmPwd.setError(pwdMatching);
+                        } else {
+                            inputLayoutConfirmPwd.setErrorEnabled(false);
+                        }
+                    } else {
+                        inputLayoutConfirmPwd.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            };
+
     // save changes
     @OnClick(R.id.btn_save_changes)
     public void saveChanges() {
-        RSRequestEditProfile rsRequestEditProfile = new RSRequestEditProfile();
-        rsRequestEditProfile.setLastName(inputLastNameET.getText().toString().trim());
-        rsRequestEditProfile.setFirstName(inputFirstNameET.getText().toString().trim());
-        rsRequestEditProfile.setPhone(inputPhoneET.getText().toString().trim());
-        rsRequestEditProfile.setBirthDate(birthDateET.getText().toString().trim());
-        rsRequestEditProfile.setUsername(inputUserNameET.getText().toString().trim());
-        rsRequestEditProfile.setLocation(inputCityET.getText().toString().trim(), selectedCountry.getCountryCode(), selectedCountry.getCountryName());
-        rsRequestEditProfile.setGender(selectedGender);
-        rsRequestEditProfile.setNameToUse(selectedPublicName);
-        rsRequestEditProfile.setFile(imageUri);
-        rsRequestEditProfile.setUserId(currentUser.get_id());
-        Toast.makeText(context, "imageUri = "+ selectedGender, Toast.LENGTH_LONG).show();
-        if (!isPwdHidden){
-            rsRequestEditProfile.setNewPassword(inputNewPasswordET.getText().toString().trim());
-            rsRequestEditProfile.setOldPassword(inputOldPasswordET.getText().toString().trim());
+        if (validForm()) {
+            if (RSNetwork.isConnected()) {
+                RSRequestEditProfile rsRequestEditProfile = new RSRequestEditProfile();
+                rsRequestEditProfile.setUsername(inputUserNameET.getText().toString().trim());
+                rsRequestEditProfile.setLastName(inputLastNameET.getText().toString().trim());
+                rsRequestEditProfile.setFirstName(inputFirstNameET.getText().toString().trim());
+                rsRequestEditProfile.setPhone(inputPhoneET.getText().toString().trim());
+                rsRequestEditProfile.setBirthDate(birthDateET.getText().toString().trim());
+                rsRequestEditProfile.setLocation(inputCityET.getText().toString().trim(), selectedCountry.getCountryCode(), selectedCountry.getCountryName());
+                rsRequestEditProfile.setGender(selectedGender);
+                rsRequestEditProfile.setNameToUse(selectedPublicName);
+                rsRequestEditProfile.setFile(imageUri);
+                rsRequestEditProfile.setUserId(currentUser.get_id());
+                //Toast.makeText(context, "imageUri = " + selectedGender, Toast.LENGTH_LONG).show();
+                if (!isPwdHidden) {
+                    rsRequestEditProfile.setNewPassword(inputNewPasswordET.getText().toString().trim());
+                    rsRequestEditProfile.setOldPassword(inputOldPasswordET.getText().toString().trim());
+                }
+
+                Log.i("TAG_IMG_URI", "" + imageUri);
+                inputLayoutOldPwd.setError("");
+                presenterUpdateProfile.editProfile(rsRequestEditProfile);
+            } else {
+                onOffLine();
+            }
+        }
+    }
+
+    private boolean validForm() {
+        int x = 0;
+        userNameInputLayout.setErrorEnabled(false);
+        firstNameInputLayout.setErrorEnabled(false);
+        lastNameInputLayout.setErrorEnabled(false);
+        phoneInputLayout.setErrorEnabled(false);
+        cityInputLayout.setErrorEnabled(false);
+
+        if (TextUtils.isEmpty(inputUserNameET.getText().toString().trim())) {
+            userNameInputLayout.setError(requiredField);
+            x++;
+        }
+        if (TextUtils.isEmpty(inputFirstNameET.getText().toString().trim())) {
+            firstNameInputLayout.setError(requiredField);
+            x++;
+        }
+        if (TextUtils.isEmpty(inputLastNameET.getText().toString().trim())) {
+            lastNameInputLayout.setError(requiredField);
+            x++;
+        }
+        if (TextUtils.isEmpty(inputPhoneET.getText().toString().trim())) {
+            phoneInputLayout.setError(requiredField);
+            x++;
+        }
+        if (TextUtils.isEmpty(inputCityET.getText().toString().trim())) {
+            cityInputLayout.setError(requiredField);
+            x++;
         }
 
-        Log.i("TAG_IMG_URI",""+imageUri);
-        inputLayoutOldPwd.setError("");
-        presenterUpdateProfile.editProfile(rsRequestEditProfile);
+        if (!isPwdHidden) {
+            if (TextUtils.isEmpty(inputOldPasswordET.getText().toString().trim())) {
+                inputLayoutOldPwd.setError(requiredField);
+                x++;
+            } else if (inputOldPasswordET.getText().toString().trim().length() < minLength6) {
+                inputLayoutOldPwd.setError(minLength6Msg);
+            }
+            if (TextUtils.isEmpty(inputNewPasswordET.getText().toString().trim())) {
+                inputLayoutNewPwd.setError(requiredField);
+                x++;
+            } else if (inputNewPasswordET.getText().toString().trim().length() < minLength6) {
+                inputLayoutNewPwd.setError(minLength6Msg);
+            }
+            if (TextUtils.isEmpty(inputConfirmPasswordET.getText().toString().trim())) {
+                inputLayoutConfirmPwd.setError(requiredField);
+                x++;
+            } else if (!inputConfirmPasswordET.getText().toString().trim().equals(inputNewPasswordET.getText().toString().trim())) {
+                inputLayoutConfirmPwd.setError(pwdMatching);
+            }
+
+        }
+        return x == 0;
+    }
+
+    private void addTextWatcher() {
+        inputUserNameET.addTextChangedListener(userNameTextWatcher);
+        inputFirstNameET.addTextChangedListener(firstNameTextWatcher);
+        inputLastNameET.addTextChangedListener(lastNameTextWatcher);
+        inputPhoneET.addTextChangedListener(phoneTextWatcher);
+        inputCityET.addTextChangedListener(cityTextWatcher);
+
+        inputOldPasswordET.addTextChangedListener(oldPwdTextWatcher);
+        inputNewPasswordET.addTextChangedListener(newPwdTextWatcher);
+        inputConfirmPasswordET.addTextChangedListener(confPwdTextWatcher);
     }
 
     // show date picker
@@ -221,17 +509,25 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     }
 
     private Resources res;
-    private Drawable expandMore, expandLess;
+    @BindDrawable(R.drawable.ic_expand_more)
+    Drawable expandMore;
+    @BindDrawable(R.drawable.ic_expand_less)
+    Drawable expandLess;
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
     // current location
     @OnClick(R.id.btn_change_pwd)
     public void changePWD() {
-        if (isPwdHidden){
+        if (isPwdHidden) {
             changePwdBTN.setIcon(expandLess);
+            changePwdBTN.setText(cancelEditPwdText);
             inputLayoutOldPwd.setVisibility(View.VISIBLE);
             inputLayoutNewPwd.setVisibility(View.VISIBLE);
             inputLayoutConfirmPwd.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             changePwdBTN.setIcon(expandMore);
+            changePwdBTN.setText(editPwdText);
             inputLayoutOldPwd.setVisibility(View.GONE);
             inputLayoutNewPwd.setVisibility(View.GONE);
             inputLayoutConfirmPwd.setVisibility(View.GONE);
@@ -366,7 +662,8 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     }
 
     private void bindViews() {
-        toolbar.setTitle("Modifier profil");
+        createLoader();
+        toolbar.setTitle(editProfileTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setFragmentActionListener((ContainerActivity) getActivity());
@@ -411,11 +708,9 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
             }
         });
 
-        context = getContext();
+        addTextWatcher();
 
-        res = getResources();
-        expandMore = ResourcesCompat.getDrawable(res, R.drawable.ic_expand_more, context.getTheme());
-        expandLess = ResourcesCompat.getDrawable(res, R.drawable.ic_expand_less, context.getTheme());
+        context = getContext();
 
     }
 
@@ -426,6 +721,14 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @Override
     public void onDestroyView() {
+        inputUserNameET.removeTextChangedListener(userNameTextWatcher);
+        inputFirstNameET.removeTextChangedListener(firstNameTextWatcher);
+        inputLastNameET.removeTextChangedListener(lastNameTextWatcher);
+        inputPhoneET.removeTextChangedListener(phoneTextWatcher);
+        inputCityET.removeTextChangedListener(cityTextWatcher);
+        inputOldPasswordET.removeTextChangedListener(oldPwdTextWatcher);
+        inputNewPasswordET.removeTextChangedListener(newPwdTextWatcher);
+        inputConfirmPasswordET.removeTextChangedListener(confPwdTextWatcher);
         rootView = null;
         unbinder.unbind();
         instance = null;
@@ -442,7 +745,8 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 initCountriesList();
                 break;
             case RSConstants.UPDATE_PROFILE:
-                fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
+                //fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
+                fragmentActionListener.pop();
                 break;
         }
     }
@@ -462,7 +766,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @Override
     public void onOldPwdIncorrect(String message) {
-        inputLayoutOldPwd.setError("Old password incorrect");
+        inputLayoutOldPwd.setError(oldPwdErrorMsg);
     }
 
     @Override
@@ -473,7 +777,11 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     @Override
     public void showProgressBar(String target) {
         switch (target) {
-            case "":
+            case RSConstants.COUNTRIES_LIST:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                break;
+            case RSConstants.UPDATE_PROFILE:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
                 break;
         }
     }
@@ -481,7 +789,11 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     @Override
     public void hideProgressBar(String target) {
         switch (target) {
-            case "":
+            case RSConstants.COUNTRIES_LIST:
+                rsLoader.dismiss();
+                break;
+            case RSConstants.UPDATE_PROFILE:
+                rsLoader.dismiss();
                 break;
         }
     }
@@ -493,6 +805,11 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(context, offlineMsg, Toast.LENGTH_LONG).show();
     }
 
 
@@ -622,9 +939,8 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @Override
     public void onTakePictureClicked() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_CAMERA);
         } else {
             openCamera();
         }
@@ -632,7 +948,11 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @Override
     public void onChoosePictureClicked() {
-        openGallery();
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
+        } else {
+            openGallery();
+        }
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -693,6 +1013,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     public static final int REQUEST_GALLERY_PHOTO = 200;
     public static final int REQUEST_PERMISSION_STORAGE = 300;
     public static final int REQUEST_PERMISSION_LOCATION = 400;
+    public static final int REQUEST_PERMISSION_CAMERA = 500;
     private String imageFilePath = "";
 
     private void openCamera() {
@@ -743,9 +1064,15 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
             } else {
                 // No Permitions Granted
             }
-        } else if (requestCode == REQUEST_PERMISSION_STORAGE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        } else if (requestCode == REQUEST_PERMISSION_CAMERA) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
+            } else {
+                // No Permitions Granted
+            }
+        } else if (requestCode == REQUEST_PERMISSION_STORAGE){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
             } else {
                 // No Permitions Granted
             }
@@ -762,14 +1089,12 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                imageUri= Uri.fromFile(mPhotoFile);
+                imageUri = Uri.fromFile(mPhotoFile);
                 avatar.setImageURI(imageUri);
                 avatar2.setImageURI(imageUri);
 
 
-
-
-            }else if (requestCode == REQUEST_GALLERY_PHOTO){
+            } else if (requestCode == REQUEST_GALLERY_PHOTO) {
                 Uri selectedImage = data.getData();
                 try {
                     mPhotoFile = mCompressor.compressToFile(new File(getRealPathFromUri(selectedImage)));
@@ -784,12 +1109,12 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 }
 
 
-                imageUri= Uri.fromFile(mPhotoFile);
+                imageUri = Uri.fromFile(mPhotoFile);
                 avatar.setImageURI(imageUri);
                 avatar2.setImageURI(imageUri);
             }
         } else if (resultCode == RESULT_CANCELED) {
-            Toast.makeText(getContext(), "You cancelled the operation", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), "You cancelled the operation", Toast.LENGTH_SHORT).show();
         }
     }
 

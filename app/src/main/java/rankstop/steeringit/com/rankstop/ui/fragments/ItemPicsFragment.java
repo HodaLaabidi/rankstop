@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -30,10 +29,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindInt;
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSTVSemiBold;
+import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
@@ -45,33 +52,70 @@ import rankstop.steeringit.com.rankstop.ui.activities.DiaparomaActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemPixAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.DialogConfirmationListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AlertConfirmationDialog;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.LinearScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class ItemPicsFragment extends Fragment implements RSView.StandardView, DialogConfirmationListener {
 
     private View rootView;
-    private RecyclerView pixRV, myPixRV;
-    private List<Picture> pictures, myPictures;
-    private ReviewCardListener listener, myListener;
-    private TextView titleOtherPix;
-    private ItemPixAdapter itemPicsAdapter, myItemPixAdapter;
-    private MaterialButton addPixBTN;
-    private ProgressBar progressBar, mpProgressBar;
-    private RelativeLayout myPixLayout;
-    private LinearLayout addPixLayout;
+    private Unbinder unbinder;
 
+    @BindView(R.id.recycler_view_pics)
+    RecyclerView pixRV;
+    @BindView(R.id.recycler_view_my_pix)
+    RecyclerView myPixRV;
+    @BindView(R.id.title_other_pix)
+    RSTVSemiBold titleOtherPix;
+    @BindView(R.id.main_progress)
+    ProgressBar progressBar;
+    @BindView(R.id.mp_progress)
+    ProgressBar mpProgressBar;
+    @BindView(R.id.rl_my_pix)
+    RelativeLayout myPixLayout;
+    @BindView(R.id.ll_add_pix)
+    LinearLayout addPixLayout;
+    @BindView(R.id.filter_toggle)
+    RadioGroup filterToggle;
+
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
+    @OnClick(R.id.btn_add_pix)
+    void onClick() {
+        if (RSNetwork.isConnected()) {
+            RSAddReview rsAddReview = new RSAddReview();
+            rsAddReview.setItemId(currentItem.getItemDetails().get_id());
+            rsAddReview.setCategoryId(currentCategory.get_id());
+            fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddReview, currentItem.getLastEvalUser(), ""), RSConstants.FRAGMENT_ADD_REVIEW);
+        }else {
+            onOffLine();
+        }
+    }
+
+    @BindInt(R.integer.m_card_view)
+    int marginCardView;
+    @BindInt(R.integer.count_item_per_row)
+    int countItemPerRow;
+
+    @BindString(R.string.message_delete_picture)
+    String deletePicMsg;
+
+
+
+    private ReviewCardListener listener, myListener;
+    private ItemPixAdapter itemPicsAdapter, myItemPixAdapter;
+    private List<Picture> pictures, myPictures;
+    private Category currentCategory;
 
     private String itemId, userId = "";
     private Item currentItem;
     private RSPresenter.ItemPresenter itemPresenter;
-    private RadioGroup filterToggle;
     private int lastCheckedId = R.id.all_comment;
     private RSRequestItemData rsRequestItemData;
 
@@ -93,6 +137,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_item_pics, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
@@ -108,6 +153,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
         if (myPictures == null)
             myPictures = new ArrayList<>();
         currentItem = (Item) getArguments().getSerializable(RSConstants.ITEM);
+        currentCategory = new Gson().fromJson(new Gson().toJson(currentItem.getItemDetails().getCategory()), Category.class);
         itemId = currentItem.getItemDetails().get_id();
         if (RSSession.isLoggedIn()) {
             myPixLayout.setVisibility(View.VISIBLE);
@@ -163,26 +209,22 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
                                 .putExtra(RSConstants.RS_REQUEST_ITEM_DATA, rsRequestItemData));
             }
         };
-        loadItemPix(currentPage);
-        loadMyItemPix(mpCurrentPage);
+        if (RSNetwork.isConnected()){
+            progressBar.setVisibility(View.VISIBLE);
+            mpProgressBar.setVisibility(View.VISIBLE);
+            loadItemPix(currentPage);
+            loadMyItemPix(mpCurrentPage);
+        }else {
+            onOffLine();
+        }
         initPixList();
         initMyPixList();
         setFilterListener();
-
-        addPixBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RSAddReview rsAddReview = new RSAddReview();
-                rsAddReview.setItemId(currentItem.getItemDetails().get_id());
-                rsAddReview.setCategoryId(currentItem.getItemDetails().getCategory().get_id());
-                fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddReview, currentItem.getLastEvalUser(), ""), RSConstants.FRAGMENT_ADD_REVIEW);
-            }
-        });
     }
 
     private void openDialogConfirmation(Picture picture) {
         Bundle bundle = new Bundle();
-        bundle.putString(RSConstants.MESSAGE, getResources().getString(R.string.message_delete_picture));
+        bundle.putString(RSConstants.MESSAGE, deletePicMsg);
         bundle.putString(RSConstants._ID, picture.get_id());
         AlertConfirmationDialog dialog = new AlertConfirmationDialog();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -193,11 +235,11 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     }
 
     private void initPixList() {
-        GridLayoutManager layoutManager = new GridLayoutManager(pixRV.getContext(), getResources().getInteger(R.integer.count_item_per_row));
-        itemPicsAdapter = new ItemPixAdapter(listener, getContext(), RSConstants.OTHER);
+        GridLayoutManager layoutManager = new GridLayoutManager(pixRV.getContext(), countItemPerRow);
+        itemPicsAdapter = new ItemPixAdapter(listener, RSConstants.OTHER);
         pixRV.setLayoutManager(layoutManager);
         pixRV.setAdapter(itemPicsAdapter);
-        pixRV.addItemDecoration(new VerticalSpace(getResources().getInteger(R.integer.m_card_view), getResources().getInteger(R.integer.count_item_per_row)));
+        pixRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
         pixRV.addOnScrollListener(new EndlessScrollListener(layoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -226,10 +268,10 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     }
 
     private void initMyPixList() {
-        myItemPixAdapter = new ItemPixAdapter(myListener, getContext(), RSConstants.MINE);
+        myItemPixAdapter = new ItemPixAdapter(myListener, RSConstants.MINE);
         LinearLayoutManager layoutManager = new LinearLayoutManager(myPixRV.getContext(), LinearLayoutManager.HORIZONTAL, false);
         myPixRV.setLayoutManager(layoutManager);
-        myPixRV.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
+        myPixRV.addItemDecoration(new HorizontalSpace(marginCardView));
         myPixRV.setAdapter(myItemPixAdapter);
         myPixRV.addOnScrollListener(new LinearScrollListener(layoutManager) {
             @Override
@@ -258,17 +300,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     }
 
     private void bindViews() {
-        pixRV = rootView.findViewById(R.id.recycler_view_pics);
-        filterToggle = rootView.findViewById(R.id.filter_toggle);
-        progressBar = rootView.findViewById(R.id.main_progress);
         itemPresenter = new PresenterItemImpl(ItemPicsFragment.this);
-
-        myPixRV = rootView.findViewById(R.id.recycler_view_my_pix);
-        mpProgressBar = rootView.findViewById(R.id.mp_progress);
-        myPixLayout = rootView.findViewById(R.id.rl_my_pix);
-        addPixLayout = rootView.findViewById(R.id.ll_add_pix);
-        titleOtherPix = rootView.findViewById(R.id.title_other_pix);
-        addPixBTN = rootView.findViewById(R.id.btn_add_pix);
     }
 
     private void loadItemPix(int pageNumber) {
@@ -323,6 +355,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
         pictures = null;
         myPictures.clear();
         myPictures = null;
+        unbinder.unbind();
         //itemPresenter.onDestroyItem();
         super.onDestroyView();
     }
@@ -501,6 +534,11 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     @Override
     public void showMessage(String target, String message) {
 
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
     }
 
     private void setFilterListener() {

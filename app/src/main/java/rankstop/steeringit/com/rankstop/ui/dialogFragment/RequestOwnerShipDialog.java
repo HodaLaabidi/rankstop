@@ -7,11 +7,16 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import butterknife.BindInt;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,10 +39,9 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
     private Unbinder unbinder;
     private User user;
     private String itemId, itemName, fullname, email, phoneNumber, companyName, message;
+    private RSLoader rsLoader;
 
     private RSPresenter.ContactPresenter presenter;
-
-    private ProgressDialog progressDialog;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -67,14 +71,119 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
     @BindView(R.id.input_message)
     RSETMedium inputMessage;
 
+    @BindString(R.string.request_received)
+    String requestReceived;
+    @BindString(R.string.field_required)
+    String requiredField;
+    @BindString(R.string.text_request_ownership)
+    String requestOwnershipTitle;
+    @BindString(R.string.email_format_incorrect)
+    String emailFormatIncorrect;
+    @BindString(R.string.loading_msg)
+    String loadingMsg;
+    @BindString(R.string.off_line)
+    String offLineMsg;
+
+    @BindInt(R.integer.max_length_500)
+    int maxLength500;
+    @BindInt(R.integer.max_length_50)
+    int maxLength50;
+
+    private
+    TextWatcher
+            emailTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().trim().length() > 0){
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(s.toString()).matches()){
+                    inputLayoutEmail.setError(emailFormatIncorrect);
+                }else{
+                    inputLayoutEmail.setErrorEnabled(false);
+                }
+            }else{
+                inputLayoutEmail.setError(requiredField);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    },
+            fullNameTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0){
+                        inputLayoutFullName.setErrorEnabled(false);
+                    }else{
+                        inputLayoutFullName.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            },
+            companyTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0){
+                        inputLayoutCompany.setErrorEnabled(false);
+                    }else{
+                        inputLayoutCompany.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            },
+            phoneTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0){
+                        inputLayoutPhone.setErrorEnabled(false);
+                    }else{
+                        inputLayoutPhone.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            };
+
     @OnClick(R.id.btn_send_request)
     void sendRequest() {
 
-        fullname = inputFullName.getText().toString();
-        email = inputEmail.getText().toString();
-        phoneNumber = inputPhone.getText().toString();
-        companyName = inputCompany.getText().toString();
-        message = inputMessage.getText().toString();
+        fullname = inputFullName.getText().toString().trim();
+        email = inputEmail.getText().toString().trim();
+        phoneNumber = inputPhone.getText().toString().trim();
+        companyName = inputCompany.getText().toString().trim();
+        message = inputMessage.getText().toString().trim();
 
         if (validForm()) {
             RequestOwnership requestOwnerShip = new RequestOwnership();
@@ -94,23 +203,43 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
     private boolean validForm() {
         int x = 0;
 
+        inputLayoutFullName.setErrorEnabled(false);
+        inputLayoutEmail.setErrorEnabled(false);
+        inputLayoutPhone.setErrorEnabled(false);
+        inputLayoutCompany.setErrorEnabled(false);
+
         if (TextUtils.isEmpty(fullname)) {
-            inputLayoutFullName.setError("this field is required");
+            inputLayoutFullName.setError(requiredField);
             x++;
         }
         if (TextUtils.isEmpty(email)) {
-            inputLayoutEmail.setError("this field is required");
+            inputLayoutEmail.setError(requiredField);
             x++;
         }
         if (TextUtils.isEmpty(phoneNumber)) {
-            inputLayoutPhone.setError("this field is required");
+            inputLayoutPhone.setError(requiredField);
             x++;
         }
         if (TextUtils.isEmpty(companyName)) {
-            inputLayoutCompany.setError("this field is required");
+            inputLayoutCompany.setError(requiredField);
+            x++;
+        }
+        if (message.length() > maxLength500) {
             x++;
         }
         return x == 0;
+    }
+
+    private void addTextWatcher() {
+        inputFullName.addTextChangedListener(fullNameTextWatcher);
+        inputEmail.addTextChangedListener(emailTextWatcher);
+        inputCompany.addTextChangedListener(companyTextWatcher);
+        inputPhone.addTextChangedListener(phoneTextWatcher);
+    }
+
+    private void createLoader(){
+        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader.setCancelable(false);
     }
 
     @Override
@@ -127,12 +256,9 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
 
         toolbar.setNavigationIcon(R.drawable.ic_close);
         toolbar.setNavigationOnClickListener(view1 -> dismiss());
-        toolbar.setTitle("Request Ownership");
-
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading");
-        progressDialog.setCancelable(false);
-
+        toolbar.setTitle(requestOwnershipTitle);
+        addTextWatcher();
+        createLoader();
         return rootView;
     }
 
@@ -169,6 +295,10 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
     @Override
     public void onDestroyView() {
 
+        inputFullName.removeTextChangedListener(fullNameTextWatcher);
+        inputEmail.removeTextChangedListener(emailTextWatcher);
+        inputCompany.removeTextChangedListener(companyTextWatcher);
+        inputPhone.removeTextChangedListener(phoneTextWatcher);
         unbinder.unbind();
         presenter.onDestroy();
 
@@ -179,7 +309,8 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
     public void onSuccess(String target, Object data) {
         switch (target) {
             case RSConstants.SEND_REQ_OWNER_SHIP:
-
+                Toast.makeText(getContext(), requestReceived, Toast.LENGTH_LONG).show();
+                dismiss();
                 break;
         }
     }
@@ -196,16 +327,21 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
 
     @Override
     public void showProgressBar(String target) {
-        progressDialog.show();
+        rsLoader.show(getFragmentManager(), RSLoader.TAG);
     }
 
     @Override
     public void hideProgressBar(String target) {
-        progressDialog.dismiss();
+        rsLoader.dismiss();
     }
 
     @Override
     public void showMessage(String target, String message) {
 
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offLineMsg, Toast.LENGTH_LONG).show();
     }
 }

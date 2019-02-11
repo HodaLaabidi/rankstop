@@ -1,13 +1,11 @@
 
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -20,6 +18,11 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaNote;
 import rankstop.steeringit.com.rankstop.R;
@@ -29,12 +32,10 @@ public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHo
 
     private List<CriteriaNote> criterias = new ArrayList<>();
     private RecyclerViewClickListener listener;
-    private Context context;
 
-    public ItemEvalAdapter(List<CriteriaNote> criterias, RecyclerViewClickListener listener, Context context) {
+    public ItemEvalAdapter(List<CriteriaNote> criterias, RecyclerViewClickListener listener) {
         this.criterias = criterias;
         this.listener = listener;
-        this.context = context;
     }
 
     @Override
@@ -57,15 +58,23 @@ public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHo
         // TODO - Your view members
         public CriteriaNote criteria;
         private RecyclerViewClickListener mListener;
-        private BarChart barChart;
-        private TextView barChartTitleView;
+
+        @BindView(R.id.bar_chart)
+        BarChart barChart;
+        @BindView(R.id.bar_chart_title_view)
+        RSTVRegular barChartTitleView;
+
+        @BindString(R.string.text_good)
+        String goodText;
+        @BindString(R.string.text_neutral)
+        String neutralText;
+        @BindString(R.string.text_bad)
+        String badText;
 
         public ViewHolder(View itemView, RecyclerViewClickListener listener) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             this.mListener = listener;
-
-            barChart = itemView.findViewById(R.id.bar_chart);
-            barChartTitleView = itemView.findViewById(R.id.bar_chart_title_view);
             itemView.setOnClickListener(this);
             // TODO instantiate/assign view members
         }
@@ -94,9 +103,9 @@ public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHo
             //xAxis.setDrawLabels(false);
             ArrayList xVals = new ArrayList();
             xVals.add("");
-            xVals.add("Good");
-            xVals.add("Neutral");
-            xVals.add("Bad");
+            xVals.add(goodText);
+            xVals.add(neutralText);
+            xVals.add(badText);
             xAxis.setValueFormatter(new IndexAxisValueFormatter(xVals));
 
             YAxis leftAxis = barChart.getAxisLeft();
@@ -123,7 +132,7 @@ public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHo
             barEntry.add(new BarEntry(3, Float.parseFloat(criteria.getCrit_bad())));
 
             BarDataSet barDataSet = new BarDataSet(barEntry, criteria.getNameCritere());
-            barDataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, context);
+            barDataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, RankStop.getInstance());
             barDataSet.setBarShadowColor(Color.rgb(203,203,203));
 
             BarData barData = new BarData(barDataSet);

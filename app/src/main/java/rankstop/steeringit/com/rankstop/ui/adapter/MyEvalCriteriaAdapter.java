@@ -1,34 +1,33 @@
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindColor;
+import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Criteria;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 
 public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAdapter.ViewHolder> {
 
     private List<CriteriaEval> criteriasEvaluated;
-    private Context context;
 
     /*public MyEvalCriteriaAdapter(List<CriteriaEval> criteriasEvaluated, Context context) {
         this.criteriasEvaluated = criteriasEvaluated;
         this.context = context;
     }*/
 
-    public MyEvalCriteriaAdapter(Context context) {
+    public MyEvalCriteriaAdapter() {
         this.criteriasEvaluated = new ArrayList<>();
-        this.context = context;
     }
 
     @NonNull
@@ -49,11 +48,21 @@ public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView criteriaNameTV, criteriaNoteTV;
+        private RSTVRegular criteriaNameTV, criteriaNoteTV;
         private ProgressBar progressBar;
+
+        @BindColor(R.color.colorGray)
+        int grayColor;
+        @BindColor(R.color.colorRedPie)
+        int redColor;
+        @BindColor(R.color.colorOrangePie)
+        int orangeColor;
+        @BindColor(R.color.colorGreenPie)
+        int greenColor;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
 
             criteriaNameTV = itemView.findViewById(R.id.tv_criteria_name);
             criteriaNoteTV = itemView.findViewById(R.id.tv_criteria_note);
@@ -62,7 +71,7 @@ public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAd
         }
 
         public void setData(CriteriaEval criteriaEval) {
-            criteriaNameTV.setText(((Criteria) criteriaEval.getCriteria()).getName());
+            criteriaNameTV.setText(((Criteria) criteriaEval.getCriteria()).getName().toString());
             if (criteriaEval.getNote() == -1){
                 criteriaNoteTV.setText("Not set");progressBar.setProgress(0);
             }else {
@@ -71,13 +80,13 @@ public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAd
             }
 
             if (criteriaEval.getNote() <0){
-                progressBar.getProgressDrawable().setColorFilter(context.getResources().getColor(R.color.colorGray), android.graphics.PorterDuff.Mode.SRC_IN);
+                progressBar.getProgressDrawable().setColorFilter(grayColor, android.graphics.PorterDuff.Mode.SRC_IN);
             }else if (criteriaEval.getNote() <= 1) {
-                progressBar.getProgressDrawable().setColorFilter(context.getResources().getColor(R.color.colorRedPie), android.graphics.PorterDuff.Mode.SRC_IN);
+                progressBar.getProgressDrawable().setColorFilter(redColor, android.graphics.PorterDuff.Mode.SRC_IN);
             } else if (criteriaEval.getNote() <= 3) {
-                progressBar.getProgressDrawable().setColorFilter(context.getResources().getColor(R.color.colorOrangePie), android.graphics.PorterDuff.Mode.SRC_IN);
+                progressBar.getProgressDrawable().setColorFilter(orangeColor, android.graphics.PorterDuff.Mode.SRC_IN);
             } else if (criteriaEval.getNote() <= 5) {
-                progressBar.getProgressDrawable().setColorFilter(context.getResources().getColor(R.color.colorGreenPie), android.graphics.PorterDuff.Mode.SRC_IN);
+                progressBar.getProgressDrawable().setColorFilter(greenColor, android.graphics.PorterDuff.Mode.SRC_IN);
             }
         }
     }

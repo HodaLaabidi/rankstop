@@ -3,6 +3,8 @@ package rankstop.steeringit.com.rankstop.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -31,5 +33,11 @@ public class Helpers {
         Bitmap bm = BitmapFactory.decodeByteArray(chartData, 0, chartData.length);
         String path = MediaStore.Images.Media.insertImage(RankStop.getInstance().getContentResolver(), bm, "Image Description", null);
         return Uri.parse(path);
+    }
+
+    public static boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) RankStop.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 }

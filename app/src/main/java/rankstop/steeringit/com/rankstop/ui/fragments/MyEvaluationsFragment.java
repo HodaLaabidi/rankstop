@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -27,6 +26,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,21 +35,22 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.adapter.ItemsAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.MyEvalsAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class MyEvaluationsFragment extends Fragment implements RSView.StandardView {
@@ -58,18 +59,27 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.recycler_view_my_evals)
     RecyclerView recyclerViewMyEvals;
+
     @BindView(R.id.no_item)
     LinearLayout layoutNoItem;
+
     @BindView(R.id.tv_login_or_search)
-    TextView nodataTV;
+    RSTVMedium nodataTV;
+
     @BindView(R.id.btn_login_or_search)
     MaterialButton noDataBtn;
+
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
     @OnClick(R.id.btn_login_or_search)
-    void fun(){
+    void fun() {
         if (!isLoggedIn) {
             RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_MY_EVALS, RSConstants.ACTION_CONNECT, "", "", "", "");
             navigateToSignUp(rsNavigationData);
@@ -118,10 +128,13 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
         isLoggedIn = RSSession.isLoggedIn();
         if (isLoggedIn) {
+            itemPresenter = new PresenterItemImpl(MyEvaluationsFragment.this);
+            initMyEvals();
             user = RSSession.getCurrentUser();
             rsRequestListItem.setPage(currentPage);
             rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
             rsRequestListItem.setUserId(user.get_id());
+            rsRequestListItem.setLang(RankStop.getDeviceLanguage());
             loadMyEvals(rsRequestListItem);
         } else {
             noDataBtn.setText(getResources().getString(R.string.login_btn));
@@ -129,8 +142,6 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
             layoutNoItem.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }
-
-        initMyEvals();
     }
 
     private void loadMyEvals(RSRequestListItem rsRequestListItem) {
@@ -139,7 +150,6 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     }
 
     private void initMyEvals() {
-        recyclerViewMyEvals.setVisibility(View.VISIBLE);
         ItemPieListener listener = new ItemPieListener() {
             @Override
             public void onFollowChanged(boolean isFollow, int position) {
@@ -153,13 +163,16 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listMyEvals.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                if (RSNetwork.isConnected())
+                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listMyEvals.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                else
+                    onOffLine();
             }
         };
         GridLayoutManager layoutManager = new GridLayoutManager(recyclerViewMyEvals.getContext(), 1);
         recyclerViewMyEvals.setLayoutManager(layoutManager);
 
-        myEvalsAdapter = new MyEvalsAdapter(listener, getContext());
+        myEvalsAdapter = new MyEvalsAdapter(listener);
         recyclerViewMyEvals.setLayoutManager(layoutManager);
         recyclerViewMyEvals.setAdapter(myEvalsAdapter);
         recyclerViewMyEvals.addItemDecoration(new VerticalSpace(getResources().getInteger(R.integer.m_card_view), 1));
@@ -203,8 +216,6 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     private void bindViews() {
         toolbar.setTitle(getResources().getString(R.string.title_my_evals));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
-        itemPresenter = new PresenterItemImpl(MyEvaluationsFragment.this);
         setFragmentActionListener((ContainerActivity) getActivity());
     }
 
@@ -258,7 +269,8 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
         instance = null;
         unbinder.unbind();
         rootView = null;
-        itemPresenter.onDestroyItem();
+        if (itemPresenter != null)
+            itemPresenter.onDestroyItem();
         fragmentActionListener = null;
         super.onDestroyView();
     }
@@ -278,6 +290,8 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
                             noDataBtn.setText(getResources().getString(R.string.search_items));
                             nodataTV.setText(getResources().getString(R.string.no_item_evaluated));
                             layoutNoItem.setVisibility(View.VISIBLE);
+                        } else {
+                            recyclerViewMyEvals.setVisibility(View.VISIBLE);
                         }
                     } else if (listingItemResponse.getCurrent() > 1) {
                         myEvalsAdapter.removeLoadingFooter();
@@ -285,13 +299,15 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
                     }
                     myEvalsAdapter.addAll(listingItemResponse.getItems());
                     if (currentPage < PAGES_COUNT) {
+                        Log.i("TAG_MY_EVALS", "PAGES_COUNT = " + PAGES_COUNT + ", currentPage = " + currentPage + ", userId = " + user.get_id());
                         myEvalsAdapter.addLoadingFooter();
                         isLastPage = false;
                     } else {
                         isLastPage = true;
                     }
-                }catch(Exception e){
-
+                } catch (Exception e) {
+                    //Toast.makeText(getContext(), "exception", Toast.LENGTH_SHORT).show();
+                    myEvalsAdapter.removeLoadingFooter();
                 }
                 break;
             case RSConstants.FOLLOW_ITEM:
@@ -311,12 +327,20 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     @Override
     public void onFailure(String target) {
-
+        switch (target) {
+            case RSConstants.MY_EVALS:
+                //Toast.makeText(getContext(), "failure", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     @Override
     public void onError(String target) {
-
+        switch (target) {
+            case RSConstants.MY_EVALS:
+                //Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     @Override
@@ -334,11 +358,16 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     }
 
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+    }
+
     private void navigateToSignUp(RSNavigationData rsNavigationData) {
         fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
     }
 
     private void navigateToHome() {
-        fragmentActionListener.startFragment(HomeFragment.getInstance(), RSConstants.FRAGMENT_HOME);
+        fragmentActionListener.navigateTo(R.id.navigation_search, RSConstants.FRAGMENT_SEARCH);
     }
 }

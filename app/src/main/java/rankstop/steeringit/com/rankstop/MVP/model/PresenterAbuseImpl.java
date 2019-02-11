@@ -7,6 +7,7 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.Urls;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,55 +24,63 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
 
     @Override
     public void loadAbusesList(String langue) {
-        if (abuseView != null) {
-            abuseView.showProgressBar(RSConstants.LOAD_ABUSES_LIST);
-            callAbusesList = WebService.getInstance().getApi().loadAbusesList(langue);
-            callAbusesList.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        abuseView.onSuccess(RSConstants.LOAD_ABUSES_LIST, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        abuseView.onFailure(RSConstants.LOAD_ABUSES_LIST);
-                    }
-                    abuseView.hideProgressBar(RSConstants.LOAD_ABUSES_LIST);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callAbusesList.isCanceled()) {
+        if (RSNetwork.isConnected()){
+            if (abuseView != null) {
+                abuseView.showProgressBar(RSConstants.LOAD_ABUSES_LIST);
+                callAbusesList = WebService.getInstance().getApi().loadAbusesList(langue);
+                callAbusesList.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            abuseView.onSuccess(RSConstants.LOAD_ABUSES_LIST, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            abuseView.onFailure(RSConstants.LOAD_ABUSES_LIST);
+                        }
                         abuseView.hideProgressBar(RSConstants.LOAD_ABUSES_LIST);
-                        abuseView.showMessage(RSConstants.LOAD_ABUSES_LIST, "failure");
                     }
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callAbusesList.isCanceled()) {
+                            abuseView.hideProgressBar(RSConstants.LOAD_ABUSES_LIST);
+                            abuseView.showMessage(RSConstants.LOAD_ABUSES_LIST, "failure");
+                        }
+                    }
+                });
+            }
+        }else {
+            abuseView.onOffLine();
         }
     }
 
     @Override
     public void reportAbuse(RSRequestReportAbuse rsRequestReportAbuse) {
-        if (abuseView != null) {
-            //abuseView.showProgressBar(RSConstants.REPORT_ABUSES);
-            callReportAbuse = WebService.getInstance().getApi().reportAbuse(rsRequestReportAbuse);
-            callReportAbuse.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        abuseView.onSuccess(RSConstants.REPORT_ABUSES, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        abuseView.onFailure(RSConstants.REPORT_ABUSES);
-                    }
-                    //abuseView.hideProgressBar(RSConstants.REPORT_ABUSES);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callReportAbuse.isCanceled()) {
+        if (RSNetwork.isConnected()) {
+            if (abuseView != null) {
+                abuseView.showProgressBar(RSConstants.REPORT_ABUSES);
+                callReportAbuse = WebService.getInstance().getApi().reportAbuse(rsRequestReportAbuse);
+                callReportAbuse.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            abuseView.onSuccess(RSConstants.REPORT_ABUSES, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            abuseView.onFailure(RSConstants.REPORT_ABUSES);
+                        }
                         abuseView.hideProgressBar(RSConstants.REPORT_ABUSES);
-                        abuseView.showMessage(RSConstants.REPORT_ABUSES, "failure");
                     }
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callReportAbuse.isCanceled()) {
+                            abuseView.hideProgressBar(RSConstants.REPORT_ABUSES);
+                            abuseView.showMessage(RSConstants.REPORT_ABUSES, "failure");
+                        }
+                    }
+                });
+            }
+        }else {
+            abuseView.onOffLine();
         }
     }
 

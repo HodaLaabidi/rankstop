@@ -7,12 +7,14 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -32,6 +34,8 @@ public class DiaparomaActivity extends AppCompatActivity implements RSView.Stand
 
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+    @BindString(R.string.off_line)
+    String offlineMsg;
 
     private static int MAX_PAGES = 3;
     private static int MAX_FIELD_TO_LOAD = RSConstants.MAX_FIELD_TO_LOAD;
@@ -157,6 +161,11 @@ public class DiaparomaActivity extends AppCompatActivity implements RSView.Stand
     @Override
     public void showMessage(String target, String message) {
 
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getApplicationContext(), offlineMsg, Toast.LENGTH_LONG).show();
     }
 
     private void managePicsList(RSResponseItemData rsResponseItemData) {

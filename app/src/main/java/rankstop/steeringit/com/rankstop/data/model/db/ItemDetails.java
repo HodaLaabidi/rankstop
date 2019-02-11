@@ -9,7 +9,7 @@ import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class ItemDetails implements Serializable {
 
-    private Category category;
+    private Object category;
     private String createdAt, lastDateView, updatedAt, phone;
     private String title, description, urlFacebook, urlInstagram, urlGooglePlus, urlLinkedIn, urlTwitter, _id;
     private Object creator, owner;
@@ -36,11 +36,14 @@ public class ItemDetails implements Serializable {
         this.numberView = numberView;
     }
 
-    public Category getCategory() {
-        return category;
+    public Object getCategory() {
+        if (category instanceof String)
+            return (String)category;
+        else
+            return new Gson().fromJson(new Gson().toJson(category), Category.class);
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(Object category) {
         this.category = category;
     }
 

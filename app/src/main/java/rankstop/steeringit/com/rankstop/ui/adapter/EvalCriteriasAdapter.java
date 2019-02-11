@@ -1,22 +1,23 @@
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.zhouyou.view.seekbar.SignSeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindColor;
+import butterknife.BindDimen;
+import butterknife.ButterKnife;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 import rankstop.steeringit.com.rankstop.ui.callbacks.CriteriaEvalListener;
 import rankstop.steeringit.com.rankstop.R;
@@ -24,13 +25,11 @@ import rankstop.steeringit.com.rankstop.R;
 public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdapter.ViewHolder> {
 
     private CriteriaEvalListener noteListener;
-    private Context context;
     private List<CriteriaEval> listCriteria = new ArrayList<>();
 
-    public EvalCriteriasAdapter(List<CriteriaEval> listCriteria, CriteriaEvalListener noteListener, Context context) {
+    public EvalCriteriasAdapter(List<CriteriaEval> listCriteria, CriteriaEvalListener noteListener) {
         this.listCriteria = listCriteria;
         this.noteListener = noteListener;
-        this.context = context;
     }
 
     @NonNull
@@ -56,12 +55,29 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
         private boolean isGray = true, isRed = false, isGreen = false, isOrange = false;
 
         private SignSeekBar signSeekBar;
-        private TextView criteriaNameTV;
+        private RSTVRegular criteriaNameTV;
         private RadioGroup importanceToggle;
         private int lastCheckedId = R.id.importance_normal;
 
+        @BindColor(R.color.colorGreenPie)
+        int greenPieColor;
+        @BindColor(R.color.colorOrangePie)
+        int orangePieColor;
+        @BindColor(R.color.colorRedPie)
+        int redPieColor;
+        @BindColor(R.color.colorPrimary)
+        int primaryColor;
+        @BindColor(R.color.colorAccent)
+        int accentColor;
+        @BindColor(R.color.colorGray)
+        int grayColor;
+
+        @BindDimen(R.dimen.thumb_text_size)
+        int thumbTextSize;
+
         public ViewHolder(@NonNull View itemView, CriteriaEvalListener noteListener) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             this.noteListener = noteListener;
 
             signSeekBar = itemView.findViewById(R.id.seek_bar);
@@ -72,7 +88,7 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
             importanceToggle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    ((RadioButton) itemView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+                    ((RadioButton) itemView.findViewById(lastCheckedId)).setTextColor(accentColor);
                     lastCheckedId = checkedId;
                     ((RadioButton) itemView.findViewById(checkedId)).setTextColor(Color.WHITE);
                     switch (checkedId) {
@@ -105,9 +121,9 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
                             isGreen = false;
                             isGray = false;
                             signSeekBar.getConfigBuilder()
-                                    .signColor(context.getResources().getColor(R.color.colorRedPie))
-                                    .secondTrackColor(context.getResources().getColor(R.color.colorRedPie))
-                                    .thumbColor(context.getResources().getColor(R.color.colorRedPie))
+                                    .signColor(redPieColor)
+                                    .secondTrackColor(redPieColor)
+                                    .thumbColor(redPieColor)
                                     .build();
                         }
                     } else if (progress >= 2 && progress < 4) {
@@ -117,9 +133,9 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
                             isGreen = false;
                             isGray = false;
                             signSeekBar.getConfigBuilder()
-                                    .signColor(context.getResources().getColor(R.color.colorOrangePie))
-                                    .secondTrackColor(context.getResources().getColor(R.color.colorOrangePie))
-                                    .thumbColor(context.getResources().getColor(R.color.colorOrangePie))
+                                    .signColor(orangePieColor)
+                                    .secondTrackColor(orangePieColor)
+                                    .thumbColor(orangePieColor)
                                     .build();
                         }
                     } else if (progress >= 4) {
@@ -129,9 +145,9 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
                             isRed = false;
                             isGray = false;
                             signSeekBar.getConfigBuilder()
-                                    .signColor(context.getResources().getColor(R.color.colorGreenPie))
-                                    .secondTrackColor(context.getResources().getColor(R.color.colorGreenPie))
-                                    .thumbColor(context.getResources().getColor(R.color.colorGreenPie))
+                                    .signColor(greenPieColor)
+                                    .secondTrackColor(greenPieColor)
+                                    .thumbColor(greenPieColor)
                                     .build();
                         }
                     } else if (progress < 0) {
@@ -141,9 +157,9 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
                             isRed = false;
                             isGreen = false;
                             signSeekBar.getConfigBuilder()
-                                    .signColor(context.getResources().getColor(R.color.colorPrimary))
-                                    .secondTrackColor(context.getResources().getColor(R.color.colorPrimary))
-                                    .thumbColor(context.getResources().getColor(R.color.colorPrimary))
+                                    .signColor(primaryColor)
+                                    .secondTrackColor(primaryColor)
+                                    .thumbColor(primaryColor)
                                     .build();
                         }
                     }
@@ -168,9 +184,9 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
                     .max(5)
                     .progress(criteriaEval.getNote())
                     .sectionCount(6)
-                    .thumbColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                    .sectionTextColor(ContextCompat.getColor(context, R.color.colorGray))
-                    .sectionTextSize((int) context.getResources().getDimension(R.dimen.thumb_text_size))
+                    .thumbColor(primaryColor)
+                    .sectionTextColor(grayColor)
+                    .sectionTextSize(thumbTextSize)
                     .sectionTextPosition(SignSeekBar.TextPosition.BOTTOM_SIDES)
                     .build();
             criteriaNameTV.setText(criteriaEval.getCriteriaName());

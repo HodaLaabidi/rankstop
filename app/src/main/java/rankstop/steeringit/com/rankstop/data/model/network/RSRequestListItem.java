@@ -9,13 +9,6 @@ public class RSRequestListItem implements Serializable {
     private int perPage, page;
     private String userId, lang;
 
-    public RSRequestListItem(int perPage, int page, String userId, String lang) {
-        this.perPage = perPage;
-        this.page = page;
-        this.userId = userId;
-        this.lang = lang;
-    }
-
     public RSRequestListItem() {
     }
 

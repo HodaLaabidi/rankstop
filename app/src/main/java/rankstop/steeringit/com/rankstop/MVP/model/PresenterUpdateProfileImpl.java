@@ -17,6 +17,7 @@ import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.FileUtils;
 import rankstop.steeringit.com.rankstop.utils.Helpers;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,66 +41,74 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
 
     @Override
     public void editProfile(RSRequestEditProfile user) {
-        if (standardView != null) {
-            Log.i("TAG_IMG_URI",""+user.getFile());
-            MultipartBody.Part part = null;
-            if (user.getFile() != null){
-                part = prepareFilePart("file", user.getFile());
-            }
-            callEditProfile = WebService.getInstance().getApi().updateUser(
-                    part,
-                    user,
-                    Helpers.createPartFormString(user.getUserId())
-            );
-            callEditProfile.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.UPDATE_PROFILE, response.body().getData());
-                        standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.UPDATE_PROFILE);
-                        standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
-                    } else if (response.body().getStatus() == 2) {
-                        standardView.onOldPwdIncorrect(response.body().getMessage());
-                    }
-                    //standardView.hideProgressBar(RSConstants.ADD_ITEM);
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                Log.i("TAG_IMG_URI", "" + user.getFile());
+                MultipartBody.Part part = null;
+                if (user.getFile() != null) {
+                    part = prepareFilePart("file", user.getFile());
                 }
+                callEditProfile = WebService.getInstance().getApi().updateUser(
+                        part,
+                        user,
+                        Helpers.createPartFormString(user.getUserId())
+                );
+                callEditProfile.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.UPDATE_PROFILE, response.body().getData());
+                            standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.UPDATE_PROFILE);
+                            standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                        } else if (response.body().getStatus() == 2) {
+                            standardView.onOldPwdIncorrect(response.body().getMessage());
+                        }
+                        //standardView.hideProgressBar(RSConstants.ADD_ITEM);
+                    }
 
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!call.isCanceled()) {
-                        standardView.showMessage(RSConstants.UPDATE_PROFILE, "erreur");
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!call.isCanceled()) {
+                            standardView.showMessage(RSConstants.UPDATE_PROFILE, "erreur");
+                        }
                     }
-                }
-            });
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void loadCountriesList() {
-        if (standardView != null) {
-            callloadCountries = WebService.getInstance().getApi().loadCountries();
-            standardView.showProgressBar(RSConstants.COUNTRIES_LIST);
-            callloadCountries.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.COUNTRIES_LIST, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onError(RSConstants.COUNTRIES_LIST);
-                    }
-                    standardView.hideProgressBar(RSConstants.COUNTRIES_LIST);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callloadCountries.isCanceled()) {
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                callloadCountries = WebService.getInstance().getApi().loadCountries();
+                standardView.showProgressBar(RSConstants.COUNTRIES_LIST);
+                callloadCountries.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.COUNTRIES_LIST, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onError(RSConstants.COUNTRIES_LIST);
+                        }
                         standardView.hideProgressBar(RSConstants.COUNTRIES_LIST);
-                        standardView.onFailure(RSConstants.COUNTRIES_LIST);
                     }
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callloadCountries.isCanceled()) {
+                            standardView.hideProgressBar(RSConstants.COUNTRIES_LIST);
+                            standardView.onFailure(RSConstants.COUNTRIES_LIST);
+                        }
+                    }
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 

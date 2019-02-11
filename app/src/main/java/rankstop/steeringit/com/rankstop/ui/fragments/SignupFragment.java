@@ -11,6 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,14 +48,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
-import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
 import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
@@ -63,11 +67,13 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.LoginDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.RegisterDialog;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,31 +102,100 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     private RSRequestSocialLogin user;
 
-    private ProgressDialog mDialog;
+    @BindString(R.string.use_fb_login_msg)
+    String useFBLoginMsg;
 
     @BindView(R.id.input_email)
-    TextInputEditText inputEmail;
+    RSETRegular inputEmail;
 
     @BindView(R.id.input_layout_email)
     TextInputLayout inputLayoutEmail;
 
+    @BindString(R.string.email_format_incorrect)
+    String emailFormatIncorrect;
+    @BindString(R.string.field_required)
+    String requiredField;
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
     @OnClick(R.id.rs_login_btn)
-    void rsLogin(){
-        inputLayoutEmail.setErrorEnabled(false);
-        inputLayoutEmail.setError("");
-        signupPresenter.performFindEmail(inputEmail.getText().toString().trim());
+    void rsLogin() {
+        if (validForm(inputEmail.getText().toString().trim())) {
+            if (RSNetwork.isConnected())
+                signupPresenter.performFindEmail(inputEmail.getText().toString().trim());
+            else
+                onOffLine();
+        }
     }
 
     @OnClick(R.id.fb_login_btn)
-    void fbLogin(){
-        LoginManager.getInstance().logOut();
-        LoginManager.getInstance().logInWithReadPermissions(fragmentContext.get(), Arrays.asList("public_profile","email","user_birthday","user_gender","user_location"));
+    void fbLogin() {
+        if (RSNetwork.isConnected()) {
+            LoginManager.getInstance().logOut();
+            LoginManager.getInstance().logInWithReadPermissions(fragmentContext.get(), Arrays.asList("public_profile", "email", "user_birthday", "user_gender", "user_location"));
+        }else {
+            onOffLine();
+        }
+
     }
 
     @OnClick(R.id.google_login_btn)
-    void googleLogin(){
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, 1);
+    void googleLogin() {
+        if (RSNetwork.isConnected()) {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, 1);
+        }else {
+            onOffLine();
+        }
+    }
+
+
+    private TextWatcher emailTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().trim().length() > 0) {
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(s.toString()).matches()) {
+                    inputLayoutEmail.setError(emailFormatIncorrect);
+                } else {
+                    inputLayoutEmail.setErrorEnabled(false);
+                }
+            } else {
+                inputLayoutEmail.setError(requiredField);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    private boolean validForm(String email) {
+        int x = 0;
+        inputLayoutEmail.setErrorEnabled(false);
+
+        if (TextUtils.isEmpty(email)) {
+            inputLayoutEmail.setError(requiredField);
+            x++;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            inputLayoutEmail.setError(emailFormatIncorrect);
+            x++;
+        }
+        return x == 0;
+    }
+
+    @BindString(R.string.loading_msg)
+    String loadingMsg;
+    private RSLoader rsLoader;
+
+    private void createLoader() {
+        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader.setCancelable(false);
     }
 
     @Nullable
@@ -136,6 +211,9 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        createLoader();
+        inputEmail.addTextChangedListener(emailTextWatcher);
+
         rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         signupPresenter = new PresenterAuthImpl(fragmentContext.get());
         callbackManager = CallbackManager.Factory.create();
@@ -144,9 +222,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        mDialog = new ProgressDialog(fragmentContext.get().getContext());
-                        mDialog.setMessage("Retrieving data ...");
-                        mDialog.show();
 
                         AccessToken accessToken = AccessToken.getCurrentAccessToken();
                         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
@@ -156,16 +231,16 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                             public void onCompleted(JSONObject object, GraphResponse response) {
 
                                 RSRequestSocialLogin user = getData(object);
-                                if (user != null){
+                                if (user != null) {
                                     performSocialLogin(user);
-                                }else {
-                                    Log.i("TAG_REGISTER","user null");
+                                } else {
+                                    Log.i("TAG_REGISTER", "user null");
                                 }
                             }
                         });
 
                         Bundle parametrs = new Bundle();
-                        parametrs.putString("fields","id,email,birthday,first_name,last_name,gender,location");
+                        parametrs.putString("fields", "id,email,birthday,first_name,last_name,gender,location");
                         request.setParameters(parametrs);
                         request.executeAsync();
                     }
@@ -173,17 +248,17 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                     @Override
                     public void onCancel() {
                         // App code
-                        mDialog.dismiss();
-                        Toast.makeText(getContext(), "cancel", Toast.LENGTH_SHORT).show();
+                        rsLoader.dismiss();
+                        //Toast.makeText(getContext(), "cancel", Toast.LENGTH_SHORT).show();
 
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
-                        Log.i("TAG_REGISTER_ERROR",exception.getMessage());
-                        mDialog.dismiss();
-                        Toast.makeText(getContext(), "error = "+exception.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.i("TAG_REGISTER_ERROR", exception.getMessage());
+                        rsLoader.dismiss();
+                        //Toast.makeText(getContext(), "error = "+exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -230,8 +305,9 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     @Override
     public void onDestroyView() {
+        inputEmail.removeTextChangedListener(emailTextWatcher);
         instance = null;
-        rootView=null;
+        rootView = null;
         fragmentContext.clear();
         unbinder.unbind();
         signupPresenter.onDestroyFindEmail();
@@ -241,7 +317,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Override
     public void findEmailValidations() {
         inputLayoutEmail.setErrorEnabled(true);
-        inputLayoutEmail.setError(getString(R.string.signup_email_format_invalid));
+        inputLayoutEmail.setError(getString(R.string.email_format_incorrect));
     }
 
     @Override
@@ -250,7 +326,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
             RSResponseFindEmail findEmailResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseFindEmail.class);
             if (findEmailResponse.isConnectSocialMedia()) {
-                Toast.makeText(getContext(), "Please use your facebook account to login", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), useFBLoginMsg, Toast.LENGTH_LONG).show();
             } else {
                 dialogLogin(inputEmail.getText().toString().trim());
             }
@@ -267,7 +343,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Override
     public void socialLoginSuccess(Object data) {
 
-        mDialog.dismiss();
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
         //Log.i("TAG_REGISTER",""+token);
@@ -275,16 +350,16 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
             signupPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.SOCIAL_LOGIN);
-        }else {
-            ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+        } else {
+            rsLoader.dismiss();
+            ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
         }
     }
 
     @Override
     public void socialLoginError(String message) {
-        Toast.makeText(getContext(), ""+message, Toast.LENGTH_LONG).show();
-        Log.i("TAG_REGISTER",""+message);
-        mDialog.dismiss();
+        Toast.makeText(getContext(), "" + message, Toast.LENGTH_LONG).show();
+        Log.i("TAG_REGISTER", "" + message);
     }
 
     @Override
@@ -294,22 +369,22 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         } else if (data.equals("0")) {
             Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
         }
-        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+        ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
     }
 
     @Override
     public void onFollowFailure(String target) {
-        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+        ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
         //Toast.makeText(getContext(), "code  = "+requestCode, Toast.LENGTH_LONG).show();
-        if (requestCode == 1){
+        if (requestCode == 1) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        }else {
+        } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -339,21 +414,36 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         }
     }
 
-    private void performSocialLogin(RSRequestSocialLogin user){
+    private void performSocialLogin(RSRequestSocialLogin user) {
         this.user = user;
         signupPresenter.getPublicIP("json", RSConstants.SOCIAL_LOGIN);
     }
 
     @Override
-    public void showProgressBar() {
-        /*dialog = new ProgressDialog(getContext());
-        dialog.setMessage("loading ...");
-        dialog.show();*/
+    public void showProgressBar(String target) {
+        switch (target) {
+            case RSConstants.LOGIN:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                break;
+            case RSConstants.PUBLIC_IP:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                break;
+        }
     }
 
     @Override
-    public void hideProgressBar() {
-        //dialog.dismiss();
+    public void hideProgressBar(String target) {
+        switch (target) {
+            case RSConstants.LOGIN:
+                rsLoader.dismiss();
+                break;
+            case RSConstants.FOLLOW_ITEM:
+                rsLoader.dismiss();
+                break;
+            case RSConstants.SOCIAL_LOGIN:
+                rsLoader.dismiss();
+                break;
+        }
     }
 
     @Override
@@ -385,9 +475,14 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         signupPresenter.performSocialLogin(user);
     }
 
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+    }
+
     private RSRequestSocialLogin getData(JSONObject object) {
-        try{
-            URL profile_picture = new URL("https://graph.facebook.com/"+object.getString("id")+"/picture?width=250&height=250");
+        try {
+            URL profile_picture = new URL("https://graph.facebook.com/" + object.getString("id") + "/picture?width=250&height=250");
 
             RSAddress rsAddress = new RSAddress();
             rsAddress.setCity(object.getJSONObject("location").getString("name"));
@@ -402,16 +497,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             user.setLocation(rsAddress);
             user.setProvider(RSConstants.PROVIDER_FB);
 
-            Log.i("LOGIN_OBJECT",object.toString());
-            Log.i("LOGIN_EMAIL",object.getString("email"));
-            Log.i("LOGIN_BIRTHDAY",object.getString("birthday"));
-            Log.i("LOGIN_BIRTHDAY",object.getString("gender"));
-            Log.i("LOGIN_BIRTHDAY",object.getString("first_name"));
-            Log.i("LOGIN_BIRTHDAY",object.getString("last_name"));
-            Log.i("URL_PIX",""+profile_picture);
-            //Log.i("LOGIN_FRIENDS", object.getJSONObject("friends").getJSONObject("summary").getString("total_count"));
-            Log.i("LOGIN_FRIENDS", object.getJSONObject("location").getString("name"));
-
             return user;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -422,16 +507,16 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     }
 
     private void printKeyHash() {
-        try{
+        try {
             PackageInfo info = getContext().getPackageManager().getPackageInfo("com.steeringit.rankstop", PackageManager.GET_SIGNATURES);
-            for (Signature signature:info.signatures){
+            for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
                 Log.i("KEY_HASH", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
-        }catch(PackageManager.NameNotFoundException e){
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        }catch(NoSuchAlgorithmException e){
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }

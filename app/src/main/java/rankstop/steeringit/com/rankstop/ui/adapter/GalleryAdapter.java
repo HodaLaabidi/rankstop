@@ -1,7 +1,6 @@
 
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
-import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,12 +21,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     private List<Gallery> picsGallery = new ArrayList<>();
     private RecyclerViewClickListener listener;
-    private Context context;
 
-    public GalleryAdapter(List<Gallery> picsGallery, RecyclerViewClickListener listener, Context context) {
+    public GalleryAdapter(List<Gallery> picsGallery, RecyclerViewClickListener listener) {
         this.picsGallery = picsGallery;
         this.listener = listener;
-        this.context = context;
     }
 
     @Override

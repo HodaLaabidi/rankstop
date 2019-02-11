@@ -3,12 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <TextView
+    <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15sp"
-        android:fontFamily="@font/montserrat_semi_bold_font"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="3dp"
         android:textColor="@color/colorPrimaryDark"/>

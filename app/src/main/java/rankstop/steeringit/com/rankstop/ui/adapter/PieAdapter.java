@@ -1,9 +1,11 @@
 
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,10 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindColor;
+import butterknife.BindString;
+import butterknife.ButterKnife;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.session.RSSession;
@@ -31,12 +37,10 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
 
     private List<Item> items = new ArrayList<>();
     private ItemPieListener pieListener;
-    private Context context;
 
-    public PieAdapter(List<Item> items, ItemPieListener pieListener, Context context) {
+    public PieAdapter(List<Item> items, ItemPieListener pieListener) {
         this.items = items;
         this.pieListener = pieListener;
-        this.context = context;
     }
 
     @Override
@@ -72,9 +76,22 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
         private RSTVRegular itemName;
         private RSTVMedium countReviewsTV, countFollowersTV;
         private CheckBox likeIcon;
+        @BindString(R.string.score_of_5)
+        String scoreOf5;
+        @BindString(R.string.multiple_review)
+        String multipleReview;
+        @BindString(R.string.single_review)
+        String singleReview;
+        @BindString(R.string.multiple_follower)
+        String multipleFollower;
+        @BindString(R.string.single_follower)
+        String singleFollower;
+        @BindColor(R.color.colorPrimary)
+        int primaryColor;
 
         public ViewHolder(View itemView, ItemPieListener pieListener) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             this.pieListener = pieListener;
 
             pieChart = itemView.findViewById(R.id.pie_chart);
@@ -90,8 +107,17 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             this.item = item;
             // TODO set data to view
             itemName.setText(item.getItemDetails().getTitle());
-            countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " reviews");
-            countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " followers");
+
+            if (item.getNumberEval() > 1)
+                countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " "+multipleReview);
+            else
+                countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " "+singleReview);
+
+            if (item.getNumberFollows() > 1)
+                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " "+multipleFollower);
+            else
+                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " "+singleFollower);
+
             likeIcon.setVisibility(View.VISIBLE);
             likeIcon.setChecked(item.isFollow());
 
@@ -123,9 +149,12 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
 
             pieChart.setUsePercentValues(true);
             // define center text of the pie
-            pieChart.setCenterText(item.getScoreItem() + " \n out of 5");
-            pieChart.setCenterTextSize(17f);
-            pieChart.setCenterTextColor(context.getResources().getColor(R.color.colorPrimary));
+            pieChart.setCenterTextSize(14f);
+            SpannableString spannablecontent=new SpannableString(item.getScoreItem() + scoreOf5);
+            spannablecontent.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),0,item.getScoreItem().length(),0);
+            spannablecontent.setSpan(new RelativeSizeSpan(2f), 0,item.getScoreItem().length(), 0);
+            pieChart.setCenterText(spannablecontent);
+            pieChart.setCenterTextColor(primaryColor);
 
             // disable description of the pie
             pieChart.getDescription().setEnabled(false);
@@ -153,7 +182,7 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             // scale when select a pie slice
             dataSet.setSelectionShift(5f);
             // colors of the pie slices
-            dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, context);
+            dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, RankStop.getInstance());
             // initialize PieData
             PieData data = new PieData(dataSet);
             data.setValueTextSize(10f);

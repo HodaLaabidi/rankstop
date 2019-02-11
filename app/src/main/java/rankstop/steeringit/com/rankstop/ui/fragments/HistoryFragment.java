@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -22,6 +23,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindInt;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -29,6 +32,7 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserHistoryImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.History;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
@@ -39,6 +43,7 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemHistoryListener;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class HistoryFragment extends Fragment implements RSView.StandardView {
@@ -49,6 +54,16 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     RecyclerView historyListRV;
     @BindView(R.id.tv_no_history)
     RSTVMedium noHistoryTV;
+
+    @BindInt(R.integer.m_card_view)
+    int marginCardView;
+    @BindInt(R.integer.count_item_per_row)
+    int countItemPerRow;
+
+    @BindString(R.string.text_history)
+    String historyTitle;
+    @BindString(R.string.off_line)
+    String offlineMsg;
 
     private View rootView;
     private Unbinder unbinder;
@@ -101,9 +116,13 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
         userId = getArguments().getString(RSConstants.USER_ID);
         rsRequestListItem.setUserId(userId);
-        rsRequestListItem.setLang("fr");
+        rsRequestListItem.setLang(RankStop.getDeviceLanguage());
         rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
-        laodData(currentPage);
+        if (RSNetwork.isConnected()){
+            laodData(currentPage);
+        }else {
+            onOffLine();
+        }
         initItemsList();
 
     }
@@ -121,10 +140,10 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
             }
         };
         GridLayoutManager layoutManager = new GridLayoutManager(historyListRV.getContext(), 1);
-        historyAdapter = new HistoryAdapter(itemListener, getContext(), true);
+        historyAdapter = new HistoryAdapter(itemListener, true);
         historyListRV.setLayoutManager(layoutManager);
         historyListRV.setAdapter(historyAdapter);
-        historyListRV.addItemDecoration(new VerticalSpace(getResources().getInteger(R.integer.m_card_view), getResources().getInteger(R.integer.count_item_per_row)));
+        historyListRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
         scrollListener = new EndlessScrollListener(layoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -160,7 +179,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
     private void bindViews() {
         setFragmentActionListener((ContainerActivity)getActivity());
-        toolbar.setTitle(getResources().getString(R.string.text_history));
+        toolbar.setTitle(historyTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -234,12 +253,6 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     }
 
 
-
-
-
-
-
-
     @Override
     public void onSuccess(String target, Object data) {
         RSResponseHistory historyResponse = null;
@@ -306,5 +319,10 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
             case RSConstants.USER_HISTORY:
                 break;
         }
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
     }
 }

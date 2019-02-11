@@ -136,6 +136,9 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
             case RSConstants.FRAGMENT_MY_EVALS:
                 navigation.setSelectedItemId(R.id.navigation_my_evals);
                 break;
+            case RSConstants.FRAGMENT_ADD_ITEM:
+                navigation.setSelectedItemId(R.id.navigation_add_item);
+                break;
             case RSConstants.FRAGMENT_PROFILE:
                 navigation.setSelectedItemId(R.id.navigation_profile);
                 break;

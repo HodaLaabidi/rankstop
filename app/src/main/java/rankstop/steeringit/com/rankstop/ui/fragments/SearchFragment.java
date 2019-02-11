@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.gson.Gson;
@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindColor;
+import butterknife.BindInt;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -41,7 +43,10 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterSearchImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
@@ -56,6 +61,7 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.RxSearchObservable;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
@@ -69,12 +75,12 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     SearchView searchView;
 
     @BindView(R.id.tv_category_title)
-    TextView categoryTitleTV;
+    RSTVBold categoryTitleTV;
     @BindView(R.id.rv_categories)
     RecyclerView categoriesRV;
 
     @BindView(R.id.tv_items_title)
-    TextView itemsTitleTV;
+    RSTVBold itemsTitleTV;
     @BindView(R.id.rv_items)
     RecyclerView itemsRV;
 
@@ -83,6 +89,14 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
 
     @BindColor(R.color.colorLightGray)
     int colorGray;
+
+    @BindInt(R.integer.m_card_view)
+    int marginCardView;
+    @BindInt(R.integer.count_item_per_row)
+    int countItemPerRow;
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
     // variables
     private static SearchFragment instance;
     private RSPresenter.SearchPresenter searchPresenter;
@@ -92,6 +106,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     private RecyclerViewClickListener categoriesListener;
     // items fetched
     private List<ItemDetails> itemsFetched;
+    private List<Item> itemsList = new ArrayList<>();
     private ItemsFetchedAdapter itemsFetchedAdapter;
     private RecyclerViewClickListener itemsFetchedListener;
     // items fetched by category
@@ -146,6 +161,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
 
         rsRequestItemData = new RSRequestItemByCategory();
         rsRequestItemData.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
+        rsRequestItemData.setLang(RankStop.getDeviceLanguage());
         rsRequestItemData.setPage(currentPage);
         if (RSSession.isLoggedIn())
             rsRequestItemData.setUserId(RSSession.getCurrentUser().get_id());
@@ -170,14 +186,18 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsFetched.get(position).get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                if (RSNetwork.isConnected()) {
+                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsList.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                } else {
+                    onOffLine();
+                }
             }
         };
-        GridLayoutManager layoutManager = new GridLayoutManager(itemsByCategoryRV.getContext(), getResources().getInteger(R.integer.count_item_per_row));
-        itemsAdapter = new ItemsAdapter(itemsListener, getContext(), false);
+        GridLayoutManager layoutManager = new GridLayoutManager(itemsByCategoryRV.getContext(), countItemPerRow);
+        itemsAdapter = new ItemsAdapter(itemsListener, false);
         itemsByCategoryRV.setLayoutManager(layoutManager);
         itemsByCategoryRV.setAdapter(itemsAdapter);
-        itemsByCategoryRV.addItemDecoration(new VerticalSpace(getResources().getInteger(R.integer.m_card_view), getResources().getInteger(R.integer.count_item_per_row)));
+        itemsByCategoryRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
         itemsByCategoryRV.addOnScrollListener(new EndlessScrollListener(layoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -290,18 +310,26 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         categoriesFetched = new ArrayList<>();
         categoriesListener = (view, position) -> {
             currentCategory = categoriesFetched.get(position);
-            loadItems(rsRequestItemData);
+            if (RSNetwork.isConnected()) {
+                loadItems(rsRequestItemData);
+            }else {
+                onOffLine();
+            }
         };
-        dataFetchedAdapter = new DataFetchedAdapter(getContext(), categoriesListener);
+        dataFetchedAdapter = new DataFetchedAdapter(categoriesListener);
         categoriesRV.setLayoutManager(new GridLayoutManager(categoriesRV.getContext(), 1));
         categoriesRV.setAdapter(dataFetchedAdapter);
 
         // items fetched
         itemsFetched = new ArrayList<>();
         itemsFetchedListener = (view, position) -> {
-            fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsFetched.get(position).get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+            if (RSNetwork.isConnected()) {
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsFetched.get(position).get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+            }else {
+                onOffLine();
+            }
         };
-        itemsFetchedAdapter = new ItemsFetchedAdapter(getContext(), itemsFetchedListener);
+        itemsFetchedAdapter = new ItemsFetchedAdapter(itemsFetchedListener);
         itemsRV.setLayoutManager(new GridLayoutManager(itemsRV.getContext(), 1));
         itemsRV.setAdapter(itemsFetchedAdapter);
     }
@@ -318,7 +346,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     private Observable<RSResponseSearch> dataFromNetwork(final String query) {
 
         this.query = query;
-        searchPresenter.search(query);
+        searchPresenter.search(query, RankStop.getDeviceLanguage());
         itemsByCategoryRV.post(new Runnable() {
             @Override
             public void run() {
@@ -375,6 +403,13 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
 
     @Override
     public void onDestroyView() {
+
+        currentPage = 1;
+        isLastPage = false;
+        isLoading = false;
+        PAGES_COUNT = 1;
+        query = "";
+
         unbinder.unbind();
         instance = null;
         searchPresenter.onDestroy();
@@ -390,7 +425,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
                 break;
             case RSConstants.SEARCH_ITEMS:
                 RSResponseListingItem rsResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
-                //itemsList.addAll(rsResponse.getItems());
+                itemsList.addAll(rsResponse.getItems());
                 if (rsResponse.getCurrent() == 1) {
                     itemsAdapter.clear();
                     PAGES_COUNT = rsResponse.getPages();
@@ -461,5 +496,10 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     @Override
     public void hideProgressBar(String target) {
 
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
     }
 }

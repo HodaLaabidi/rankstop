@@ -48,7 +48,6 @@
 
                     <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                         android:id="@+id/tv_item_name"
-                        style="@style/montserrat_bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
@@ -65,7 +64,6 @@
 
                     <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                         android:id="@+id/tv_item_category"
-                        style="@style/montserrat_bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/mb_text_category"
@@ -74,7 +72,6 @@
 
                     <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                         android:id="@+id/tv_item_description"
-                        style="@style/montserrat_medium"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"

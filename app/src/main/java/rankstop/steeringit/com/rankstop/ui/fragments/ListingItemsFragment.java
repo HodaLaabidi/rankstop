@@ -23,6 +23,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindInt;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -44,11 +46,14 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class ListingItemsFragment extends Fragment implements RSView.StandardView {
 
     private View rootView;
+    private Unbinder unbinder;
+
     private String from;
     private RSPresenter.ItemPresenter itemPresenter;
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
@@ -67,11 +72,20 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     private int PAGES_COUNT = 1;
 
     // bind layout
-    private Unbinder unbinder;
     @BindView(R.id.rv_item_list)
     RecyclerView itemsListRV;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindString(R.string.alert_login_to_follow)
+    String alertLoginToFollowMsg;
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
+    @BindInt(R.integer.m_card_view)
+    int marginCardView;
+    @BindInt(R.integer.count_item_per_row)
+    int countItemPerRow;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,12 +105,12 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        bindViews();
         RSNavigationData navigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         from = navigationData.getSection();
+        bindViews();
         itemPresenter = new PresenterItemImpl(ListingItemsFragment.this);
         isLoggedIn = RSSession.isLoggedIn();
-        if (isLoggedIn){
+        if (isLoggedIn) {
             currentUser = RSSession.getCurrentUser();
             rsRequestListItem.setUserId(currentUser.get_id());
         }
@@ -119,14 +133,18 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsList.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                if (RSNetwork.isConnected()) {
+                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsList.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                }else {
+                    onOffLine();
+                }
             }
         };
-        GridLayoutManager layoutManager = new GridLayoutManager(itemsListRV.getContext(), getResources().getInteger(R.integer.count_item_per_row));
-        itemsAdapter = new ItemsAdapter(itemsListener, getContext(), true);
+        GridLayoutManager layoutManager = new GridLayoutManager(itemsListRV.getContext(), countItemPerRow);
+        itemsAdapter = new ItemsAdapter(itemsListener, true);
         itemsListRV.setLayoutManager(layoutManager);
         itemsListRV.setAdapter(itemsAdapter);
-        itemsListRV.addItemDecoration(new VerticalSpace(getResources().getInteger(R.integer.m_card_view), getResources().getInteger(R.integer.count_item_per_row)));
+        itemsListRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
         scrollListener = new EndlessScrollListener(layoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -163,7 +181,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
             else
                 itemPresenter.unfollowItem(rsFollow);
         } else {
-            openAlertDialog(fragmentContext.get().getResources().getString(R.string.alert_login_to_follow), itemId);
+            openAlertDialog(alertLoginToFollowMsg, itemId);
         }
     }
 
@@ -224,7 +242,29 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
 
     private void bindViews() {
         setFragmentActionListener((ContainerActivity) getActivity());
-        toolbar.setTitle(getResources().getString(R.string.text_page_created));
+        switch (from) {
+            case RSConstants.ITEM_CREATED:
+                toolbar.setTitle(getResources().getString(R.string.text_page_created));
+                break;
+            case RSConstants.ITEM_OWNED:
+                toolbar.setTitle(getResources().getString(R.string.text_page_owned));
+                break;
+            case RSConstants.ITEM_FOLLOWED:
+                toolbar.setTitle(getResources().getString(R.string.text_page_followed));
+                break;
+            case RSConstants.TOP_RANKED_ITEMS:
+                toolbar.setTitle(getResources().getString(R.string.text_page_top_ranked));
+                break;
+            case RSConstants.TOP_COMMENTED_ITEMS:
+                toolbar.setTitle(getResources().getString(R.string.text_page_top_commented));
+                break;
+            case RSConstants.TOP_VIEWED_ITEMS:
+                toolbar.setTitle(getResources().getString(R.string.text_page_top_viewed));
+                break;
+            case RSConstants.TOP_FOLLOWED_ITEMS:
+                toolbar.setTitle(getResources().getString(R.string.text_page_top_followed));
+                break;
+        }
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -289,7 +329,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         isLoading = false;
         PAGES_COUNT = 1;
 
-        Log.i("TAG_LISTING","on destroy view");
+        Log.i("TAG_LISTING", "on destroy view");
         instance = null;
         rootView = null;
         scrollListener = null;
@@ -297,7 +337,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         fragmentContext.clear();
         itemPresenter.onDestroyItem();
         itemsAdapter.clear();
-        itemsAdapter=null;
+        itemsAdapter = null;
         unbinder.unbind();
         super.onDestroyView();
     }
@@ -311,7 +351,6 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         }
 
 
-
         switch (target) {
             case RSConstants.TOP_RANKED_ITEMS:
             case RSConstants.TOP_COMMENTED_ITEMS:
@@ -320,12 +359,12 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
             case RSConstants.ITEM_CREATED:
             case RSConstants.ITEM_FOLLOWED:
             case RSConstants.ITEM_OWNED:
-                Log.i("TAG_CURRENT_PAGE",""+listingItemResponse.getCurrent());
+                Log.i("TAG_CURRENT_PAGE", "" + listingItemResponse.getCurrent());
                 itemsList.addAll(listingItemResponse.getItems());
-                if (listingItemResponse.getCurrent() == 1){
+                if (listingItemResponse.getCurrent() == 1) {
                     itemsAdapter.clear();
                     PAGES_COUNT = listingItemResponse.getPages();
-                }else if (listingItemResponse.getCurrent() > 1) {
+                } else if (listingItemResponse.getCurrent() > 1) {
                     itemsAdapter.removeLoadingFooter();
                     isLoading = false;
                 }
@@ -375,5 +414,10 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     @Override
     public void showMessage(String target, String message) {
 
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
     }
 }

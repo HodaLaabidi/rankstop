@@ -232,21 +232,19 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_semi_bold_font"
                         android:lineSpacingExtra="@dimen/line_space_extra"
                         android:text="@string/evals_title"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/text_size_title_profile" />
 
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                         android:id="@+id/tv_evals_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/mt_title_profile"
-                        android:fontFamily="@font/montserrat_medium_font"
                         android:lineSpacingExtra="@dimen/line_space_extra"
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/text_size_title_profile" />
@@ -259,21 +257,19 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_semi_bold_font"
                         android:lineSpacingExtra="@dimen/line_space_extra"
                         android:text="@string/comments_title"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/text_size_title_profile" />
 
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                         android:id="@+id/tv_comments_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/mt_title_profile"
-                        android:fontFamily="@font/montserrat_medium_font"
                         android:lineSpacingExtra="@dimen/line_space_extra"
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/text_size_title_profile" />
@@ -286,21 +282,19 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_semi_bold_font"
                         android:lineSpacingExtra="@dimen/line_space_extra"
                         android:text="@string/pics_title"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/text_size_title_profile" />
 
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                         android:id="@+id/tv_pix_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/mt_title_profile"
-                        android:fontFamily="@font/montserrat_medium_font"
                         android:lineSpacingExtra="@dimen/line_space_extra"
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/text_size_title_profile" />
@@ -328,7 +322,6 @@
                     android:enabled="false"
                     android:textSize="@dimen/home_section_title"
                     android:textAllCaps="false"
-                    android:fontFamily="@font/montserrat_bold_font"
                     android:text="@string/text_page_owned"
                     android:textColor="@color/colorPrimary" />
 
@@ -341,7 +334,6 @@
                     android:visibility="gone"
                     android:textSize="@dimen/home_section_title"
                     android:textAllCaps="false"
-                    android:fontFamily="@font/montserrat_bold_font"
                     android:text="@string/text_more" />
 
                 <android.support.v7.widget.RecyclerView
@@ -361,24 +353,26 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     android:visibility="gone">
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/p_text_no_item"
-                        android:text="Contact us if there is an item present your product, brand, shop, ..."/>
-                    <android.support.design.button.MaterialButton
+                        android:text="@string/contact_ownership"/>
+                    <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
+                        android:id="@+id/btn_contact_us"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textAllCaps="false"
-                        android:text="Contact us"/>
+                        android:text="@string/contact_us_ownership"/>
                 </LinearLayout>
 
                 <ProgressBar
                     android:id="@+id/progress_bar_page_owned"
                     android:layout_width="@dimen/width_progress_bar"
                     android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true" />
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -402,7 +396,6 @@
                     android:enabled="false"
                     android:textSize="@dimen/home_section_title"
                     android:textAllCaps="false"
-                    android:fontFamily="@font/montserrat_bold_font"
                     android:text="@string/text_page_created"
                     android:textColor="@color/colorPrimary" />
 
@@ -415,7 +408,6 @@
                     android:visibility="gone"
                     android:textSize="@dimen/home_section_title"
                     android:textAllCaps="false"
-                    android:fontFamily="@font/montserrat_bold_font"
                     android:text="@string/text_more" />
 
                 <android.support.v7.widget.RecyclerView
@@ -435,16 +427,17 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     android:visibility="gone">
-                    <TextView
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/p_text_no_item"
-                        android:text="If you want to evaluate any product, shop, brand, doctor and you don't find it in Rankstop data base, you can add it and evaluate it."/>
-                    <android.support.design.button.MaterialButton
+                        android:text="@string/no_item_created"/>
+                    <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
+                        android:id="@+id/btn_add_item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Add Item"
+                        android:text="@string/add_item"
                         android:textAllCaps="false"/>
                 </LinearLayout>
 
@@ -452,7 +445,8 @@
                     android:id="@+id/progress_bar_page_created"
                     android:layout_width="@dimen/width_progress_bar"
                     android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true" />
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -474,7 +468,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:fontFamily="@font/montserrat_bold_font"
                     android:textSize="@dimen/home_section_title"
                     android:textAllCaps="false"
                     android:text="@string/text_page_followed"
@@ -489,7 +482,6 @@
                     android:textSize="@dimen/home_section_title"
                     android:textAllCaps="false"
                     android:visibility="gone"
-                    android:fontFamily="@font/montserrat_bold_font"
                     android:text="@string/text_more" />
 
                 <android.support.v7.widget.RecyclerView
@@ -520,7 +512,8 @@
                     android:id="@+id/progress_bar_page_followed"
                     android:layout_width="@dimen/width_progress_bar"
                     android:layout_height="@dimen/width_progress_bar"
-                    android:layout_centerInParent="true" />
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"/>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>

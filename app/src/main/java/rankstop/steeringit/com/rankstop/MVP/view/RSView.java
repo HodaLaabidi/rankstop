@@ -7,8 +7,6 @@ public interface RSView {
 
     interface LoginView {
 
-        void loginValidations();
-
         void loginSuccess(Object o);
 
         void loginError();
@@ -17,14 +15,14 @@ public interface RSView {
 
         void onFollowFailure(String target);
 
-        void showProgressBar();
+        void showProgressBar(String target);
 
-        void hideProgressBar();
+        void hideProgressBar(String target);
+
+        void onOffLine();
     }
 
     interface RegisterView {
-
-        void registerValidations();
 
         void registerSuccess(Object o);
 
@@ -34,9 +32,9 @@ public interface RSView {
 
         void onFollowFailure(String target);
 
-        void showProgressBar();
+        void showProgressBar(String target);
 
-        void hideProgressBar();
+        void hideProgressBar(String target);
 
         void onAddressFetched(GeoPluginResponse response);
 
@@ -45,6 +43,8 @@ public interface RSView {
         void onPublicIPFetched(RSDeviceIP response);
 
         void onPublicIPFailed();
+
+        void onOffLine();
     }
 
     interface SignupView {
@@ -63,9 +63,9 @@ public interface RSView {
 
         void onFollowFailure(String target);
 
-        void showProgressBar();
+        void showProgressBar(String target);
 
-        void hideProgressBar();
+        void hideProgressBar(String target);
 
         void showMessage(String message);
 
@@ -76,6 +76,8 @@ public interface RSView {
         void onPublicIPFetched(RSDeviceIP response);
 
         void onPublicIPFailed();
+
+        void onOffLine();
     }
 
     interface StandardView {
@@ -91,6 +93,8 @@ public interface RSView {
         void hideProgressBar(String target);
 
         void showMessage(String target, String message);
+
+        void onOffLine();
     }
 
     interface UpdateItemView {
@@ -104,6 +108,8 @@ public interface RSView {
         void showProgressBar();
 
         void hideProgressBar();
+
+        void onOffLine();
     }
 
     interface UpdateProfileView {
@@ -123,6 +129,8 @@ public interface RSView {
         void hideProgressBar(String target);
 
         void showMessage(String target, String message);
+
+        void onOffLine();
     }
 
     interface AbuseView {
@@ -140,6 +148,8 @@ public interface RSView {
         void hideProgressBar(String target);
 
         void showMessage(String target, String message);
+
+        void onOffLine();
     }
 
     interface SearchView {
@@ -153,5 +163,7 @@ public interface RSView {
         void showProgressBar(String target);
 
         void hideProgressBar(String target);
+
+        void onOffLine();
     }
 }

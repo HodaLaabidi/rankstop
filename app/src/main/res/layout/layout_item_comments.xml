@@ -69,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:ellipsize="end"
+                android:maxLines="@integer/max_lines_comment"
                 android:textColor="@color/colorPrimary"
                 android:textSize="12sp" />
 

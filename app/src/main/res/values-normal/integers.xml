@@ -4,4 +4,5 @@
     <integer name="m_card_view">4</integer>
     <integer name="ems_criteria_name">4</integer>
     <integer name="count_item_per_row">2</integer>
+    <integer name="max_lines_comment">8</integer>
 </resources>

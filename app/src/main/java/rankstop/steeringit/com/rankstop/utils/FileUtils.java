@@ -253,7 +253,7 @@ public class FileUtils {
 
         // DocumentProvider
         if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            // LocalStorageProvider
+            // LocalStorageProvide
             if (isLocalStorageDocument(uri)) {
                 // The path is the id
                 return DocumentsContract.getDocumentId(uri);

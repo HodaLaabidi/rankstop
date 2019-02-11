@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                 android:id="@+id/item_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -27,7 +27,6 @@
                 android:layout_marginEnd="@dimen/me_item_title"
                 android:layout_marginBottom="@dimen/p_card_rv_item"
                 android:ellipsize="end"
-                android:fontFamily="@font/montserrat_semi_bold_font"
                 android:maxLines="1"
                 android:textColor="@color/colorTitleText"
                 android:textSize="@dimen/text_size_title_item_rv"
@@ -58,24 +57,22 @@
             android:layout_below="@id/item_info"
             android:weightSum="2">
 
-            <TextView
+            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_count_reviews"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:fontFamily="@font/montserrat_semi_bold_font"
                 android:maxLines="1"
                 android:textColor="@color/colorGray"
                 android:textSize="@dimen/text_size_number" />
 
-            <TextView
+            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_count_followers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:fontFamily="@font/montserrat_semi_bold_font"
                 android:gravity="end"
                 android:maxLines="1"
                 android:textColor="@color/colorGray"
@@ -106,32 +103,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
+                <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                     android:id="@+id/tv_note_eval_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:ellipsize="end"
-                    android:fontFamily="@font/montserrat_semi_bold_font"
                     android:maxLines="1"
                     android:text="Note Eval:"
                     android:layout_marginEnd="@dimen/pt_layout_my_eval"
                     android:textColor="@color/colorTitleText"
                     android:textSize="@dimen/text_size_title_item_rv" />
 
-                <TextView
+                <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                     android:id="@+id/tv_note_eval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:ellipsize="end"
                     android:layout_toEndOf="@id/tv_note_eval_text"
-                    android:fontFamily="@font/montserrat_semi_bold_font"
                     android:maxLines="1"
                     android:textColor="@color/colorTitleText"
                     android:textSize="@dimen/text_size_title_item_rv" />
 
-                <TextView
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                     android:id="@+id/tv_date_eval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

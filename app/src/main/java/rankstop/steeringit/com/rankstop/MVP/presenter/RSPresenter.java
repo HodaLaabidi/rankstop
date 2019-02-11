@@ -44,7 +44,7 @@ public interface RSPresenter {
     }
 
     interface ItemPresenter {
-        void loadItem(String itemId, String userId);
+        void loadItem(String itemId, String userId, String lang);
         void loadTopRankedItems(RSRequestListItem rsRequestListItem);
         void loadTopViewedItems(RSRequestListItem rsRequestListItem);
         void loadTopCommentedItems(RSRequestListItem rsRequestListItem);
@@ -53,7 +53,7 @@ public interface RSPresenter {
         void loadItemOwned(RSRequestListItem rsRequestListItem);
         void loadItemFollowed(RSRequestListItem rsRequestListItem);
         void loadMyEvals(RSRequestListItem rsRequestListItem);
-        void loadCategoriesList();
+        void loadCategoriesList(String lang);
         void followItem(RSFollow rsFollow);
         void unfollowItem(RSFollow rsFollow);
         void loadItemComments(RSRequestItemData rsRequestItemData);
@@ -66,7 +66,7 @@ public interface RSPresenter {
     }
 
     interface AddReviewPresenter {
-        void loadCategory(String id);
+        void loadCategory(String id, String lang);
         void addReview(RSAddReview rsAddReview);
         void updateReview(RSAddReview rsAddReview);
         void addItem(RSAddReview rsAddReview);
@@ -88,7 +88,7 @@ public interface RSPresenter {
     }
 
     interface SearchPresenter{
-        void search(String query);
+        void search(String query, String lang);
         void searchItems(RSRequestItemByCategory rsRequestSearch);
         void onDestroy();
     }

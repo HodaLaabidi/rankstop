@@ -65,9 +65,6 @@
             android:name=".ui.activities.ContainerActivity"
             android:label="@string/title_activity_container"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.activities.SearchActivity"
-            android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -81,10 +78,6 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ui.activities.MapsActivity"
-            android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.activities.TakePictureActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -93,15 +86,6 @@
         <activity
             android:name=".ui.activities.ItemGalleryActivity"
             android:screenOrientation="portrait" />
-        <!--
-        <receiver android:name=".utils.ConnectivityReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
-        -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

@@ -25,7 +25,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="2dp"
-            android:text="All"
+            android:text="@string/text_all"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
 
@@ -39,7 +39,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="2dp"
-            android:text="Good"
+            android:text="@string/text_good"
             android:textColor="@color/colorGreenPie"
             android:textSize="12sp" />
 
@@ -53,7 +53,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="2dp"
-            android:text="Neutral"
+            android:text="@string/text_neutral"
             android:textColor="@color/colorOrangePie"
             android:textSize="12sp" />
 
@@ -67,7 +67,7 @@
             android:button="@null"
             android:gravity="center"
             android:padding="2dp"
-            android:text="Bad"
+            android:text="@string/text_bad"
             android:textColor="@color/colorRedPie"
             android:textSize="12sp" />
     </RadioGroup>
@@ -84,11 +84,11 @@
             android:visibility="gone"
             android:minHeight="170dp">
 
-            <TextView
+            <rankstop.steeringit.com.rankstop.customviews.RSTVSemiBold
                 android:id="@+id/title_my_com"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="My comments:"
+                android:text="@string/my_comments"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
                 android:layout_marginTop="@dimen/m_activity"
@@ -109,14 +109,13 @@
                 android:visibility="gone"
                 android:layout_centerInParent="true"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/tv_add_comments"
+                <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/add_comments"
                     android:gravity="center"/>
 
-                <android.support.design.button.MaterialButton
+                <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
                     android:id="@+id/btn_add_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -128,18 +127,19 @@
                 android:id="@+id/mc_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
+            <rankstop.steeringit.com.rankstop.customviews.RSTVSemiBold
                 android:id="@+id/title_other_com"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Other comments:"
+                android:text="@string/other_comments"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
                 android:layout_marginTop="@dimen/m_activity"
@@ -157,7 +157,8 @@
                 android:id="@+id/main_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
         </RelativeLayout>
     </LinearLayout>
 

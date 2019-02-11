@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -27,10 +24,19 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindInt;
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAddReviewImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 import rankstop.steeringit.com.rankstop.data.model.db.Evaluation;
@@ -45,25 +51,111 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.CriteriaEvalListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.data.model.db.Criteria;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
 import rankstop.steeringit.com.rankstop.utils.Helpers;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class AddReviewFragment extends Fragment implements RSView.StandardView {
 
-    private MaterialButton takePicBtn, addReviewBtn;
-    private RecyclerView recyclerViewEvalCriteria, recyclerViewPix;
-    private TextInputEditText commentInput;
+    @BindView(R.id.recycler_view_eval_criteria)
+    RecyclerView recyclerViewEvalCriteria;
 
-    private ReviewPixAdapter reviewPixAdapter;
-    private TextView addPixTV;
-    private Toolbar toolbar;
+    @BindView(R.id.recycler_view_pix)
+    RecyclerView recyclerViewPix;
+
+    @BindView(R.id.input_comment)
+    RSETMedium commentInput;
+
+    @BindView(R.id.tv_add_pix)
+    RSTVMedium addPixTV;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindString(R.string.no_value_changed)
+    String noValueChanged;
+
+    @BindString(R.string.no_eval_message)
+    String noEvalMessage;
+    @BindString(R.string.title_add_review)
+    String addReviewTitle;
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
+    @BindInt(R.integer.m_card_view)
+    int marginCardView;
+    @BindInt(R.integer.max_length_500)
+    int maxLength500;
+
+    @OnClick(R.id.btn_take_pic)
+    void takePic() {
+        startActivityForResult(new Intent(getContext(), TakePictureActivity.class), RSConstants.REQUEST_CODE);
+    }
+
+    @OnClick(R.id.btn_add_review)
+    void addReview() {
+        if (RSNetwork.isConnected()) {
+            if (validForm()) {
+                rsAddReview.setComment(commentInput.getText().toString().trim());
+                rsAddReview.setUserId(userId);
+                rsAddReview.setEvalCri(criteriaEvalList);
+                rsAddReview.setFiles(listPics);
+
+                if (rsAddReview.getItemId() == null) {
+                    // add item with review
+                    addReviewPresenter.addItem(rsAddReview);
+                } else {
+                    if (isEvalChanged(myCriteriaEvalList, criteriaEvalList)) {
+                        // Modification de l'item lors ajout d'un commentaire ou photos sans changer l'évaluation des critères
+                        addReviewPresenter.addReview(rsAddReview);
+                    } else {
+                        //update review
+                        if (rsAddReview.getComment().equals("") && listPics.size() == 0) {
+                            Toast.makeText(getContext(), noValueChanged, Toast.LENGTH_LONG).show();
+                        } else {
+                            // Modification de l'item lors de l'ajout d'un commentaire ou de photos sans modifier l'évaluation des critères
+                            rsAddReview.setEvalId(myEval.get_id());
+                            addReviewPresenter.updateReview(rsAddReview);
+                        }
+                    }
+                }
+            }
+        }else {
+            onOffLine();
+        }
+    }
+
+    private boolean validForm() {
+        int x = 0;
+
+        if (commentInput.getText().toString().trim().length() > maxLength500) {
+            x++;
+        }
+        if (!isItemEvaluated(criteriaEvalList)) {
+            Toast.makeText(getContext(), noEvalMessage, Toast.LENGTH_LONG).show();
+        }
+        return x == 0;
+    }
+
+    @BindString(R.string.loading_msg)
+    String loadingMsg;
+    private RSLoader rsLoader;
+
+    private void createLoader() {
+        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader.setCancelable(false);
+    }
+
+    private Unbinder unbinder;
     private View rootView;
 
     private List<Uri> listPics = new ArrayList<>();
     private List<CriteriaEval> criteriaEvalList, myCriteriaEvalList;
     private String userId;
+    private ReviewPixAdapter reviewPixAdapter;
 
     private RSPresenter.AddReviewPresenter addReviewPresenter;
     private RSAddReview rsAddReview;
@@ -81,6 +173,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_add_review, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
@@ -96,47 +189,11 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
 
         loadCategoriesList(rsAddReview.getCategoryId());
 
-        toolbar.setTitle(getResources().getString(R.string.title_add_review));
+        toolbar.setTitle(addReviewTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initPixList();
-
-        takePicBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getContext(), TakePictureActivity.class), RSConstants.REQUEST_CODE);
-            }
-        });
-
-        addReviewBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                rsAddReview.setComment(commentInput.getText().toString());
-                rsAddReview.setUserId(userId);
-                rsAddReview.setEvalCri(criteriaEvalList);
-                rsAddReview.setFiles(listPics);
-
-                if (rsAddReview.getItemId() == null) {
-                    // add item with review
-                    addReviewPresenter.addItem(rsAddReview);
-                } else {
-                    if (isEvalChanged(myCriteriaEvalList, criteriaEvalList)) {
-                        // add review
-                        addReviewPresenter.addReview(rsAddReview);
-                    } else {
-                        //update review
-                        if (rsAddReview.getComment().equals("") && listPics.size() == 0){
-                            Toast.makeText(getContext(), "you don't make any change", Toast.LENGTH_LONG).show();
-                        }else {
-                            rsAddReview.setEvalId(myEval.get_id());
-                            addReviewPresenter.updateReview(rsAddReview);
-                        }
-                    }
-                }
-            }
-        });
 
     }
 
@@ -148,22 +205,26 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
         return false;
     }
 
+    private boolean isItemEvaluated(List<CriteriaEval> criteriaEvalList) {
+        int somme = 0;
+        for (int i = 0; i < myCriteriaEvalList.size(); i++) {
+            if (criteriaEvalList.get(i).getNote() != -1)
+                somme++;
+        }
+        return somme >= 3;
+    }
+
     private void loadCategoriesList(String id) {
-        addReviewPresenter.loadCategory(id);
+        if (RSNetwork.isConnected())
+            addReviewPresenter.loadCategory(id, RankStop.getDeviceLanguage());
+        else
+            onOffLine();
     }
 
     private void bindViews() {
-
         addReviewPresenter = new PresenterAddReviewImpl(AddReviewFragment.this, getContext());
-        recyclerViewEvalCriteria = rootView.findViewById(R.id.recycler_view_eval_criteria);
-        recyclerViewPix = rootView.findViewById(R.id.recycler_view_pix);
-        takePicBtn = rootView.findViewById(R.id.btn_take_pic);
-        addReviewBtn = rootView.findViewById(R.id.btn_add_review);
-        commentInput = rootView.findViewById(R.id.input_comment);
-        addPixTV = rootView.findViewById(R.id.tv_add_pix);
-        toolbar = rootView.findViewById(R.id.toolbar);
-
         setFragmentActionListener((ContainerActivity) getActivity());
+        createLoader();
     }
 
     private void initCriteriasList(Category category) {
@@ -179,7 +240,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
                 if (myEval.get_id() != null) {
                     CriteriaEval criteriaEval = findCriteriaNote(myEval, criteria.get_id());
                     if (criteriaEval == null) {
-                        myCriteriaEvalList.add(new CriteriaEval(-1, 1, criteria.get_id(), criteria.getName()));
+                        myCriteriaEvalList.add(new CriteriaEval(-1, 1, criteria.get_id(), criteria.getName().toString()));
                         criteriaEvalList.add(new CriteriaEval(-1, 1, criteria.get_id()));
                     } else {
                         myCriteriaEvalList.add(
@@ -187,7 +248,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
                                         criteriaEval.getNote(),
                                         criteriaEval.getCoefficient(),
                                         criteria.get_id(),
-                                        criteria.getName()));
+                                        criteria.getName().toString()));
                         criteriaEvalList.add(
                                 new CriteriaEval(
                                         criteriaEval.getNote(),
@@ -195,11 +256,11 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
                                         criteria.get_id()));
                     }
                 } else {
-                    myCriteriaEvalList.add(new CriteriaEval(-1, 1, criteria.get_id(), criteria.getName()));
+                    myCriteriaEvalList.add(new CriteriaEval(-1, 1, criteria.get_id(), criteria.getName().toString()));
                     criteriaEvalList.add(new CriteriaEval(-1, 1, criteria.get_id()));
                 }
             } else {
-                myCriteriaEvalList.add(new CriteriaEval(-1, 1, criteria.get_id(), criteria.getName()));
+                myCriteriaEvalList.add(new CriteriaEval(-1, 1, criteria.get_id(), criteria.getName().toString()));
                 criteriaEvalList.add(new CriteriaEval(-1, 1, criteria.get_id()));
             }
         }
@@ -218,7 +279,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
             }
         };
         recyclerViewEvalCriteria.setLayoutManager(new LinearLayoutManager(recyclerViewEvalCriteria.getContext()));
-        recyclerViewEvalCriteria.setAdapter(new EvalCriteriasAdapter(myCriteriaEvalList, listener, getContext()));
+        recyclerViewEvalCriteria.setAdapter(new EvalCriteriasAdapter(myCriteriaEvalList, listener));
         recyclerViewEvalCriteria.addItemDecoration(new VerticalSpace(10, 1));
 
     }
@@ -240,10 +301,10 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
             if (listPics.size() == 0)
                 addPixTV.setVisibility(View.VISIBLE);
         };
-        reviewPixAdapter = new ReviewPixAdapter(listPics, listener, getContext());
+        reviewPixAdapter = new ReviewPixAdapter(listPics, listener);
         recyclerViewPix.setLayoutManager(new LinearLayoutManager(recyclerViewPix.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewPix.setAdapter(reviewPixAdapter);
-        recyclerViewPix.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
+        recyclerViewPix.addItemDecoration(new HorizontalSpace(marginCardView));
         recyclerViewPix.setNestedScrollingEnabled(false);
     }
 
@@ -254,7 +315,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
                 byte[] chartData = data.getByteArrayExtra("byte_array");
                 if (listPics.size() == 0)
                     addPixTV.setVisibility(View.GONE);
-                Log.i("TAG_PIX_URI",""+Helpers.getImageUri(chartData));
+                Log.i("TAG_PIX_URI", "" + Helpers.getImageUri(chartData));
                 listPics.add(Helpers.getImageUri(chartData));
                 reviewPixAdapter.notifyDataSetChanged();
             }
@@ -324,6 +385,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
         rootView = null;
         listPics.clear();
         addReviewPresenter.onDestroy();
+        unbinder.unbind();
         super.onDestroyView();
     }
 
@@ -336,6 +398,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
                 if (from.equals(RSConstants.FRAGMENT_SIGN_UP)) {
                     addReviewPresenter.loadMyEval(userId, rsAddReview.getItemId());
                 } else {
+                    rsLoader.dismiss();
                     initCriteriasList(currentCategory);
                 }
                 break;
@@ -382,17 +445,45 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void showProgressBar(String target) {
-
+        switch (target) {
+            case RSConstants.LOAD_CATEGORY:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                break;
+            case RSConstants.LOAD_MY_EVAL:
+                break;
+            case RSConstants.ADD_REVIEW:
+            case RSConstants.UPDATE_REVIEW:
+            case RSConstants.ADD_ITEM:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                break;
+        }
     }
 
     @Override
     public void hideProgressBar(String target) {
-
+        switch (target) {
+            case RSConstants.LOAD_CATEGORY:
+                rsLoader.dismiss();
+                break;
+            case RSConstants.LOAD_MY_EVAL:
+                rsLoader.dismiss();
+                break;
+            case RSConstants.ADD_REVIEW:
+            case RSConstants.UPDATE_REVIEW:
+            case RSConstants.ADD_ITEM:
+                rsLoader.dismiss();
+                break;
+        }
     }
 
     @Override
     public void showMessage(String target, String message) {
         //Toast.makeText(getContext(), ""+ message, Toast.LENGTH_LONG).show();
         //commentInput.setText(message);
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
     }
 }

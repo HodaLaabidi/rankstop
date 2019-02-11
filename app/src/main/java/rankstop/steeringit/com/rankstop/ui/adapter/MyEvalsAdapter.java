@@ -1,17 +1,18 @@
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -22,7 +23,14 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindColor;
+import butterknife.BindInt;
+import butterknife.BindString;
+import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Evaluation;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.session.RSSession;
@@ -34,15 +42,13 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
 
     private List<Item> items = new ArrayList<>();
     private ItemPieListener pieListener;
-    private Context context;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public MyEvalsAdapter(ItemPieListener pieListener, Context context) {
+    public MyEvalsAdapter(ItemPieListener pieListener) {
         this.pieListener = pieListener;
-        this.context = context;
         items = new ArrayList<>();
     }
 
@@ -118,14 +124,31 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
         public Item item;
         private ItemPieListener pieListener;
         private PieChart pieChart;
-        private TextView itemName, countReviewsTV, noteEvalTV, dateEvalTV, countFollowersTV;
+        private RSTVBold itemName, noteEvalTV;
+        private RSTVMedium dateEvalTV, countReviewsTV, countFollowersTV;
         private CheckBox likeIcon;
         private DisabledRecyclerView recyclerViewCriteriaEvaluated;
 
-        private MyEvalCriteriaAdapter myEvalCriteriaAdapter = new MyEvalCriteriaAdapter(context);
+        private MyEvalCriteriaAdapter myEvalCriteriaAdapter = new MyEvalCriteriaAdapter();
+
+        @BindString(R.string.score_of_5)
+        String scoreOf5;
+        @BindString(R.string.multiple_review)
+        String multipleReview;
+        @BindString(R.string.single_review)
+        String singleReview;
+        @BindString(R.string.multiple_follower)
+        String multipleFollower;
+        @BindString(R.string.single_follower)
+        String singleFollower;
+        @BindColor(R.color.colorPrimary)
+        int primaryColor;
+        @BindInt(R.integer.m_card_view)
+        int marginCardView;
 
         public ViewHolder(@NonNull View itemView, ItemPieListener pieListener) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             this.pieListener = pieListener;
 
             pieChart = itemView.findViewById(R.id.pie_chart);
@@ -138,7 +161,7 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             recyclerViewCriteriaEvaluated = itemView.findViewById(R.id.recycler_view_criteria_evaluated);
             if (recyclerViewCriteriaEvaluated != null) {
                 recyclerViewCriteriaEvaluated.setLayoutManager(new GridLayoutManager(recyclerViewCriteriaEvaluated.getContext(), 1));
-                recyclerViewCriteriaEvaluated.addItemDecoration(new VerticalSpace(context.getResources().getInteger(R.integer.m_card_view), 1));
+                recyclerViewCriteriaEvaluated.addItemDecoration(new VerticalSpace(marginCardView, 1));
                 recyclerViewCriteriaEvaluated.setNestedScrollingEnabled(false);
                 recyclerViewCriteriaEvaluated.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
                     @Override
@@ -155,7 +178,7 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
                         return false;
                     }
                 });
-                myEvalCriteriaAdapter = new MyEvalCriteriaAdapter(context);
+                myEvalCriteriaAdapter = new MyEvalCriteriaAdapter();
                 recyclerViewCriteriaEvaluated.setAdapter(myEvalCriteriaAdapter);
             }
             itemView.setOnClickListener(this);
@@ -165,8 +188,15 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             this.item = item;
             // TODO set data to view
             itemName.setText(item.getItemDetails().getTitle());
-            countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " reviews");
-            countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " followers");
+            if (item.getNumberEval() > 1)
+                countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " "+multipleReview);
+            else
+                countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " "+singleReview);
+
+            if (item.getNumberFollows() > 1)
+                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " "+multipleFollower);
+            else
+                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " "+singleFollower);
             likeIcon.setChecked(item.isFollow());
 
 
@@ -210,9 +240,12 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
 
             pieChart.setUsePercentValues(true);
             // define center text of the pie
-            pieChart.setCenterText(item.getScoreItem() + " \n out of 5");
-            pieChart.setCenterTextSize(17f);
-            pieChart.setCenterTextColor(context.getResources().getColor(R.color.colorPrimary));
+            pieChart.setCenterTextSize(14f);
+            SpannableString spannablecontent=new SpannableString(item.getScoreItem() + scoreOf5);
+            spannablecontent.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),0,item.getScoreItem().length(),0);
+            spannablecontent.setSpan(new RelativeSizeSpan(2f), 0,item.getScoreItem().length(), 0);
+            pieChart.setCenterText(spannablecontent);
+            pieChart.setCenterTextColor(primaryColor);
 
             // disable description of the pie
             pieChart.getDescription().setEnabled(false);
@@ -240,7 +273,7 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             // scale when select a pie slice
             dataSet.setSelectionShift(5f);
             // colors of the pie slices
-            dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, context);
+            dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, RankStop.getInstance());
             // initialize PieData
             PieData data = new PieData(dataSet);
             data.setValueTextSize(10f);

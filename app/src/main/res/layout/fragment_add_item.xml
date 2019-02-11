@@ -1,17 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/rs_toolbar"/>
+    <include layout="@layout/rs_toolbar" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/width_progress_bar"
+        android:layout_height="@dimen/width_progress_bar"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/layout_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+            android:id="@+id/tv_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/connectez_vous" />
+
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
+            android:id="@+id/btn_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/connect"
+            android:textAllCaps="false" />
+    </LinearLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,9 +56,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/max_length_50"
+                app:counterOverflowTextAppearance="@style/counterOverride"
+                app:counterTextAppearance="@style/counterText">
 
-                <android.support.design.widget.TextInputEditText
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -39,9 +75,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/max_length_500"
+                app:counterOverflowTextAppearance="@style/counterOverride"
+                app:counterTextAppearance="@style/counterText">
 
-                <android.support.design.widget.TextInputEditText
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -68,7 +108,7 @@
                     android:background="@drawable/categorie_bg"
                     android:spinnerMode="dialog" />
 
-                <TextView
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -93,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp">
 
-                    <android.support.design.widget.TextInputEditText
+                    <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                         android:id="@+id/input_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -109,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp">
 
-                    <android.support.design.widget.TextInputEditText
+                    <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                         android:id="@+id/input_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -126,7 +166,7 @@
                     android:layout_height="@dimen/height_map_add_item" />
             </LinearLayout>
 
-            <android.support.design.button.MaterialButton
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
                 android:id="@+id/btn_add_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -135,4 +175,4 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

@@ -27,32 +27,9 @@
         <item name="android:textColorPrimary">@android:color/white</item>
     </style>
     <!-- *************************fonts style***************************** -->
-    <style name="montserrat" parent="@android:style/TextAppearance.Small">
-        <item name="android:fontFamily">@font/montserrat_font</item>
-    </style>
-
-    <style name="montserrat_bold" parent="@android:style/TextAppearance.Small">
-        <item name="android:fontFamily">@font/montserrat_bold_font</item>
-    </style>
 
     <style name="montserrat_semi_bold" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/montserrat_semi_bold_font</item>
-    </style>
-
-    <style name="montserrat_medium" parent="@android:style/TextAppearance.Small">
-        <item name="android:fontFamily">@font/montserrat_medium_font</item>
-    </style>
-
-    <style name="montserrat_black" parent="@android:style/TextAppearance.Small">
-        <item name="android:fontFamily">@font/montserrat_black_font</item>
-    </style>
-
-    <style name="montserrat_light" parent="@android:style/TextAppearance.Small">
-        <item name="android:fontFamily">@font/montserrat_light_font</item>
-    </style>
-
-    <style name="montserrat_thin" parent="@android:style/TextAppearance.Small">
-        <item name="android:fontFamily">@font/montserrat_thin_font</item>
     </style>
 
     <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">

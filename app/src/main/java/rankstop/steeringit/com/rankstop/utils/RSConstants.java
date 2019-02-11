@@ -76,6 +76,7 @@ public class RSConstants {
     public static final String DELETE_COMMENT = "delete comment";
     public static final String DELETE_PICTURE = "delete picture";
     public static final String RS_CONTACT = "rs contact";
+    public static final String PUBLIC_IP = "public ip";
     public static String _ID = "id";
 
     // parameters

@@ -9,6 +9,7 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.Urls;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,33 +27,36 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadItem(String itemId, String userId) {
-        if (standardView != null) {
-            standardView.showProgressBar(RSConstants.ONE_ITEM);
-            callLoadItem = WebService.getInstance().getApi().loadItem(itemId, userId);
-            callLoadItem.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.ONE_ITEM, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.ONE_ITEM);
-                    }
-                    standardView.hideProgressBar(RSConstants.ONE_ITEM);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!call.isCanceled())
+    public void loadItem(String itemId, String userId, String lang) {
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                standardView.showProgressBar(RSConstants.ONE_ITEM);
+                callLoadItem = WebService.getInstance().getApi().loadItem(itemId, userId, lang);
+                callLoadItem.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.ONE_ITEM, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.ONE_ITEM);
+                        }
                         standardView.hideProgressBar(RSConstants.ONE_ITEM);
-                }
-            });
+                    }
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!call.isCanceled())
+                            standardView.hideProgressBar(RSConstants.ONE_ITEM);
+                    }
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void loadTopRankedItems(RSRequestListItem rsRequestListItem) {
-
         if (standardView != null) {
             callTopRankedItems = WebService.getInstance().getApi().loadTopRankedItems(rsRequestListItem);
             standardView.showProgressBar(RSConstants.TOP_RANKED_ITEMS);
@@ -228,261 +232,303 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
     @Override
     public void loadMyEvals(RSRequestListItem rsRequestListItem) {
-        if (standardView != null) {
-            standardView.showProgressBar(RSConstants.MY_EVALS);
-            callMyEvals = WebService.getInstance().getApi().loadMyEvals(rsRequestListItem);
-            callMyEvals.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.MY_EVALS, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.MY_EVALS);
-                    }
-                    standardView.hideProgressBar(RSConstants.MY_EVALS);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callMyEvals.isCanceled())
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                standardView.showProgressBar(RSConstants.MY_EVALS);
+                callMyEvals = WebService.getInstance().getApi().loadMyEvals(rsRequestListItem);
+                callMyEvals.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.MY_EVALS, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onError(RSConstants.MY_EVALS);
+                        }
                         standardView.hideProgressBar(RSConstants.MY_EVALS);
-                }
-            });
+                    }
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callMyEvals.isCanceled()) {
+                            standardView.onFailure(RSConstants.MY_EVALS);
+                            standardView.hideProgressBar(RSConstants.MY_EVALS);
+                        }
+                    }
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
-    public void loadCategoriesList() {
-        if (standardView != null) {
-            //standardView.showProgressBar(RSConstants.LOAD_CATEGORIES);
-            callCategoriesList = WebService.getInstance().getApi().loadCategoriesList();
-            callCategoriesList.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.LOAD_CATEGORIES, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.LOAD_CATEGORIES);
+    public void loadCategoriesList(String lang) {
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                standardView.showProgressBar(RSConstants.LOAD_CATEGORIES);
+                callCategoriesList = WebService.getInstance().getApi().loadCategoriesList(lang);
+                callCategoriesList.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.LOAD_CATEGORIES, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.LOAD_CATEGORIES);
+                        }
+                        standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
                     }
-                    //standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
-                }
 
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callCategoriesList.isCanceled()) {
-                        //standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callCategoriesList.isCanceled()) {
+                            standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
+                        }
                     }
-                }
-            });
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void followItem(RSFollow rsFollow) {
-        if (standardView != null) {
-            callFollowItem = WebService.getInstance().getApi().followItem(rsFollow);
-            callFollowItem.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.FOLLOW_ITEM, "1");
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onSuccess(RSConstants.FOLLOW_ITEM, "0");
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                callFollowItem = WebService.getInstance().getApi().followItem(rsFollow);
+                callFollowItem.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.FOLLOW_ITEM, "1");
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onSuccess(RSConstants.FOLLOW_ITEM, "0");
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callFollowItem.isCanceled()) {
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callFollowItem.isCanceled()) {
 
+                        }
                     }
-                }
-            });
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void unfollowItem(RSFollow rsFollow) {
-        if (standardView != null) {
-            callUnfollowItem = WebService.getInstance().getApi().unfollowItem(rsFollow);
-            callUnfollowItem.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.UNFOLLOW_ITEM, null);
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.UNFOLLOW_ITEM);
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                callUnfollowItem = WebService.getInstance().getApi().unfollowItem(rsFollow);
+                callUnfollowItem.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.UNFOLLOW_ITEM, null);
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.UNFOLLOW_ITEM);
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callUnfollowItem.isCanceled()) {
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callUnfollowItem.isCanceled()) {
+                        }
                     }
-                }
-            });
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void loadItemComments(RSRequestItemData rsRequestItemData) {
-        if (standardView != null) {
-            standardView.showProgressBar(RSConstants.ITEM_COMMENTS);
-            callItemComments = WebService.getInstance().getApi().loadItemComments(rsRequestItemData);
-            callItemComments.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.ITEM_COMMENTS, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.ITEM_COMMENTS);
-                    }
-                    standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callItemComments.isCanceled()) {
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                standardView.showProgressBar(RSConstants.ITEM_COMMENTS);
+                callItemComments = WebService.getInstance().getApi().loadItemComments(rsRequestItemData);
+                callItemComments.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.ITEM_COMMENTS, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.ITEM_COMMENTS);
+                        }
                         standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
-                        standardView.showMessage(RSConstants.ITEM_COMMENTS, "failure com");
                     }
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callItemComments.isCanceled()) {
+                            standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
+                            standardView.showMessage(RSConstants.ITEM_COMMENTS, "failure com");
+                        }
+                    }
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void loadItemCommentsByUser(RSRequestItemData rsRequestItemData) {
-        if (standardView != null) {
-            standardView.showProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
-            callItemCommentsByUser = WebService.getInstance().getApi().loadItemCommentsByUser(rsRequestItemData);
-            callItemCommentsByUser.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.ITEM_COMMENTS_BY_USER, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.ITEM_COMMENTS_BY_USER);
-                    }
-                    standardView.hideProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callItemCommentsByUser.isCanceled()) {
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                standardView.showProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
+                callItemCommentsByUser = WebService.getInstance().getApi().loadItemCommentsByUser(rsRequestItemData);
+                callItemCommentsByUser.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.ITEM_COMMENTS_BY_USER, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.ITEM_COMMENTS_BY_USER);
+                        }
                         standardView.hideProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
-                        standardView.showMessage(RSConstants.ITEM_COMMENTS_BY_USER, "failure com");
                     }
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callItemCommentsByUser.isCanceled()) {
+                            standardView.hideProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
+                            standardView.showMessage(RSConstants.ITEM_COMMENTS_BY_USER, "failure com");
+                        }
+                    }
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void loadItemPix(RSRequestItemData rsRequestItemData) {
-        if (standardView != null) {
-            standardView.showProgressBar(RSConstants.ITEM_PIX);
-            callItemPix = WebService.getInstance().getApi().loadItemPix(rsRequestItemData);
-            callItemPix.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.ITEM_PIX, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.ITEM_PIX);
-                    }
-                    standardView.hideProgressBar(RSConstants.ITEM_PIX);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callItemPix.isCanceled()) {
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                standardView.showProgressBar(RSConstants.ITEM_PIX);
+                callItemPix = WebService.getInstance().getApi().loadItemPix(rsRequestItemData);
+                callItemPix.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.ITEM_PIX, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.ITEM_PIX);
+                        }
                         standardView.hideProgressBar(RSConstants.ITEM_PIX);
-                        standardView.showMessage(RSConstants.ITEM_PIX, "failure");
                     }
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callItemPix.isCanceled()) {
+                            standardView.hideProgressBar(RSConstants.ITEM_PIX);
+                            standardView.showMessage(RSConstants.ITEM_PIX, "failure");
+                        }
+                    }
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void loadItemPixByUser(RSRequestItemData rsRequestItemData) {
-        if (standardView != null) {
-            standardView.showProgressBar(RSConstants.ITEM_PIX_BY_USER);
-            callItemPixByUser = WebService.getInstance().getApi().loadItemPixByUser(rsRequestItemData);
-            callItemPixByUser.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.ITEM_PIX_BY_USER, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.ITEM_PIX_BY_USER);
-                    }
-                    standardView.hideProgressBar(RSConstants.ITEM_PIX_BY_USER);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callItemPixByUser.isCanceled()) {
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                standardView.showProgressBar(RSConstants.ITEM_PIX_BY_USER);
+                callItemPixByUser = WebService.getInstance().getApi().loadItemPixByUser(rsRequestItemData);
+                callItemPixByUser.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.ITEM_PIX_BY_USER, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.ITEM_PIX_BY_USER);
+                        }
                         standardView.hideProgressBar(RSConstants.ITEM_PIX_BY_USER);
-                        standardView.showMessage(RSConstants.ITEM_PIX_BY_USER, "failure");
                     }
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callItemPixByUser.isCanceled()) {
+                            standardView.hideProgressBar(RSConstants.ITEM_PIX_BY_USER);
+                            standardView.showMessage(RSConstants.ITEM_PIX_BY_USER, "failure");
+                        }
+                    }
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void deleteComment(String commentId, String itemId) {
-        if (standardView != null) {
-            standardView.showProgressBar(RSConstants.DELETE_COMMENT);
-            callDeleteComment = WebService.getInstance().getApi().deleteComment(commentId, itemId);
-            callDeleteComment.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.DELETE_COMMENT, commentId);
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.DELETE_COMMENT);
-                    }
-                    standardView.hideProgressBar(RSConstants.DELETE_COMMENT);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callDeleteComment.isCanceled()) {
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                standardView.showProgressBar(RSConstants.DELETE_COMMENT);
+                callDeleteComment = WebService.getInstance().getApi().deleteComment(commentId, itemId);
+                callDeleteComment.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.DELETE_COMMENT, commentId);
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.DELETE_COMMENT);
+                        }
                         standardView.hideProgressBar(RSConstants.DELETE_COMMENT);
-                        standardView.showMessage(RSConstants.DELETE_COMMENT, "failure");
                     }
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callDeleteComment.isCanceled()) {
+                            standardView.hideProgressBar(RSConstants.DELETE_COMMENT);
+                            standardView.showMessage(RSConstants.DELETE_COMMENT, "failure");
+                        }
+                    }
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 
     @Override
     public void deletePicture(String pictureId, String itemId) {
-        if (standardView != null) {
-            standardView.showProgressBar(RSConstants.DELETE_PICTURE);
-            callDeletePic = WebService.getInstance().getApi().deletePicture(pictureId, itemId);
-            callDeletePic.enqueue(new Callback<RSResponse>() {
-                @Override
-                public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.DELETE_PICTURE, pictureId);
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.DELETE_PICTURE);
-                    }
-                    standardView.hideProgressBar(RSConstants.DELETE_PICTURE);
-                }
-
-                @Override
-                public void onFailure(Call<RSResponse> call, Throwable t) {
-                    if (!callDeletePic.isCanceled()) {
+        if (RSNetwork.isConnected()) {
+            if (standardView != null) {
+                standardView.showProgressBar(RSConstants.DELETE_PICTURE);
+                callDeletePic = WebService.getInstance().getApi().deletePicture(pictureId, itemId);
+                callDeletePic.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.DELETE_PICTURE, pictureId);
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.DELETE_PICTURE);
+                        }
                         standardView.hideProgressBar(RSConstants.DELETE_PICTURE);
-                        standardView.showMessage(RSConstants.DELETE_PICTURE, "failure");
                     }
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callDeletePic.isCanceled()) {
+                            standardView.hideProgressBar(RSConstants.DELETE_PICTURE);
+                            standardView.showMessage(RSConstants.DELETE_PICTURE, "failure");
+                        }
+                    }
+                });
+            }
+        }else {
+            standardView.onOffLine();
         }
     }
 

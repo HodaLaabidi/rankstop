@@ -3,16 +3,8 @@ package rankstop.steeringit.com.rankstop.data.model.network;
 import java.io.Serializable;
 
 public class RSRequestItemByCategory implements Serializable {
-    private String q, catId, userId;
+    private String q, catId, userId, lang;
     private int perPage, page;
-
-    public RSRequestItemByCategory(String q, String catId, String userId, int perPage, int page) {
-        this.q = q;
-        this.catId = catId;
-        this.userId = userId;
-        this.perPage = perPage;
-        this.page = page;
-    }
 
     public RSRequestItemByCategory() {
     }
@@ -55,5 +47,13 @@ public class RSRequestItemByCategory implements Serializable {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 }

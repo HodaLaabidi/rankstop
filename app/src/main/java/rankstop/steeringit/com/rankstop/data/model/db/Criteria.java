@@ -4,18 +4,19 @@ import java.io.Serializable;
 
 public class Criteria implements Serializable {
 
-    private String name, _id;
+    private String _id;
+    private Object name;
 
-    public Criteria(String name, String _id) {
+    public Criteria(Object name, String _id) {
         this.name = name;
         this._id = _id;
     }
 
-    public String getName() {
+    public Object getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(Object name) {
         this.name = name;
     }
 

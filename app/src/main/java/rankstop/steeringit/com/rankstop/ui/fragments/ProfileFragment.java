@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -27,6 +26,7 @@ import com.google.gson.Gson;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import butterknife.BindInt;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,9 +34,10 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
-import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
@@ -53,6 +54,7 @@ import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
 public class ProfileFragment extends Fragment implements RSView.StandardView {
 
@@ -108,11 +110,11 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     LinearLayout layoutItemFollowed;
 
     @BindView(R.id.tv_evals_number)
-    TextView evalsNumberTV;
+    RSTVMedium evalsNumberTV;
     @BindView(R.id.tv_comments_number)
-    TextView commentsNumberTV;
+    RSTVMedium commentsNumberTV;
     @BindView(R.id.tv_pix_number)
-    TextView pixNumberTV;
+    RSTVMedium pixNumberTV;
 
     @BindString(R.string.male)
     String male;
@@ -120,27 +122,46 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     String female;
     @BindString(R.string.undefined)
     String undefined;
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
+    @BindInt(R.integer.m_card_view)
+    int marginCardView;
 
     @OnClick({R.id.more_page_created, R.id.more_page_owned, R.id.more_page_followed, R.id.btn_update_profile})
     public void manageBtn(MaterialButton v) {
-        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
-        switch (v.getId()) {
-            case R.id.more_page_created:
-                rsNavigationData.setSection(RSConstants.ITEM_CREATED);
-                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
-                break;
-            case R.id.more_page_owned:
-                rsNavigationData.setSection(RSConstants.ITEM_OWNED);
-                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
-                break;
-            case R.id.more_page_followed:
-                rsNavigationData.setSection(RSConstants.ITEM_FOLLOWED);
-                fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
-                break;
-            case R.id.btn_update_profile:
-                fragmentActionListener.startFragment(UpdateProfileFragment.getInstance(userInfo.getUser()), RSConstants.FRAGMENT_UPDATE_PROFILE);
-                break;
+        if (RSNetwork.isConnected()) {
+            rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+            switch (v.getId()) {
+                case R.id.more_page_created:
+                    rsNavigationData.setSection(RSConstants.ITEM_CREATED);
+                    fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
+                    break;
+                case R.id.more_page_owned:
+                    rsNavigationData.setSection(RSConstants.ITEM_OWNED);
+                    fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
+                    break;
+                case R.id.more_page_followed:
+                    rsNavigationData.setSection(RSConstants.ITEM_FOLLOWED);
+                    fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
+                    break;
+                case R.id.btn_update_profile:
+                    fragmentActionListener.startFragment(UpdateProfileFragment.getInstance(userInfo.getUser()), RSConstants.FRAGMENT_UPDATE_PROFILE);
+                    break;
+            }
+        }else {
+            onOffLine();
         }
+    }
+
+    @OnClick(R.id.btn_contact_us)
+    void contactUs() {
+
+    }
+
+    @OnClick(R.id.btn_add_item)
+    void addItem() {
+        fragmentActionListener.navigateTo(R.id.navigation_add_item, RSConstants.FRAGMENT_ADD_ITEM);
     }
 
     private Unbinder unbinder;
@@ -182,9 +203,13 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
         bindViews();
         bindLocalData();
-        loadData();
+        if (RSNetwork.isConnected()) {
+            loadData();
+        } else {
+            onOffLine();
+        }
 
-        Log.i("USER_ID",""+userInfo.getUser().get_id());
+        Log.i("USER_ID", "" + userInfo.getUser().get_id());
     }
 
     private void bindViews() {
@@ -199,6 +224,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
             rsRequestListItem.setUserId(userInfo.getUser().get_id());
         }
         rsRequestListItem.setPage(1);
+        rsRequestListItem.setLang(RankStop.getDeviceLanguage());
         rsRequestListItem.setPerPage(RSConstants.MAX_ITEM_TO_LOAD);
     }
 
@@ -229,7 +255,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         if (nom != null)
             fullname = nom;
         if (prenom != null)
-            fullname += " "+prenom;
+            fullname += " " + prenom;
 
         if (!fullname.equals(""))
             fullNameTV.setText(fullname);
@@ -328,13 +354,16 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listOwnedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                if (RSNetwork.isConnected())
+                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listOwnedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                else
+                    onOffLine();
             }
         };
-        adapterOwnedItem = new PieAdapter(listOwnedItem, listener, getContext());
+        adapterOwnedItem = new PieAdapter(listOwnedItem, listener);
         recyclerViewOwnedItem.setLayoutManager(new LinearLayoutManager(recyclerViewOwnedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewOwnedItem.setAdapter(adapterOwnedItem);
-        recyclerViewOwnedItem.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
+        recyclerViewOwnedItem.addItemDecoration(new HorizontalSpace(marginCardView));
         recyclerViewOwnedItem.setNestedScrollingEnabled(false);
     }
 
@@ -353,13 +382,16 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listCreatedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                if (RSNetwork.isConnected())
+                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listCreatedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                else
+                    onOffLine();
             }
         };
-        adapterCreatedItem = new PieAdapter(listCreatedItem, listener, getContext());
+        adapterCreatedItem = new PieAdapter(listCreatedItem, listener);
         recyclerViewCreatedItem.setLayoutManager(new LinearLayoutManager(recyclerViewCreatedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewCreatedItem.setAdapter(adapterCreatedItem);
-        recyclerViewCreatedItem.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
+        recyclerViewCreatedItem.addItemDecoration(new HorizontalSpace(marginCardView));
         recyclerViewCreatedItem.setNestedScrollingEnabled(false);
     }
 
@@ -378,10 +410,13 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listFollowedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                if (RSNetwork.isConnected())
+                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listFollowedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                else
+                    onOffLine();
             }
         };
-        adapterFollowedItem = new PieAdapter(listFollowedItem, listener, getContext());
+        adapterFollowedItem = new PieAdapter(listFollowedItem, listener);
         recyclerViewFollowedItem.setLayoutManager(new LinearLayoutManager(recyclerViewFollowedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewFollowedItem.setAdapter(adapterFollowedItem);
         recyclerViewFollowedItem.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
@@ -696,6 +731,11 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     @Override
     public void showMessage(String target, String message) {
 
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
     }
 
     @Override

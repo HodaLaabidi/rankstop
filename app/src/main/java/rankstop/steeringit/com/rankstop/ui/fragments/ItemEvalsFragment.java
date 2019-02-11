@@ -9,10 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.io.Serializable;
 import java.util.List;
 
+import butterknife.BindInt;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemEvalAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -24,9 +29,21 @@ import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class ItemEvalsFragment extends Fragment {
 
-    private RecyclerView recyclerViewCriterias;
     private View rootView;
+    private Unbinder unbinder;
     private List<CriteriaNote> listCriterias;
+
+    @BindView(R.id.recycler_view_criterias)
+    RecyclerView recyclerViewCriterias;
+
+    @BindView(R.id.layout_add_review)
+    LinearLayout layoutAddReview;
+
+
+    @BindInt(R.integer.count_bar_per_row)
+    int countBarPerRow;
+    @BindInt(R.integer.m_card_view)
+    int marginCardView;
 
     public ItemEvalsFragment() {
     }
@@ -35,6 +52,7 @@ public class ItemEvalsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_item_evals, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
@@ -44,17 +62,20 @@ public class ItemEvalsFragment extends Fragment {
 
         setFragmentActionListener((ContainerActivity) getActivity());
 
-        recyclerViewCriterias = rootView.findViewById(R.id.recycler_view_criterias);
         listCriterias = (List<CriteriaNote>) getArguments().getSerializable(RSConstants.TAB_EVALS);
-        initBarChart();
+        if (listCriterias.size() == 0)
+            layoutAddReview.setVisibility(View.VISIBLE);
+        else
+            initBarChart();
     }
 
     private void initBarChart() {
+        recyclerViewCriterias.setVisibility(View.VISIBLE);
         RecyclerViewClickListener listener = (view, position) -> {
         };
-        recyclerViewCriterias.setLayoutManager(new GridLayoutManager(recyclerViewCriterias.getContext(), getResources().getInteger(R.integer.count_bar_per_row)));
-        recyclerViewCriterias.setAdapter(new ItemEvalAdapter(listCriterias, listener, getContext()));
-        recyclerViewCriterias.addItemDecoration(new VerticalSpace(getResources().getInteger(R.integer.m_card_view), getResources().getInteger(R.integer.count_bar_per_row)));
+        recyclerViewCriterias.setLayoutManager(new GridLayoutManager(recyclerViewCriterias.getContext(), countBarPerRow));
+        recyclerViewCriterias.setAdapter(new ItemEvalAdapter(listCriterias, listener));
+        recyclerViewCriterias.addItemDecoration(new VerticalSpace(marginCardView, countBarPerRow));
     }
 
     private FragmentActionListener fragmentActionListener;
@@ -80,6 +101,7 @@ public class ItemEvalsFragment extends Fragment {
         instance = null;
         rootView = null;
         fragmentActionListener = null;
+        unbinder.unbind();
         super.onDestroyView();
     }
 }

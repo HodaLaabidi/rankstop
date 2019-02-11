@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -30,6 +29,8 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterAbuseImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Abuse;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
@@ -51,7 +52,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     RadioGroup abusesRG;
 
     @BindView(R.id.tv_server_feedback)
-    TextView serverFeedbackTV;
+    RSTVRegular serverFeedbackTV;
 
     @BindString(R.string.report_abuse)
     String reportAbuse;
@@ -59,10 +60,16 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     @BindString(R.string.choose_reason)
     String chooseReason;
 
+    @BindString(R.string.off_line)
+    String offLineMsg;
+
     @OnClick(R.id.positive_btn)
     void reportAbuse() {
         abusePresenter.onOkClick();
     }
+
+    @BindString(R.string.loading_msg)
+    String loadingMsg;
 
     private ColorStateList colorStateList;
     private LinearLayout.LayoutParams layoutParams;
@@ -70,6 +77,11 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     private List<Abuse> abuseList;
     private String itemId, abuseId;
     private static ReportAbuseDialog instance;
+    private RSLoader rsLoader;
+    private void createLoader(){
+        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader.setCancelable(false);
+    }
 
     public static ReportAbuseDialog newInstance(RSNavigationData rsNavigationData) {
         if (instance == null) {
@@ -105,6 +117,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        createLoader();
         RSNavigationData rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         itemId = rsNavigationData.getItemId();
 
@@ -146,7 +159,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     }
 
     private void loadAbuseList() {
-        abusePresenter.loadAbusesList("EN");
+        abusePresenter.loadAbusesList(RankStop.getDeviceLanguage().toUpperCase());
     }
 
     private void initAbusesList(List<Abuse> abuseList) {
@@ -207,16 +220,35 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
 
     @Override
     public void showProgressBar(String target) {
-        progressBar.setVisibility(View.VISIBLE);
+        switch (target){
+            case RSConstants.LOAD_ABUSES_LIST:
+                progressBar.setVisibility(View.VISIBLE);
+                break;
+            case RSConstants.REPORT_ABUSES:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                break;
+        }
     }
 
     @Override
     public void hideProgressBar(String target) {
-        progressBar.setVisibility(View.GONE);
+        switch (target){
+            case RSConstants.LOAD_ABUSES_LIST:
+                progressBar.setVisibility(View.GONE);
+                break;
+            case RSConstants.REPORT_ABUSES:
+                rsLoader.dismiss();
+                break;
+        }
     }
 
     @Override
     public void showMessage(String target, String message) {
 
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offLineMsg, Toast.LENGTH_LONG).show();
     }
 }

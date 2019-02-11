@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.florent37.expansionpanel.ExpansionLayout;
@@ -22,6 +21,8 @@ import com.github.florent37.expansionpanel.ExpansionLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindInt;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,6 +30,7 @@ import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterUpdateItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
 import rankstop.steeringit.com.rankstop.data.model.network.RSUpdateItem;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
@@ -36,6 +38,7 @@ import rankstop.steeringit.com.rankstop.ui.activities.TakePictureActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ReviewPixAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
 import rankstop.steeringit.com.rankstop.utils.Helpers;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
@@ -44,10 +47,6 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.expansion_layout_social_networks)
-    ExpansionLayout expansionSocialNetworks;
-    @BindView(R.id.expansion_layout_gallery)
-    ExpansionLayout expansionGallery;
     @BindView(R.id.input_facebook)
     TextInputEditText inputFacebook;
     @BindView(R.id.input_instagram)
@@ -61,7 +60,49 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     @BindView(R.id.recycler_view_pix)
     RecyclerView recyclerViewPix;
     @BindView(R.id.tv_add_pix)
-    TextView addPixTV;
+    RSTVRegular addPixTV;
+
+    @BindString(R.string.update_item_title)
+    String updateItemTitle;
+    @BindString(R.string.item_updated_successfully_msg)
+    String itemUpdatedSuccessfullyMsg;
+    @BindString(R.string.max_photo_msg)
+    String maxPhotoMsg;
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
+    @BindInt(R.integer.m_card_view)
+    int marginCardView;
+
+    @BindString(R.string.loading_msg)
+    String loadingMsg;
+    private RSLoader rsLoader;
+    private void createLoader(){
+        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader.setCancelable(false);
+    }
+
+    @OnClick(R.id.btn_save_changes)
+    public void saveChanges(){
+        RSUpdateItem rsUpdateItem = new RSUpdateItem();
+        rsUpdateItem.setItemId(itemDetails.get_id());
+        rsUpdateItem.setUrlFacebook(inputFacebook.getText().toString());
+        rsUpdateItem.setUrlInstagram(inputInstagram.getText().toString());
+        rsUpdateItem.setUrlTwitter(inputTwitter.getText().toString());
+        rsUpdateItem.setUrlLinkedIn(inputLinkedIn.getText().toString());
+        rsUpdateItem.setUrlGooglePlus(inputGoogle.getText().toString());
+        rsUpdateItem.setGallery(listNewPics);
+        rsUpdateItem.setPicDelete(listDeletedPics);
+        presenterUpdateItem.updateItem(rsUpdateItem);
+    }
+
+    @OnClick(R.id.btn_take_pic)
+    public void addPicture(){
+        if (listPics.size() < RSConstants.MAX_GALLERY_PIX)
+            startActivityForResult(new Intent(getContext(), TakePictureActivity.class), RSConstants.REQUEST_CODE);
+        else
+            Toast.makeText(getContext(), ""+RSConstants.MAX_GALLERY_PIX+" "+maxPhotoMsg, Toast.LENGTH_SHORT).show();
+    }
 
     private View rootView;
     private Unbinder unbinder;
@@ -102,9 +143,9 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     }
 
     private void bindViews() {
+        createLoader();
         presenterUpdateItem = new PresenterUpdateItemImpl(UpdateItemFragment.this, getContext());
-
-        toolbar.setTitle(getResources().getString(R.string.update_item_title));
+        toolbar.setTitle(updateItemTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         itemDetails = (ItemDetails) getArguments().getSerializable(RSConstants.RS_ITEM_DETAILS);
         inputFacebook.setText(itemDetails.getUrlFacebook());
@@ -112,14 +153,12 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         inputTwitter.setText(itemDetails.getUrlTwitter());
         inputGoogle.setText(itemDetails.getUrlGooglePlus());
         inputLinkedIn.setText(itemDetails.getUrlLinkedIn());
-
         setFragmentActionListener((ContainerActivity) getActivity());
 
     }
 
     private void initPixList() {
         recyclerViewPix.setVisibility(View.VISIBLE);
-        Toast.makeText(getContext(), "size = "+listPics.size(), Toast.LENGTH_SHORT).show();
         for (int cpt=0; cpt < itemDetails.getGallery().size(); cpt++){
             listPics.add(Uri.parse(itemDetails.getGallery().get(cpt).getUrlPicture()));
         }
@@ -139,10 +178,10 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
             if (listPics.size() == 0)
                 addPixTV.setVisibility(View.VISIBLE);
         };
-        reviewPixAdapter = new ReviewPixAdapter(listPics, listener, getContext());
+        reviewPixAdapter = new ReviewPixAdapter(listPics, listener);
         recyclerViewPix.setLayoutManager(new LinearLayoutManager(recyclerViewPix.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewPix.setAdapter(reviewPixAdapter);
-        recyclerViewPix.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
+        recyclerViewPix.addItemDecoration(new HorizontalSpace(marginCardView));
         recyclerViewPix.setNestedScrollingEnabled(false);
     }
 
@@ -160,28 +199,6 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
                 return i;
         }
         return -1;
-    }
-
-    @OnClick(R.id.btn_save_changes)
-    public void saveChanges(){
-        RSUpdateItem rsUpdateItem = new RSUpdateItem();
-        rsUpdateItem.setItemId(itemDetails.get_id());
-        rsUpdateItem.setUrlFacebook(inputFacebook.getText().toString());
-        rsUpdateItem.setUrlInstagram(inputInstagram.getText().toString());
-        rsUpdateItem.setUrlTwitter(inputTwitter.getText().toString());
-        rsUpdateItem.setUrlLinkedIn(inputLinkedIn.getText().toString());
-        rsUpdateItem.setUrlGooglePlus(inputGoogle.getText().toString());
-        rsUpdateItem.setGallery(listNewPics);
-        rsUpdateItem.setPicDelete(listDeletedPics);
-        presenterUpdateItem.updateItem(rsUpdateItem);
-    }
-
-    @OnClick(R.id.btn_take_pic)
-    public void addPicture(){
-        if (listPics.size() < RSConstants.MAX_GALLERY_PIX)
-            startActivityForResult(new Intent(getContext(), TakePictureActivity.class), RSConstants.REQUEST_CODE);
-        else
-            Toast.makeText(getContext(), ""+RSConstants.MAX_GALLERY_PIX+" photos au maximum.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -213,7 +230,6 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         listPics.clear();
         listPics = null;
         instance= null;
-        Toast.makeText(getContext(), "destroyed", Toast.LENGTH_SHORT).show();
         super.onDestroyView();
     }
 
@@ -221,7 +237,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     public void onSuccess(String target, Object data) {
         switch (target){
             case RSConstants.UPDATE_ITEM:
-                Toast.makeText(getContext(), "Item updated successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), itemUpdatedSuccessfullyMsg, Toast.LENGTH_SHORT).show();
                 fragmentActionListener.pop();
                 break;
         }
@@ -239,11 +255,16 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
     @Override
     public void showProgressBar() {
-
+        rsLoader.show(getFragmentManager(), RSLoader.TAG);
     }
 
     @Override
     public void hideProgressBar() {
+        rsLoader.dismiss();
+    }
 
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
     }
 }

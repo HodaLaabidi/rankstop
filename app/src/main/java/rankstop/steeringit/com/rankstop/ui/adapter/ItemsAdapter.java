@@ -4,12 +4,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -24,6 +26,8 @@ import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
@@ -31,7 +35,7 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
 
     private List<Item> items;
-    private Context context;
+    private Context context = RankStop.getInstance();
     private ItemPieListener pieListener;
     private boolean showLikeBTN;
     private boolean isPieEmpty = false;
@@ -40,9 +44,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemsAdapter(ItemPieListener pieListener, Context context, boolean showLikeBTN) {
+    public ItemsAdapter(ItemPieListener pieListener, boolean showLikeBTN) {
         this.pieListener = pieListener;
-        this.context = context;
         this.showLikeBTN = showLikeBTN;
         items = new ArrayList<>();
     }
@@ -120,7 +123,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         private ItemPieListener listener;
         public Item item;
         private PieChart pieChart;
-        private TextView itemName, countReviewsTV, countFollowersTV;
+        private RSTVRegular itemName, countReviewsTV, countFollowersTV;
         private CheckBox likeIcon;
         @BindColor(R.color.colorPrimary)
         int primaryColor;
@@ -132,6 +135,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         String singleFollower;
         @BindString(R.string.multiple_follower)
         String multipleFollower;
+        @BindString(R.string.score_of_5)
+        String scoreOf5;
 
         public ViewHolder(@NonNull View itemView, ItemPieListener listener) {
             super(itemView);
@@ -212,8 +217,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
 
             pieChart.setUsePercentValues(true);
             // define center text of the pie
-            pieChart.setCenterText(item.getScoreItem() + " \n out of 5");
-            pieChart.setCenterTextSize(17f);
+
+            pieChart.setCenterTextSize(14f);
+            SpannableString spannablecontent=new SpannableString(item.getScoreItem() + scoreOf5);
+            spannablecontent.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),0,item.getScoreItem().length(),0);
+            spannablecontent.setSpan(new RelativeSizeSpan(2f), 0,item.getScoreItem().length(), 0);
+            pieChart.setCenterText(spannablecontent);
+
             pieChart.setCenterTextColor(primaryColor);
 
             // disable description of the pie

@@ -11,11 +11,10 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_margin="8dp">
-        <TextView
+        <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
             android:id="@+id/tv_criteria_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_semi_bold_font"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_criteria"/>
 
@@ -26,11 +25,10 @@
             android:layout_alignParentEnd="true"
             android:gravity="center_vertical"
             android:layout_marginBottom="5dp">
-            <TextView
+            <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
                 android:id="@+id/importance_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_medium_font"
                 android:textColor="@color/colorGray"
                 android:textSize="14sp"
                 android:layout_marginEnd="5dp"

@@ -1,6 +1,5 @@
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -23,7 +22,6 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.ItemHistoryListener;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     private List<History> histories;
-    private Context context;
     private ItemHistoryListener itemListener;
     private boolean showLikeBTN;
     private boolean isPieEmpty = false;
@@ -32,9 +30,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public HistoryAdapter(ItemHistoryListener itemListener, Context context, boolean showLikeBTN) {
+    public HistoryAdapter(ItemHistoryListener itemListener, boolean showLikeBTN) {
         this.itemListener = itemListener;
-        this.context = context;
         this.showLikeBTN = showLikeBTN;
         histories = new ArrayList<>();
     }
