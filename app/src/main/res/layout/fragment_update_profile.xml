@@ -19,26 +19,30 @@
             android:orientation="vertical"
             android:padding="@dimen/m_activity">
 
-            <rankstop.steeringit.com.rankstop.customviews.RSTVBold
-                android:id="@+id/tv_user_name"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/m_activity"
-                android:layout_marginBottom="@dimen/m_activity"
-                android:gravity="center"
-                android:text="@string/profile_pix"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp" />
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/avatar"
-                android:layout_width="@dimen/image_width"
-                android:layout_height="@dimen/image_width"
-                android:layout_gravity="center"
-                app:roundingBorderColor="@android:color/white"
-                app:roundingBorderWidth="2dp"
-                fresco:placeholderImage="@drawable/placeholder"
-                fresco:roundAsCircle="true" />
+                android:padding="@dimen/m_activity">
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/avatar"
+                    android:layout_width="@dimen/image_width"
+                    android:layout_height="@dimen/image_width"
+                    android:layout_centerInParent="true"
+                    app:roundingBorderColor="@android:color/white"
+                    app:roundingBorderWidth="2dp"
+                    fresco:placeholderImage="@drawable/placeholder"
+                    fresco:roundAsCircle="true" />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:src="@drawable/ic_edit"
+                    app:fabSize="mini"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="120dp"/>
+            </RelativeLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/input_layout_username"

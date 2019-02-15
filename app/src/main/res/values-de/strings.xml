@@ -39,16 +39,6 @@
     <string name="signup_email_format_invalid">Invalid email format</string>
     <string name="hint_item_name">Name</string>
     <string name="hint_item_description">Description</string>
-
-    <string-array name="labels">
-        <item>Not set</item>
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-    </string-array>
     <string name="hint_item_address">Address</string>
     <string name="text_add_item">Add</string>
     <string name="text_category">Category</string>
@@ -73,7 +63,6 @@
     <string name="ok">Ok</string>
     <string name="alert_login_to_follow">To follow this item you should login before</string>
     <string name="alert_login_to_add_review">To evaluate this item you should login before</string>
-    <string name="internal_storage">Internal storage</string>
     <string name="already_followed">you already follow this item</string>
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
@@ -188,8 +177,33 @@
     <string name="max_photo_msg">photos au maximum.</string>
     <string name="be_the_first">Not yet evaluated,\nbe the first to evaluate this item.</string>
     <string name="loading_msg">Loading ...</string>
-    <string name="english">English</string>
-    <string name="frensh">Frensh</string>
-    <string name="german">German</string>
+    <string name="english">Englisch</string>
+    <string name="frensh">Französisch</string>
+    <string name="german">Deutsche</string>
     <string name="no_item_fetched">There is no item</string>
+    <string name="langue_title">Sprache:</string>
+    <string name="no_comments">No comments yet</string>
+    <string name="no_pix_part1">Pourriez-vous partagez avec nous votre expérience avec</string>
+    <string name="no_pix_part2">en ajoutant des photos.</string>
+    <string name="picture_deleted_successfully">Picture deleted successfully</string>
+    <string name="no_other_comments">No comments yet</string>
+    <string name="no_other_pix">No pictures yet</string>
+    <string name="no_pix_by_filter">No pictures in this filter</string>
+    <string name="no_comments_by_filter">No comments in this filter</string>
+    <string name="alert_login_to_add_pix">Pour ajouter des photos, vous devez vous connecter avant</string>
+    <string name="alert_login_to_add_comment">Pour rédiger un commentaire, vous devez vous connecter avant</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="no_notif">No notif yet</string>
+    <string name="comment_deleted_successfully">Comment deleted successfully</string>
+    <string name="date_time_format">yyyy MMM dd HH:mm</string>
+
+    <string-array name="labels">
+        <item>Not set</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 </resources>

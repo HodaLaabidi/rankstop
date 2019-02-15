@@ -101,7 +101,8 @@ public class ItemEvalsFragment extends Fragment {
         instance = null;
         rootView = null;
         fragmentActionListener = null;
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         super.onDestroyView();
     }
 }

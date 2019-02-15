@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class RSNavigationData implements Serializable {
 
-    private String from, action, message, itemId, userId, categoryId, section;
+    private String from, action, message, itemId, userId, categoryId, section, subAction;
 
     public RSNavigationData(String from, String action) {
         this.from = from;
@@ -14,13 +14,14 @@ public class RSNavigationData implements Serializable {
     public RSNavigationData() {
     }
 
-    public RSNavigationData(String from, String action, String message, String itemId, String userId, String categoryId) {
+    public RSNavigationData(String from, String action, String message, String itemId, String userId, String categoryId, String subAction) {
         this.from = from;
         this.action = action;
         this.message = message;
         this.itemId = itemId;
         this.userId = userId;
         this.categoryId = categoryId;
+        this.subAction = subAction;
     }
 
     public String getItemId() {
@@ -77,5 +78,13 @@ public class RSNavigationData implements Serializable {
 
     public void setSection(String section) {
         this.section = section;
+    }
+
+    public String getSubAction() {
+        return subAction;
+    }
+
+    public void setSubAction(String subAction) {
+        this.subAction = subAction;
     }
 }

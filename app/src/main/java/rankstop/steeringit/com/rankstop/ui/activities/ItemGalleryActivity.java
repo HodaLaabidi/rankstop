@@ -18,7 +18,7 @@ import rankstop.steeringit.com.rankstop.data.model.db.Gallery;
 import rankstop.steeringit.com.rankstop.ui.fragments.SlideGalleryFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
-public class ItemGalleryActivity extends AppCompatActivity {
+public class ItemGalleryActivity extends BaseActivity {
 
     private Unbinder unbinder;
 
@@ -50,6 +50,7 @@ public class ItemGalleryActivity extends AppCompatActivity {
      */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         List<Gallery> pix;
+
         public ScreenSlidePagerAdapter(FragmentManager fm, List<Gallery> pictures) {
             super(fm);
             this.pix = pictures;
@@ -67,11 +68,11 @@ public class ItemGalleryActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onDestroy() {
 
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
 
         super.onDestroy();
     }

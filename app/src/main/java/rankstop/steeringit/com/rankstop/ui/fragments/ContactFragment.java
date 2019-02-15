@@ -98,13 +98,13 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().trim().length() > 0){
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(s.toString()).matches()){
+            if (s.toString().trim().length() > 0) {
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(s.toString()).matches()) {
                     inputLayoutEmail.setError(emailFormatIncorrect);
-                }else{
+                } else {
                     inputLayoutEmail.setErrorEnabled(false);
                 }
-            }else{
+            } else {
                 inputLayoutEmail.setError(requiredField);
             }
         }
@@ -115,65 +115,65 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
         }
     },
             messageTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        }
+                }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().trim().length() > 0){
-                inputLayoutMessage.setErrorEnabled(false);
-            }else{
-                inputLayoutMessage.setError(requiredField);
-            }
-        }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        inputLayoutMessage.setErrorEnabled(false);
+                    } else {
+                        inputLayoutMessage.setError(requiredField);
+                    }
+                }
 
-        @Override
-        public void afterTextChanged(Editable s) {
+                @Override
+                public void afterTextChanged(Editable s) {
 
-        }
-    },
+                }
+            },
             fullNameTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        }
+                }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().trim().length() > 0){
-                inputLayoutFullName.setErrorEnabled(false);
-            }else{
-                inputLayoutFullName.setError(requiredField);
-            }
-        }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        inputLayoutFullName.setErrorEnabled(false);
+                    } else {
+                        inputLayoutFullName.setError(requiredField);
+                    }
+                }
 
-        @Override
-        public void afterTextChanged(Editable s) {
+                @Override
+                public void afterTextChanged(Editable s) {
 
-        }
-    },
+                }
+            },
             subjectTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        }
+                }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().trim().length() > 0){
-                inputLayoutSubject.setErrorEnabled(false);
-            }else{
-                inputLayoutSubject.setError(requiredField);
-            }
-        }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        inputLayoutSubject.setErrorEnabled(false);
+                    } else {
+                        inputLayoutSubject.setError(requiredField);
+                    }
+                }
 
-        @Override
-        public void afterTextChanged(Editable s) {
+                @Override
+                public void afterTextChanged(Editable s) {
 
-        }
-    };
+                }
+            };
 
     @OnClick(R.id.btn_send_request)
     void sendRequest() {
@@ -182,14 +182,14 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
         subject = inputSubject.getText().toString().trim();
         message = inputMessage.getText().toString().trim();
         if (validForm()) {
-            if (RSNetwork.isConnected()){
+            if (RSNetwork.isConnected()) {
                 RSContact rsContact = new RSContact();
                 rsContact.setName(fullname);
                 rsContact.setEmail(email);
                 rsContact.setSubject(subject);
                 rsContact.setMessage(message);
                 presenter.contact(rsContact);
-            }else {
+            } else {
                 onOffLine();
             }
         }
@@ -209,26 +209,26 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
         if (TextUtils.isEmpty(email)) {
             inputLayoutEmail.setError(requiredField);
             x++;
-        }else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             inputLayoutEmail.setError(emailFormatIncorrect);
             x++;
         }
         if (TextUtils.isEmpty(subject)) {
             inputLayoutSubject.setError(requiredField);
             x++;
-        }else if (subject.length() > maxLength50) {
+        } else if (subject.length() > maxLength50) {
             x++;
         }
         if (TextUtils.isEmpty(message)) {
             inputLayoutMessage.setError(requiredField);
             x++;
-        }else if (message.length() > maxLength500) {
+        } else if (message.length() > maxLength500) {
             x++;
         }
         return x == 0;
     }
 
-    private void createLoader(){
+    private void createLoader() {
         rsLoader = RSLoader.newInstance(loadingMsg);
         rsLoader.setCancelable(false);
     }
@@ -257,7 +257,7 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (RSSession.isLoggedIn()){
+        if (RSSession.isLoggedIn()) {
             user = RSSession.getCurrentUser();
             if (user.getFirstName() != null)
                 inputFullName.setText(user.getFirstName());
@@ -270,7 +270,7 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
     }
 
     private void bindViews() {
-        setFragmentActionListener((ContainerActivity)getActivity());
+        setFragmentActionListener((ContainerActivity) getActivity());
         addTextWatcher();
         createLoader();
     }
@@ -283,7 +283,7 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        inflater.inflate(R.menu.rs_menu, menu);
     }
 
     @Override
@@ -297,18 +297,10 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
-            case R.id.logout:
-                /*RSSession.removeToken(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);*/
-                break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
-                break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -316,9 +308,11 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
     }
 
     private FragmentActionListener fragmentActionListener;
+
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
+
     private static ContactFragment instance;
 
     public static ContactFragment getInstance() {
@@ -335,10 +329,12 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
         inputEmail.removeTextChangedListener(emailTextWatcher);
         inputSubject.removeTextChangedListener(subjectTextWatcher);
         inputFullName.removeTextChangedListener(fullNameTextWatcher);
-        rootView=null;
+        rootView = null;
         fragmentActionListener = null;
-        unbinder.unbind();
-        presenter.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
+        if (presenter != null)
+            presenter.onDestroy();
         super.onDestroyView();
     }
 

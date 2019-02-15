@@ -17,7 +17,6 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.BottomSheetDialogListener;
 public class RSBottomSheetDialog extends BottomSheetDialogFragment {
 
 
-
     public static final String TAG = "BOTTOM_SHEET_DIALOG";
     private Unbinder unbinder;
     private View view;
@@ -26,13 +25,13 @@ public class RSBottomSheetDialog extends BottomSheetDialogFragment {
     private BottomSheetDialogListener callback;
 
     @OnClick(R.id.layout_take_pic)
-    void takePicture(){
+    void takePicture() {
         dismiss();
         callback.onTakePictureClicked();
     }
 
     @OnClick(R.id.layout_choose_pic)
-    void openGallery(){
+    void openGallery() {
         dismiss();
         callback.onChoosePictureClicked();
     }
@@ -59,7 +58,8 @@ public class RSBottomSheetDialog extends BottomSheetDialogFragment {
     @Override
     public void onDestroyView() {
         view = null;
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         super.onDestroyView();
     }
 }

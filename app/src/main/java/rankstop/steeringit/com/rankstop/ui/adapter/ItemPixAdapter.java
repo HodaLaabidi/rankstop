@@ -1,6 +1,5 @@
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
-import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -19,13 +18,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
+import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHolder> {
 
@@ -110,9 +111,12 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
         private SimpleDraweeView imageView;
         private LinearLayout pixContainer;
         private CardView cardView;
+        @BindString(R.string.date_time_format)
+        String dateTimeFormat;
 
         public ViewHolder(@NonNull View itemView, ReviewCardListener listener) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             mListener = listener;
 
             imageView = itemView.findViewById(R.id.pic_review);
@@ -126,7 +130,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
 
             if (target.equals(RSConstants.MINE)) {
                 try {
-                    RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(240, 240);
+                    RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams((int)RankStop.getInstance().getResources().getDimension(R.dimen.width_comment_card), (int)RankStop.getInstance().getResources().getDimension(R.dimen.width_comment_card));
                     cardView.setLayoutParams(layoutParams);
                     FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     pixContainer.setLayoutParams(params);
@@ -169,7 +173,10 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
         public void setData(Picture picture) {
             layout.setBackgroundColor(RankStop.getInstance().getResources().getColor(picture.getColor()));
             usernameTV.setText(picture.getUser().getNameToUse().getValue());
-            dateTV.setText(picture.getDate());
+            try {
+                dateTV.setText(RSDateParser.convertToDateTimeFormat(picture.getDate(), dateTimeFormat));
+            }catch (Exception e){}
+            avatar.setImageURI(Uri.parse(picture.getUser().getPictureProfile()));
             try {
                 imageView.setImageURI(Uri.parse(picture.getPictureEval()));
             } catch (Exception e) {

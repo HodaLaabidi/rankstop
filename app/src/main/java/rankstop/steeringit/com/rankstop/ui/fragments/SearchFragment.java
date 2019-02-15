@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -296,6 +297,8 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         EditText et = searchView.findViewById(searchEditId);
         et.setTextColor(Color.WHITE);
         et.setHintTextColor(colorGray);
+        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/montserrat_regular.ttf");
+        et.setTypeface(tf);
 
         // expand search view
         searchView.onActionViewExpanded();
@@ -312,7 +315,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
             currentCategory = categoriesFetched.get(position);
             if (RSNetwork.isConnected()) {
                 loadItems(rsRequestItemData);
-            }else {
+            } else {
                 onOffLine();
             }
         };
@@ -325,7 +328,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         itemsFetchedListener = (view, position) -> {
             if (RSNetwork.isConnected()) {
                 fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsFetched.get(position).get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
-            }else {
+            } else {
                 onOffLine();
             }
         };
@@ -410,9 +413,11 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         PAGES_COUNT = 1;
         query = "";
 
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         instance = null;
-        searchPresenter.onDestroy();
+        if (searchPresenter != null)
+            searchPresenter.onDestroy();
         super.onDestroyView();
     }
 

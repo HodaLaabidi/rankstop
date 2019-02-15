@@ -3,38 +3,22 @@ package rankstop.steeringit.com.rankstop.data.model.db;
 import java.io.Serializable;
 import java.util.List;
 
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class Evaluation implements Serializable {
     private String date;
-    private List<Comment> comments;
-    private List<Picture> pictures;
     private List<CriteriaEval> evalCriterias;
     private String _id, userId, itemId;
     private double noteEval;
 
     public String getDate() {
-        return RSDateParser.convertToDateTimeFormat(date);
+        return date;
     }
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public List<Picture> getPictures() {
-        return pictures;
-    }
-
-    public void setPictures(List<Picture> pictures) {
-        this.pictures = pictures;
     }
 
     public List<CriteriaEval> getEvalCriterias() {

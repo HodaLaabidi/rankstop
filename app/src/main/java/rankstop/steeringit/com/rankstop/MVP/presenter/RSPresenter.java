@@ -100,6 +100,17 @@ public interface RSPresenter {
         void onDestroy();
     }
 
+    interface EditDeviceLangPresenter {
+        void editLang(String userId, String lang);
+        void onDestroy();
+    }
+
+    interface ListNotifPresenter {
+        void loadListNotif(RSRequestListItem rsRequestListItem);
+        void editNotifVisibility(String notifId, String itemId);
+        void onDestroy();
+    }
+
     interface UserHistoryPresenter{
         void loadHistory(RSRequestListItem rsRequestListItem);
         void onDestroy();

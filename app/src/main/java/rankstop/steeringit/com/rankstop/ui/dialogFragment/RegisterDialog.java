@@ -43,7 +43,7 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
-public class RegisterDialog extends DialogFragment  implements RSView.RegisterView{
+public class RegisterDialog extends DialogFragment implements RSView.RegisterView {
 
     @BindView(R.id.input_layout_password)
     TextInputLayout passwordLayout;
@@ -61,7 +61,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
     String offLineMsg;
 
     @OnClick(R.id.negative_btn)
-    void cancelDialog(){
+    void cancelDialog() {
         dismiss();
     }
 
@@ -73,7 +73,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
                 user.setPassword(passwordEditText.getText().toString().trim());
                 user.setEmail(getArguments().getString(RSConstants.EMAIL));
                 registerPresenter.getPublicIP("json", RSConstants.REGISTER);
-            }else {
+            } else {
                 onOffLine();
             }
         }
@@ -86,7 +86,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
         if (TextUtils.isEmpty(password)) {
             passwordLayout.setError(requiredField);
             x++;
-        }else if (password.length() < minLength6){
+        } else if (password.length() < minLength6) {
             passwordLayout.setError(minLength6Msg);
             x++;
         }
@@ -94,7 +94,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
         if (TextUtils.isEmpty(confirmPassword)) {
             confirmPasswordLayout.setError(requiredField);
             x++;
-        }else if (!confirmPassword.equals(password)){
+        } else if (!confirmPassword.equals(password)) {
             x++;
         }
         return x == 0;
@@ -112,7 +112,8 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
     @BindString(R.string.loading_msg)
     String loadingMsg;
     private RSLoader rsLoader;
-    private void createLoader(){
+
+    private void createLoader() {
         rsLoader = RSLoader.newInstance(loadingMsg);
         rsLoader.setCancelable(false);
     }
@@ -132,13 +133,13 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().trim().length() > 0){
-                if (s.toString().trim().length() < minLength6){
+            if (s.toString().trim().length() > 0) {
+                if (s.toString().trim().length() < minLength6) {
                     passwordLayout.setError(minLength6Msg);
-                }else{
+                } else {
                     passwordLayout.setErrorEnabled(false);
                 }
-            }else{
+            } else {
                 passwordLayout.setError(requiredField);
             }
         }
@@ -156,13 +157,13 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (s.toString().trim().length() > 0){
-                        if (!s.toString().trim().equals(passwordEditText.getText().toString().trim())){
+                    if (s.toString().trim().length() > 0) {
+                        if (!s.toString().trim().equals(passwordEditText.getText().toString().trim())) {
                             confirmPasswordLayout.setError(pwdMatching);
-                        }else{
+                        } else {
                             confirmPasswordLayout.setErrorEnabled(false);
                         }
-                    }else{
+                    } else {
                         confirmPasswordLayout.setError(requiredField);
                     }
                 }
@@ -217,7 +218,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
         dialog.getWindow().setLayout((int) getContext().getResources().getDimension(R.dimen.w_dialog_login), LinearLayout.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
 
-        registerPresenter = new PresenterAuthImpl( RegisterDialog.this);
+        registerPresenter = new PresenterAuthImpl(RegisterDialog.this);
     }
 
     private void addTextWatchers() {
@@ -234,16 +235,16 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
 
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
-        Log.i("TAG_REGISTER",""+token);
+        Log.i("TAG_REGISTER", "" + token);
         RSSession.startSession(token);
         //Toast.makeText(getContext(), "register success", Toast.LENGTH_SHORT).show();
 
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
             registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER);
-        }else {
+        } else {
             dismiss();
             rsLoader.dismiss();
-            ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+            ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
         }
     }
 
@@ -260,18 +261,18 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
             Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
         }
         dismiss();
-        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+        ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
     }
 
     @Override
     public void onFollowFailure(String target) {
         dismiss();
-        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+        ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
     }
 
     @Override
     public void showProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.PUBLIC_IP:
                 rsLoader.show(getFragmentManager(), RSLoader.TAG);
                 break;
@@ -280,7 +281,7 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
 
     @Override
     public void hideProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.REGISTER:
                 rsLoader.dismiss();
                 break;
@@ -323,9 +324,11 @@ public class RegisterDialog extends DialogFragment  implements RSView.RegisterVi
     public void onDestroyView() {
         passwordEditText.removeTextChangedListener(pwdTextWatcher);
         confirmPasswordEditText.removeTextChangedListener(confirmPwdTextWatcher);
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         instance = null;
-        registerPresenter.onDestroyRegister();
+        if (registerPresenter != null)
+            registerPresenter.onDestroyRegister();
         super.onDestroyView();
     }
 }

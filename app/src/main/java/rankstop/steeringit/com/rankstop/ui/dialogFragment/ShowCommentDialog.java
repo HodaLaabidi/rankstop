@@ -21,6 +21,7 @@ import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Comment;
 import rankstop.steeringit.com.rankstop.ui.callbacks.DialogConfirmationListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class ShowCommentDialog extends DialogFragment implements DialogConfirmationListener {
 
@@ -44,6 +45,8 @@ public class ShowCommentDialog extends DialogFragment implements DialogConfirmat
 
     @BindString(R.string.message_delete_comment)
     String messageDeleteComment;
+    @BindString(R.string.date_time_format)
+    String dateTimeFormat;
 
     @OnClick(R.id.btn_remove_comment)
     void openDialogConfirmation() {
@@ -94,7 +97,7 @@ public class ShowCommentDialog extends DialogFragment implements DialogConfirmat
         super.onActivityCreated(savedInstanceState);
 
         toolbar.setTitle(comment.getUserId().getNameToUse().getValue());
-        toolbar.setSubtitle(comment.getDate());
+        toolbar.setSubtitle(RSDateParser.convertToDateTimeFormat(comment.getDate(), dateTimeFormat));
         commentTV.setText(comment.getText());
     }
 
@@ -112,7 +115,8 @@ public class ShowCommentDialog extends DialogFragment implements DialogConfirmat
     @Override
     public void onDestroyView() {
 
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         super.onDestroyView();
     }
 

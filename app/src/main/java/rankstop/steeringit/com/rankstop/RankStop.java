@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -14,11 +15,11 @@ import rankstop.steeringit.com.rankstop.utils.LocaleManager;
 public class RankStop extends Application {
 
     private RefWatcher refWatcher;
-    //private final String TAG = "App";
-    //public static LocaleManager localeManager;
+    private final String TAG = "App";
+    public static LocaleManager localeManager;
 
     private static RankStop mInstance;
-    private static String currentLanguage;
+    public static String currentLanguage;
 
     public static RefWatcher getRefWatcher(Context context) {
         RankStop application = (RankStop) context.getApplicationContext();
@@ -28,21 +29,10 @@ public class RankStop extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fresco.initialize(this);
         //refWatcher = LeakCanary.install(this);
         mInstance = this;
-        String lang = LocaleManager.getLocale(getResources()).getLanguage();
-        switch (lang) {
-            case "fr":
-            case "en":
-            case "de":
-                currentLanguage = lang;
-                break;
-            default:
-                currentLanguage = "en";
-
-        }
-        Toast.makeText(this, "app = " + LocaleManager.getLocale(getResources()).getLanguage(), Toast.LENGTH_LONG).show();
-
+        currentLanguage = localeManager.getLanguage();
     }
 
     public static synchronized RankStop getInstance() {
@@ -53,7 +43,7 @@ public class RankStop extends Application {
         return currentLanguage;
     }
 
-    /*@Override
+    @Override
     protected void attachBaseContext(Context base) {
         localeManager = new LocaleManager(base);
         super.attachBaseContext(localeManager.setLocale(base));
@@ -65,5 +55,6 @@ public class RankStop extends Application {
         super.onConfigurationChanged(newConfig);
         localeManager.setLocale(this);
         Log.d(TAG, "onConfigurationChanged: " + newConfig.locale.getLanguage());
-    }*/
+        Toast.makeText(mInstance, "langue = "+newConfig.locale.getLanguage(), Toast.LENGTH_LONG).show();
+    }
 }

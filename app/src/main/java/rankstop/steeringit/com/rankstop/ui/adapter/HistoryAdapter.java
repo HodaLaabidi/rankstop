@@ -13,26 +13,25 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.History;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemHistoryListener;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     private List<History> histories;
     private ItemHistoryListener itemListener;
-    private boolean showLikeBTN;
-    private boolean isPieEmpty = false;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public HistoryAdapter(ItemHistoryListener itemListener, boolean showLikeBTN) {
+    public HistoryAdapter(ItemHistoryListener itemListener) {
         this.itemListener = itemListener;
-        this.showLikeBTN = showLikeBTN;
         histories = new ArrayList<>();
     }
 
@@ -96,6 +95,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         private RSTVRegular subjectTV, messageTV, timeTV;
         private RSTVBold dateTV;
 
+        @BindString(R.string.date_format)
+        String dateFormat;
+
         public ViewHolder(@NonNull View itemView, ItemHistoryListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -134,7 +136,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 messageTV.setText(message);
             }
 
-            dateTV.setText(history.getDate());
+            dateTV.setText(RSDateParser.convertToDateFormat(history.getDate(), dateFormat));
             timeTV.setText(history.getTime());
             subjectTV.setText(history.getSubject());
         }

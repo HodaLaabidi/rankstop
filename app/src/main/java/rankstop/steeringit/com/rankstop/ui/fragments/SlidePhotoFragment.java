@@ -20,6 +20,7 @@ import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class SlidePhotoFragment extends Fragment {
 
@@ -39,6 +40,9 @@ public class SlidePhotoFragment extends Fragment {
 
     @BindString(R.string.posted_by)
     String postedBy;
+
+    @BindString(R.string.date_time_format)
+    String dateTimeFormat;
 
     Picture picture;
 
@@ -74,7 +78,7 @@ public class SlidePhotoFragment extends Fragment {
 
         try {
             userTV.setText(postedBy + " " + picture.getUser().getNameToUse().getValue());
-            postDateTV.setText(picture.getDate());
+            postDateTV.setText(RSDateParser.convertToDateTimeFormat(picture.getDate(), dateTimeFormat));
             noteColorView.setBackgroundColor(getResources().getColor(picture.getColor()));
             Picasso.get()
                     .load(picture.getPictureEval())
@@ -91,7 +95,8 @@ public class SlidePhotoFragment extends Fragment {
     public void onDestroyView() {
 
         instance = null;
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
 
         super.onDestroyView();
     }

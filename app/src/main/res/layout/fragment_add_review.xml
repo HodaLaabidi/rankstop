@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/rs_toolbar"/>
+    <include layout="@layout/rs_toolbar" />
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_below="@id/app_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,83 +29,69 @@
                 android:layout_marginLeft="@dimen/m_activity"
                 android:layout_marginRight="@dimen/m_activity"
                 android:layout_marginBottom="@dimen/m_activity"
-                app:contentPadding="@dimen/m_activity">
+                app:contentPadding="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.github.florent37.expansionpanel.ExpansionHeader
+                    <RelativeLayout
+                        android:id="@+id/layout_add_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        app:expansion_headerIndicator="@id/header_indicator_comments"
-                        app:expansion_layout="@id/expansion_layout_comments"
-                        app:expansion_toggleOnClick="true">
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingLeft="@dimen/m_activity"
+                        android:paddingTop="16dp"
+                        android:paddingRight="@dimen/m_activity"
+                        android:paddingBottom="16dp">
 
-                        <!-- HEADER -->
-
-                        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_add_black_24dp"
-                            android:drawablePadding="5dp"
-                            android:text="Add comment"
-                            android:textColor="@color/colorPrimary" />
+                            android:layout_centerVertical="true"
+                            android:drawableStart="@drawable/ic_add_gray"
+                            android:text="@string/add_comments"
+                            android:textAllCaps="false"
+                            android:textColor="@color/colorGray"
+                            android:visibility="visible" />
 
-                        <!-- HEADER INDICATOR -->
-                        <ImageView
-                            android:id="@+id/header_indicator_comments"
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/expand_add_comment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|right"
-                            android:layout_marginLeft="16dp"
-                            android:adjustViewBounds="true"
-                            app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            app:srcCompat="@drawable/ic_expand_more_gray" />
+                    </RelativeLayout>
 
-
-                    </com.github.florent37.expansionpanel.ExpansionHeader>
-
-                    <com.github.florent37.expansionpanel.ExpansionLayout
-                        android:id="@+id/expansion_layout_comments"
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_comment"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/m_activity"
+                        android:layout_marginTop="10dp"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="500"
+                        android:visibility="gone"
+                        app:counterOverflowTextAppearance="@style/counterOverride"
+                        app:counterTextAppearance="@style/counterText">
 
-                        <!-- CONTENT -->
-
-                        <LinearLayout
+                        <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                            android:id="@+id/input_comment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <android.support.design.widget.TextInputLayout
-                                android:id="@+id/input_layout_comment"
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                app:counterEnabled="true"
-                                app:counterMaxLength="500"
-                                app:counterTextAppearance="@style/counterText"
-                                app:counterOverflowTextAppearance="@style/counterOverride">
-
-                                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
-                                    android:id="@+id/input_comment"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="top"
-                                    android:hint="@string/hint_review_comment"
-                                    android:inputType="textMultiLine"
-                                    android:lines="8"
-                                    android:maxLines="10"
-                                    android:minLines="6"
-                                    android:scrollbars="vertical" />
-                            </android.support.design.widget.TextInputLayout>
-                        </LinearLayout>
-
-                    </com.github.florent37.expansionpanel.ExpansionLayout>
+                            android:gravity="top"
+                            android:hint="@string/hint_review_comment"
+                            android:inputType="textMultiLine"
+                            android:lines="8"
+                            android:maxLines="10"
+                            android:minLines="6"
+                            android:scrollbars="vertical" />
+                    </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -114,7 +101,6 @@
                 android:layout_marginLeft="@dimen/m_activity"
                 android:layout_marginRight="@dimen/m_activity"
                 android:layout_marginBottom="@dimen/m_activity"
-                app:contentPadding="@dimen/m_activity"
                 app:contentPaddingRight="0dp">
 
                 <LinearLayout
@@ -122,82 +108,70 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.github.florent37.expansionpanel.ExpansionHeader
+                    <RelativeLayout
+                        android:id="@+id/layut_add_pix"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="5dp"
-                        android:paddingRight="8dp"
-                        android:paddingBottom="5dp"
-                        app:expansion_headerIndicator="@id/header_indicator_pics"
-                        app:expansion_layout="@id/expansion_layout_pics"
-                        app:expansion_toggleOnClick="true">
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingLeft="@dimen/m_activity"
+                        android:paddingTop="16dp"
+                        android:paddingRight="@dimen/m_activity"
+                        android:paddingBottom="16dp">
 
-                        <!-- HEADER -->
+                        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:drawableStart="@drawable/ic_add_gray"
+                            android:text="@string/add_pics_text"
+                            android:textAllCaps="false"
+                            android:textColor="@color/colorGray"
+                            android:visibility="visible" />
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/expand_add_pix"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            app:srcCompat="@drawable/ic_expand_more_gray" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/container_add_pix"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:minHeight="150dp"
+                        android:visibility="gone">
+
+                        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
+                            android:id="@+id/btn_take_pic"
+                            style="@style/Widget.MaterialComponents.Button.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="@string/take_pix"
+                            android:textSize="14sp"
+                            app:cornerRadius="0dp"
+                            app:icon="@drawable/ic_photo_camera" />
 
                         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                            android:id="@+id/tv_add_pix"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_add_black_24dp"
-                            android:drawablePadding="5dp"
-                            android:text="Add pictures"
-                            android:textColor="@color/colorPrimary" />
+                            android:layout_centerInParent="true"
+                            android:layout_margin="@dimen/m_activity"
+                            android:text="@string/improve_review_pix" />
 
-                        <!-- HEADER INDICATOR -->
-                        <ImageView
-                            android:id="@+id/header_indicator_pics"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|right"
-                            android:layout_marginLeft="16dp"
-                            android:adjustViewBounds="true"
-                            app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
-
-
-                    </com.github.florent37.expansionpanel.ExpansionHeader>
-
-                    <com.github.florent37.expansionpanel.ExpansionLayout
-                        android:id="@+id/expansion_layout_pics"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <!-- CONTENT -->
-                        <LinearLayout
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recycler_view_pix"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
-                                android:id="@+id/btn_take_pic"
-                                style="@style/Widget.MaterialComponents.Button.Icon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="end"
-                                android:text="@string/take_pix"
-                                android:textSize="14sp"
-                                app:cornerRadius="0dp"
-                                app:icon="@drawable/ic_photo_camera" />
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginTop="10dp"
-                                android:minHeight="100dp">
-
-                                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                                    android:id="@+id/tv_add_pix"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerInParent="true"
-                                    android:text="@string/improve_review_pix" />
-
-                                <android.support.v7.widget.RecyclerView
-                                    android:id="@+id/recycler_view_pix"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content" />
-                            </RelativeLayout>
-                        </LinearLayout>
-
-                    </com.github.florent37.expansionpanel.ExpansionLayout>
+                            android:layout_below="@id/btn_take_pic"
+                            android:layout_margin="@dimen/m_activity" />
+                    </RelativeLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -212,4 +186,4 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

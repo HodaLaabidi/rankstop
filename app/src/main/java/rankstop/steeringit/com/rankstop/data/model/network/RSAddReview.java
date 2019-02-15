@@ -139,6 +139,4 @@ public class RSAddReview implements Serializable {
     public void setCity(String city) {
         this.city = city;
     }
-
-
 }

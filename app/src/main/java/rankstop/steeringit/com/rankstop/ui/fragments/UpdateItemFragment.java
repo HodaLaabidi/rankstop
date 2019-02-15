@@ -244,9 +244,12 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     public void onDestroyView() {
 
         rootView = null;
-        unbinder.unbind();
-        presenterUpdateItem.onDestroy();
-        listPics.clear();
+        if (unbinder != null)
+            unbinder.unbind();
+        if (presenterUpdateItem != null)
+            presenterUpdateItem.onDestroy();
+        if (listPics != null)
+            listPics.clear();
         listPics = null;
         instance = null;
         super.onDestroyView();

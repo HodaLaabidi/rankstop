@@ -62,8 +62,7 @@
             android:layout_marginLeft="@dimen/mlr_card_view"
             android:layout_marginRight="@dimen/mlr_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item">
+            app:cardElevation="@dimen/elevation">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -130,8 +129,7 @@
             android:layout_marginLeft="@dimen/mlr_card_view"
             android:layout_marginRight="@dimen/mlr_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item">
+            app:cardElevation="@dimen/elevation">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -198,8 +196,7 @@
             android:layout_marginLeft="@dimen/mlr_card_view"
             android:layout_marginRight="@dimen/mtb_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item">
+            app:cardElevation="@dimen/elevation">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -266,8 +263,7 @@
             android:layout_marginLeft="@dimen/mlr_card_view"
             android:layout_marginRight="@dimen/mtb_card_view"
             android:layout_marginBottom="@dimen/mtb_card_view"
-            app:cardElevation="@dimen/elevation"
-            app:contentPadding="@dimen/p_card_rv_item">
+            app:cardElevation="@dimen/elevation">
 
             <RelativeLayout
                 android:layout_width="match_parent"

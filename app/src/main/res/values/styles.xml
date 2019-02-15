@@ -32,12 +32,7 @@
         <item name="android:fontFamily">@font/montserrat_semi_bold_font</item>
     </style>
 
-    <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
-        <item name="android:progressBackgroundTint">#f4511e</item>
-        <item name="android:progressTint">#388e3c</item>
-        <item name="android:colorControlActivated">#c51162</item>
-    </style>
-
+    <!-- begin of style full screen dialog -->
     <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
         <item name="android:windowNoTitle">true</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -56,7 +51,7 @@
         <item name="android:windowEnterAnimation">@anim/slide_up</item>
         <item name="android:windowExitAnimation">@anim/slide_down</item>
     </style>
-
+    <!-- end of style full screen dialog -->
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_bottom_sheet_dialog_fragment</item>
     </style>
@@ -77,4 +72,14 @@
         <item name="android:textColor">@color/colorRed</item>
     </style>
 
+    <style name="BottomNavigationView" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">@dimen/size_nav_title</item>
+    </style>
+
+    <style name="BottomNavigationView.Active" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">@dimen/size_active_nav_title</item>
+    </style>
+
+    <dimen name="size_active_nav_title">7sp</dimen>
+    <dimen name="size_nav_title">8sp</dimen>
 </resources>

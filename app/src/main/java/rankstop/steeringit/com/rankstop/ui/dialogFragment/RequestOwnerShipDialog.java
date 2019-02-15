@@ -99,13 +99,13 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().trim().length() > 0){
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(s.toString()).matches()){
+            if (s.toString().trim().length() > 0) {
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(s.toString()).matches()) {
                     inputLayoutEmail.setError(emailFormatIncorrect);
-                }else{
+                } else {
                     inputLayoutEmail.setErrorEnabled(false);
                 }
-            }else{
+            } else {
                 inputLayoutEmail.setError(requiredField);
             }
         }
@@ -123,9 +123,9 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (s.toString().trim().length() > 0){
+                    if (s.toString().trim().length() > 0) {
                         inputLayoutFullName.setErrorEnabled(false);
-                    }else{
+                    } else {
                         inputLayoutFullName.setError(requiredField);
                     }
                 }
@@ -143,9 +143,9 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (s.toString().trim().length() > 0){
+                    if (s.toString().trim().length() > 0) {
                         inputLayoutCompany.setErrorEnabled(false);
-                    }else{
+                    } else {
                         inputLayoutCompany.setError(requiredField);
                     }
                 }
@@ -163,9 +163,9 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (s.toString().trim().length() > 0){
+                    if (s.toString().trim().length() > 0) {
                         inputLayoutPhone.setErrorEnabled(false);
-                    }else{
+                    } else {
                         inputLayoutPhone.setError(requiredField);
                     }
                 }
@@ -237,7 +237,7 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
         inputPhone.addTextChangedListener(phoneTextWatcher);
     }
 
-    private void createLoader(){
+    private void createLoader() {
         rsLoader = RSLoader.newInstance(loadingMsg);
         rsLoader.setCancelable(false);
     }
@@ -299,8 +299,10 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
         inputEmail.removeTextChangedListener(emailTextWatcher);
         inputCompany.removeTextChangedListener(companyTextWatcher);
         inputPhone.removeTextChangedListener(phoneTextWatcher);
-        unbinder.unbind();
-        presenter.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
+        if (presenter != null)
+            presenter.onDestroy();
 
         super.onDestroyView();
     }

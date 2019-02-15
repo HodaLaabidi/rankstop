@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
@@ -25,11 +28,20 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 public class AskToLoginDialog extends DialogFragment {
 
     private View rootView;
-    private RSBTNBold cancelBtn, loginBtn;
-    private RSTVMedium messageTV;
+    private Unbinder unbinder;
+
+    @BindView(R.id.negative_btn)
+    RSBTNBold cancelBtn;
+    @BindView(R.id.positive_btn)
+    RSBTNBold loginBtn;
+    @BindView(R.id.tv_message)
+    RSTVMedium messageTV;
+
+
     private ColorStateList colorStateList;
     private LinearLayout.LayoutParams layoutParams;
     private FragmentActionListener fragmentActionListener;
+
 
     private static AskToLoginDialog instance;
 
@@ -47,8 +59,8 @@ public class AskToLoginDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         rootView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_ask_for_login, null, false);
-        initViews();
-        setFragmentActionListener((ContainerActivity)getActivity());
+        unbinder = ButterKnife.bind(this, rootView);
+        setFragmentActionListener((ContainerActivity) getActivity());
 
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
@@ -58,22 +70,7 @@ public class AskToLoginDialog extends DialogFragment {
                 onDialogShow(alertDialog);
             }
         });
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                rootView = null;
-                colorStateList = null;
-                layoutParams = null;
-                instance = null;
-            }
-        });
         return alertDialog;
-    }
-
-    private void initViews() {
-        cancelBtn = rootView.findViewById(R.id.negative_btn);
-        loginBtn = rootView.findViewById(R.id.positive_btn);
-        messageTV = rootView.findViewById(R.id.tv_message);
     }
 
     private void onDialogShow(AlertDialog dialog) {
@@ -93,7 +90,7 @@ public class AskToLoginDialog extends DialogFragment {
             loginBtn.setLayoutParams(layoutParams);
         }
 
-        RSNavigationData rsNavigationData  = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
+        RSNavigationData rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
 
         messageTV.setText(rsNavigationData.getMessage());
 
@@ -110,6 +107,18 @@ public class AskToLoginDialog extends DialogFragment {
                 dismiss();
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        rootView = null;
+        if (unbinder != null)
+            unbinder.unbind();
+        colorStateList = null;
+        layoutParams = null;
+        instance = null;
+
+        super.onDestroyView();
     }
 
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {

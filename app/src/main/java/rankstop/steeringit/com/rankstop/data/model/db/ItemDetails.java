@@ -56,7 +56,7 @@ public class ItemDetails implements Serializable {
     }
 
     public String getLastDateView() {
-        return RSDateParser.convertToDateFormat(lastDateView);
+        return lastDateView;
     }
 
     public void setLastDateView(String lastDateView) {

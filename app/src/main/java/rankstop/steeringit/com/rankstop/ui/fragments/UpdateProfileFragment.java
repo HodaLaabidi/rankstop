@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -14,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,6 +29,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
@@ -40,19 +43,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.cache.common.SimpleCacheKey;
+import com.facebook.cache.disk.FileCache;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -60,9 +66,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -105,6 +109,7 @@ import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.LOCATION_SERVICE;
 
 public class UpdateProfileFragment extends Fragment implements RSView.UpdateProfileView, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, BottomSheetDialogListener {
@@ -195,6 +200,8 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     String female;
     @BindString(R.string.date_format)
     String dateFormat;
+    @BindString(R.string.server_date_format)
+    String serverDateFormat;
     @BindString(R.string.old_pwd_error)
     String oldPwdErrorMsg;
     @BindString(R.string.title_edit_profile)
@@ -413,19 +420,16 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 rsRequestEditProfile.setLastName(inputLastNameET.getText().toString().trim());
                 rsRequestEditProfile.setFirstName(inputFirstNameET.getText().toString().trim());
                 rsRequestEditProfile.setPhone(inputPhoneET.getText().toString().trim());
-                rsRequestEditProfile.setBirthDate(birthDateET.getText().toString().trim());
+                rsRequestEditProfile.setBirthDate(RSDateParser.convertToDateFormat(birthDateET.getText().toString().trim(), dateFormat, serverDateFormat));
                 rsRequestEditProfile.setLocation(inputCityET.getText().toString().trim(), selectedCountry.getCountryCode(), selectedCountry.getCountryName());
                 rsRequestEditProfile.setGender(selectedGender);
                 rsRequestEditProfile.setNameToUse(selectedPublicName);
                 rsRequestEditProfile.setFile(imageUri);
                 rsRequestEditProfile.setUserId(currentUser.get_id());
-                //Toast.makeText(context, "imageUri = " + selectedGender, Toast.LENGTH_LONG).show();
                 if (!isPwdHidden) {
                     rsRequestEditProfile.setNewPassword(inputNewPasswordET.getText().toString().trim());
                     rsRequestEditProfile.setOldPassword(inputOldPasswordET.getText().toString().trim());
                 }
-
-                Log.i("TAG_IMG_URI", "" + imageUri);
                 inputLayoutOldPwd.setError("");
                 presenterUpdateProfile.editProfile(rsRequestEditProfile);
             } else {
@@ -502,7 +506,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     // show date picker
     @OnClick(R.id.et_birth_date)
     public void showDatePicker() {
-        DialogFragment newFragment = DatePickerFragment.newInstance(currentDate);
+        DialogFragment newFragment = DatePickerFragment.newInstance(currentDate, dateFormat);
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
@@ -539,7 +543,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         isPwdHidden = !isPwdHidden;
     }
 
-    @OnClick(R.id.avatar)
+    @OnClick(R.id.fab)
     void takepic() {
         RSBottomSheetDialog dialog = new RSBottomSheetDialog();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -548,8 +552,19 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     }
 
     private void getCurrentLocation() {
+        checkGPS();
+    }
+
+    private void checkGPS() {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            //Toast.makeText(getContext(), "GPS is Enabled in your device", Toast.LENGTH_LONG).show();
+        } else {
+            showGPSDisabledAlertToUser();
+            return;
+        }
+
         if (googleApiClient == null) {
-            googleApiClient = new GoogleApiClient.Builder(getContext())
+            googleApiClient = new GoogleApiClient.Builder(RankStop.getInstance())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
@@ -558,6 +573,28 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
             onConnected(null);
         }
         googleApiClient.connect();
+    }
+
+    private void showGPSDisabledAlertToUser() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Goto Settings Page To Enable GPS",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(callGPSSettingIntent, RSConstants.REQUEST_CODE);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
     private FragmentActionListener fragmentActionListener;
@@ -582,6 +619,8 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         setHasOptionsMenu(true);
     }
 
+    private LocationManager locationManager;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -594,14 +633,11 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         bindViews();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         mCompressor = new FileCompressor(getContext());
         presenterUpdateProfile = new PresenterUpdateProfileImpl(UpdateProfileFragment.this, getContext());
+        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
+        Log.i("TAG_LIST_COUNTRY", "fragment resumed");
         currentUser = (User) getArguments().getSerializable(RSConstants.CURRENT_USER);
         presenterUpdateProfile.loadCountriesList();
         bindData(currentUser);
@@ -612,8 +648,8 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         inputLastNameET.setText(user.getLastName());
         inputUserNameET.setText(user.getUsername());
         inputPhoneET.setText(user.getPhone());
-        birthDateET.setText(user.getBirthDate());
-        currentDate = user.getBirthDate();
+        birthDateET.setText(RSDateParser.convertToDateFormat(user.getBirthDate(), dateFormat));
+        currentDate = RSDateParser.convertToDateFormat(user.getBirthDate(), dateFormat);
         initPublicNameView();
         initGenderView();
         setUserPic(user.getPictureProfile());
@@ -734,9 +770,11 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         inputNewPasswordET.removeTextChangedListener(newPwdTextWatcher);
         inputConfirmPasswordET.removeTextChangedListener(confPwdTextWatcher);
         rootView = null;
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         instance = null;
-        presenterUpdateProfile.onDestroy();
+        if (presenterUpdateProfile != null)
+            presenterUpdateProfile.onDestroy();
         super.onDestroyView();
     }
 
@@ -747,6 +785,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 Country[] array = new Gson().fromJson(new Gson().toJson(data), Country[].class);
                 countries = Arrays.asList(array);
                 initCountriesList();
+                Log.i("TAG_LIST_COUNTRY", "" + countries.size());
                 break;
             case RSConstants.UPDATE_PROFILE:
                 //fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
@@ -829,18 +868,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-            /*case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
-                break;
-            case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
-                break;
-            case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
-                break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
-                break;*/
         }
 
         return super.onOptionsItemSelected(item);
@@ -848,20 +875,26 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(new String[]{
-                    android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_LOCATION);
+        if (ActivityCompat.checkSelfPermission(RankStop.getInstance(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(RankStop.getInstance(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_LOCATION);
         } else {
+            FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(RankStop.getInstance());
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations, this can be null.
+                    if (location != null) {
+                        LatLng currentUserLatLang = new LatLng(location.getLatitude(), location.getLongitude());
+                        setUserAddress(findCountry(getCountryCode(currentUserLatLang)), getCity(currentUserLatLang));
+                    }
+                }
+            });
 
-            Location userCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            /*Location userCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (userCurrentLocation != null) {
                 LatLng currentUserLatLang = new LatLng(userCurrentLocation.getLatitude(), userCurrentLocation.getLongitude());
-
                 setUserAddress(findCountry(getCountryCode(currentUserLatLang)), getCity(currentUserLatLang));
-
-            }
+            }*/
         }
     }
 
@@ -964,13 +997,14 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         DatePickerDialog dialog;
         public static DatePickerFragment fragment;
 
-        private String currentDate;
+        private String currentDate, dateFormat;
 
-        public static DatePickerFragment newInstance(String currentDate) {
+        public static DatePickerFragment newInstance(String currentDate, String format) {
 
             Bundle args = new Bundle();
 
-            args.putSerializable(RSConstants.CURRENT_DATE, currentDate);
+            args.putString(RSConstants.CURRENT_DATE, currentDate);
+            args.putString(RSConstants.FORMAT_DATE, format);
             if (fragment == null) {
                 fragment = new DatePickerFragment();
             }
@@ -983,9 +1017,10 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
             // Use the current date as the default date in the picker
 
             currentDate = getArguments().getString(RSConstants.CURRENT_DATE);
+            dateFormat = getArguments().getString(RSConstants.FORMAT_DATE);
             Calendar calendar;
             if (currentDate != null) {
-                calendar = RSDateParser.convertToDate(currentDate, "dd/MM/yyyy");
+                calendar = RSDateParser.convertToDate(currentDate, dateFormat);
             } else {
                 calendar = Calendar.getInstance();
             }
@@ -1001,7 +1036,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
             // Create a new instance of DatePickerDialog and return it
             dialog = new DatePickerDialog(getActivity(), this, year, month, day);
-            curCalendar.set(curYear - 15, curMonth, curDay);
+            curCalendar.set(curYear - RSConstants.MIN_AGE_USER, curMonth, curDay);
             dialog.getDatePicker().setMaxDate(curCalendar.getTimeInMillis());
             return dialog;
         }
@@ -1047,20 +1082,17 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     }
 
     private File createImageFile() throws IOException {
-
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "IMG_" + timeStamp + "_";
         File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         //imageFilePath = image.getAbsolutePath();
-
         return image;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == REQUEST_PERMISSION_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 onConnected(null);
@@ -1084,7 +1116,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Toast.makeText(context, "" + requestCode, Toast.LENGTH_SHORT).show();
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_TAKE_PHOTO) {
                 try {
@@ -1094,11 +1125,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 }
                 String path = MediaStore.Images.Media.insertImage(RankStop.getInstance().getContentResolver(), BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath()), "Image Description", null);
                 imageUri = Uri.parse(path);
-                ImagePipeline imagePipeline = Fresco.getImagePipeline();
-                imagePipeline.evictFromCache(userPicUri);
-                imagePipeline.clearCaches();
                 avatar.setImageURI(imageUri);
-
 
             } else if (requestCode == REQUEST_GALLERY_PHOTO) {
                 Uri selectedImage = data.getData();
@@ -1109,9 +1136,9 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 }
                 String path = MediaStore.Images.Media.insertImage(RankStop.getInstance().getContentResolver(), BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath()), "Image Description", null);
                 imageUri = Uri.parse(path);
-                ImagePipeline imagePipeline = Fresco.getImagePipeline();
+                /*ImagePipeline imagePipeline = Fresco.getImagePipeline();
                 imagePipeline.evictFromCache(userPicUri);
-                imagePipeline.clearCaches();
+                imagePipeline.clearCaches();*/
                 avatar.setImageURI(imageUri);
             }
         } else if (resultCode == RESULT_CANCELED) {

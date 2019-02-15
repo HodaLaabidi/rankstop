@@ -157,12 +157,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                     rsAddItem.setPhone(itemPhone);
                     rsAddItem.setLatitude("" + currentLatitude);
                     rsAddItem.setLongitude("" + currentLongitude);
-                    fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddItem, null, ""), RSConstants.FRAGMENT_ADD_REVIEW);
-                }catch(Exception e){
+                    fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddItem, null, "", RSConstants.ACTION_EVAL), RSConstants.FRAGMENT_ADD_REVIEW);
+                } catch (Exception e) {
 
                 }
 
-            }else {
+            } else {
                 onOffLine();
             }
         } else {
@@ -183,7 +183,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         if (itemDescription.length() > maxLength500) {
             x++;
         }
-        if (selectedCategory == null){
+        if (selectedCategory == null) {
             x++;
         }
         return x == 0;
@@ -191,7 +191,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     @OnClick(R.id.btn_login)
     void goToLogin() {
-        RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ADD_ITEM, RSConstants.ACTION_CONNECT, "", "", "", "");
+        RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ADD_ITEM, RSConstants.ACTION_CONNECT, "", "", "", "", "");
         navigateToSignUp(rsNavigationData);
     }
 
@@ -270,7 +270,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             } else {
                 loginLayout.setVisibility(View.VISIBLE);
             }
-        }else {
+        } else {
             onOffLine();
         }
     }
@@ -358,26 +358,24 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(RankStop.getInstance(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(RankStop.getInstance(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             requestPermissions(new String[]{
                     android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         } else {
-            FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations, this can be null.
-                            if (location != null) {
-                                addMarker(location.getLatitude(), location.getLongitude());
-                            } else {
-                                addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
-                                //Toast.makeText(getContext(), "userCurrentLocation"+ location, Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
+            FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(RankStop.getInstance());
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations, this can be null.
+                    if (location != null) {
+                        addMarker(location.getLatitude(), location.getLongitude());
+                    } else {
+                        addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
+                    }
+                }
+            });
             /*Location userCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (userCurrentLocation != null) {
                 addMarker(userCurrentLocation.getLatitude(), userCurrentLocation.getLongitude());
@@ -468,7 +466,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        inflater.inflate(R.menu.rs_menu, menu);
     }
 
     @Override
@@ -479,18 +477,11 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
-            case R.id.logout:
-                /*RSSession.removeToken(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);*/
-                break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
-                break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -572,7 +563,8 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         instance = null;
         rootView = null;
         fragmentActionListener = null;
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         if (itemPresenter != null)
             itemPresenter.onDestroyItem();
         super.onDestroyView();

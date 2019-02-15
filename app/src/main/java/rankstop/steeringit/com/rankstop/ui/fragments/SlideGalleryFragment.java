@@ -19,6 +19,7 @@ import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Gallery;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class SlideGalleryFragment extends Fragment {
 
@@ -32,6 +33,9 @@ public class SlideGalleryFragment extends Fragment {
 
     @BindString(R.string.posted_by)
     String postedBy;
+
+    @BindString(R.string.date_time_format)
+    String dateTimeFormat;
 
     Gallery picture;
 
@@ -64,7 +68,7 @@ public class SlideGalleryFragment extends Fragment {
         picture = (Gallery) getArguments().getSerializable(RSConstants.PICTURE);
 
         try {
-            postDateTV.setText(picture.getDate());
+            postDateTV.setText(RSDateParser.convertToDateTimeFormat(picture.getDate(), dateTimeFormat));
             Picasso.get()
                     .load(picture.getUrlPicture())
                     .placeholder(R.drawable.placeholder)
@@ -80,7 +84,8 @@ public class SlideGalleryFragment extends Fragment {
     public void onDestroyView() {
 
         instance = null;
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
 
         super.onDestroyView();
     }

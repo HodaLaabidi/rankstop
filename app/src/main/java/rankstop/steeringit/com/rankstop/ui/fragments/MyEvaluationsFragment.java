@@ -81,7 +81,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     @OnClick(R.id.btn_login_or_search)
     void fun() {
         if (!isLoggedIn) {
-            RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_MY_EVALS, RSConstants.ACTION_CONNECT, "", "", "", "");
+            RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_MY_EVALS, RSConstants.ACTION_CONNECT, "", "", "", "", "");
             navigateToSignUp(rsNavigationData);
         } else {
             navigateToHome();
@@ -145,7 +145,6 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     }
 
     private void loadMyEvals(RSRequestListItem rsRequestListItem) {
-        Log.i("TAG_MY_EVAL", rsRequestListItem.toString());
         itemPresenter.loadMyEvals(rsRequestListItem);
     }
 
@@ -220,7 +219,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        inflater.inflate(R.menu.rs_menu, menu);
     }
 
     @Override
@@ -231,18 +230,11 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
-            case R.id.logout:
-                /*RSSession.removeToken(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);*/
-                break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
-                break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -266,8 +258,16 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     @Override
     public void onDestroyView() {
+
+        currentPage = 1;
+        isLastPage = false;
+        isLoading = false;
+        PAGES_COUNT = 1;
+
+
         instance = null;
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         rootView = null;
         if (itemPresenter != null)
             itemPresenter.onDestroyItem();

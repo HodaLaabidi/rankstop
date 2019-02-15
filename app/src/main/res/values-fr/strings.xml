@@ -63,7 +63,7 @@
     <string name="no_item_evaluated">Il n\'y a pas d\'article évalué</string>
     <string name="ok">Ok</string>
     <string name="alert_login_to_follow">Pour suivre cet article, vous devez vous connecter avant</string>
-    <string name="alert_login_to_add_review">Pour évaluer cet article, vous devez vous connecter avant</string>
+    <string name="alert_login_to_add_review">Pour faire une évaluation, vous devez vous connecter avant</string>
     <string name="already_followed">Vous suivez déjà cet article</string>
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
@@ -141,7 +141,7 @@
     <string name="hint_old_pwd">Ancien mot de passe</string>
     <string name="hint_new_pwd">Nouveau mot de passe</string>
     <string name="hint_confirm_new_pwd">Confirmer le mot de passe</string>
-    <string name="date_format">yyyy-MM-dd</string>
+    <string name="date_format">dd-MM-yyyy</string>
     <string name="username_text">Nom d\'utilisateur</string>
     <string name="fullname_text">Nom complet</string>
     <string name="hint_subject">Sujet</string>
@@ -175,10 +175,25 @@
     <string name="max_photo_msg">photos au maximum.</string>
     <string name="be_the_first">Pas encore évalué,\nsoyez le premier à évaluer cet article.</string>
     <string name="loading_msg">Chargement ...</string>
-    <string name="english">English</string>
-    <string name="frensh">Anglais</string>
+    <string name="english">Anglais</string>
+    <string name="frensh">Français</string>
     <string name="german">Allemand</string>
     <string name="no_item_fetched">There is no item</string>
+    <string name="langue_title">Langue:</string>
+    <string name="no_comments">Pourriez-vous partager avec nous votre avis sur </string>
+    <string name="no_pix_part1">Pourriez-vous partagez avec nous votre expérience avec</string>
+    <string name="no_pix_part2">en ajoutant des photos.</string>
+    <string name="picture_deleted_successfully">Picture deleted successfully</string>
+    <string name="no_other_comments">Aucun commentaires</string>
+    <string name="no_other_pix">Aucune photos</string>
+    <string name="no_pix_by_filter">No pictures in this filter</string>
+    <string name="no_comments_by_filter">No comments in this filter</string>
+    <string name="alert_login_to_add_pix">Pour ajouter des photos, vous devez vous connecter avant</string>
+    <string name="alert_login_to_add_comment">Pour rédiger un commentaire, vous devez vous connecter avant</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="no_notif">No notif yet</string>
+    <string name="comment_deleted_successfully">Comment deleted successfully</string>
+    <string name="date_time_format">dd MMM yyyy HH:mm</string>
 
     <string-array name="labels">
         <item>Not set</item>

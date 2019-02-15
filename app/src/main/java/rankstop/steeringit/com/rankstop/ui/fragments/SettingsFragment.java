@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import butterknife.BindString;
@@ -19,39 +22,53 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterContact;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterDeviceLangImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
+import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 import static rankstop.steeringit.com.rankstop.utils.LocaleManager.LANGUAGE_ENGLISH;
 import static rankstop.steeringit.com.rankstop.utils.LocaleManager.LANGUAGE_FRENSH;
 import static rankstop.steeringit.com.rankstop.utils.LocaleManager.LANGUAGE_GERMAN;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements RSView.EditLangView {
 
     private View rootView;
     private Unbinder unbinder;
 
+    private RSPresenter.EditDeviceLangPresenter presenter;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @OnClick(R.id.btn_en)
-    void toEN() {
-        //setNewLocale(LANGUAGE_ENGLISH, false);
-    }
-    @OnClick(R.id.btn_fr)
-    void toFR() {
-        //setNewLocale(LANGUAGE_FRENSH, false);
-    }
-    @OnClick(R.id.btn_de)
-    void toDE() {
-        //setNewLocale(LANGUAGE_GERMAN, false);
-    }
+    @BindView(R.id.rg_btn_language)
+    RadioGroup listLangRG;
+    @BindView(R.id.rb_en)
+    RSRBMedium englishRB;
+    @BindView(R.id.rb_fr)
+    RSRBMedium frenshRB;
+    @BindView(R.id.rb_de)
+    RSRBMedium germanRB;
 
     @BindString(R.string.text_settings)
     String settingsTitle;
+
+    @BindString(R.string.loading_msg)
+    String loadingMsg;
+    private RSLoader rsLoader;
+
+    private void createLoader() {
+        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader.setCancelable(false);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,12 +96,47 @@ public class SettingsFragment extends Fragment {
     }
 
     private void bindViews() {
-        setFragmentActionListener((ContainerActivity)getActivity());
-        setFragmentActionListener((ContainerActivity)getActivity());
+        setFragmentActionListener((ContainerActivity) getActivity());
+        createLoader();
+        presenter = new PresenterDeviceLangImpl(SettingsFragment.this);
+
+        switch (RankStop.getDeviceLanguage()) {
+            case "fr":
+                frenshRB.setChecked(true);
+                break;
+            case "en":
+                englishRB.setChecked(true);
+                break;
+            case "de":
+                germanRB.setChecked(true);
+                break;
+
+        }
+
+        listLangRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                Toast.makeText(getContext(), "checked = ", Toast.LENGTH_SHORT).show();
+                if (checkedId == R.id.rb_en)
+                    manageLanguage("en");
+                else if (checkedId == R.id.rb_fr)
+                    manageLanguage("fr");
+                else if (checkedId == R.id.rb_de)
+                    manageLanguage("de");
+            }
+        });
+    }
+
+    private void manageLanguage(String lang) {
+        if (RSSession.isLoggedIn()) {
+            presenter.editLang(RSSession.getCurrentUser().get_id(), lang);
+        } else {
+            setNewLocale(lang, false);
+        }
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        inflater.inflate(R.menu.rs_menu, menu);
     }
 
     @Override
@@ -96,11 +148,6 @@ public class SettingsFragment extends Fragment {
                 getActivity().onBackPressed();
                 break;
             case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
-                break;
-            case R.id.logout:
-                /*RSSession.removeToken(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);*/
                 break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
@@ -108,18 +155,17 @@ public class SettingsFragment extends Fragment {
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
                 break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
-                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     private FragmentActionListener fragmentActionListener;
+
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
+
     private static SettingsFragment instance;
 
     public static SettingsFragment getInstance() {
@@ -132,18 +178,20 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         instance = null;
-        rootView=null;
+        rootView = null;
         fragmentActionListener = null;
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
+        if (presenter != null)
+            presenter.onDestroy();
         super.onDestroyView();
     }
 
-    /*private boolean setNewLocale(String language, boolean restartProcess) {
-        RankStop.localeManager.setNewLocale(getContext(), language);
+    private boolean setNewLocale(String language, boolean restartProcess) {
+        RankStop.localeManager.setNewLocale(getActivity(), language);
+        RankStop.currentLanguage = language;
 
-        fragmentActionListener.pop();
-
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(getContext(), ContainerActivity.class);
         startActivity(i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
 
         if (restartProcess) {
@@ -152,5 +200,36 @@ public class SettingsFragment extends Fragment {
             Toast.makeText(getContext(), "Activity restarted", Toast.LENGTH_SHORT).show();
         }
         return true;
-    }*/
+    }
+
+
+    @Override
+    public void onSuccess(String lang, Object data) {
+        setNewLocale(lang, false);
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void showProgressBar() {
+        rsLoader.show(getFragmentManager(), RSLoader.TAG);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        rsLoader.dismiss();
+    }
+
+    @Override
+    public void onOffLine() {
+
+    }
 }

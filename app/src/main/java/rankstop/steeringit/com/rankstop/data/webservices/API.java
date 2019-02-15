@@ -255,4 +255,18 @@ public interface API {
     @FormUrlEncoded
     @POST("items/deletePictures")
     Call<RSResponse> deletePicture(@Field("pictureId") String pictureId, @Field("itemId") String itemId);
+
+    // delete comment
+    @FormUrlEncoded
+    @POST("users/changeLanguage")
+    Call<RSResponse> editDeviceLanguage(@Field("userId") String userId, @Field("lang") String lang);
+
+    // load list notif
+    @POST("notif/findNotification")
+    Call<RSResponse> loadListNotif(@Body RSRequestListItem rsRequestListItem);
+
+    // edit notif visibility
+    @FormUrlEncoded
+    @POST("notif/ChangeStatusNotification")
+    Call<RSResponse> editNotifVisibility(@Field("notifId") String userId);
 }

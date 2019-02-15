@@ -1,21 +1,26 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +30,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -37,6 +46,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindDrawable;
 import butterknife.BindInt;
 import butterknife.BindString;
 import butterknife.BindView;
@@ -109,6 +119,35 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     @BindInt(R.integer.max_length_500)
     int maxLength500;
 
+    @BindView(R.id.input_layout_comment)
+    TextInputLayout inputLayoutComment;
+    @BindView(R.id.expand_add_comment)
+    AppCompatImageView expandAddComment;
+
+    @BindView(R.id.container_add_pix)
+    RelativeLayout containerAddPix;
+    @BindView(R.id.expand_add_pix)
+    AppCompatImageView expandAddPix;
+
+    @BindView(R.id.scroll_view)
+    NestedScrollView scrollView;
+
+    @BindDrawable(R.drawable.ic_expand_more_gray)
+    Drawable expandMore;
+    @BindDrawable(R.drawable.ic_expand_less_gray)
+    Drawable expandLess;
+
+    @OnClick(R.id.layout_add_comment)
+    void manageCommentLayout() {
+        openCommentLayout(isCommentLayoutHidden);
+    }
+
+    @OnClick(R.id.layut_add_pix)
+    void managePixLayout() {
+        openPixLayout(isPixLayoutHidden);
+    }
+
+
     @OnClick(R.id.btn_take_pic)
     void takePic() {
         if (listPics.size() < RSConstants.MAX_GALLERY_PIX) {
@@ -149,7 +188,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
                     }
                 }
             }
-        }else {
+        } else {
             onOffLine();
         }
     }
@@ -175,6 +214,28 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         rsLoader.setCancelable(false);
     }
 
+    private void openCommentLayout(boolean hide) {
+        if (hide) {
+            inputLayoutComment.setVisibility(View.VISIBLE);
+            expandAddComment.setImageDrawable(expandLess);
+        } else {
+            inputLayoutComment.setVisibility(View.GONE);
+            expandAddComment.setImageDrawable(expandMore);
+        }
+        isCommentLayoutHidden = !hide;
+    }
+
+    private void openPixLayout(boolean hide) {
+        if (hide) {
+            containerAddPix.setVisibility(View.VISIBLE);
+            expandAddPix.setImageDrawable(expandLess);
+        } else {
+            containerAddPix.setVisibility(View.GONE);
+            expandAddPix.setImageDrawable(expandMore);
+        }
+        isPixLayoutHidden = !hide;
+    }
+
     private Unbinder unbinder;
     private View rootView;
 
@@ -188,6 +249,8 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     private Evaluation myEval;
     private String from;
     private Category currentCategory;
+
+    private boolean isCommentLayoutHidden = true, isPixLayoutHidden = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -260,6 +323,8 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     }
 
     private void initCriteriasList(Category category) {
+
+        initViewByAction();
 
         List<Criteria> listCriterias = (List<Criteria>) category.getCriterias();
 
@@ -341,7 +406,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        inflater.inflate(R.menu.rs_menu, menu);
     }
 
     @Override
@@ -355,18 +420,11 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
-            case R.id.logout:
-                /*RSSession.removeToken(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);*/
-                break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
-                break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -382,12 +440,13 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
 
     private static AddReviewFragment instance;
 
-    public static AddReviewFragment getInstance(RSAddReview rsAddReview, Evaluation myEval, String from) {
+    public static AddReviewFragment getInstance(RSAddReview rsAddReview, Evaluation myEval, String from, String action) {
 
         Bundle args = new Bundle();
         args.putSerializable(RSConstants.RS_ADD_REVIEW, rsAddReview);
         args.putSerializable(RSConstants.MY_EVAL, myEval);
         args.putString(RSConstants.FROM, from);
+        args.putString(RSConstants.RS_ACTION, action);
 
         if (instance == null) {
             instance = new AddReviewFragment();
@@ -401,9 +460,12 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         instance = null;
         fragmentActionListener = null;
         rootView = null;
-        listPics.clear();
-        addReviewPresenter.onDestroy();
-        unbinder.unbind();
+        if (listPics != null)
+            listPics.clear();
+        if (addReviewPresenter != null)
+            addReviewPresenter.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
         super.onDestroyView();
     }
 
@@ -436,6 +498,33 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
                     myEval = new Evaluation();
                 initCriteriasList(currentCategory);
                 break;
+        }
+    }
+
+    private void initViewByAction() {
+        String action = getArguments().getString(RSConstants.RS_ACTION);
+        if (action.equals(RSConstants.ACTION_PIX)) {
+            openPixLayout(true);
+            scrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    try {
+                        scrollView.fullScroll(View.FOCUS_DOWN);
+                        scrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } catch (Exception e) {
+                    }
+                }
+            });
+        } else if (action.equals(RSConstants.ACTION_COMMENT)) {
+            openCommentLayout(true);
+            commentInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
+                }
+            });
+            commentInput.requestFocus();
         }
     }
 

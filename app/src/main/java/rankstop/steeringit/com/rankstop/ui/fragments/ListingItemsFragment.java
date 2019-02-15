@@ -135,7 +135,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
             public void onClick(View view, int position) {
                 if (RSNetwork.isConnected()) {
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsList.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
-                }else {
+                } else {
                     onOffLine();
                 }
             }
@@ -270,7 +270,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        inflater.inflate(R.menu.rs_menu, menu);
     }
 
     @Override
@@ -284,18 +284,11 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
-            case R.id.logout:
-                /*RSSession.cancelSession(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);*/
-                break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
-                break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -334,11 +327,15 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         rootView = null;
         scrollListener = null;
         fragmentActionListener = null;
-        fragmentContext.clear();
-        itemPresenter.onDestroyItem();
-        itemsAdapter.clear();
+        if (fragmentContext != null)
+            fragmentContext.clear();
+        if (itemPresenter != null)
+            itemPresenter.onDestroyItem();
+        if (itemsAdapter != null)
+            itemsAdapter.clear();
         itemsAdapter = null;
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         super.onDestroyView();
     }
 

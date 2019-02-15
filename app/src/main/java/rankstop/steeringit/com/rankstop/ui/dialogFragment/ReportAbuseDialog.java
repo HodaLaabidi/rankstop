@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -30,6 +29,7 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Abuse;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
@@ -78,7 +78,8 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     private String itemId, abuseId;
     private static ReportAbuseDialog instance;
     private RSLoader rsLoader;
-    private void createLoader(){
+
+    private void createLoader() {
         rsLoader = RSLoader.newInstance(loadingMsg);
         rsLoader.setCancelable(false);
     }
@@ -147,25 +148,27 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     @Override
     public void onDestroyView() {
 
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         rootView = null;
         colorStateList = null;
         layoutParams = null;
         abusesRG = null;
         instance = null;
-        abusePresenter.onDestroy();
+        if (abusePresenter != null)
+            abusePresenter.onDestroy();
 
         super.onDestroyView();
     }
 
     private void loadAbuseList() {
-        abusePresenter.loadAbusesList(RankStop.getDeviceLanguage().toUpperCase());
+        abusePresenter.loadAbusesList(RankStop.getDeviceLanguage());
     }
 
     private void initAbusesList(List<Abuse> abuseList) {
         try {
             for (Abuse abuse : abuseList) {
-                RadioButton rb = new RadioButton(getContext());
+                RSRBMedium rb = new RSRBMedium(getContext());
                 rb.setText(abuse.getName());
                 abusesRG.addView(rb);
             }
@@ -181,9 +184,9 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
 
     @Override
     public void onReportClicked() {
-        if (abuseId != null){
+        if (abuseId != null) {
             abusePresenter.reportAbuse(new RSRequestReportAbuse(RSSession.getCurrentUser().get_id(), itemId, abuseId));
-        }else{
+        } else {
             Toast.makeText(getContext(), chooseReason, Toast.LENGTH_SHORT).show();
         }
     }
@@ -220,7 +223,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
 
     @Override
     public void showProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.LOAD_ABUSES_LIST:
                 progressBar.setVisibility(View.VISIBLE);
                 break;
@@ -232,7 +235,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
 
     @Override
     public void hideProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.LOAD_ABUSES_LIST:
                 progressBar.setVisibility(View.GONE);
                 break;

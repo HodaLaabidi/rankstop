@@ -77,6 +77,15 @@ public class RSConstants {
     public static final String DELETE_PICTURE = "delete picture";
     public static final String RS_CONTACT = "rs contact";
     public static final String PUBLIC_IP = "public ip";
+    public static final String ACTION_EVAL = "action eval";
+    public static final String ACTION_COMMENT = "action comment";
+    public static final String ACTION_PIX = "action pix";
+    public static final String RS_ACTION = "rs action";
+    public static final String RS_EDIT_LANG = "rs edit language";
+    public static final String LIST_NOTIFS = "notifications list";
+    public static final String EDIT_NOTIF_VISIBILITY = "edit notif visibility";
+    public static final int MIN_AGE_USER = 10;
+    public static final String FORMAT_DATE = "date format";
     public static String _ID = "id";
 
     // parameters

@@ -54,6 +54,7 @@ import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
 public class ProfileFragment extends Fragment implements RSView.StandardView {
@@ -124,6 +125,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     String undefined;
     @BindString(R.string.off_line)
     String offlineMsg;
+    @BindString(R.string.date_format)
+    String dateFormat;
 
     @BindInt(R.integer.m_card_view)
     int marginCardView;
@@ -149,7 +152,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     fragmentActionListener.startFragment(UpdateProfileFragment.getInstance(userInfo.getUser()), RSConstants.FRAGMENT_UPDATE_PROFILE);
                     break;
             }
-        }else {
+        } else {
             onOffLine();
         }
     }
@@ -234,7 +237,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         setEmail(userInfo.getUser().getEmail());
         setPhone(userInfo.getUser().getPhone());
         setGender(userInfo.getUser().getGender());
-        setBirthDay(userInfo.getUser().getBirthDate());
+        setBirthDay(RSDateParser.convertToDateFormat(userInfo.getUser().getBirthDate(), dateFormat));
         setCountry(userInfo.getUser().getLocation().getCountry().getCountryName());
         setCity(userInfo.getUser().getLocation().getCity());
         setFullName(userInfo.getUser().getFirstName(), userInfo.getUser().getLastName());
@@ -493,9 +496,12 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         if (listCreatedItem != null)
             listCreatedItem.clear();
 
-        itemPresenter.onDestroyItem();
-        userPresenter.onDestroyUser();
-        unbinder.unbind();
+        if (itemPresenter != null)
+            itemPresenter.onDestroyItem();
+        if (userPresenter != null)
+            userPresenter.onDestroyUser();
+        if (unbinder != null)
+            unbinder.unbind();
         super.onDestroyView();
     }
 
@@ -593,7 +599,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
                 if (this.userInfo.getUser().getBirthDate() != null) {
                     if (!this.userInfo.getUser().getBirthDate().equals(userInfo.getUser().getBirthDate())) {
-                        setBirthDay(userInfo.getUser().getBirthDate());
+                        setBirthDay(RSDateParser.convertToDateFormat(userInfo.getUser().getBirthDate(), dateFormat));
                     }
                 }
 

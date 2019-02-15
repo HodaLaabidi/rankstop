@@ -133,7 +133,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         if (RSNetwork.isConnected()) {
             LoginManager.getInstance().logOut();
             LoginManager.getInstance().logInWithReadPermissions(fragmentContext.get(), Arrays.asList("public_profile", "email", "user_birthday", "user_gender", "user_location"));
-        }else {
+        } else {
             onOffLine();
         }
 
@@ -144,7 +144,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         if (RSNetwork.isConnected()) {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, 1);
-        }else {
+        } else {
             onOffLine();
         }
     }
@@ -308,9 +308,12 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         inputEmail.removeTextChangedListener(emailTextWatcher);
         instance = null;
         rootView = null;
-        fragmentContext.clear();
-        unbinder.unbind();
-        signupPresenter.onDestroyFindEmail();
+        if (fragmentContext != null)
+            fragmentContext.clear();
+        if (unbinder != null)
+            unbinder.unbind();
+        if (signupPresenter != null)
+            signupPresenter.onDestroyFindEmail();
         super.onDestroyView();
     }
 

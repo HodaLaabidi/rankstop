@@ -97,6 +97,36 @@ public interface RSView {
         void onOffLine();
     }
 
+    interface EditLangView {
+
+        void onSuccess(String lang, Object data);
+
+        void onFailure();
+
+        void onError();
+
+        void showProgressBar();
+
+        void hideProgressBar();
+
+        void onOffLine();
+    }
+
+    interface ListNotifView {
+
+        void onSuccess(String target, Object data, String itemId);
+
+        void onFailure(String target);
+
+        void onError(String target);
+
+        void showProgressBar(String target);
+
+        void hideProgressBar(String target);
+
+        void onOffLine();
+    }
+
     interface UpdateItemView {
 
         void onSuccess(String target, Object data);

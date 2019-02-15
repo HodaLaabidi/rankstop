@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,16 +14,87 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindInt;
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterNotifImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.RSNotif;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseNotif;
+import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.adapter.NotifAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
+import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
-public class ListNotifFragment extends Fragment {
+public class ListNotifFragment extends Fragment implements RSView.ListNotifView {
 
-    private Toolbar toolbar;
     private View rootView;
+    private Unbinder unbinder;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+    @BindView(R.id.tv_no_notif)
+    RSTVRegular noNotifTV;
+    @BindView(R.id.rv_list_notif)
+    RecyclerView listNotifRV;
+
+    @BindInt(R.integer.m_card_view)
+    int marginCardView;
+    @BindInt(R.integer.count_item_per_row)
+    int countItemPerRow;
+
+    @BindString(R.string.notifications)
+    String notifTitle;
+    @BindString(R.string.off_line)
+    String offlineMsg;
+
+    private RSPresenter.ListNotifPresenter listNotifPresenter;
+
+    // variables
+    private String userId = "";
+    private RSRequestListItem rsRequestListItem = new RSRequestListItem();
+    private NotifAdapter notifAdapter;
+    private List<RSNotif> notifsList = new ArrayList<>();
+
+    // panigation variables
+    private int currentPage = 1;
+    private boolean isLastPage = false;
+    private boolean isLoading = false;
+    private int PAGES_COUNT = 1;
+    // scroll listener
+    private EndlessScrollListener scrollListener;
+
+    @BindString(R.string.loading_msg)
+    String loadingMsg;
+    private RSLoader rsLoader;
+
+    private void createLoader() {
+        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader.setCancelable(false);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,27 +106,96 @@ public class ListNotifFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_list_notif, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         bindViews();
+        listNotifPresenter = new PresenterNotifImpl(ListNotifFragment.this);
 
-        toolbar.setTitle(getResources().getString(R.string.notifications));
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (RSSession.isLoggedIn()) {
+            //userId = getArguments().getString(RSConstants.USER_ID);
+            userId = RSSession.getCurrentUser().get_id();
+            rsRequestListItem.setUserId(userId);
+            rsRequestListItem.setLang(RankStop.getDeviceLanguage());
+            rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
+            if (RSNetwork.isConnected()) {
+                laodData(currentPage);
+            } else {
+                onOffLine();
+            }
+            initItemsList();
+        } else {
+
+        }
+    }
+
+    private void initItemsList() {
+        RecyclerViewClickListener itemListener = new RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                if (RSNetwork.isConnected()) {
+                    if (notifsList.get(position).isVisibility()) {
+                        listNotifPresenter.editNotifVisibility(notifsList.get(position).get_id(), notifsList.get(position).getItem().get_id());
+                    } else {
+                        fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(notifsList.get(position).getItem().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                    }
+                } else {
+                    onOffLine();
+                }
+            }
+        };
+        GridLayoutManager layoutManager = new GridLayoutManager(listNotifRV.getContext(), 1);
+        notifAdapter = new NotifAdapter(itemListener);
+        listNotifRV.setLayoutManager(layoutManager);
+        listNotifRV.setAdapter(notifAdapter);
+        listNotifRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
+        scrollListener = new EndlessScrollListener(layoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
+                rsRequestListItem.setPage(currentPage);
+                // mocking network delay for API call
+                laodData(currentPage);
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return PAGES_COUNT;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        };
+        listNotifRV.addOnScrollListener(scrollListener);
+    }
+
+    private void laodData(int pageNumber) {
+        rsRequestListItem.setPage(pageNumber);
+        listNotifPresenter.loadListNotif(rsRequestListItem);
     }
 
     private void bindViews() {
-        setFragmentActionListener((ContainerActivity)getActivity());
-        toolbar = rootView.findViewById(R.id.toolbar);
+        toolbar.setTitle(notifTitle);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setFragmentActionListener((ContainerActivity) getActivity());
+        createLoader();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        inflater.inflate(R.menu.rs_menu, menu);
     }
 
     @Override
@@ -67,18 +209,11 @@ public class ListNotifFragment extends Fragment {
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
-            case R.id.logout:
-                /*RSSession.removeToken(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);*/
-                break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
-                break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -86,9 +221,11 @@ public class ListNotifFragment extends Fragment {
     }
 
     private FragmentActionListener fragmentActionListener;
+
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
+
     private static ListNotifFragment instance;
 
     public static ListNotifFragment getInstance() {
@@ -100,9 +237,83 @@ public class ListNotifFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        currentPage = 1;
+        isLastPage = false;
+        isLoading = false;
+        PAGES_COUNT = 1;
+
         instance = null;
-        rootView=null;
+        rootView = null;
         fragmentActionListener = null;
+        if (unbinder != null)
+            unbinder.unbind();
+        if (listNotifPresenter != null)
+            listNotifPresenter.onDestroy();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onSuccess(String target, Object data, String itemId) {
+        RSResponseNotif notifResponse = null;
+        if (!(data instanceof String)) {
+            notifResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseNotif.class);
+        }
+        switch (target) {
+            case RSConstants.LIST_NOTIFS:
+                notifsList.addAll(notifResponse.getNotification());
+                if (notifResponse.getCurrent() == 1) {
+                    notifAdapter.clear();
+                    PAGES_COUNT = notifResponse.getPages();
+                    if (notifResponse.getNotification().size() > 0)
+                        listNotifRV.setVisibility(View.VISIBLE);
+                    else
+                        noNotifTV.setVisibility(View.VISIBLE);
+                } else if (notifResponse.getCurrent() > 1) {
+                    notifAdapter.removeLoadingFooter();
+                    isLoading = false;
+                }
+                notifAdapter.addAll(notifResponse.getNotification());
+                if (currentPage < PAGES_COUNT) {
+                    notifAdapter.addLoadingFooter();
+                    isLastPage = false;
+                } else {
+                    isLastPage = true;
+                }
+                break;
+            case RSConstants.EDIT_NOTIF_VISIBILITY:
+                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemId), RSConstants.FRAGMENT_ITEM_DETAILS);
+                break;
+        }
+    }
+
+    @Override
+    public void onFailure(String target) {
+    }
+
+    @Override
+    public void onError(String target) {
+    }
+
+    @Override
+    public void showProgressBar(String target) {
+        switch (target) {
+            case RSConstants.EDIT_NOTIF_VISIBILITY:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                break;
+        }
+    }
+
+    @Override
+    public void hideProgressBar(String target) {
+        switch (target) {
+            case RSConstants.EDIT_NOTIF_VISIBILITY:
+                rsLoader.dismiss();
+                break;
+        }
+    }
+
+    @Override
+    public void onOffLine() {
+        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
     }
 }

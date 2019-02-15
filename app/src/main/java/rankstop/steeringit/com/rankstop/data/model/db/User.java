@@ -101,9 +101,7 @@ public class User implements Serializable {
     }
 
     public String getBirthDate() {
-        if (birthDate != null)
-            return RSDateParser.convertToDateFormat(birthDate, "yyyy-MM-dd");
-        return "";
+        return birthDate;
     }
 
     public void setBirthDate(String birthDate) {

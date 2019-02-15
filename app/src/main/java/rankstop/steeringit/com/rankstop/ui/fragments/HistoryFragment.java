@@ -37,6 +37,7 @@ import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.History;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseHistory;
+import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.HistoryAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -75,7 +76,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     private RSPresenter.UserHistoryPresenter userHistoryPresenter;
 
     // variables
-    private String userId="";
+    private String userId = "";
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
     private HistoryAdapter historyAdapter;
     private List<History> historiesList = new ArrayList<>();
@@ -114,16 +115,21 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
         fragmentContext = new WeakReference<HistoryFragment>(this);
         userHistoryPresenter = new PresenterUserHistoryImpl(HistoryFragment.this);
 
-        userId = getArguments().getString(RSConstants.USER_ID);
-        rsRequestListItem.setUserId(userId);
-        rsRequestListItem.setLang(RankStop.getDeviceLanguage());
-        rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
-        if (RSNetwork.isConnected()){
-            laodData(currentPage);
-        }else {
-            onOffLine();
+        if (RSSession.isLoggedIn()) {
+            //userId = getArguments().getString(RSConstants.USER_ID);
+            userId = RSSession.getCurrentUser().get_id();
+            rsRequestListItem.setUserId(userId);
+            rsRequestListItem.setLang(RankStop.getDeviceLanguage());
+            rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
+            if (RSNetwork.isConnected()) {
+                laodData(currentPage);
+            } else {
+                onOffLine();
+            }
+            initItemsList();
+        } else {
+
         }
-        initItemsList();
 
     }
 
@@ -140,7 +146,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
             }
         };
         GridLayoutManager layoutManager = new GridLayoutManager(historyListRV.getContext(), 1);
-        historyAdapter = new HistoryAdapter(itemListener, true);
+        historyAdapter = new HistoryAdapter(itemListener);
         historyListRV.setLayoutManager(layoutManager);
         historyListRV.setAdapter(historyAdapter);
         historyListRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
@@ -178,14 +184,14 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     }
 
     private void bindViews() {
-        setFragmentActionListener((ContainerActivity)getActivity());
+        setFragmentActionListener((ContainerActivity) getActivity());
         toolbar.setTitle(historyTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        inflater.inflate(R.menu.rs_menu, menu);
     }
 
     @Override
@@ -199,18 +205,10 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
-            case R.id.logout:
-                /*RSSession.removeToken(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);*/
-                break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
-                break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -218,9 +216,11 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     }
 
     private FragmentActionListener fragmentActionListener;
+
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
+
     private static HistoryFragment instance;
 
     public static HistoryFragment getInstance(String userId) {
@@ -235,19 +235,25 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void onDestroyView() {
+
         currentPage = 1;
         isLastPage = false;
         isLoading = false;
         PAGES_COUNT = 1;
+
         scrollListener = null;
-        historyAdapter.clear();
-        historyAdapter=null;
+        if (historyAdapter != null)
+            historyAdapter.clear();
+        historyAdapter = null;
         instance = null;
-        rootView=null;
+        rootView = null;
         fragmentActionListener = null;
-        unbinder.unbind();
-        userHistoryPresenter.onDestroy();
-        fragmentContext.clear();
+        if (unbinder != null)
+            unbinder.unbind();
+        if (userHistoryPresenter != null)
+            userHistoryPresenter.onDestroy();
+        if (fragmentContext != null)
+            fragmentContext.clear();
         fragmentContext = null;
         super.onDestroyView();
     }
@@ -259,14 +265,17 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
         if (!(data instanceof String)) {
             historyResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseHistory.class);
         }
-        switch (target){
+        switch (target) {
             case RSConstants.USER_HISTORY:
-                Log.i("TAG_CURRENT_PAGE",""+historyResponse.getCurrent());
                 historiesList.addAll(historyResponse.getStories());
-                if (historyResponse.getCurrent() == 1){
+                if (historyResponse.getCurrent() == 1) {
                     historyAdapter.clear();
                     PAGES_COUNT = historyResponse.getPages();
-                }else if (historyResponse.getCurrent() > 1) {
+                    if (historyResponse.getStories().size() > 0)
+                        historyListRV.setVisibility(View.VISIBLE);
+                    else
+                        noHistoryTV.setVisibility(View.VISIBLE);
+                } else if (historyResponse.getCurrent() > 1) {
                     historyAdapter.removeLoadingFooter();
                     isLoading = false;
                 }
@@ -283,7 +292,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void onFailure(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.USER_HISTORY:
                 break;
         }
@@ -291,7 +300,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void onError(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.USER_HISTORY:
                 break;
         }
@@ -299,7 +308,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void showProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.USER_HISTORY:
                 break;
         }
@@ -307,7 +316,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void hideProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.USER_HISTORY:
                 break;
         }
@@ -315,7 +324,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void showMessage(String target, String message) {
-        switch (target){
+        switch (target) {
             case RSConstants.USER_HISTORY:
                 break;
         }

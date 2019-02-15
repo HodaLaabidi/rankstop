@@ -71,7 +71,8 @@ public class RSLoader extends DialogFragment {
 
     @Override
     public void onDestroyView() {
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         instance = null;
         super.onDestroyView();
     }

@@ -3,6 +3,7 @@ package rankstop.steeringit.com.rankstop.data.model.db;
 import java.io.Serializable;
 
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class Comment implements Serializable {
@@ -23,7 +24,7 @@ public class Comment implements Serializable {
     }
 
     public String getDate() {
-        return RSDateParser.convertToDateTimeFormat(date);
+        return date;
     }
 
     public void setDate(String date) {

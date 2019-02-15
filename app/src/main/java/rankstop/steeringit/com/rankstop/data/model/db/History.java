@@ -10,7 +10,7 @@ public class History implements Serializable {
 
     public String getDate() {
         if (date != null)
-            return RSDateParser.convertToDateFormat(date);
+            return date;
         return null;
     }
 

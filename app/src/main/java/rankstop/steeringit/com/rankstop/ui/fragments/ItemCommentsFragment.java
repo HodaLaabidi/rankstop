@@ -4,20 +4,19 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -27,6 +26,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindColor;
 import butterknife.BindInt;
 import butterknife.BindString;
 import butterknife.BindView;
@@ -37,11 +37,15 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.customviews.RSTVSemiBold;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.db.Comment;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
 import rankstop.steeringit.com.rankstop.session.RSSession;
@@ -51,6 +55,7 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.DialogConfirmationListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AlertConfirmationDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.ShowCommentDialog;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
@@ -76,21 +81,37 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
     ProgressBar mcProgressBar;
     @BindView(R.id.rl_my_comments)
     RelativeLayout myCommentsLayout;
-    @BindView(R.id.ll_add_comments)
-    LinearLayout addCommentLayout;
+    @BindView(R.id.tv_no_comment)
+    RSTVRegular noCommentTV;
+    @BindView(R.id.tv_no_other_comment)
+    RSTVRegular noOtherCommentTV;
     @BindView(R.id.filter_toggle)
     RadioGroup filterToggle;
 
-    @OnClick(R.id.btn_add_comment)
-    void onClick() {
+    @BindView(R.id.btn_add_comment2)
+    RSBTNMedium addCommentBTN;
+
+    @OnClick({R.id.btn_add_comment2, R.id.btn_add_comment})
+    void addComment() {
         if (RSNetwork.isConnected()) {
-            RSAddReview rsAddReview = new RSAddReview();
-            rsAddReview.setItemId(currentItem.getItemDetails().get_id());
-            rsAddReview.setCategoryId(currentCategory.get_id());
-            fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddReview, currentItem.getLastEvalUser(), ""), RSConstants.FRAGMENT_ADD_REVIEW);
-        }else {
+            if (RSSession.isLoggedIn()) {
+                RSAddReview rsAddReview = new RSAddReview();
+                rsAddReview.setItemId(currentItem.getItemDetails().get_id());
+                rsAddReview.setCategoryId(currentCategory.get_id());
+                fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddReview, currentItem.getLastEvalUser(), "", RSConstants.ACTION_COMMENT), RSConstants.FRAGMENT_ADD_REVIEW);
+            } else {
+                RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ADD_REVIEW, RSConstants.ACTION_ADD_REVIEW, alertLoginToAddCommentsMsg, itemId, "", currentCategory.get_id(), RSConstants.ACTION_COMMENT);
+                askToLoginDialog(rsNavigationData);
+            }
+        } else {
             onOffLine();
         }
+    }
+
+    private void askToLoginDialog(RSNavigationData rsNavigationData) {
+        AskToLoginDialog dialog = AskToLoginDialog.newInstance(rsNavigationData);
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), "");
     }
 
     private ReviewCardListener listener, myListener;
@@ -120,10 +141,21 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
     @BindInt(R.integer.count_item_per_row)
     int countItemPerRow;
 
+    @BindColor(R.color.colorAccent)
+    int colorAccent;
+
     @BindString(R.string.message_delete_comment)
     String deleteCommentMsg;
     @BindString(R.string.off_line)
     String offlineMsg;
+    @BindString(R.string.alert_login_to_add_comment)
+    String alertLoginToAddCommentsMsg;
+    @BindString(R.string.no_comments)
+    String noCommentsText;
+    @BindString(R.string.no_comments_by_filter)
+    String noCommentsByFilter;
+    @BindString(R.string.comment_deleted_successfully)
+    String commentDeletedSuccessfullyMsg;
 
 
     @Nullable
@@ -154,6 +186,8 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             userId = RSSession.getCurrentUser().get_id();
             myCommentsLayout.setVisibility(View.VISIBLE);
             titleOtherCom.setVisibility(View.VISIBLE);
+        } else {
+            addCommentBTN.setVisibility(View.VISIBLE);
         }
         rsRequestItemData = new RSRequestItemData(itemId, userId, RSConstants.MAX_FIELD_TO_LOAD, 1);
         if (RSNetwork.isConnected()) {
@@ -161,7 +195,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             mcProgressBar.setVisibility(View.VISIBLE);
             loadItemComments(currentPage);
             loadMyItemComments(mcCurrentPage);
-        }else {
+        } else {
             onOffLine();
         }
         setFragmentActionListener((ContainerActivity) getActivity());
@@ -301,10 +335,6 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
 
     private void loadMyItemComments(int pageNumber) {
         rsRequestItemData.setPage(pageNumber);
-        /*Toast.makeText(getContext(), "userId = " + rsRequestItemData.getUserId()
-                + "\nitemId = " + rsRequestItemData.getItemId()
-                + "\npage = " + rsRequestItemData.getPage()
-                + "\nperPage = " + rsRequestItemData.getPerPage(), Toast.LENGTH_LONG).show();*/
         itemPresenter.loadItemCommentsByUser(rsRequestItemData);
     }
 
@@ -323,51 +353,78 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (lastCheckedId) {
                     case R.id.all_comment:
-                        ((RadioButton) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGray));
+                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGray));
                         break;
                     case R.id.good_comment:
-                        ((RadioButton) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGreenPie));
+                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGreenPie));
                         break;
                     case R.id.neutral_comment:
-                        ((RadioButton) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorOrangePie));
+                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorOrangePie));
                         break;
                     case R.id.bad_comment:
-                        ((RadioButton) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorRedPie));
+                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorRedPie));
                         break;
                 }
                 lastCheckedId = checkedId;
-                ((RadioButton) rootView.findViewById(checkedId)).setTextColor(Color.WHITE);
+                ((RSRBMedium) rootView.findViewById(checkedId)).setTextColor(Color.WHITE);
                 switch (checkedId) {
                     case R.id.all_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_gray);
-                        itemCommentsAdapter.refreshData(comments);
-                        myItemCommentsAdapter.refreshData(myComments);
+                        if (comments.size() > 0) {
+                            noOtherCommentTV.setVisibility(View.GONE);
+                            itemCommentsAdapter.refreshData(comments);
+                        }
+                        if (myComments.size() > 0) {
+                            noCommentTV.setVisibility(View.GONE);
+                            myItemCommentsAdapter.refreshData(myComments);
+                        }
                         break;
                     case R.id.good_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_green);
-                        itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_GREEN));
-                        myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_GREEN));
+                        if (comments.size() > 0)
+                            itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_GREEN, RSConstants.OTHER));
+                        if (myComments.size() > 0)
+                            myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_GREEN, RSConstants.MINE));
                         break;
                     case R.id.neutral_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_orange);
-                        itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_ORANGE));
-                        myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_ORANGE));
+                        if (comments.size() > 0)
+                            itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_ORANGE, RSConstants.OTHER));
+                        if (myComments.size() > 0)
+                            myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_ORANGE, RSConstants.MINE));
                         break;
                     case R.id.bad_comment:
                         filterToggle.setBackgroundResource(R.drawable.rs_filter_view_red);
-                        itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_RED));
-                        myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_RED));
+                        if (comments.size() > 0)
+                            itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_RED, RSConstants.OTHER));
+                        if (myComments.size() > 0)
+                            myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_RED, RSConstants.MINE));
                         break;
                 }
             }
         });
     }
 
-    private List<Comment> getFilterOutput(List<Comment> comments, int filter) {
+    private List<Comment> getFilterOutput(List<Comment> comments, int filter, String target) {
         List<Comment> result = new ArrayList<>();
         for (Comment comment : comments) {
             if (filter == comment.getColor()) {
                 result.add(comment);
+            }
+        }
+        if (result.size() == 0) {
+            if (target.equals(RSConstants.MINE)) {
+                noCommentTV.setText(noCommentsByFilter);
+                noCommentTV.setVisibility(View.VISIBLE);
+            } else if (target.equals(RSConstants.OTHER)) {
+                noOtherCommentTV.setText(noCommentsByFilter);
+                noOtherCommentTV.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (target.equals(RSConstants.MINE)) {
+                noCommentTV.setVisibility(View.GONE);
+            } else if (target.equals(RSConstants.OTHER)) {
+                noOtherCommentTV.setVisibility(View.GONE);
             }
         }
         return result;
@@ -396,12 +453,16 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
         instance = null;
         rootView = null;
         fragmentActionListener = null;
-        comments.clear();
+        if (comments != null)
+            comments.clear();
         comments = null;
-        myComments.clear();
+        if (myComments != null)
+            myComments.clear();
         myComments = null;
-        unbinder.unbind();
-        //itemPresenter.onDestroyItem();
+        if (unbinder != null)
+            unbinder.unbind();
+        /*if (itemPresenter != null)
+            itemPresenter.onDestroyItem();*/
         super.onDestroyView();
     }
 
@@ -411,18 +472,25 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             case RSConstants.ITEM_COMMENTS:
                 RSResponseItemData rsResponseItemData = new Gson().fromJson(new Gson().toJson(data), RSResponseItemData.class);
                 try {
-                    manageCommentsList(rsResponseItemData);
+                    if (rsResponseItemData.getComments().size() == 0) {
+                        progressBar.setVisibility(View.GONE);
+                        commentsRV.setVisibility(View.GONE);
+                        noOtherCommentTV.setVisibility(View.VISIBLE);
+                    } else {
+                        manageCommentsList(rsResponseItemData);
+                    }
                 } catch (Exception e) {
                 }
                 break;
             case RSConstants.ITEM_COMMENTS_BY_USER:
                 RSResponseItemData response = new Gson().fromJson(new Gson().toJson(data), RSResponseItemData.class);
                 try {
-                    if (response.getComments().size() == 0){
-                        addCommentLayout.setVisibility(View.VISIBLE);
+                    if (response.getComments().size() == 0) {
+                        setTextNoPix();
+                        noCommentTV.setVisibility(View.VISIBLE);
                         myCommentsRV.setVisibility(View.GONE);
                         mcProgressBar.setVisibility(View.GONE);
-                    }else {
+                    } else {
                         manageMyCommentsList(response);
                     }
                 } catch (Exception e) {
@@ -434,14 +502,21 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
         }
     }
 
+    private void setTextNoPix() {
+        Spannable wordtoSpan = new SpannableString(noCommentsText + " " + currentItem.getItemDetails().getTitle());
+        wordtoSpan.setSpan(new ForegroundColorSpan(colorAccent), noCommentsText.length() + 1, noCommentsText.length() + 1 + currentItem.getItemDetails().getTitle().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        noCommentTV.setText(wordtoSpan);
+    }
+
     private void removeComment(Object data) {
         Comment comment = findCommentIndex(data);
         if (comment != null) {
             myComments.remove(comment);
             myItemCommentsAdapter.removeComment(comment);
-            Toast.makeText(getContext(), "Comment deleted successfully", Toast.LENGTH_SHORT).show();
-            if (myComments.size() == 0){
-                addCommentLayout.setVisibility(View.VISIBLE);
+            Toast.makeText(getContext(), commentDeletedSuccessfullyMsg, Toast.LENGTH_SHORT).show();
+            if (myComments.size() == 0) {
+                setTextNoPix();
+                noCommentTV.setVisibility(View.VISIBLE);
                 myCommentsRV.setVisibility(View.GONE);
                 mcProgressBar.setVisibility(View.GONE);
             }
@@ -449,7 +524,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
     }
 
     private Comment findCommentIndex(Object data) {
-        for (int i=0; i < myComments.size(); i++){
+        for (int i = 0; i < myComments.size(); i++) {
             if (myComments.get(i).get_id().equals(data.toString()))
                 return myComments.get(i);
         }
@@ -465,19 +540,16 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                     itemCommentsAdapter.addAll(rsResponseItemData.getComments());
                     break;
                 case R.id.good_comment:
-                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_GREEN));
+                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_GREEN, RSConstants.OTHER));
                     break;
                 case R.id.neutral_comment:
-                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_ORANGE));
+                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_ORANGE, RSConstants.OTHER));
                     break;
                 case R.id.bad_comment:
-                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_RED));
+                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_RED, RSConstants.OTHER));
                     break;
             }
             PAGES_COUNT = rsResponseItemData.getPages();
-
-            Log.i("TAG_PIX", "current page from comments == " + currentPage);
-            Log.i("TAG_PIX", "page count from comments == " + PAGES_COUNT);
 
             if (currentPage < PAGES_COUNT) {
                 itemCommentsAdapter.addLoadingFooter();
@@ -492,13 +564,13 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                     itemCommentsAdapter.addAll(rsResponseItemData.getComments());
                     break;
                 case R.id.good_comment:
-                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_GREEN));
+                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_GREEN, RSConstants.OTHER));
                     break;
                 case R.id.neutral_comment:
-                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_ORANGE));
+                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_ORANGE, RSConstants.OTHER));
                     break;
                 case R.id.bad_comment:
-                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_RED));
+                    itemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_RED, RSConstants.OTHER));
                     break;
             }
             if (currentPage != PAGES_COUNT) itemCommentsAdapter.addLoadingFooter();
@@ -516,13 +588,13 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                     myItemCommentsAdapter.addAll(rsResponseItemData.getComments());
                     break;
                 case R.id.good_comment:
-                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_GREEN));
+                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_GREEN, RSConstants.MINE));
                     break;
                 case R.id.neutral_comment:
-                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_ORANGE));
+                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_ORANGE, RSConstants.MINE));
                     break;
                 case R.id.bad_comment:
-                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_RED));
+                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_RED, RSConstants.MINE));
                     break;
             }
             MC_PAGES_COUNT = rsResponseItemData.getPages();
@@ -540,13 +612,13 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                     myItemCommentsAdapter.addAll(rsResponseItemData.getComments());
                     break;
                 case R.id.good_comment:
-                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_GREEN));
+                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_GREEN, RSConstants.MINE));
                     break;
                 case R.id.neutral_comment:
-                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_ORANGE));
+                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_ORANGE, RSConstants.MINE));
                     break;
                 case R.id.bad_comment:
-                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_RED));
+                    myItemCommentsAdapter.addAll(getFilterOutput(rsResponseItemData.getComments(), RSConstants.PIE_RED, RSConstants.MINE));
                     break;
             }
             if (mcCurrentPage != MC_PAGES_COUNT) myItemCommentsAdapter.addLoadingFooter();

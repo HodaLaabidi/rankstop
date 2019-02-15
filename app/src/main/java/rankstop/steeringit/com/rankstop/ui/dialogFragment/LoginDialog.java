@@ -38,7 +38,7 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
-public class LoginDialog extends DialogFragment implements RSView.LoginView{
+public class LoginDialog extends DialogFragment implements RSView.LoginView {
 
     @BindView(R.id.input_email)
     TextInputEditText emailEditText;
@@ -61,7 +61,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
     String offLineMsg;
 
     @OnClick(R.id.negative_btn)
-    void cancelDialog(){
+    void cancelDialog() {
         dismiss();
     }
 
@@ -73,17 +73,17 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
                 user.setPassword(passwordEditText.getText().toString().trim());
                 user.setEmail(getArguments().getString(RSConstants.EMAIL));
                 loginPresenter.performLogin(user);
-            }else {
+            } else {
                 onOffLine();
             }
         }
     }
 
     @OnClick(R.id.forget_password_btn)
-    void resetPassword(){
-        if (RSNetwork.isConnected()){
+    void resetPassword() {
+        if (RSNetwork.isConnected()) {
 
-        }else {
+        } else {
             onOffLine();
         }
     }
@@ -95,7 +95,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
         if (TextUtils.isEmpty(password)) {
             passwordLayout.setError(requiredField);
             x++;
-        }else if (password.length() < minLength6){
+        } else if (password.length() < minLength6) {
             passwordLayout.setError(minLength6Msg);
             x++;
         }
@@ -111,7 +111,8 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
     @BindString(R.string.loading_msg)
     String loadingMsg;
     private RSLoader rsLoader;
-    private void createLoader(){
+
+    private void createLoader() {
         rsLoader = RSLoader.newInstance(loadingMsg);
         rsLoader.setCancelable(false);
     }
@@ -124,13 +125,13 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().trim().length() > 0){
-                if (s.toString().trim().length() < minLength6){
+            if (s.toString().trim().length() > 0) {
+                if (s.toString().trim().length() < minLength6) {
                     passwordLayout.setError(minLength6Msg);
-                }else{
+                } else {
                     passwordLayout.setErrorEnabled(false);
                 }
-            }else{
+            } else {
                 passwordLayout.setError(requiredField);
             }
         }
@@ -182,7 +183,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
     private void onDialogShow(AlertDialog dialog) {
         dialog.getWindow().setLayout((int) getContext().getResources().getDimension(R.dimen.w_dialog_login), LinearLayout.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
-        loginPresenter = new PresenterAuthImpl( LoginDialog.this);
+        loginPresenter = new PresenterAuthImpl(LoginDialog.this);
     }
 
     private void addTextWatchers() {
@@ -196,10 +197,10 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
         RSSession.startSession(token);
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
             loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN);
-        }else {
+        } else {
             rsLoader.dismiss();
             dismiss();
-            ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+            ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
         }
     }
 
@@ -217,18 +218,18 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
             Toast.makeText(getContext(), getResources().getString(R.string.already_followed), Toast.LENGTH_SHORT).show();
         }
         dismiss();
-        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+        ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
     }
 
     @Override
     public void onFollowFailure(String target) {
         dismiss();
-        ((ContainerActivity)getActivity()).manageSession(true, rsNavigationData);
+        ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
     }
 
     @Override
     public void showProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.LOGIN:
                 rsLoader.show(getFragmentManager(), RSLoader.TAG);
                 break;
@@ -237,7 +238,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
 
     @Override
     public void hideProgressBar(String target) {
-        switch (target){
+        switch (target) {
             case RSConstants.LOGIN:
                 rsLoader.dismiss();
                 break;
@@ -255,9 +256,11 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView{
     @Override
     public void onDestroyView() {
         passwordEditText.removeTextChangedListener(pwdTextWatcher);
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
         instance = null;
-        loginPresenter.onDestroyLogin();
+        if (loginPresenter != null)
+            loginPresenter.onDestroyLogin();
         super.onDestroyView();
     }
 }

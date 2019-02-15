@@ -37,10 +37,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="width_galery_pic">80dp</dimen>
     <dimen name="raduis_galery_pic">5dp</dimen>
-    <dimen name="mlr_card_view">4dp</dimen>
-    <dimen name="mtb_card_view">0dp</dimen>
-    <dimen name="content_start_inset_toolbar">10dp</dimen>
-    <dimen name="content_end_inset_toolbar">10dp</dimen>
+    <dimen name="mlr_card_view">8dp</dimen>
+    <dimen name="mtb_card_view">8dp</dimen>
+    <dimen name="content_start_inset_toolbar">0dp</dimen>
+    <dimen name="content_end_inset_toolbar">0dp</dimen>
     <dimen name="width_progress_bar">50dp</dimen>
     <dimen name="p_activity">8dp</dimen>
     <dimen name="second_track_size">5dp</dimen>
@@ -50,7 +50,6 @@
     <dimen name="height_map_add_item">350dp</dimen>
     <dimen name="text_size_criteria">15sp</dimen>
     <dimen name="thumb_raduis_on_dragging">7dp</dimen>
-    <dimen name="m_activity">8dp</dimen>
     <dimen name="width_add_review_pic">100dp</dimen>
     <dimen name="w_dialog_login">450dp</dimen>
     <dimen name="min_height_report_dialog">150dp</dimen>
@@ -59,7 +58,7 @@
     <dimen name="progress_bar_width">50dp</dimen>
     <dimen name="raduis_btn_dialog">10dp</dimen>
     <dimen name="margin_end_btn_dialog">10dp</dimen>
-    <dimen name="text_size_dialog">12sp</dimen>
+    <dimen name="text_size_dialog">14sp</dimen>
     <dimen name="text_size_header_dialog">18sp</dimen>
     <dimen name="height_scroll_view">400dp</dimen>
     <dimen name="width_scroll_bar">4dp</dimen>
@@ -112,4 +111,9 @@
     <dimen name="bottom_sheet_corner_radius">16dp</dimen>
     <dimen name="bottom_sheet_top_padding">8dp</dimen>
     <dimen name="size_date_add_eval">12sp</dimen>
+    <dimen name="width_comment_card">240dp</dimen>
+    <dimen name="size_active_nav_title">13sp</dimen>
+    <dimen name="size_nav_title">12sp</dimen>
+    <dimen name="width_filter_section">220dp</dimen>
+    <dimen name="text_size_filter">11sp</dimen>
 </resources>

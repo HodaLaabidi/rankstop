@@ -11,7 +11,7 @@ import rankstop.steeringit.com.rankstop.utils.Utility;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    /*private static final String TAG = "BaseActivity";
+    private static final String TAG = "BaseActivity";
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -24,5 +24,5 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         Utility.resetActivityTitle(this);
-    }*/
+    }
 }

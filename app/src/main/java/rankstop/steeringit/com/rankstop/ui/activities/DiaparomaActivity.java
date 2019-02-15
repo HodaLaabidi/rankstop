@@ -28,7 +28,7 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
 import rankstop.steeringit.com.rankstop.ui.fragments.SlidePhotoFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
-public class DiaparomaActivity extends AppCompatActivity implements RSView.StandardView {
+public class DiaparomaActivity extends BaseActivity implements RSView.StandardView {
 
     private Unbinder unbinder;
 
@@ -227,8 +227,10 @@ public class DiaparomaActivity extends AppCompatActivity implements RSView.Stand
     @Override
     protected void onDestroy() {
 
-        unbinder.unbind();
-        itemPresenter.onDestroyItem();
+        if (unbinder != null)
+            unbinder.unbind();
+        if (itemPresenter != null)
+            itemPresenter.onDestroyItem();
 
         super.onDestroy();
     }

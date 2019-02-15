@@ -24,5 +24,7 @@ public class VerticalSpace extends RecyclerView.ItemDecoration {
             outRect.top = 0;
         }
         outRect.bottom = space;
+        outRect.right = space/2;
+        outRect.left = space/2;
     }
 }

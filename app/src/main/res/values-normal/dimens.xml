@@ -37,10 +37,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="width_galery_pic">70dp</dimen>
     <dimen name="raduis_galery_pic">4dp</dimen>
-    <dimen name="mlr_card_view">4dp</dimen>
-    <dimen name="mtb_card_view">0dp</dimen>
+    <dimen name="mlr_card_view">8dp</dimen>
+    <dimen name="mtb_card_view">8dp</dimen>
     <dimen name="content_start_inset_toolbar">10dp</dimen>
-    <dimen name="content_end_inset_toolbar">10dp</dimen>
+    <dimen name="content_end_inset_toolbar">0dp</dimen>
     <dimen name="width_progress_bar">35dp</dimen>
     <dimen name="p_activity">8dp</dimen>
     <dimen name="second_track_size">5dp</dimen>
@@ -113,4 +113,9 @@
     <dimen name="bottom_sheet_corner_radius">16dp</dimen>
     <dimen name="bottom_sheet_top_padding">8dp</dimen>
     <dimen name="size_date_add_eval">14sp</dimen>
+    <dimen name="width_comment_card">170dp</dimen>
+    <dimen name="size_active_nav_title">7sp</dimen>
+    <dimen name="size_nav_title">8sp</dimen>
+    <dimen name="width_filter_section">220dp</dimen>
+    <dimen name="text_size_filter">11sp</dimen>
 </resources>

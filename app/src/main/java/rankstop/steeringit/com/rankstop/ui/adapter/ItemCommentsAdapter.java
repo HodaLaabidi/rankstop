@@ -1,11 +1,9 @@
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
-import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +18,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
+import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Comment;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapter.ViewHolder> {
 
@@ -110,9 +111,12 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
         private RSBTNMedium readMoreBTN;
         private ImageButton removeCommentBTN;
         private SimpleDraweeView avatar;
+        @BindString(R.string.date_time_format)
+        String dateTimeFormat;
 
         public ViewHolder(@NonNull View itemView, ReviewCardListener listener) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             mListener = listener;
 
             layout = itemView.findViewById(R.id.layout);
@@ -127,7 +131,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
 
             if (target.equals("mine")) {
                 try {
-                    RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(240, 240);
+                    RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams((int)RankStop.getInstance().getResources().getDimension(R.dimen.width_comment_card), (int)RankStop.getInstance().getResources().getDimension(R.dimen.width_comment_card));
                     cardView.setLayoutParams(layoutParams);
                     FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     commentContainer.setLayoutParams(params);
@@ -195,7 +199,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
                 layout.setBackgroundColor(RankStop.getInstance().getResources().getColor(comment.getColor()));
                 commentTV.setText(comment.getText().trim());
                 usernameTV.setText(comment.getUserId().getNameToUse().getValue());
-                dateTV.setText(comment.getDate());
+                dateTV.setText(RSDateParser.convertToDateTimeFormat(comment.getDate(), dateTimeFormat));
                 avatar.setImageURI(Uri.parse(comment.getUserId().getPictureProfile()));
             } catch (Exception e) {
             }

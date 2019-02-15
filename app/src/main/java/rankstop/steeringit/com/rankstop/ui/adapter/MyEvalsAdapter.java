@@ -36,6 +36,7 @@ import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.utils.DisabledRecyclerView;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHolder> {
@@ -145,6 +146,8 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
         int primaryColor;
         @BindInt(R.integer.m_card_view)
         int marginCardView;
+        @BindString(R.string.date_time_format)
+        String dateTimeFormat;
 
         public ViewHolder(@NonNull View itemView, ItemPieListener pieListener) {
             super(itemView);
@@ -201,7 +204,7 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
 
 
             noteEvalTV.setText(String.valueOf(item.getMyEval().getNoteEval()));
-            dateEvalTV.setText(item.getMyEval().getDate());
+            dateEvalTV.setText(RSDateParser.convertToDateTimeFormat(item.getMyEval().getDate(), dateTimeFormat));
             // add listener to like icon
             likeIcon.setOnClickListener(new View.OnClickListener() {
                 @Override

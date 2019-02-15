@@ -7,11 +7,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-
-import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.lang.ref.WeakReference;
 
@@ -32,7 +29,7 @@ import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
-public class ContainerActivity extends AppCompatActivity implements FragmentActionListener {
+public class ContainerActivity extends BaseActivity implements FragmentActionListener {
 
     private BottomNavigationView navigation;
     private FragmentTransaction fragmentTransaction;
@@ -88,7 +85,6 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(getApplicationContext());
         setContentView(R.layout.activity_container);
         ButterKnife.bind(this);
 
@@ -158,7 +154,7 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
                     RSAddReview rsAddReview = new RSAddReview();
                     rsAddReview.setItemId(rsNavigationData.getItemId());
                     rsAddReview.setCategoryId(rsNavigationData.getCategoryId());
-                    startFragment(AddReviewFragment.getInstance(rsAddReview, null, RSConstants.FRAGMENT_SIGN_UP), RSConstants.FRAGMENT_ADD_REVIEW);
+                    startFragment(AddReviewFragment.getInstance(rsAddReview, null, RSConstants.FRAGMENT_SIGN_UP, rsNavigationData.getSubAction()), RSConstants.FRAGMENT_ADD_REVIEW);
                 } else if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
                     // follow item men item details
                     startFragment(ItemDetailsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_ADD_REVIEW);
@@ -231,7 +227,8 @@ public class ContainerActivity extends AppCompatActivity implements FragmentActi
 
     @Override
     protected void onDestroy() {
-        activity.clear();
+        if (activity != null)
+            activity.clear();
         if (handler != null)
             handler.removeCallbacks(runnable);
         super.onDestroy();

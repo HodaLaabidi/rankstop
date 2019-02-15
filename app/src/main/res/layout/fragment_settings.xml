@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,30 +8,66 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_below="@id/app_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
-                android:id="@+id/btn_en"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/english" />
 
-            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
-                android:id="@+id/btn_fr"
-                android:layout_width="wrap_content"
+            <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/frensh" />
+                android:padding="16dp"
+                android:text="@string/langue_title"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp" />
 
-            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
-                android:id="@+id/btn_de"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/german" />
+            <RadioGroup
+                android:id="@+id/rg_btn_language"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
+                    android:id="@+id/rb_en"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:button="@null"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:drawableEnd="@drawable/rs_radio_bg"
+                    android:focusable="true"
+                    android:padding="16dp"
+                    android:text="@string/english" />
+
+                <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
+                    android:id="@+id/rb_fr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:button="@null"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:drawableEnd="@drawable/rs_radio_bg"
+                    android:focusable="true"
+                    android:padding="16dp"
+                    android:text="@string/frensh" />
+
+                <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
+                    android:id="@+id/rb_de"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:button="@null"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:drawableRight="@drawable/rs_radio_bg"
+                    android:focusable="true"
+                    android:padding="16dp"
+                    android:text="@string/german" />
+            </RadioGroup>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

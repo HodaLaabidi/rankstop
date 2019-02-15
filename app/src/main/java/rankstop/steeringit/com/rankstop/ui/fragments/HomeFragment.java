@@ -118,7 +118,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
             rsNavigationData.setSection(RSConstants.TOP_VIEWED_ITEMS);
             fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
 
-        }else {
+        } else {
             onOffLine();
         }
     }
@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
             rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
             rsNavigationData.setSection(RSConstants.TOP_COMMENTED_ITEMS);
             fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
-        }else {
+        } else {
             onOffLine();
         }
     }
@@ -146,7 +146,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
             rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
             rsNavigationData.setSection(RSConstants.TOP_FOLLOWED_ITEMS);
             fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
-        }else {
+        } else {
             onOffLine();
         }
     }
@@ -394,7 +394,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
+        inflater.inflate(R.menu.rs_menu, menu);
     }
 
     @Override
@@ -405,18 +405,11 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
-            case R.id.logout:
-                /*RSSession.removeToken(getContext());
-                ((ContainerActivity)getActivity()).manageSession(false);*/
-                break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
                 fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
-                break;
-            case R.id.notifications:
-                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -449,8 +442,10 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         instance = null;
         fragmentActionListener = null;
         rootView = null;
-        itemPresenter.onDestroyItem();
-        unbinder.unbind();
+        if (itemPresenter != null)
+            itemPresenter.onDestroyItem();
+        if (unbinder != null)
+            unbinder.unbind();
         super.onDestroyView();
     }
 

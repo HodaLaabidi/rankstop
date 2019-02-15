@@ -3,8 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/p_card_rv_item"
-    android:layout_marginEnd="@dimen/p_card_rv_item"
     android:foreground="?android:selectableItemBackground"
     tools:context=".ui.activities.ContainerActivity">
 
