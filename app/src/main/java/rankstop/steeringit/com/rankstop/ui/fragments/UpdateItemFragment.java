@@ -21,6 +21,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -142,7 +143,6 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
     private FileCompressor mCompressor;
     private File mPhotoFile;
-    private Uri imageUri;
 
     public static UpdateItemFragment getInstance(ItemDetails itemDetails) {
         Bundle args = new Bundle();
@@ -152,6 +152,12 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         }
         instance.setArguments(args);
         return instance;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -169,17 +175,13 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         initPixList();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mCompressor = new FileCompressor(getContext());
-    }
-
     private void bindViews() {
         createLoader();
+        mCompressor = new FileCompressor(getContext());
         presenterUpdateItem = new PresenterUpdateItemImpl(UpdateItemFragment.this, getContext());
         toolbar.setTitle(updateItemTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         itemDetails = (ItemDetails) getArguments().getSerializable(RSConstants.RS_ITEM_DETAILS);
         inputFacebook.setText(itemDetails.getUrlFacebook());
         inputInstagram.setText(itemDetails.getUrlInstagram());
@@ -341,10 +343,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "IMG_" + timeStamp + "_";
         File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-        //imageFilePath = image.getAbsolutePath();
-
-        return image;
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
     @Override
@@ -369,6 +368,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == RESULT_OK) {
+            Uri imageUri;
             if (requestCode == REQUEST_TAKE_PHOTO) {
                 try {
                     mPhotoFile = mCompressor.compressToFile(mPhotoFile);
@@ -395,6 +395,19 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         } else if (resultCode == RESULT_CANCELED) {
             //Toast.makeText(getContext(), "You cancelled the operation", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void addPicToList(Uri imageUri) {

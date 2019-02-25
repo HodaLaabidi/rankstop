@@ -125,7 +125,6 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
             commentTV = itemView.findViewById(R.id.tv_comment);
             commentContainer = itemView.findViewById(R.id.comment_container);
             cardView = itemView.findViewById(R.id.card_view);
-            readMoreBTN = itemView.findViewById(R.id.btn_read_more);
             removeCommentBTN = itemView.findViewById(R.id.btn_remove_comment);
             avatar = itemView.findViewById(R.id.avatar);
 
@@ -183,9 +182,6 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.btn_read_more:
-                    mListener.onReadMoreClicked(getAdapterPosition());
-                    break;
                 case R.id.btn_remove_comment:
                     mListener.onRemoveClicked(getAdapterPosition());
                     break;

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,6 +52,7 @@ import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
@@ -178,7 +180,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     private RSPresenter.ItemPresenter itemPresenter;
     private RSPresenter.UserPresenter userPresenter;
 
-    private RSResponseListingItem listingItemResponse;
     private PieAdapter adapterOwnedItem, adapterFollowedItem, adapterCreatedItem;
     private String itemIdToFollow;
 
@@ -188,7 +189,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        fragmentContext = new WeakReference<ProfileFragment>(this);
+        fragmentContext = new WeakReference<>(this);
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
@@ -453,10 +454,10 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.FRAGMENT_SIGN_UP, ""));
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(userInfo.getUser().get_id()), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
+                openContactDialog();
                 break;
             case R.id.notifications:
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
@@ -464,6 +465,12 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openContactDialog() {
+        ContactDialog dialog = new ContactDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.show(ft, ContactDialog.TAG);
     }
 
     private FragmentActionListener fragmentActionListener;
@@ -510,7 +517,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
         switch (target) {
             case RSConstants.ITEM_CREATED:
-                listingItemResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
+                RSResponseListingItem listingItemResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
                 listCreatedItem = listingItemResponse.getItems();
                 if (listCreatedItem.size() == 0) {
                     layoutItemCreated.setVisibility(View.VISIBLE);
@@ -747,11 +754,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     @Override
     public void onStart() {
         super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override

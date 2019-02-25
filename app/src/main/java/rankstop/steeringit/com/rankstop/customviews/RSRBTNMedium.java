@@ -2,10 +2,10 @@ package rankstop.steeringit.com.rankstop.customviews;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
-import android.widget.RadioButton;
 
-public class RSRBTNMedium extends RadioButton {
+public class RSRBTNMedium extends AppCompatRadioButton {
 
     public RSRBTNMedium(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

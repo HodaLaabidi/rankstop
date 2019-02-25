@@ -3,6 +3,7 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,7 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
@@ -197,7 +199,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        fragmentContext = new WeakReference<HomeFragment>(this);
+        fragmentContext = new WeakReference<>(this);
         rootView = inflater.inflate(R.layout.fragment_home, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
@@ -208,17 +210,6 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         super.onActivityCreated(savedInstanceState);
         bindViews();
 
-        /*try {
-            rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
-            Toast.makeText(getContext(), "" + (rsNavigationData == null), Toast.LENGTH_SHORT).show();
-            //manageFollow(rsNavigationData.getItemId(), true);
-        } catch (Exception e) {
-        }*/
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         Log.i("TAG_LISTING", "on activity created");
         itemPresenter = new PresenterItemImpl(HomeFragment.this);
         rsRequestListItem.setLang(RankStop.getDeviceLanguage());
@@ -228,6 +219,13 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         } else {
             onOffLine();
         }
+
+        /*try {
+            rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
+            Toast.makeText(getContext(), "" + (rsNavigationData == null), Toast.LENGTH_SHORT).show();
+            //manageFollow(rsNavigationData.getItemId(), true);
+        } catch (Exception e) {
+        }*/
     }
 
     private void getCurrentUser() {
@@ -406,10 +404,13 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
+                openContactDialog();
+                break;
+            case R.id.notifications:
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -447,6 +448,12 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         if (unbinder != null)
             unbinder.unbind();
         super.onDestroyView();
+    }
+
+    private void openContactDialog() {
+        ContactDialog dialog = new ContactDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.show(ft, ContactDialog.TAG);
     }
 
 

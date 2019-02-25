@@ -18,8 +18,10 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.fragments.AddItemFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.AddReviewFragment;
+import rankstop.steeringit.com.rankstop.ui.fragments.HistoryFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.HomeFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ItemDetailsFragment;
+import rankstop.steeringit.com.rankstop.ui.fragments.ListNotifFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ListingItemsFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ProfileFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.MyEvaluationsFragment;
@@ -32,13 +34,12 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 public class ContainerActivity extends BaseActivity implements FragmentActionListener {
 
     private BottomNavigationView navigation;
-    private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
     private boolean isLoggedIn = false;
     private Handler handler;
     private Runnable runnable;
 
-    public WeakReference<ContainerActivity> activity;
+    private WeakReference<ContainerActivity> activity;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -88,7 +89,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
         setContentView(R.layout.activity_container);
         ButterKnife.bind(this);
 
-        activity = new WeakReference<ContainerActivity>(this);
+        activity = new WeakReference<>(this);
 
         isLoggedIn = RSSession.isLoggedIn();
 
@@ -97,13 +98,8 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
 
         fragmentManager = getSupportFragmentManager();
 
-        //backstack change listener
-        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                Log.i("BACK_STACK", "fragment count in back stack: " + fragmentManager.getBackStackEntryCount());
-            }
-        });
+        //backStack change listener
+        fragmentManager.addOnBackStackChangedListener(() -> Log.i("BACK_STACK", "fragment count in back stack: " + fragmentManager.getBackStackEntryCount()));
 
         replaceFragment(HomeFragment.getInstance(), RSConstants.FRAGMENT_HOME);
     }
@@ -111,16 +107,10 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
     @Override
     protected void onResume() {
         super.onResume();
-        /*Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-        if (fragment instanceof HomeFragment){
-            super.onBackPressed();
-        }else {
-            navigation.setSelectedItemId(R.id.navigation_home);
-        }*/
-        //fragmentManager.popBackStack();// supprimé la dernière transaction du back stack
-        //fragmentManager.popBackStack(0,0); // supprimé tous les transaction du back stack sauf la première
-        //fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE); Supprimé tous les transactions du back stack
-        //fragmentManager.popBackStack("fragment name",0); Supprimé tous les transactions du back stack sauf la transaction qui a le nom "fragment name"
+        //fragmentManager.popBackStack();// supprimer la dernière transaction du back stack
+        //fragmentManager.popBackStack(0,0); // supprimer tous les transaction du back stack sauf la première
+        //fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE); Supprimer tous les transactions du back stack
+        //fragmentManager.popBackStack("fragment name",0); Supprimer tous les transactions du back stack sauf la transaction qui a le nom "fragment name"
     }
 
     public void manageSession(boolean isLoggedIn, RSNavigationData rsNavigationData) {
@@ -145,6 +135,12 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                 //follow mel home
                 startFragment(HomeFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_HOME);
                 break;
+            case RSConstants.FRAGMENT_HISTORY:
+                startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
+                break;
+            case RSConstants.FRAGMENT_NOTIF:
+                startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
+                break;
             case RSConstants.FRAGMENT_LISTING_ITEMS:
                 //follow mel home
                 startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
@@ -168,8 +164,8 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
         }
     }
 
-    public void replaceFragment(Fragment fragment, String tag) {
-        fragmentTransaction = fragmentManager.beginTransaction();
+    private void replaceFragment(Fragment fragment, String tag) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment);
         fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commit();
@@ -188,12 +184,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                 Log.d("TAG_BACK_STACK", "" + Thread.currentThread().getId());
                 if (handler == null)
                     handler = new Handler();
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        navigation.setSelectedItemId(R.id.navigation_home);
-                    }
-                };
+                runnable = () -> navigation.setSelectedItemId(R.id.navigation_home);
                 handler.postDelayed(runnable, 200);
 
             } else {

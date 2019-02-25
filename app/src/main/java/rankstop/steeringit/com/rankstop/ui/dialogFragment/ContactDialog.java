@@ -1,19 +1,15 @@
-package rankstop.steeringit.com.rankstop.ui.fragments;
+package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -32,17 +28,16 @@ import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
-public class ContactFragment extends Fragment implements RSView.StandardView {
+public class ContactDialog extends DialogFragment implements RSView.StandardView {
+
+
+    public static String TAG = "CONTACT_DIALOG";
 
     private View rootView;
     private Unbinder unbinder;
-    private User user;
     private String fullname, email, subject, message;
     private RSLoader rsLoader;
 
@@ -51,9 +46,9 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.input_layout_fullname)
+    @BindView(R.id.input_layout_full_name)
     TextInputLayout inputLayoutFullName;
-    @BindView(R.id.input_fullname)
+    @BindView(R.id.input_full_name)
     RSETMedium inputFullName;
 
     @BindView(R.id.input_layout_email)
@@ -234,16 +229,31 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_contact, container, false);
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        rootView = inflater.inflate(R.layout.dialog_contact, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+
+        toolbar.setNavigationIcon(R.drawable.ic_close);
+        toolbar.setNavigationOnClickListener(view1 -> dismiss());
+        toolbar.setTitle(contactTitle);
         return rootView;
     }
 
@@ -253,12 +263,8 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
 
         bindViews();
 
-        toolbar.setTitle(contactTitle);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         if (RSSession.isLoggedIn()) {
-            user = RSSession.getCurrentUser();
+            User user = RSSession.getCurrentUser();
             if (user.getFirstName() != null)
                 inputFullName.setText(user.getFirstName());
             if (user.getLastName() != null)
@@ -266,11 +272,11 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
             inputEmail.setText(user.getEmail());
         }
 
-        presenter = new PresenterContact(ContactFragment.this);
+        presenter = new PresenterContact(ContactDialog.this);
+
     }
 
     private void bindViews() {
-        setFragmentActionListener((ContainerActivity) getActivity());
         addTextWatcher();
         createLoader();
     }
@@ -282,55 +288,13 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
         inputMessage.addTextChangedListener(messageTextWatcher);
     }
 
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.rs_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-
-        switch (itemId) {
-            case android.R.id.home:
-                getActivity().onBackPressed();
-                break;
-            case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
-                break;
-            case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
-                break;
-            case R.id.contact:
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private FragmentActionListener fragmentActionListener;
-
-    public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
-        this.fragmentActionListener = fragmentActionListener;
-    }
-
-    private static ContactFragment instance;
-
-    public static ContactFragment getInstance() {
-        if (instance == null) {
-            instance = new ContactFragment();
-        }
-        return instance;
-    }
-
     @Override
     public void onDestroyView() {
-        instance = null;
         inputMessage.removeTextChangedListener(messageTextWatcher);
         inputEmail.removeTextChangedListener(emailTextWatcher);
         inputSubject.removeTextChangedListener(subjectTextWatcher);
         inputFullName.removeTextChangedListener(fullNameTextWatcher);
         rootView = null;
-        fragmentActionListener = null;
         if (unbinder != null)
             unbinder.unbind();
         if (presenter != null)
@@ -338,12 +302,13 @@ public class ContactFragment extends Fragment implements RSView.StandardView {
         super.onDestroyView();
     }
 
+
     @Override
     public void onSuccess(String target, Object data) {
         switch (target) {
             case RSConstants.RS_CONTACT:
                 Toast.makeText(getContext(), messageReceived, Toast.LENGTH_LONG).show();
-                fragmentActionListener.pop();
+                dismiss();
                 break;
         }
     }

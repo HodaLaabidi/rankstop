@@ -5,8 +5,6 @@ import com.google.gson.Gson;
 import java.io.Serializable;
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.utils.RSDateParser;
-
 public class ItemDetails implements Serializable {
 
     private Object category;

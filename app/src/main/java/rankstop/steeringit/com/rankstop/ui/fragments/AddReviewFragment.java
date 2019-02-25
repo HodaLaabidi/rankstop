@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -74,6 +73,7 @@ import rankstop.steeringit.com.rankstop.ui.callbacks.CriteriaEvalListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.data.model.db.Criteria;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSBottomSheetDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
 import rankstop.steeringit.com.rankstop.utils.FileCompressor;
@@ -142,7 +142,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         openCommentLayout(isCommentLayoutHidden);
     }
 
-    @OnClick(R.id.layut_add_pix)
+    @OnClick(R.id.layout_add_pix)
     void managePixLayout() {
         openPixLayout(isPixLayoutHidden);
     }
@@ -270,6 +270,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mCompressor = new FileCompressor(getContext());
         bindViews();
         userId = RSSession.getCurrentUser().get_id();
         rsAddReview = (RSAddReview) getArguments().getSerializable(RSConstants.RS_ADD_REVIEW);
@@ -284,12 +285,6 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
 
         initPixList();
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mCompressor = new FileCompressor(getContext());
     }
 
     private boolean isEvalChanged(List<CriteriaEval> myCriteriaEvalList, List<CriteriaEval> criteriaEvalList) {
@@ -421,20 +416,29 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
+                openContactDialog();
+                break;
+            case R.id.notifications:
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void openContactDialog() {
+        ContactDialog dialog = new ContactDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.show(ft, ContactDialog.TAG);
+    }
+
 
     private FragmentActionListener fragmentActionListener;
 
-    public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
+    private void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
 
@@ -517,12 +521,9 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
             });
         } else if (action.equals(RSConstants.ACTION_COMMENT)) {
             openCommentLayout(true);
-            commentInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
-                }
+            commentInput.setOnFocusChangeListener((v, hasFocus) -> {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(commentInput, InputMethodManager.SHOW_IMPLICIT);
             });
             commentInput.requestFocus();
         }
@@ -612,14 +613,13 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         }
     }
 
-    public static final int REQUEST_TAKE_PHOTO = 100;
-    public static final int REQUEST_GALLERY_PHOTO = 200;
-    public static final int REQUEST_PERMISSION_STORAGE = 300;
-    public static final int REQUEST_PERMISSION_CAMERA = 400;
+    private static final int REQUEST_TAKE_PHOTO = 100;
+    private static final int REQUEST_GALLERY_PHOTO = 200;
+    private static final int REQUEST_PERMISSION_STORAGE = 300;
+    private static final int REQUEST_PERMISSION_CAMERA = 400;
 
     private FileCompressor mCompressor;
     private File mPhotoFile;
-    private Uri imageUri;
 
     private void openCamera() {
         Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -649,10 +649,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "IMG_" + timeStamp + "_";
         File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-        //imageFilePath = image.getAbsolutePath();
-
-        return image;
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
     @Override
@@ -663,13 +660,13 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
-                // No Permitions Granted
+                // No Permissions Granted
             }
         } else if (requestCode == REQUEST_PERMISSION_STORAGE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
             } else {
-                // No Permitions Granted
+                // No Permissions Granted
             }
         }
     }
@@ -677,6 +674,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == RESULT_OK) {
+            Uri imageUri;
             if (requestCode == REQUEST_TAKE_PHOTO) {
                 try {
                     mPhotoFile = mCompressor.compressToFile(mPhotoFile);
@@ -712,11 +710,11 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         reviewPixAdapter.notifyDataSetChanged();
     }
 
-    public String getRealPathFromUri(Uri contentUri) {
+    private String getRealPathFromUri(Uri contentUri) {
         Cursor cursor = null;
         try {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = getContext().getContentResolver().query(contentUri, proj, null, null, null);
+            String[] project = {MediaStore.Images.Media.DATA};
+            cursor = getContext().getContentResolver().query(contentUri, project, null, null, null);
             assert cursor != null;
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();

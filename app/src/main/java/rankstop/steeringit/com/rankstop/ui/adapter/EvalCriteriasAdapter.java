@@ -75,7 +75,7 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
         @BindDimen(R.dimen.thumb_text_size)
         int thumbTextSize;
 
-        public ViewHolder(@NonNull View itemView, CriteriaEvalListener noteListener) {
+        private ViewHolder(@NonNull View itemView, CriteriaEvalListener noteListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.noteListener = noteListener;
@@ -85,37 +85,31 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
             importanceToggle = itemView.findViewById(R.id.importance_toggle);
 
 
-            importanceToggle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    ((RadioButton) itemView.findViewById(lastCheckedId)).setTextColor(accentColor);
-                    lastCheckedId = checkedId;
-                    ((RadioButton) itemView.findViewById(checkedId)).setTextColor(Color.WHITE);
-                    switch (checkedId) {
-                        case R.id.importance_normal:
-                            noteListener.onImportanceChanged(1, getAdapterPosition());
-                            break;
-                        case R.id.importance_high:
-                            noteListener.onImportanceChanged(2, getAdapterPosition());
-                            break;
-                    }
+            importanceToggle.setOnCheckedChangeListener((group, checkedId) -> {
+                ((RadioButton) itemView.findViewById(lastCheckedId)).setTextColor(accentColor);
+                lastCheckedId = checkedId;
+                ((RadioButton) itemView.findViewById(checkedId)).setTextColor(Color.WHITE);
+                switch (checkedId) {
+                    case R.id.importance_normal:
+                        noteListener.onImportanceChanged(1, getAdapterPosition());
+                        break;
+                    case R.id.importance_high:
+                        noteListener.onImportanceChanged(2, getAdapterPosition());
+                        break;
                 }
             });
 
-            signSeekBar.setValueFormatListener(new SignSeekBar.OnValueFormatListener() {
-                @Override
-                public String format(float progress) {
-                    if (progress == -1)
-                        return "Not set";
-                    else
-                        return "" + (int) progress + "/5";
-                }
+            signSeekBar.setValueFormatListener(progress -> {
+                if (progress == -1)
+                    return "Not set";
+                else
+                    return "" + (int) progress + "/5";
             });
             signSeekBar.setOnProgressChangedListener(new SignSeekBar.OnProgressChangedListener() {
                 @Override
                 public void onProgressChanged(SignSeekBar signSeekBar, int progress, float progressFloat, boolean fromUser) {
                     if (progress >= 0 && progress < 2) {
-                        if (isRed == false) {
+                        if (!isRed) {
                             isRed = true;
                             isOrange = false;
                             isGreen = false;
@@ -127,7 +121,7 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
                                     .build();
                         }
                     } else if (progress >= 2 && progress < 4) {
-                        if (isOrange == false) {
+                        if (!isOrange) {
                             isOrange = true;
                             isRed = false;
                             isGreen = false;
@@ -139,7 +133,7 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
                                     .build();
                         }
                     } else if (progress >= 4) {
-                        if (isGreen == false) {
+                        if (!isGreen) {
                             isGreen = true;
                             isOrange = false;
                             isRed = false;
@@ -151,7 +145,7 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
                                     .build();
                         }
                     } else if (progress < 0) {
-                        if (isGray == false) {
+                        if (!isGray) {
                             isGray = true;
                             isOrange = false;
                             isRed = false;
@@ -178,7 +172,7 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
             });
         }
 
-        public void setData(CriteriaEval criteriaEval) {
+        private void setData(CriteriaEval criteriaEval) {
             signSeekBar.getConfigBuilder()
                     .min(-1)
                     .max(5)

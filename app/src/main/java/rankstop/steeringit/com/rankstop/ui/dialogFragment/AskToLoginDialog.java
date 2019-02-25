@@ -64,12 +64,7 @@ public class AskToLoginDialog extends DialogFragment {
 
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                onDialogShow(alertDialog);
-            }
-        });
+        alertDialog.setOnShowListener(dialog -> onDialogShow(alertDialog));
         return alertDialog;
     }
 
@@ -94,18 +89,10 @@ public class AskToLoginDialog extends DialogFragment {
 
         messageTV.setText(rsNavigationData.getMessage());
 
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToSignUp((RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA));
-                dismiss();
-            }
+        cancelBtn.setOnClickListener(v -> dismiss());
+        loginBtn.setOnClickListener(v -> {
+            navigateToSignUp((RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA));
+            dismiss();
         });
     }
 
@@ -121,7 +108,7 @@ public class AskToLoginDialog extends DialogFragment {
         super.onDestroyView();
     }
 
-    public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
+    private void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
 

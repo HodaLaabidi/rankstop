@@ -48,12 +48,7 @@ public class RSLoader extends DialogFragment {
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setCancelable(false);
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                onDialogShow(alertDialog);
-            }
-        });
+        alertDialog.setOnShowListener(dialog -> onDialogShow(alertDialog));
         return alertDialog;
     }
 

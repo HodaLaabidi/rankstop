@@ -29,7 +29,7 @@
                 android:id="@+id/btn_login_or_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/mt_btn_connect"
                 android:textAllCaps="false" />
         </LinearLayout>
 

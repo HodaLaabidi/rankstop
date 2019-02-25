@@ -102,7 +102,7 @@ public class Item implements Serializable {
         this.location = location;
     }
 
-    public boolean isReportAbuse() {
+    public boolean getReportAbuse() {
         return isReportAbuse;
     }
 

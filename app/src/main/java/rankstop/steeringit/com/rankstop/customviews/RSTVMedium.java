@@ -2,10 +2,10 @@ package rankstop.steeringit.com.rankstop.customviews;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
-public class RSTVMedium extends TextView {
+public class RSTVMedium extends AppCompatTextView {
 
     public RSTVMedium(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

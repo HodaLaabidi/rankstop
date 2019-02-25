@@ -175,12 +175,7 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
                     }
                 });
                 recyclerViewCriteriaEvaluated.setLayoutFrozen(true);
-                recyclerViewCriteriaEvaluated.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        return false;
-                    }
-                });
+                recyclerViewCriteriaEvaluated.setOnTouchListener((v, event) -> false);
                 myEvalCriteriaAdapter = new MyEvalCriteriaAdapter();
                 recyclerViewCriteriaEvaluated.setAdapter(myEvalCriteriaAdapter);
             }
@@ -206,19 +201,11 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             noteEvalTV.setText(String.valueOf(item.getMyEval().getNoteEval()));
             dateEvalTV.setText(RSDateParser.convertToDateTimeFormat(item.getMyEval().getDate(), dateTimeFormat));
             // add listener to like icon
-            likeIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    pieListener.onFollowChanged(getAdapterPosition());
-                }
-            });
+            likeIcon.setOnClickListener(v -> pieListener.onFollowChanged(getAdapterPosition()));
             // add listener to like icon
-            likeIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (!RSSession.isLoggedIn()) {
-                        likeIcon.setChecked(!isChecked);
-                    }
+            likeIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (!RSSession.isLoggedIn()) {
+                    likeIcon.setChecked(!isChecked);
                 }
             });
             initCriteriasList(item.getMyEval());

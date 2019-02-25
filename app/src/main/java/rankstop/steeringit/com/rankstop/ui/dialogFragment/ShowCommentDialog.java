@@ -32,7 +32,6 @@ public class ShowCommentDialog extends DialogFragment implements DialogConfirmat
     private View rootView;
     private Unbinder unbinder;
     private Comment comment;
-    private String userId;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -84,10 +83,11 @@ public class ShowCommentDialog extends DialogFragment implements DialogConfirmat
 
         Bundle b = getArguments();
         comment = (Comment) b.getSerializable(RSConstants.COMMENT);
-        userId = b.getString(RSConstants.USER_ID);
 
-        if (userId.equals(comment.getUserId().get_id()))
-            removeCommentBTN.setVisibility(View.VISIBLE);
+        if (b.getString(RSConstants.USER_ID) != null) {
+            if (b.getString(RSConstants.USER_ID).equals(comment.getUserId().get_id()))
+                removeCommentBTN.setVisibility(View.VISIBLE);
+        }
 
         return rootView;
     }
@@ -117,6 +117,7 @@ public class ShowCommentDialog extends DialogFragment implements DialogConfirmat
 
         if (unbinder != null)
             unbinder.unbind();
+        rootView = null;
         super.onDestroyView();
     }
 

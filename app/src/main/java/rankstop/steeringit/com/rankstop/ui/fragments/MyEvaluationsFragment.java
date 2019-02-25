@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,6 +49,7 @@ import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.MyEvalsAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
@@ -84,7 +86,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
             RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_MY_EVALS, RSConstants.ACTION_CONNECT, "", "", "", "", "");
             navigateToSignUp(rsNavigationData);
         } else {
-            navigateToHome();
+            navigateToSearch();
         }
     }
 
@@ -114,7 +116,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        fragmentContext = new WeakReference<MyEvaluationsFragment>(this);
+        fragmentContext = new WeakReference<>(this);
         rootView = inflater.inflate(R.layout.fragment_my_evaluations, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
@@ -231,10 +233,13 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
+                openContactDialog();
+                break;
+            case R.id.notifications:
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -245,6 +250,12 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
+    }
+
+    private void openContactDialog() {
+        ContactDialog dialog = new ContactDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.show(ft, ContactDialog.TAG);
     }
 
     private static MyEvaluationsFragment instance;
@@ -367,7 +378,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
         fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
     }
 
-    private void navigateToHome() {
+    private void navigateToSearch() {
         fragmentActionListener.navigateTo(R.id.navigation_search, RSConstants.FRAGMENT_SEARCH);
     }
 }

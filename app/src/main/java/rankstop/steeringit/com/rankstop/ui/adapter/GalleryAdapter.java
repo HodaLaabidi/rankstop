@@ -45,11 +45,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // TODO - Your view members
-        public Gallery picsGallery;
+        private Gallery picsGallery;
         private RecyclerViewClickListener mListener;
         private SimpleDraweeView imageView;
 
-        public ViewHolder(View itemView, RecyclerViewClickListener listener) {
+        private ViewHolder(View itemView, RecyclerViewClickListener listener) {
             super(itemView);
             this.mListener = listener;
 
@@ -58,7 +58,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             // TODO instantiate/assign view members
         }
 
-        public void setData(Gallery picsGallery) {
+        private void setData(Gallery picsGallery) {
             this.picsGallery = picsGallery;
 
             Uri imageUri = Uri.parse(picsGallery.getUrlPicture());

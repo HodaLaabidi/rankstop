@@ -7,7 +7,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
-import rankstop.steeringit.com.rankstop.data.model.db.RSPublicUserName;
 import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
 import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
@@ -65,9 +64,6 @@ public interface API {
     // load user history
     @POST("history/storiesByUser")
     Call<RSResponse> loadUserHistory(@Body RSRequestListItem rsRequestListItem);
-
-    @GET("criteria/getCriterias")
-    Call<RSResponse> loadCriteriaList();
 
     // load categories list
     @FormUrlEncoded

@@ -54,14 +54,14 @@ public class DataFetchedAdapter extends RecyclerView.Adapter<DataFetchedAdapter.
         @BindView(R.id.tv_title)
         RSTVRegular titleTV;
 
-        public ViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
+        private ViewHolder(@NonNull View itemView, RecyclerViewClickListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.listener = listener;
             itemView.setOnClickListener(this);
         }
 
-        public void setData(Category category) {
+        private void setData(Category category) {
             titleTV.setText(category.getName());
         }
 

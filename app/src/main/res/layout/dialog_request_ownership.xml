@@ -15,20 +15,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/m_activity">
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_fullname"
+                android:id="@+id/input_layout_full_name"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="@dimen/mb_input">
 
                 <rankstop.steeringit.com.rankstop.customviews.RSETMedium
-                    android:id="@+id/input_fullname"
+                    android:id="@+id/input_full_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_fullname"
+                    android:hint="@string/hint_full_name"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
@@ -37,7 +37,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="@dimen/mb_input">
 
                 <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_email"
@@ -52,7 +52,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="@dimen/mb_input">
 
                 <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_phone"
@@ -67,7 +67,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="@dimen/mb_input">
 
                 <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_company"
@@ -82,11 +82,11 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="@dimen/mb_input"
                 app:counterEnabled="true"
                 app:counterMaxLength="@integer/max_length_500"
                 app:counterTextAppearance="@style/counterText"
-                app:counterOverflowTextAppearance="@style/counterOverride">>
+                app:counterOverflowTextAppearance="@style/counterOverride">
 
                 <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_message"

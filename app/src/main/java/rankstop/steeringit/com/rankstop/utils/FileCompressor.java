@@ -53,12 +53,12 @@ public class FileCompressor {
         return compressToFile(imageFile, imageFile.getName());
     }
 
-    public File compressToFile(File imageFile, String compressedFileName) throws IOException {
+    private File compressToFile(File imageFile, String compressedFileName) throws IOException {
         return ImageUtil.compressImage(imageFile, maxWidth, maxHeight, compressFormat, quality,
                 destinationDirectoryPath + File.separator + compressedFileName);
     }
 
-    public Bitmap compressToBitmap(File imageFile) throws IOException {
+    private Bitmap compressToBitmap(File imageFile) throws IOException {
         return ImageUtil.decodeSampledBitmapFromFile(imageFile, maxWidth, maxHeight);
     }
 
@@ -66,28 +66,22 @@ public class FileCompressor {
         return compressToFileAsFlowable(imageFile, imageFile.getName());
     }
 
-    public Flowable<File> compressToFileAsFlowable(final File imageFile, final String compressedFileName) {
-        return Flowable.defer(new Callable<Flowable<File>>() {
-            @Override
-            public Flowable<File> call() {
-                try {
-                    return Flowable.just(compressToFile(imageFile, compressedFileName));
-                } catch (IOException e) {
-                    return Flowable.error(e);
-                }
+    private Flowable<File> compressToFileAsFlowable(final File imageFile, final String compressedFileName) {
+        return Flowable.defer((Callable<Flowable<File>>) () -> {
+            try {
+                return Flowable.just(compressToFile(imageFile, compressedFileName));
+            } catch (IOException e) {
+                return Flowable.error(e);
             }
         });
     }
 
     public Flowable<Bitmap> compressToBitmapAsFlowable(final File imageFile) {
-        return Flowable.defer(new Callable<Flowable<Bitmap>>() {
-            @Override
-            public Flowable<Bitmap> call() {
-                try {
-                    return Flowable.just(compressToBitmap(imageFile));
-                } catch (IOException e) {
-                    return Flowable.error(e);
-                }
+        return Flowable.defer((Callable<Flowable<Bitmap>>) () -> {
+            try {
+                return Flowable.just(compressToBitmap(imageFile));
+            } catch (IOException e) {
+                return Flowable.error(e);
             }
         });
     }

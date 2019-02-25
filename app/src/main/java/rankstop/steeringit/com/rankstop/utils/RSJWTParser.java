@@ -5,21 +5,17 @@ import android.util.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class RSJWTParser {
-    private static int HEADER = 0;
-    private static int PAYLOAD = 1;
-    private static int SIGNATURE = 2;
 
     public static JSONObject getHeader(String JWT) {
         try {
             validateJWT(JWT);
+            int HEADER = 0;
             byte[] sectionDecoded = Base64.decode(JWT.split("\\.")[HEADER], Base64.URL_SAFE);
-            return new JSONObject(new String(sectionDecoded, "UTF-8"));
+            return new JSONObject(new String(sectionDecoded, StandardCharsets.UTF_8));
         } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return null;
@@ -28,26 +24,20 @@ public class RSJWTParser {
     public static JSONObject getPayload(String JWT) {
         try {
             validateJWT(JWT);
+            int PAYLOAD = 1;
             byte[] sectionDecoded = Base64.decode(JWT.split("\\.")[PAYLOAD], Base64.URL_SAFE);
-            return new JSONObject(new String(sectionDecoded, "UTF-8"));
+            return new JSONObject(new String(sectionDecoded, StandardCharsets.UTF_8));
         } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return null;
     }
 
     public static String getSignature(String JWT) {
-        try {
-            validateJWT(JWT);
-            byte[] sectionDecoded = Base64.decode(JWT.split("\\.")[SIGNATURE], Base64.URL_SAFE);
-            return new String(sectionDecoded, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        validateJWT(JWT);
+        int SIGNATURE = 2;
+        byte[] sectionDecoded = Base64.decode(JWT.split("\\.")[SIGNATURE], Base64.URL_SAFE);
+        return new String(sectionDecoded, StandardCharsets.UTF_8);
     }
 
     public static String getClaim(String JWT, String claim) {

@@ -86,6 +86,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="top"
                             android:hint="@string/hint_review_comment"
+                            android:textSize="@dimen/size_input_text"
                             android:inputType="textMultiLine"
                             android:lines="8"
                             android:maxLines="10"
@@ -109,7 +110,7 @@
                     android:orientation="vertical">
 
                     <RelativeLayout
-                        android:id="@+id/layut_add_pix"
+                        android:id="@+id/layout_add_pix"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?attr/selectableItemBackground"
@@ -182,7 +183,7 @@
                 android:layout_marginLeft="@dimen/p_activity"
                 android:layout_marginRight="@dimen/p_activity"
                 android:layout_marginBottom="@dimen/p_activity"
-                android:text="Valider" />
+                android:text="@string/btn_valider" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

@@ -104,12 +104,10 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     // categories fetched
     private List<Category> categoriesFetched;
     private DataFetchedAdapter dataFetchedAdapter;
-    private RecyclerViewClickListener categoriesListener;
     // items fetched
     private List<ItemDetails> itemsFetched;
     private List<Item> itemsList = new ArrayList<>();
     private ItemsFetchedAdapter itemsFetchedAdapter;
-    private RecyclerViewClickListener itemsFetchedListener;
     // items fetched by category
     private ItemsAdapter itemsAdapter;
     private RecyclerViewClickListener itemsListener;
@@ -228,54 +226,28 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     private void initSearchListener() {
         RxSearchObservable.fromView(searchView)
                 .debounce(300, TimeUnit.MILLISECONDS)
-                .filter(new Predicate<String>() {
-                    @Override
-                    public boolean test(String text) {
-                        if (text.isEmpty()) {
-                            categoryTitleTV.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    categoryTitleTV.setVisibility(View.GONE);
-                                }
-                            });
-                            categoriesRV.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    categoriesRV.setVisibility(View.GONE);
-                                }
-                            });
-                            itemsTitleTV.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    itemsTitleTV.setVisibility(View.GONE);
-                                }
-                            });
-                            itemsRV.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    itemsRV.setVisibility(View.GONE);
-                                }
-                            });
-                            return false;
-                        } else {
-                            return true;
-                        }
+                .filter(text -> {
+                    if (text.isEmpty()) {
+                        categoryTitleTV.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                categoryTitleTV.setVisibility(View.GONE);
+                            }
+                        });
+                        categoriesRV.post(() -> categoriesRV.setVisibility(View.GONE));
+                        itemsTitleTV.post(() -> itemsTitleTV.setVisibility(View.GONE));
+                        itemsRV.post(() -> itemsRV.setVisibility(View.GONE));
+                        return false;
+                    } else {
+                        return true;
                     }
                 })
                 .distinctUntilChanged()
-                .switchMap(new Function<String, ObservableSource<RSResponseSearch>>() {
-                    @Override
-                    public ObservableSource<RSResponseSearch> apply(String query) {
-                        return dataFromNetwork(query);
-                    }
-                })
+                .switchMap((Function<String, ObservableSource<RSResponseSearch>>) query -> dataFromNetwork(query))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<RSResponseSearch>() {
-                    @Override
-                    public void accept(RSResponseSearch result) {
-                        //bind data here
-                    }
+                .subscribe(result -> {
+                    //bind data here
                 });
     }
 
@@ -311,7 +283,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
 
         // categories fetched
         categoriesFetched = new ArrayList<>();
-        categoriesListener = (view, position) -> {
+        RecyclerViewClickListener categoriesListener = (view, position) -> {
             currentCategory = categoriesFetched.get(position);
             if (RSNetwork.isConnected()) {
                 loadItems(rsRequestItemData);
@@ -325,7 +297,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
 
         // items fetched
         itemsFetched = new ArrayList<>();
-        itemsFetchedListener = (view, position) -> {
+        RecyclerViewClickListener itemsFetchedListener = (view, position) -> {
             if (RSNetwork.isConnected()) {
                 fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsFetched.get(position).get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             } else {
@@ -350,22 +322,11 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
 
         this.query = query;
         searchPresenter.search(query, RankStop.getDeviceLanguage());
-        itemsByCategoryRV.post(new Runnable() {
-            @Override
-            public void run() {
-                itemsByCategoryRV.setVisibility(View.GONE);
-            }
-        });
+        itemsByCategoryRV.post(() -> itemsByCategoryRV.setVisibility(View.GONE));
 
         return Observable.just(true)
                 //.delay(200, TimeUnit.MILLISECONDS)
-                .map(new Function<Boolean, RSResponseSearch>() {
-                    @Override
-                    public RSResponseSearch apply(@io.reactivex.annotations.NonNull Boolean value) {
-                        RSResponseSearch user = new RSResponseSearch();
-                        return user;
-                    }
-                });
+                .map(value -> new RSResponseSearch());
     }
 
     /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -418,6 +379,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         instance = null;
         if (searchPresenter != null)
             searchPresenter.onDestroy();
+        rootView = null;
         super.onDestroyView();
     }
 

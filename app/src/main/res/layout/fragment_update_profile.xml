@@ -87,7 +87,7 @@
                     android:id="@+id/input_last_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_prenom"
+                    android:hint="@string/hint_first_name"
                     android:inputType="text" />
 
             </android.support.design.widget.TextInputLayout>
@@ -103,7 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/categorie_bg"
+                    android:background="@drawable/category_bg"
                     android:spinnerMode="dropdown" />
 
                 <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
@@ -134,7 +134,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/categorie_bg"
+                    android:background="@drawable/category_bg"
                     android:spinnerMode="dropdown" />
 
                 <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
@@ -183,7 +183,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/categorie_bg"
+                    android:background="@drawable/category_bg"
                     android:spinnerMode="dialog" />
 
                 <rankstop.steeringit.com.rankstop.customviews.RSTVMedium

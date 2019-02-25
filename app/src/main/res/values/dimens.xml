@@ -1,9 +1,6 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="p50">50dp</dimen>
-    <dimen name="_40dp">40dp</dimen>
-    <dimen name="_50dp">50dp</dimen>
     <dimen name="app_bar_height">300dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="image_small_width">40dp</dimen>
@@ -38,7 +35,7 @@
     <dimen name="mt_title_profile">10dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="width_galery_pic">80dp</dimen>
-    <dimen name="raduis_galery_pic">5dp</dimen>
+    <dimen name="radius_galery_pic">5dp</dimen>
     <dimen name="mlr_card_view">8dp</dimen>
     <dimen name="mtb_card_view">8dp</dimen>
     <dimen name="content_start_inset_toolbar">10dp</dimen>
@@ -46,12 +43,12 @@
     <dimen name="width_progress_bar">50dp</dimen>
     <dimen name="p_activity">16dp</dimen>
     <dimen name="second_track_size">5dp</dimen>
-    <dimen name="thumb_raduis">5dp</dimen>
+    <dimen name="thumb_radius">5dp</dimen>
     <dimen name="track_size">5dp</dimen>
     <dimen name="thumb_text_size">14sp</dimen>
     <dimen name="height_map_add_item">350dp</dimen>
     <dimen name="text_size_criteria">15sp</dimen>
-    <dimen name="thumb_raduis_on_dragging">7dp</dimen>
+    <dimen name="thumb_radius_on_dragging">7dp</dimen>
     <dimen name="m_activity">8dp</dimen>
     <dimen name="width_add_review_pic">100dp</dimen>
     <dimen name="w_dialog_ask_login">400dp</dimen>
@@ -60,7 +57,7 @@
     <dimen name="padding_dialog">8dp</dimen>
     <dimen name="height_dialog_header">50dp</dimen>
     <dimen name="progress_bar_width">50dp</dimen>
-    <dimen name="raduis_btn_dialog">10dp</dimen>
+    <dimen name="radius_btn_dialog">10dp</dimen>
     <dimen name="margin_end_btn_dialog">10dp</dimen>
     <dimen name="text_size_dialog">17sp</dimen>
     <dimen name="text_size_header_dialog">18sp</dimen>
@@ -84,13 +81,12 @@
     <dimen name="hint_search_home">14sp</dimen>
     <dimen name="text_size_sub_title_item_rv">12sp</dimen>
     <dimen name="size_text_start_with_rs">20sp</dimen>
-    <dimen name="p_signup_container">50dp</dimen>
+    <dimen name="p_sign_up_container">50dp</dimen>
     <dimen name="mb_start_with_rs">10dp</dimen>
-    <dimen name="mb_desc_app_signup">50dp</dimen>
+    <dimen name="mb_desc_app_sign_up">50dp</dimen>
     <dimen name="size_text_desc_app">14sp</dimen>
     <dimen name="size_or_connect_with">14sp</dimen>
     <dimen name="mb_login_btn">20dp</dimen>
-    <dimen name="size_input_email">14sp</dimen>
     <dimen name="p_text_no_item">10dp</dimen>
     <dimen name="pb_user_pic_container">30dp</dimen>
     <dimen name="height_space_profile_container">65dp</dimen>
@@ -118,4 +114,27 @@
     <dimen name="width_comment_card">240dp</dimen>
     <dimen name="width_filter_section">220dp</dimen>
     <dimen name="text_size_filter">11sp</dimen>
+    <dimen name="margin_card_notif">2dp</dimen>
+    <dimen name="with_card_avatar">35dp</dimen>
+    <dimen name="size_small_date">10sp</dimen>
+    <dimen name="size_large_date">13sp</dimen>
+    <dimen name="margin_end_avatar">5dp</dimen>
+    <dimen name="padding_header_card">5dp</dimen>
+    <dimen name="size_text_comment">12sp</dimen>
+    <dimen name="mb_input">10dp</dimen>
+    <dimen name="size_text_btn_text">13sp</dimen>
+    <dimen name="padding_btn_filter">2dp</dimen>
+    <dimen name="mt_my_eval_container">10dp</dimen>
+    <dimen name="m_progress_bar">20dp</dimen>
+    <dimen name="min_height_no_item">150dp</dimen>
+    <dimen name="mt_btn_connect">10dp</dimen>
+    <dimen name="height_spinner">50dp</dimen>
+    <dimen name="padding_spinner_title">4dp</dimen>
+    <dimen name="ms_spinner_title">8dp</dimen>
+    <dimen name="size_input_text">14sp</dimen>
+    <dimen name="pt_pb_rs_loader">20dp</dimen>
+    <dimen name="ps_pe_rs_loader">10dp</dimen>
+    <dimen name="size_text_b_sheet_d">16sp</dimen>
+    <dimen name="padding_layout_b_sheet_d">16dp</dimen>
+    <dimen name="height_layout_b_sheet_d">56dp</dimen>
 </resources>

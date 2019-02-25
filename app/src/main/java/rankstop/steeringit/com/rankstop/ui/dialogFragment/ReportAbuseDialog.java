@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -71,8 +70,6 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     @BindString(R.string.loading_msg)
     String loadingMsg;
 
-    private ColorStateList colorStateList;
-    private LinearLayout.LayoutParams layoutParams;
     private RSPresenter.abusePresenter abusePresenter;
     private List<Abuse> abuseList;
     private String itemId, abuseId;
@@ -124,12 +121,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
 
         abusePresenter = new PresenterAbuseImpl(ReportAbuseDialog.this);
 
-        abusesRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                abuseId = abuseList.get(abusesRG.indexOfChild(group.findViewById(checkedId))).get_id();
-            }
-        });
+        abusesRG.setOnCheckedChangeListener((group, checkedId) -> abuseId = abuseList.get(abusesRG.indexOfChild(group.findViewById(checkedId))).get_id());
         loadAbuseList();
 
     }
@@ -151,8 +143,6 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
         if (unbinder != null)
             unbinder.unbind();
         rootView = null;
-        colorStateList = null;
-        layoutParams = null;
         abusesRG = null;
         instance = null;
         if (abusePresenter != null)

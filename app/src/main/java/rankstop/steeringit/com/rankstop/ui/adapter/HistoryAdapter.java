@@ -91,14 +91,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ItemHistoryListener listener;
-        public History history;
+        private History history;
         private RSTVRegular subjectTV, messageTV, timeTV;
         private RSTVBold dateTV;
 
         @BindString(R.string.date_format)
         String dateFormat;
 
-        public ViewHolder(@NonNull View itemView, ItemHistoryListener listener) {
+        private ViewHolder(@NonNull View itemView, ItemHistoryListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.listener = listener;
@@ -114,7 +114,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             listener.onClick(v, getAdapterPosition());
         }
 
-        public void setData(History history) {
+        private void setData(History history) {
             this.history = history;
 
             String message = "";
@@ -137,6 +137,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             }
 
             dateTV.setText(RSDateParser.convertToDateFormat(history.getDate(), dateFormat));
+
             timeTV.setText(history.getTime());
             subjectTV.setText(history.getSubject());
         }
@@ -154,7 +155,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         notifyDataSetChanged();
     }
 
-    public void add(History history) {
+    private void add(History history) {
         histories.add(history);
         notifyItemInserted(histories.size() - 1);
     }
@@ -167,14 +168,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public void removeLoadingFooter() {
         isLoadingAdded = false;
         int position = histories.size() - 1;
-        History history = getItem(position);
-        if (history != null) {
-            histories.remove(position);
-            notifyItemRemoved(position);
+        if (position > 0) {
+            History history = getItem(position);
+            if (history != null) {
+                histories.remove(position);
+                notifyItemRemoved(position);
+            }
         }
     }
 
-    public History getItem(int position) {
+    private History getItem(int position) {
         return histories.get(position);
     }
 }

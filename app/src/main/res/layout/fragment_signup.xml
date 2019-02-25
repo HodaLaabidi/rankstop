@@ -10,7 +10,7 @@
         android:gravity="center"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/p_signup_container">
+        android:padding="@dimen/p_sign_up_container">
 
         <rankstop.steeringit.com.rankstop.customviews.RSTVBold
             android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/mb_desc_app_signup"
+            android:layout_marginBottom="@dimen/mb_desc_app_sign_up"
             android:gravity="center"
             android:textSize="@dimen/size_text_desc_app" />
 
@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_email"
-                android:textSize="@dimen/size_input_email"
+                android:textSize="@dimen/size_input_text"
                 android:inputType="textEmailAddress" />
 
         </android.support.design.widget.TextInputLayout>

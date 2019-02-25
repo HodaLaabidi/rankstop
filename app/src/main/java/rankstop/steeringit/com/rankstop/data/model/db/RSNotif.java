@@ -2,8 +2,6 @@ package rankstop.steeringit.com.rankstop.data.model.db;
 
 import java.io.Serializable;
 
-import rankstop.steeringit.com.rankstop.utils.RSDateParser;
-
 public class RSNotif implements Serializable {
 
     private String date, _id, text, userId;

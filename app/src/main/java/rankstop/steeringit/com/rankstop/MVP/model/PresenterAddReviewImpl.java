@@ -2,7 +2,6 @@ package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
-import rankstop.steeringit.com.rankstop.data.webservices.Urls;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.utils.FileUtils;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
@@ -29,7 +27,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     private RSView.StandardView standardView;
     private Context context;
 
-    private Call<RSResponse> callLoadMyEval, callLoadCategory, calladdReview, calladdItem, callUpdateReview;
+    private Call<RSResponse> callLoadMyEval, callLoadCategory, callAddReview, callAddItem, callUpdateReview;
 
     public PresenterAddReviewImpl(RSView.StandardView standardView, Context context) {
         this.standardView = standardView;
@@ -78,7 +76,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     parts.add(prepareFilePart("files", rsAddReview.getFiles().get(i)));
                 }
 
-                calladdReview = WebService.getInstance().getApi().addReview(
+                callAddReview = WebService.getInstance().getApi().addReview(
                         parts,
                         createPartFormString(rsAddReview.getComment()),
                         createPartFormString(rsAddReview.getUserId()),
@@ -86,7 +84,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         rsAddReview.getEvalCri()
                 );
 
-                calladdReview.enqueue(new Callback<RSResponse>() {
+                callAddReview.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.body().getStatus() == 1) {
@@ -169,7 +167,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 for (int i = 0; i < rsAddItem.getFiles().size(); i++) {
                     parts.add(prepareFilePart("files", rsAddItem.getFiles().get(i)));
                 }
-                calladdItem = WebService.getInstance().getApi().addItem(
+                callAddItem = WebService.getInstance().getApi().addItem(
                         parts,
                         createPartFormString(rsAddItem.getUserId()),
                         rsAddItem.getEvalCri(),
@@ -185,7 +183,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         createPartFormString(rsAddItem.getCountry()),
                         createPartFormString(rsAddItem.getComment())
                 );
-                calladdItem.enqueue(new Callback<RSResponse>() {
+                callAddItem.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.body().getStatus() == 1) {
@@ -267,13 +265,13 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
             if (callLoadCategory.isExecuted())
                 callLoadCategory.cancel();
 
-        if (calladdReview != null)
-            if (calladdReview.isExecuted())
-                calladdReview.cancel();
+        if (callAddReview != null)
+            if (callAddReview.isExecuted())
+                callAddReview.cancel();
 
-        if (calladdItem != null)
-            if (calladdItem.isExecuted())
-                calladdItem.cancel();
+        if (callAddItem != null)
+            if (callAddItem.isExecuted())
+                callAddItem.cancel();
 
         if (callUpdateReview != null)
             if (callUpdateReview.isExecuted())

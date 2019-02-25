@@ -24,12 +24,12 @@
                 android:id="@+id/all_comment"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:background="@drawable/toggle_all_bg"
                 android:button="@null"
                 android:gravity="center"
-                android:padding="2dp"
+                android:padding="@dimen/padding_btn_filter"
+                android:layout_margin="@dimen/padding_btn_filter"
                 android:text="@string/text_all"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -40,12 +40,12 @@
                 android:id="@+id/good_comment"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:background="@drawable/toggle_good_bg"
                 android:button="@null"
                 android:gravity="center"
-                android:padding="2dp"
+                android:padding="@dimen/padding_btn_filter"
+                android:layout_margin="@dimen/padding_btn_filter"
                 android:text="@string/text_good"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -56,12 +56,12 @@
                 android:id="@+id/neutral_comment"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:background="@drawable/toggle_neutral_bg"
                 android:button="@null"
                 android:gravity="center"
-                android:padding="2dp"
+                android:padding="@dimen/padding_btn_filter"
+                android:layout_margin="@dimen/padding_btn_filter"
                 android:text="@string/text_neutral"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -72,12 +72,12 @@
                 android:id="@+id/bad_comment"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:background="@drawable/toggle_bad_bg"
                 android:button="@null"
                 android:gravity="center"
-                android:padding="2dp"
+                android:padding="@dimen/padding_btn_filter"
+                android:layout_margin="@dimen/padding_btn_filter"
                 android:text="@string/text_bad"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -94,7 +94,7 @@
                 android:id="@+id/rl_my_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/mt_my_eval_container"
                 android:visibility="gone">
 
                 <RelativeLayout
@@ -124,7 +124,7 @@
                         android:layout_marginEnd="@dimen/mlr_card_view"
                         android:text="@string/add_comments"
                         android:textAllCaps="false"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/size_text_btn_text"
                         app:icon="@drawable/ic_add_black_24dp" />
                 </RelativeLayout>
 
@@ -140,26 +140,23 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/header_my_comments"
                     android:gravity="center"
-                    android:minHeight="150dp"
+                    android:minHeight="@dimen/min_height_no_item"
                     android:text="@string/no_comments"
                     android:padding="@dimen/m_activity"
                     android:visibility="gone" />
 
                 <ProgressBar
                     android:id="@+id/mc_progress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/header_my_comments"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
+                    android:layout_centerInParent="true"
                     android:visibility="gone" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="@dimen/mt_my_eval_container">
 
                 <RelativeLayout
                     android:id="@+id/header_other_comments"
@@ -189,7 +186,7 @@
                         android:text="@string/add_comments"
                         android:textAllCaps="false"
                         android:visibility="gone"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/size_text_btn_text"
                         app:icon="@drawable/ic_add_black_24dp" />
                 </RelativeLayout>
 
@@ -204,19 +201,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/header_other_comments"
+                    android:minHeight="@dimen/min_height_no_item"
                     android:gravity="center"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/m_progress_bar"
                     android:text="@string/no_other_comments"
                     android:padding="@dimen/m_activity"
                     android:visibility="gone" />
 
                 <ProgressBar
                     android:id="@+id/main_progress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/width_progress_bar"
+                    android:layout_height="@dimen/width_progress_bar"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="20dp"
-                    android:layout_below="@id/header_other_comments"
                     android:visibility="gone" />
             </RelativeLayout>
         </LinearLayout>

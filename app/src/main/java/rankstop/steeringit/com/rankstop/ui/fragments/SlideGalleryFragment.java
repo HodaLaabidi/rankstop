@@ -39,8 +39,6 @@ public class SlideGalleryFragment extends Fragment {
 
     Gallery picture;
 
-    private static SlideGalleryFragment instance;
-
     public static SlideGalleryFragment newInstance(Gallery picture) {
 
         Bundle args = new Bundle();
@@ -83,7 +81,6 @@ public class SlideGalleryFragment extends Fragment {
     @Override
     public void onDestroyView() {
 
-        instance = null;
         if (unbinder != null)
             unbinder.unbind();
 

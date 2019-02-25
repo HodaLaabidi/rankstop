@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -50,7 +51,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindDimen;
 import butterknife.BindInt;
 import butterknife.BindString;
 import butterknife.BindView;
@@ -71,6 +71,7 @@ import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCategoryAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
@@ -81,7 +82,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
 
     private static AddItemFragment instance;
-    private String itemName, itemDescription, itemAddress, itemPhone;
+    private String itemName, itemDescription;
 
     private Unbinder unbinder;
     @BindView(R.id.progress_bar)
@@ -143,18 +144,16 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
         itemName = nameET.getText().toString().trim();
         itemDescription = descriptionET.getText().toString().trim();
-        itemAddress = addressET.getText().toString().trim();
-        itemPhone = phoneET.getText().toString().trim();
 
         if (validForm()) {
             if (RSNetwork.isConnected()) {
                 try {
-                    // pour valider l'ajout du cet item, tu dois l'évaluer
+                    // pour 'valider l'ajout du cet item, tu dois l'évaluer
                     rsAddItem.setCategoryId(selectedCategory.get_id());
                     rsAddItem.setTitle(itemName);
                     rsAddItem.setDescription(itemDescription);
-                    rsAddItem.setAddress(itemAddress);
-                    rsAddItem.setPhone(itemPhone);
+                    rsAddItem.setAddress(addressET.getText().toString().trim());
+                    rsAddItem.setPhone(phoneET.getText().toString().trim());
                     rsAddItem.setLatitude("" + currentLatitude);
                     rsAddItem.setLongitude("" + currentLongitude);
                     fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddItem, null, "", RSConstants.ACTION_EVAL), RSConstants.FRAGMENT_ADD_REVIEW);
@@ -195,13 +194,11 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         navigateToSignUp(rsNavigationData);
     }
 
-    private WorkaroundMapFragment mapFragment;
     private View rootView;
 
     private GoogleMap mMap;
     private Geocoder geocoder;
     private GoogleApiClient googleApiClient;
-    private MarkerOptions currentUserLocation;
     private boolean isMapInitialized = false;
     private Category selectedCategory;
 
@@ -280,7 +277,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         selectedCategory = (Category) parent.getItemAtPosition(position);
         if (selectedCategory.isLocation()) {
             locationLayout.setVisibility(View.VISIBLE);
-            if (isMapInitialized == false) {
+            if (!isMapInitialized) {
                 isMapInitialized = true;
             }
             initMaps();
@@ -295,14 +292,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     }
 
     private void initMaps() {
-        mapFragment = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        WorkaroundMapFragment mapFragment = (WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        mapFragment.setListener(new WorkaroundMapFragment.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                scrollView.requestDisallowInterceptTouchEvent(true);
-            }
-        });
+        mapFragment.setListener(() -> scrollView.requestDisallowInterceptTouchEvent(true));
         checkGPS();
     }
 
@@ -365,15 +357,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                     android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         } else {
             FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(RankStop.getInstance());
-            mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    // Got last known location. In some rare situations, this can be null.
-                    if (location != null) {
-                        addMarker(location.getLatitude(), location.getLongitude());
-                    } else {
-                        addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
-                    }
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), location -> {
+                // Got last known location. In some rare situations, this can be null.
+                if (location != null) {
+                    addMarker(location.getLatitude(), location.getLongitude());
+                } else {
+                    addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
                 }
             });
             /*Location userCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
@@ -401,7 +390,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             onConnected(null);
         } else {
-            // No Permitions Granted
+            // No Permissions Granted
             addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
         }
     }
@@ -451,7 +440,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     }
 
     private void addMarker(double latitude, double longitude) {
-        currentUserLocation = new MarkerOptions();
+        MarkerOptions currentUserLocation = new MarkerOptions();
         LatLng currentUserLatLang = new LatLng(latitude, longitude);
         currentUserLocation.position(currentUserLatLang);
         currentUserLocation.draggable(true);
@@ -478,10 +467,13 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
+                openContactDialog();
+                break;
+            case R.id.notifications:
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -490,7 +482,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     private FragmentActionListener fragmentActionListener;
 
-    public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
+    private void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
 
@@ -501,24 +493,26 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         return instance;
     }
 
+    private void openContactDialog() {
+        ContactDialog dialog = new ContactDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.show(ft, ContactDialog.TAG);
+    }
+
     private void showGPSDisabledAlertToUser() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
         alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Goto Settings Page To Enable GPS",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent callGPSSettingIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivityForResult(callGPSSettingIntent, RSConstants.REQUEST_CODE);
-                            }
+                        (dialog, id) -> {
+                            Intent callGPSSettingIntent = new Intent(
+                                    android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(callGPSSettingIntent, RSConstants.REQUEST_CODE);
                         });
         alertDialogBuilder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                        addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
-                    }
+                (dialog, id) -> {
+                    dialog.cancel();
+                    addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
                 });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
@@ -536,12 +530,6 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     public void onStart() {
         super.onStart();
         //Log.i("LIFE_CYCLE", "" + TAG + " onStart");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //Log.i("LIFE_CYCLE", "" + TAG + " onResume");
     }
 
     @Override
@@ -592,7 +580,6 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
                 SpinnerCategoryAdapter spinnerCategoryAdapter = new SpinnerCategoryAdapter(getContext(), categoryList);
                 categorySpinner.setAdapter(spinnerCategoryAdapter);
-                //Toast.makeText(getContext(), "size = "+((List<Criteria>)categoryList.get(0).getCriterias()).get(0).getName(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }

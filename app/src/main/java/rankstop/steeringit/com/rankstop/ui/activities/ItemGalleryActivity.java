@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.util.List;
@@ -28,7 +27,6 @@ public class ItemGalleryActivity extends BaseActivity {
     private PagerAdapter mPagerAdapter;
 
     private List<Gallery> pictures;
-    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +35,10 @@ public class ItemGalleryActivity extends BaseActivity {
         unbinder = ButterKnife.bind(this);
 
         pictures = (List<Gallery>) getIntent().getSerializableExtra(RSConstants.PICTURES);
-        position = getIntent().getIntExtra(RSConstants.POSITION, 0);
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), pictures);
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setCurrentItem(position);
+        viewPager.setCurrentItem(getIntent().getIntExtra(RSConstants.POSITION, 0));
     }
 
     /**
@@ -70,7 +67,9 @@ public class ItemGalleryActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-
+        pictures.clear();
+        pictures = null;
+        mPagerAdapter = null;
         if (unbinder != null)
             unbinder.unbind();
 

@@ -9,50 +9,52 @@
     <LinearLayout
         android:id="@+id/layout_take_pic"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="@dimen/height_layout_b_sheet_d"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="@dimen/padding_layout_b_sheet_d">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_camera" />
+            android:src="@drawable/ic_camera"
+            android:contentDescription="@string/icon_layout" />
 
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:text="Camera"
-            android:textSize="16sp" />
+            android:layout_marginStart="@dimen/padding_layout_b_sheet_d"
+            android:text="@string/camera_text"
+            android:textSize="@dimen/size_text_b_sheet_d" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_choose_pic"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="@dimen/height_layout_b_sheet_d"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="@dimen/padding_layout_b_sheet_d">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_image_black_24dp" />
+            android:src="@drawable/ic_image_black_24dp"
+            android:contentDescription="@string/icon_layout" />
 
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:text="Gallery"
-            android:textSize="16sp" />
+            android:layout_marginStart="@dimen/padding_layout_b_sheet_d"
+            android:text="@string/gallery_text"
+            android:textSize="@dimen/size_text_b_sheet_d" />
 
     </LinearLayout>
 

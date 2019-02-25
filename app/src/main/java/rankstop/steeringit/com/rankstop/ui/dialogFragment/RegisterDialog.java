@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
 import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
@@ -48,15 +48,15 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
     @BindView(R.id.input_layout_password)
     TextInputLayout passwordLayout;
     @BindView(R.id.input_password)
-    TextInputEditText passwordEditText;
+    RSETRegular passwordEditText;
 
     @BindView(R.id.input_layout_confirm_password)
     TextInputLayout confirmPasswordLayout;
     @BindView(R.id.input_confirm_password)
-    TextInputEditText confirmPasswordEditText;
+    RSETRegular confirmPasswordEditText;
 
     @BindView(R.id.input_email)
-    TextInputEditText emailEditText;
+    RSETRegular emailEditText;
     @BindString(R.string.off_line)
     String offLineMsg;
 
@@ -194,12 +194,7 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setCancelable(false);
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                onDialogShow(alertDialog);
-            }
-        });
+        alertDialog.setOnShowListener(dialog -> onDialogShow(alertDialog));
         return alertDialog;
     }
 

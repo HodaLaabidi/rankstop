@@ -2,8 +2,6 @@ package rankstop.steeringit.com.rankstop.data.model.db;
 
 import java.io.Serializable;
 
-import rankstop.steeringit.com.rankstop.utils.RSDateParser;
-
 public class User implements Serializable {
 
     //@SerializedName("_id")

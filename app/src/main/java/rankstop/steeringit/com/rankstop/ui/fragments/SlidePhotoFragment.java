@@ -46,8 +46,6 @@ public class SlidePhotoFragment extends Fragment {
 
     Picture picture;
 
-    private static SlidePhotoFragment instance;
-
     public static SlidePhotoFragment newInstance(Picture picture) {
 
         Bundle args = new Bundle();
@@ -93,11 +91,8 @@ public class SlidePhotoFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-
-        instance = null;
         if (unbinder != null)
             unbinder.unbind();
-
         super.onDestroyView();
     }
 }

@@ -141,8 +141,9 @@
                             android:layout_marginTop="@dimen/mt_btn_item_details"
                             android:text="@string/add_item_pix"
                             android:textAllCaps="false"
+                            android:layout_gravity="end"
                             android:textSize="@dimen/size_btn_edit"
-                            android:visibility="gone" />
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                     <android.support.v7.widget.RecyclerView

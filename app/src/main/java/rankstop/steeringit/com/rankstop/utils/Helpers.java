@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import java.io.File;
 
@@ -14,6 +16,8 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rankstop.steeringit.com.rankstop.RankStop;
+
+import static android.content.Context.WINDOW_SERVICE;
 
 public class Helpers {
 
@@ -34,5 +38,13 @@ public class Helpers {
         ConnectivityManager connectivityManager = (ConnectivityManager) RankStop.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    // Custom method to get screen width in dp/dip using Context object
+    public static int getScreenWidthInDPs(){
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) RankStop.getInstance().getSystemService(WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(dm);
+        return Math.round(dm.widthPixels / dm.density);
     }
 }

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import rankstop.steeringit.com.rankstop.utils.LocaleManager;

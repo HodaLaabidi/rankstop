@@ -9,8 +9,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +24,17 @@ import butterknife.BindInt;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterNotifImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.RSNotif;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseNotif;
 import rankstop.steeringit.com.rankstop.session.RSSession;
@@ -54,12 +55,16 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
     @BindView(R.id.tv_no_notif)
     RSTVRegular noNotifTV;
+    @BindView(R.id.tv_msg_connect)
+    RSTVRegular msgConnectTV;
+    @BindView(R.id.btn_connect)
+    RSBTNBold connectBTN;
     @BindView(R.id.rv_list_notif)
     RecyclerView listNotifRV;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @BindInt(R.integer.m_card_view)
     int marginCardView;
@@ -71,10 +76,15 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
     @BindString(R.string.off_line)
     String offlineMsg;
 
+    @OnClick(R.id.btn_connect)
+    void connect(){
+        RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_NOTIF, RSConstants.ACTION_CONNECT, "", "", "", "", "");
+        navigateToSignUp(rsNavigationData);
+    }
+
     private RSPresenter.ListNotifPresenter listNotifPresenter;
 
     // variables
-    private String userId = "";
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
     private NotifAdapter notifAdapter;
     private List<RSNotif> notifsList = new ArrayList<>();
@@ -84,8 +94,6 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
     private boolean isLastPage = false;
     private boolean isLoading = false;
     private int PAGES_COUNT = 1;
-    // scroll listener
-    private EndlessScrollListener scrollListener;
 
     @BindString(R.string.loading_msg)
     String loadingMsg;
@@ -117,35 +125,32 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         listNotifPresenter = new PresenterNotifImpl(ListNotifFragment.this);
 
         if (RSSession.isLoggedIn()) {
-            //userId = getArguments().getString(RSConstants.USER_ID);
-            userId = RSSession.getCurrentUser().get_id();
-            rsRequestListItem.setUserId(userId);
+            rsRequestListItem.setUserId(RSSession.getCurrentUser().get_id());
             rsRequestListItem.setLang(RankStop.getDeviceLanguage());
             rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
             if (RSNetwork.isConnected()) {
+                progressBar.setVisibility(View.VISIBLE);
                 laodData(currentPage);
             } else {
                 onOffLine();
             }
             initItemsList();
         } else {
-
+            msgConnectTV.setVisibility(View.VISIBLE);
+            connectBTN.setVisibility(View.VISIBLE);
         }
     }
 
     private void initItemsList() {
-        RecyclerViewClickListener itemListener = new RecyclerViewClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                if (RSNetwork.isConnected()) {
-                    if (notifsList.get(position).isVisibility()) {
-                        listNotifPresenter.editNotifVisibility(notifsList.get(position).get_id(), notifsList.get(position).getItem().get_id());
-                    } else {
-                        fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(notifsList.get(position).getItem().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
-                    }
+        RecyclerViewClickListener itemListener = (view, position) -> {
+            if (RSNetwork.isConnected()) {
+                if (notifsList.get(position).isVisibility()) {
+                    listNotifPresenter.editNotifVisibility(notifsList.get(position).get_id(), notifsList.get(position).getItem().get_id());
                 } else {
-                    onOffLine();
+                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(notifsList.get(position).getItem().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 }
+            } else {
+                onOffLine();
             }
         };
         GridLayoutManager layoutManager = new GridLayoutManager(listNotifRV.getContext(), 1);
@@ -153,7 +158,8 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         listNotifRV.setLayoutManager(layoutManager);
         listNotifRV.setAdapter(notifAdapter);
         listNotifRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
-        scrollListener = new EndlessScrollListener(layoutManager) {
+        // scroll listener
+        EndlessScrollListener scrollListener = new EndlessScrollListener(layoutManager) {
             @Override
             protected void loadMoreItems() {
                 isLoading = true;
@@ -194,9 +200,9 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         createLoader();
     }
 
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.rs_menu, menu);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -207,13 +213,13 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
                 getActivity().onBackPressed();
                 break;
             case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
+                //fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
+                //fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
+                //openContactDialog();
                 break;
         }
 
@@ -225,6 +231,12 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
+
+    /*private void openContactDialog() {
+        ContactDialog dialog = new ContactDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.show(ft, ContactDialog.TAG);
+    }*/
 
     private static ListNotifFragment instance;
 
@@ -264,6 +276,7 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
                 if (notifResponse.getCurrent() == 1) {
                     notifAdapter.clear();
                     PAGES_COUNT = notifResponse.getPages();
+                    progressBar.setVisibility(View.GONE);
                     if (notifResponse.getNotification().size() > 0)
                         listNotifRV.setVisibility(View.VISIBLE);
                     else
@@ -315,5 +328,9 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
     @Override
     public void onOffLine() {
         Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+    }
+
+    private void navigateToSignUp(RSNavigationData rsNavigationData) {
+        fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
     }
 }

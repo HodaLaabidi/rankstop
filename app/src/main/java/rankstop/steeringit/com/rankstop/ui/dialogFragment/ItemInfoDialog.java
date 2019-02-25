@@ -146,20 +146,7 @@ public class ItemInfoDialog extends DialogFragment {
 
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                onDialogShow(alertDialog);
-            }
-        });
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                rootView = null;
-                instance = null;
-                fragmentActionListener = null;
-            }
-        });
+        alertDialog.setOnShowListener(dialog -> onDialogShow(alertDialog));
         return alertDialog;
     }
 
@@ -212,4 +199,13 @@ public class ItemInfoDialog extends DialogFragment {
         this.fragmentActionListener = fragmentActionListener;
     }
 
+    @Override
+    public void onDestroyView() {
+        rootView = null;
+        instance = null;
+        unbinder.unbind();
+        fragmentActionListener = null;
+
+        super.onDestroyView();
+    }
 }

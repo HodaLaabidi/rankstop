@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -54,7 +53,7 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.activities.DiaparomaActivity;
+import rankstop.steeringit.com.rankstop.ui.activities.DiaporamaActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemPixAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.DialogConfirmationListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -212,7 +211,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
             @Override
             public void onClick(View view, int position) {
                 startActivity(
-                        new Intent(getContext(), DiaparomaActivity.class)
+                        new Intent(getContext(), DiaporamaActivity.class)
                                 .putExtra(RSConstants.PICTURES, pictures.size())
                                 .putExtra(RSConstants.FILTERED_PICTURES, (Serializable) itemPicsAdapter.getAll())
                                 .putExtra(RSConstants.POSITION, position)
@@ -235,7 +234,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
             @Override
             public void onClick(View view, int position) {
                 startActivity(
-                        new Intent(getContext(), DiaparomaActivity.class)
+                        new Intent(getContext(), DiaporamaActivity.class)
                                 .putExtra(RSConstants.PICTURES, myPictures.size())
                                 .putExtra(RSConstants.FILTERED_PICTURES, (Serializable) myItemPixAdapter.getAll())
                                 .putExtra(RSConstants.POSITION, position)
@@ -612,59 +611,56 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     }
 
     private void setFilterListener() {
-        filterToggle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (lastCheckedId) {
-                    case R.id.all_comment:
-                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGray));
-                        break;
-                    case R.id.good_comment:
-                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGreenPie));
-                        break;
-                    case R.id.neutral_comment:
-                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorOrangePie));
-                        break;
-                    case R.id.bad_comment:
-                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorRedPie));
-                        break;
-                }
-                lastCheckedId = checkedId;
-                ((RSRBMedium) rootView.findViewById(checkedId)).setTextColor(Color.WHITE);
-                switch (checkedId) {
-                    case R.id.all_comment:
-                        filterToggle.setBackgroundResource(R.drawable.rs_filter_view_gray);
-                        if (pictures.size() > 0) {
-                            noOtherPixTV.setVisibility(View.GONE);
-                            itemPicsAdapter.refreshData(pictures);
-                        }
-                        if (myPictures.size() > 0) {
-                            noPixTV.setVisibility(View.GONE);
-                            myItemPixAdapter.refreshData(myPictures);
-                        }
-                        break;
-                    case R.id.good_comment:
-                        filterToggle.setBackgroundResource(R.drawable.rs_filter_view_green);
-                        if (pictures.size() > 0)
-                            itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_GREEN, RSConstants.OTHER));
-                        if (myPictures.size() > 0)
-                            myItemPixAdapter.refreshData(getFilterOutput(myPictures, RSConstants.PIE_GREEN, RSConstants.MINE));
-                        break;
-                    case R.id.neutral_comment:
-                        filterToggle.setBackgroundResource(R.drawable.rs_filter_view_orange);
-                        if (pictures.size() > 0)
-                            itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_ORANGE, RSConstants.OTHER));
-                        if (myPictures.size() > 0)
-                            myItemPixAdapter.refreshData(getFilterOutput(myPictures, RSConstants.PIE_ORANGE, RSConstants.MINE));
-                        break;
-                    case R.id.bad_comment:
-                        filterToggle.setBackgroundResource(R.drawable.rs_filter_view_red);
-                        if (pictures.size() > 0)
-                            itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_RED, RSConstants.OTHER));
-                        if (myPictures.size() > 0)
-                            myItemPixAdapter.refreshData(getFilterOutput(myPictures, RSConstants.PIE_RED, RSConstants.MINE));
-                        break;
-                }
+        filterToggle.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (lastCheckedId) {
+                case R.id.all_comment:
+                    ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGray));
+                    break;
+                case R.id.good_comment:
+                    ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGreenPie));
+                    break;
+                case R.id.neutral_comment:
+                    ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorOrangePie));
+                    break;
+                case R.id.bad_comment:
+                    ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorRedPie));
+                    break;
+            }
+            lastCheckedId = checkedId;
+            ((RSRBMedium) rootView.findViewById(checkedId)).setTextColor(Color.WHITE);
+            switch (checkedId) {
+                case R.id.all_comment:
+                    filterToggle.setBackgroundResource(R.drawable.rs_filter_view_gray);
+                    if (pictures.size() > 0) {
+                        noOtherPixTV.setVisibility(View.GONE);
+                        itemPicsAdapter.refreshData(pictures);
+                    }
+                    if (myPictures.size() > 0) {
+                        noPixTV.setVisibility(View.GONE);
+                        myItemPixAdapter.refreshData(myPictures);
+                    }
+                    break;
+                case R.id.good_comment:
+                    filterToggle.setBackgroundResource(R.drawable.rs_filter_view_green);
+                    if (pictures.size() > 0)
+                        itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_GREEN, RSConstants.OTHER));
+                    if (myPictures.size() > 0)
+                        myItemPixAdapter.refreshData(getFilterOutput(myPictures, RSConstants.PIE_GREEN, RSConstants.MINE));
+                    break;
+                case R.id.neutral_comment:
+                    filterToggle.setBackgroundResource(R.drawable.rs_filter_view_orange);
+                    if (pictures.size() > 0)
+                        itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_ORANGE, RSConstants.OTHER));
+                    if (myPictures.size() > 0)
+                        myItemPixAdapter.refreshData(getFilterOutput(myPictures, RSConstants.PIE_ORANGE, RSConstants.MINE));
+                    break;
+                case R.id.bad_comment:
+                    filterToggle.setBackgroundResource(R.drawable.rs_filter_view_red);
+                    if (pictures.size() > 0)
+                        itemPicsAdapter.refreshData(getFilterOutput(pictures, RSConstants.PIE_RED, RSConstants.OTHER));
+                    if (myPictures.size() > 0)
+                        myItemPixAdapter.refreshData(getFilterOutput(myPictures, RSConstants.PIE_RED, RSConstants.MINE));
+                    break;
             }
         });
     }

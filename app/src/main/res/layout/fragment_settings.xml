@@ -52,7 +52,7 @@
                     android:drawableEnd="@drawable/rs_radio_bg"
                     android:focusable="true"
                     android:padding="16dp"
-                    android:text="@string/frensh" />
+                    android:text="@string/french" />
 
                 <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
                     android:id="@+id/rb_de"

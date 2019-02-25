@@ -38,7 +38,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     private Context context = RankStop.getInstance();
     private ItemPieListener pieListener;
     private boolean showLikeBTN;
-    private boolean isPieEmpty = false;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
@@ -177,19 +176,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
 
             likeIcon.setChecked(item.isFollow());
 
-            likeIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    pieListener.onFollowChanged(getAdapterPosition());
-                }
-            });
+            likeIcon.setOnClickListener(v -> pieListener.onFollowChanged(getAdapterPosition()));
             // add listener to like icon
-            likeIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (!RSSession.isLoggedIn()) {
-                        likeIcon.setChecked(!isChecked);
-                    }
+            likeIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (!RSSession.isLoggedIn()) {
+                    likeIcon.setChecked(!isChecked);
                 }
             });
 
@@ -203,7 +194,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
 
         private void initPieChart(Item item) {
             // values of the pie
-            isPieEmpty = false;
+            boolean isPieEmpty = false;
             ArrayList<PieEntry> pieEntry = new ArrayList<>();
             if (item.getGood() == 0 && item.getNeutral() == 0 && item.getBad() == 0){
                 isPieEmpty = true;

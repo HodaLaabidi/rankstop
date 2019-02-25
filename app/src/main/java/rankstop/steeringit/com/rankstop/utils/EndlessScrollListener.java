@@ -7,7 +7,7 @@ import android.util.Log;
 
 public abstract class EndlessScrollListener extends RecyclerView.OnScrollListener {
 
-    GridLayoutManager layoutManager;
+    private GridLayoutManager layoutManager;
 
     public EndlessScrollListener(GridLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
@@ -36,9 +36,9 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
 
     protected abstract void loadMoreItems();
 
-    public abstract int getTotalPageCount();
+    protected abstract int getTotalPageCount();
 
-    public abstract boolean isLastPage();
+    protected abstract boolean isLastPage();
 
-    public abstract boolean isLoading();
+    protected abstract boolean isLoading();
 }

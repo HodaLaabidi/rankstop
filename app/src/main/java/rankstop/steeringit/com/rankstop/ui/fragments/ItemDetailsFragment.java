@@ -59,7 +59,6 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
@@ -79,6 +78,7 @@ import rankstop.steeringit.com.rankstop.ui.adapter.ViewPagerAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.ItemInfoDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.ReportAbuseDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.RequestOwnerShipDialog;
@@ -166,6 +166,8 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     String picsTitleMsg;
     @BindString(R.string.follow)
     String followMsg;
+    @BindString(R.string.already_signaled_msg)
+    String alreadySignaledMsg;
 
     @BindColor(R.color.colorPrimary)
     int primaryColor;
@@ -280,7 +282,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        fragmentContext = new WeakReference<ItemDetailsFragment>(this);
+        fragmentContext = new WeakReference<>(this);
         rootView = inflater.inflate(R.layout.fragment_item_details, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
@@ -365,7 +367,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         pieChart.setRotationEnabled(false);
         // define speed of rotation
         //pieChart.setDragDecelerationFrictionCoef(0.95f);
-        // define the hole raduis of the pie
+        // define the hole radius of the pie
         pieChart.setHoleRadius(65f);
         // disable/ enable the hole of the pie
         pieChart.setDrawHoleEnabled(true);
@@ -374,7 +376,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         //pieChart.setTransparentCircleRadius(60f);
         // animate pie
         pieChart.animateY(1000, Easing.EasingOption.EaseInOutCubic);
-        // disable/ enable legend on the piechart
+        // disable/ enable legend on the pieChart
         pieChart.getLegend().setEnabled(false);
         // initialize PieDataSet
         PieDataSet dataSet = new PieDataSet(pieEntry, "Item");
@@ -392,7 +394,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         PieData data = new PieData(dataSet);
         data.setValueTextSize(10f);
         data.setValueTextColor(Color.WHITE);
-        // disable/ enable values on the piechart
+        // disable/ enable values on the pieChart
         dataSet.setDrawValues(!isPieEmpty);
         // affect data to pieChart
         pieChart.setData(data);
@@ -426,17 +428,26 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
+                fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
+                openContactDialog();
                 break;
             case R.id.action_favorite:
                 manageFollow(itemId, !isFavorite);
                 break;
+            case R.id.notifications:
+                fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openContactDialog() {
+        ContactDialog dialog = new ContactDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.show(ft, ContactDialog.TAG);
     }
 
     private void initToolbarStyle() {
@@ -594,7 +605,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     private void bindData(Item item) {
 
         // manage btn report abuse
-        if (!item.isReportAbuse()) {
+        if (!item.getReportAbuse()) {
             reportAbuseBTN.setVisibility(View.VISIBLE);
         }
 
@@ -609,11 +620,11 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                         //manageFollow(itemId, true);
                     }
                 } else if (rsNavigationData.getAction().equals(RSConstants.ACTION_REPORT_ABUSE)) {
-                    if (!item.isReportAbuse()) {
+                    if (!item.getReportAbuse()) {
                         RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ITEM_DETAILS, RSConstants.ACTION_REPORT_ABUSE, "", itemId, "", "", "");
                         openAbusesDialog(rsNavigationData);
                     } else {
-                        Toast.makeText(getContext(), "Vous avez signaler cet item", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), alreadySignaledMsg, Toast.LENGTH_SHORT).show();
                     }
                 } else if (rsNavigationData.getAction().equals(RSConstants.ACTION_SEND_REQ_OWNERSHIP)) {
                     Bundle bundle = new Bundle();

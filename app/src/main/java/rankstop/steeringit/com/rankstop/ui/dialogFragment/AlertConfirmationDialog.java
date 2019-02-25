@@ -32,7 +32,7 @@ public class AlertConfirmationDialog extends DialogFragment {
     private View rootView;
     private ColorStateList colorStateList;
     private LinearLayout.LayoutParams layoutParams;
-    private String message, elementId;
+    private String elementId;
 
     private Unbinder unbinder;
 
@@ -71,21 +71,13 @@ public class AlertConfirmationDialog extends DialogFragment {
 
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                onDialogShow(alertDialog);
-            }
-        });
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                rootView = null;
-                colorStateList = null;
-                layoutParams = null;
-                callback = null;
-                unbinder.unbind();
-            }
+        alertDialog.setOnShowListener(dialog -> onDialogShow(alertDialog));
+        alertDialog.setOnDismissListener(dialog -> {
+            rootView = null;
+            colorStateList = null;
+            layoutParams = null;
+            callback = null;
+            unbinder.unbind();
         });
         return alertDialog;
     }
@@ -108,8 +100,7 @@ public class AlertConfirmationDialog extends DialogFragment {
         }
 
         Bundle b = getArguments();
-        message = b.getString(RSConstants.MESSAGE);
         elementId = b.getString(RSConstants._ID);
-        messageTV.setText(message);
+        messageTV.setText(b.getString(RSConstants.MESSAGE));
     }
 }

@@ -338,69 +338,61 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
         itemPresenter.loadItemCommentsByUser(rsRequestItemData);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     private void bindViews() {
         itemPresenter = new PresenterItemImpl(ItemCommentsFragment.this);
     }
 
     private void setFilterListener() {
-        filterToggle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (lastCheckedId) {
-                    case R.id.all_comment:
-                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGray));
-                        break;
-                    case R.id.good_comment:
-                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGreenPie));
-                        break;
-                    case R.id.neutral_comment:
-                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorOrangePie));
-                        break;
-                    case R.id.bad_comment:
-                        ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorRedPie));
-                        break;
-                }
-                lastCheckedId = checkedId;
-                ((RSRBMedium) rootView.findViewById(checkedId)).setTextColor(Color.WHITE);
-                switch (checkedId) {
-                    case R.id.all_comment:
-                        filterToggle.setBackgroundResource(R.drawable.rs_filter_view_gray);
-                        if (comments.size() > 0) {
-                            noOtherCommentTV.setVisibility(View.GONE);
-                            itemCommentsAdapter.refreshData(comments);
-                        }
-                        if (myComments.size() > 0) {
-                            noCommentTV.setVisibility(View.GONE);
-                            myItemCommentsAdapter.refreshData(myComments);
-                        }
-                        break;
-                    case R.id.good_comment:
-                        filterToggle.setBackgroundResource(R.drawable.rs_filter_view_green);
-                        if (comments.size() > 0)
-                            itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_GREEN, RSConstants.OTHER));
-                        if (myComments.size() > 0)
-                            myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_GREEN, RSConstants.MINE));
-                        break;
-                    case R.id.neutral_comment:
-                        filterToggle.setBackgroundResource(R.drawable.rs_filter_view_orange);
-                        if (comments.size() > 0)
-                            itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_ORANGE, RSConstants.OTHER));
-                        if (myComments.size() > 0)
-                            myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_ORANGE, RSConstants.MINE));
-                        break;
-                    case R.id.bad_comment:
-                        filterToggle.setBackgroundResource(R.drawable.rs_filter_view_red);
-                        if (comments.size() > 0)
-                            itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_RED, RSConstants.OTHER));
-                        if (myComments.size() > 0)
-                            myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_RED, RSConstants.MINE));
-                        break;
-                }
+        filterToggle.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (lastCheckedId) {
+                case R.id.all_comment:
+                    ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGray));
+                    break;
+                case R.id.good_comment:
+                    ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorGreenPie));
+                    break;
+                case R.id.neutral_comment:
+                    ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorOrangePie));
+                    break;
+                case R.id.bad_comment:
+                    ((RSRBMedium) rootView.findViewById(lastCheckedId)).setTextColor(ContextCompat.getColor(getContext(), R.color.colorRedPie));
+                    break;
+            }
+            lastCheckedId = checkedId;
+            ((RSRBMedium) rootView.findViewById(checkedId)).setTextColor(Color.WHITE);
+            switch (checkedId) {
+                case R.id.all_comment:
+                    filterToggle.setBackgroundResource(R.drawable.rs_filter_view_gray);
+                    if (comments.size() > 0) {
+                        noOtherCommentTV.setVisibility(View.GONE);
+                        itemCommentsAdapter.refreshData(comments);
+                    }
+                    if (myComments.size() > 0) {
+                        noCommentTV.setVisibility(View.GONE);
+                        myItemCommentsAdapter.refreshData(myComments);
+                    }
+                    break;
+                case R.id.good_comment:
+                    filterToggle.setBackgroundResource(R.drawable.rs_filter_view_green);
+                    if (comments.size() > 0)
+                        itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_GREEN, RSConstants.OTHER));
+                    if (myComments.size() > 0)
+                        myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_GREEN, RSConstants.MINE));
+                    break;
+                case R.id.neutral_comment:
+                    filterToggle.setBackgroundResource(R.drawable.rs_filter_view_orange);
+                    if (comments.size() > 0)
+                        itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_ORANGE, RSConstants.OTHER));
+                    if (myComments.size() > 0)
+                        myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_ORANGE, RSConstants.MINE));
+                    break;
+                case R.id.bad_comment:
+                    filterToggle.setBackgroundResource(R.drawable.rs_filter_view_red);
+                    if (comments.size() > 0)
+                        itemCommentsAdapter.refreshData(getFilterOutput(comments, RSConstants.PIE_RED, RSConstants.OTHER));
+                    if (myComments.size() > 0)
+                        myItemCommentsAdapter.refreshData(getFilterOutput(myComments, RSConstants.PIE_RED, RSConstants.MINE));
+                    break;
             }
         });
     }

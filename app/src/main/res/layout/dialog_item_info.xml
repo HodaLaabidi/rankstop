@@ -75,35 +75,40 @@
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
                 android:visibility="gone"
-                android:background="@drawable/ic_facebook"/>
+                android:background="@drawable/ic_facebook"
+                android:contentDescription="@string/icon_facebook" />
             <ImageButton
                 android:id="@+id/ic_instagram"
                 android:layout_width="@dimen/btn_width_contact"
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
                 android:visibility="gone"
-                android:background="@drawable/ic_instagram"/>
+                android:background="@drawable/ic_instagram"
+                android:contentDescription="@string/icon_instagram"/>
             <ImageButton
                 android:id="@+id/ic_google_plus"
                 android:layout_width="@dimen/btn_width_contact"
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
                 android:visibility="gone"
-                android:background="@drawable/ic_google_plus"/>
+                android:background="@drawable/ic_google_plus"
+                android:contentDescription="@string/icon_google_plus"/>
             <ImageButton
                 android:id="@+id/ic_twitter"
                 android:layout_width="@dimen/btn_width_contact"
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
                 android:visibility="gone"
-                android:background="@drawable/ic_twitter"/>
+                android:background="@drawable/ic_twitter"
+                android:contentDescription="@string/icon_twitter"/>
             <ImageButton
                 android:id="@+id/ic_linkedin"
                 android:layout_width="@dimen/btn_width_contact"
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
                 android:visibility="gone"
-                android:background="@drawable/ic_linkedin"/>
+                android:background="@drawable/ic_linkedin"
+                android:contentDescription="@string/icon_linkedin"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -116,7 +121,7 @@
         android:textAllCaps="false"
         android:layout_gravity="end"
         android:textColor="@color/colorInfo"
-        app:cornerRadius="@dimen/raduis_btn_dialog"
+        app:cornerRadius="@dimen/radius_btn_dialog"
         android:layout_margin="@dimen/m_btn_dialog"
         android:textSize="@dimen/text_size_dialog"/>
 

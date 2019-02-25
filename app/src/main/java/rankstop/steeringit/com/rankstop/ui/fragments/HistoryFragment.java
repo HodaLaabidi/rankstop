@@ -8,13 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -27,14 +25,18 @@ import butterknife.BindInt;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserHistoryImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.History;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseHistory;
 import rankstop.steeringit.com.rankstop.session.RSSession;
@@ -55,6 +57,12 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     RecyclerView historyListRV;
     @BindView(R.id.tv_no_history)
     RSTVMedium noHistoryTV;
+    @BindView(R.id.tv_msg_connect)
+    RSTVRegular msgConnectTV;
+    @BindView(R.id.btn_connect)
+    RSBTNBold connectBTN;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @BindInt(R.integer.m_card_view)
     int marginCardView;
@@ -66,6 +74,12 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     @BindString(R.string.off_line)
     String offlineMsg;
 
+    @OnClick(R.id.btn_connect)
+    void connect(){
+        RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_HISTORY, RSConstants.ACTION_CONNECT, "", "", "", "", "");
+        navigateToSignUp(rsNavigationData);
+    }
+
     private View rootView;
     private Unbinder unbinder;
 
@@ -75,13 +89,11 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     // presenter
     private RSPresenter.UserHistoryPresenter userHistoryPresenter;
 
-    // variables
-    private String userId = "";
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
     private HistoryAdapter historyAdapter;
     private List<History> historiesList = new ArrayList<>();
 
-    // panigation variables
+    // pagination variables
     private int currentPage = 1;
     private boolean isLastPage = false;
     private boolean isLoading = false;
@@ -107,30 +119,25 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         bindViews();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        fragmentContext = new WeakReference<HistoryFragment>(this);
+        fragmentContext = new WeakReference<>(this);
         userHistoryPresenter = new PresenterUserHistoryImpl(HistoryFragment.this);
 
         if (RSSession.isLoggedIn()) {
-            //userId = getArguments().getString(RSConstants.USER_ID);
-            userId = RSSession.getCurrentUser().get_id();
-            rsRequestListItem.setUserId(userId);
+            // variables
+            rsRequestListItem.setUserId(RSSession.getCurrentUser().get_id());
             rsRequestListItem.setLang(RankStop.getDeviceLanguage());
             rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
             if (RSNetwork.isConnected()) {
-                laodData(currentPage);
+                progressBar.setVisibility(View.VISIBLE);
+                loadData(currentPage);
             } else {
                 onOffLine();
             }
             initItemsList();
         } else {
-
+            msgConnectTV.setVisibility(View.VISIBLE);
+            connectBTN.setVisibility(View.VISIBLE);
         }
-
     }
 
     private void initItemsList() {
@@ -157,7 +164,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
                 currentPage += 1;
                 rsRequestListItem.setPage(currentPage);
                 // mocking network delay for API call
-                laodData(currentPage);
+                loadData(currentPage);
             }
 
             @Override
@@ -178,7 +185,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
         historyListRV.addOnScrollListener(scrollListener);
     }
 
-    private void laodData(int pageNumber) {
+    private void loadData(int pageNumber) {
         rsRequestListItem.setPage(pageNumber);
         userHistoryPresenter.loadHistory(rsRequestListItem);
     }
@@ -190,9 +197,9 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.rs_menu, menu);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -203,12 +210,13 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
                 getActivity().onBackPressed();
                 break;
             case R.id.setting:
-                fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
-                break;
-            case R.id.history:
+                //fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
+                //openContactDialog();
+                break;
+            case R.id.notifications:
+                //fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -221,15 +229,18 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
         this.fragmentActionListener = fragmentActionListener;
     }
 
+    /*private void openContactDialog() {
+        ContactDialog dialog = new ContactDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.show(ft, ContactDialog.TAG);
+    }*/
+
     private static HistoryFragment instance;
 
-    public static HistoryFragment getInstance(String userId) {
-        Bundle args = new Bundle();
-        args.putString(RSConstants.USER_ID, userId);
+    public static HistoryFragment getInstance() {
         if (instance == null) {
             instance = new HistoryFragment();
         }
-        instance.setArguments(args);
         return instance;
     }
 
@@ -270,6 +281,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
                 historiesList.addAll(historyResponse.getStories());
                 if (historyResponse.getCurrent() == 1) {
                     historyAdapter.clear();
+                    progressBar.setVisibility(View.GONE);
                     PAGES_COUNT = historyResponse.getPages();
                     if (historyResponse.getStories().size() > 0)
                         historyListRV.setVisibility(View.VISIBLE);
@@ -333,5 +345,9 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     @Override
     public void onOffLine() {
         Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+    }
+
+    private void navigateToSignUp(RSNavigationData rsNavigationData) {
+        fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
     }
 }

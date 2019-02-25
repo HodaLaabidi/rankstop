@@ -1,6 +1,5 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -8,7 +7,6 @@ import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -36,8 +34,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 
@@ -81,8 +77,6 @@ import org.json.JSONObject;
 public class SignupFragment extends Fragment implements RSView.SignupView {
 
     private final String TAG = "SIGNUP FRAGMENT";
-    private final String LOGIN_DIALOG_TAG = "game_dialog_tag";
-    private final String REGISTER_DIALOG_TAG = "game_dialog_tag";
 
     private View rootView;
 
@@ -98,7 +92,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     // google
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInOptions gso;
-    private GoogleSignInAccount account;
 
     private RSRequestSocialLogin user;
 
@@ -201,7 +194,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        fragmentContext = new WeakReference<SignupFragment>(this);
+        fragmentContext = new WeakReference<>(this);
         rootView = inflater.inflate(R.layout.fragment_signup, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
@@ -226,16 +219,13 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                         AccessToken accessToken = AccessToken.getCurrentAccessToken();
                         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
-                        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
+                        GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
 
-                                RSRequestSocialLogin user = getData(object);
-                                if (user != null) {
-                                    performSocialLogin(user);
-                                } else {
-                                    Log.i("TAG_REGISTER", "user null");
-                                }
+                            RSRequestSocialLogin user = getData(object);
+                            if (user != null) {
+                                performSocialLogin(user);
+                            } else {
+                                Log.i("TAG_REGISTER", "user null");
                             }
                         });
 
@@ -275,19 +265,21 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     public void onResume() {
         super.onResume();
 
-        account = GoogleSignIn.getLastSignedInAccount(fragmentContext.get().getContext());
+        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(fragmentContext.get().getContext());
         //updateUI(account);
     }
 
     public void dialogLogin(String email) {
         LoginDialog dialog = LoginDialog.newInstance(inputEmail.getText().toString().trim(), rsNavigationData);
         dialog.setCancelable(false);
+        String LOGIN_DIALOG_TAG = "game_dialog_tag";
         dialog.show(getFragmentManager(), LOGIN_DIALOG_TAG);
     }
 
     public void dialogRegister(String email) {
         RegisterDialog dialog = RegisterDialog.newInstance(inputEmail.getText().toString().trim(), rsNavigationData);
         dialog.setCancelable(false);
+        String REGISTER_DIALOG_TAG = "game_dialog_tag";
         dialog.show(getFragmentManager(), REGISTER_DIALOG_TAG);
     }
 

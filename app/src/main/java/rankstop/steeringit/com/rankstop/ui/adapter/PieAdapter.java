@@ -121,19 +121,11 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             likeIcon.setVisibility(View.VISIBLE);
             likeIcon.setChecked(item.isFollow());
 
-            likeIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    pieListener.onFollowChanged(getAdapterPosition());
-                }
-            });
+            likeIcon.setOnClickListener(v -> pieListener.onFollowChanged(getAdapterPosition()));
             // add listener to like icon
-            likeIcon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (!RSSession.isLoggedIn()) {
-                        likeIcon.setChecked(!isChecked);
-                    }
+            likeIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (!RSSession.isLoggedIn()) {
+                    likeIcon.setChecked(!isChecked);
                 }
             });
             initPieChart(item);

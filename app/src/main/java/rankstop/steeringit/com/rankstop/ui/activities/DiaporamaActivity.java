@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -28,7 +27,7 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
 import rankstop.steeringit.com.rankstop.ui.fragments.SlidePhotoFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
-public class DiaparomaActivity extends BaseActivity implements RSView.StandardView {
+public class DiaporamaActivity extends BaseActivity implements RSView.StandardView {
 
     private Unbinder unbinder;
 
@@ -44,7 +43,8 @@ public class DiaparomaActivity extends BaseActivity implements RSView.StandardVi
 
     private List<Picture> filteredPictures;
     private RSRequestItemData rsRequestItemData;
-    private int position, countPages, currentPages;
+    private int countPages;
+    private int currentPages;
     private RSPresenter.ItemPresenter itemPresenter;
     private boolean isLastPage = false;
     private int filter, nbrPic;
@@ -61,7 +61,7 @@ public class DiaparomaActivity extends BaseActivity implements RSView.StandardVi
         nbrPic = getIntent().getIntExtra(RSConstants.PICTURES, 0);
         filteredPictures = (List<Picture>) getIntent().getSerializableExtra(RSConstants.FILTERED_PICTURES);
         rsRequestItemData = (RSRequestItemData) getIntent().getSerializableExtra(RSConstants.RS_REQUEST_ITEM_DATA);
-        position = getIntent().getIntExtra(RSConstants.POSITION, 0);
+        int position = getIntent().getIntExtra(RSConstants.POSITION, 0);
         countPages = getIntent().getIntExtra(RSConstants.COUNT_PAGES, 0);
         filter = getIntent().getIntExtra(RSConstants.FILTER, 0);
         if (filteredPictures.get(filteredPictures.size() - 1).getPictureEval() == null)
@@ -207,7 +207,7 @@ public class DiaparomaActivity extends BaseActivity implements RSView.StandardVi
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         List<Picture> filteredPictures;
 
-        public ScreenSlidePagerAdapter(FragmentManager fm, List<Picture> pictures) {
+        private ScreenSlidePagerAdapter(FragmentManager fm, List<Picture> pictures) {
             super(fm);
             this.filteredPictures = pictures;
         }

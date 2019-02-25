@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
@@ -46,7 +47,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
     @BindView(R.id.input_layout_password)
     TextInputLayout passwordLayout;
     @BindView(R.id.input_password)
-    TextInputEditText passwordEditText;
+    RSETRegular passwordEditText;
 
     @BindString(R.string.login_dialog_invalid_password)
     String invalidPwdMsg;
@@ -163,12 +164,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setCancelable(false);
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                onDialogShow(alertDialog);
-            }
-        });
+        alertDialog.setOnShowListener(dialog -> onDialogShow(alertDialog));
         return alertDialog;
     }
 

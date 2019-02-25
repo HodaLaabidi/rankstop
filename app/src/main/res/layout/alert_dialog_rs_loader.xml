@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
-    android:paddingStart="10dp"
-    android:paddingEnd="10dp">
+    android:paddingTop="@dimen/pt_pb_rs_loader"
+    android:paddingBottom="@dimen/pt_pb_rs_loader"
+    android:paddingStart="@dimen/ps_pe_rs_loader"
+    android:paddingEnd="@dimen/ps_pe_rs_loader">
     <ProgressBar
         android:layout_width="@dimen/progress_bar_width"
         android:layout_height="@dimen/progress_bar_width" />
@@ -15,5 +15,5 @@
         android:id="@+id/et_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"/>
+        android:layout_marginStart="@dimen/pt_pb_rs_loader"/>
 </LinearLayout>

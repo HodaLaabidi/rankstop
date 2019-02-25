@@ -8,21 +8,16 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterContact;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterDeviceLangImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
@@ -33,11 +28,6 @@ import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-
-import static rankstop.steeringit.com.rankstop.utils.LocaleManager.LANGUAGE_ENGLISH;
-import static rankstop.steeringit.com.rankstop.utils.LocaleManager.LANGUAGE_FRENSH;
-import static rankstop.steeringit.com.rankstop.utils.LocaleManager.LANGUAGE_GERMAN;
 
 public class SettingsFragment extends Fragment implements RSView.EditLangView {
 
@@ -113,17 +103,14 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
 
         }
 
-        listLangRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                Toast.makeText(getContext(), "checked = ", Toast.LENGTH_SHORT).show();
-                if (checkedId == R.id.rb_en)
-                    manageLanguage("en");
-                else if (checkedId == R.id.rb_fr)
-                    manageLanguage("fr");
-                else if (checkedId == R.id.rb_de)
-                    manageLanguage("de");
-            }
+        listLangRG.setOnCheckedChangeListener((group, checkedId) -> {
+            Toast.makeText(getContext(), "checked = ", Toast.LENGTH_SHORT).show();
+            if (checkedId == R.id.rb_en)
+                manageLanguage("en");
+            else if (checkedId == R.id.rb_fr)
+                manageLanguage("fr");
+            else if (checkedId == R.id.rb_de)
+                manageLanguage("de");
         });
     }
 
@@ -135,9 +122,9 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
         }
     }
 
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.rs_menu, menu);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -147,13 +134,14 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-            case R.id.setting:
-                break;
             case R.id.history:
-                fragmentActionListener.startFragment(HistoryFragment.getInstance(""), RSConstants.FRAGMENT_HISTORY);
+                //fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
                 break;
             case R.id.contact:
-                fragmentActionListener.startFragment(ContactFragment.getInstance(), RSConstants.FRAGMENT_CONTACT);
+                //openContactDialog();
+                break;
+            case R.id.notifications:
+                //fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -165,6 +153,12 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
+
+    /*private void openContactDialog() {
+        ContactDialog dialog = new ContactDialog();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        dialog.show(ft, ContactDialog.TAG);
+    }*/
 
     private static SettingsFragment instance;
 

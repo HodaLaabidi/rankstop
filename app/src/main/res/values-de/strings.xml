@@ -4,7 +4,7 @@
     <string name="title_my_evals">My evaluations</string>
     <string name="title_profile">Profile</string>
     <string name="hint_email">E-mail</string>
-    <string name="btn_signup_text">Se connecter</string>
+    <string name="btn_sign_up_text">Se connecter</string>
     <string name="text_settings">Settings</string>
     <string name="text_edit_profile">Edit profile</string>
     <string name="notifications">Notications</string>
@@ -36,7 +36,7 @@
     <string name="connect">Connecter</string>
     <string name="transition_title">transition_title</string>
     <string name="transition_pie">transition_pie</string>
-    <string name="signup_email_format_invalid">Invalid email format</string>
+    <string name="sign_up_email_format_invalid">Invalid email format</string>
     <string name="hint_item_name">Name</string>
     <string name="hint_item_description">Description</string>
     <string name="hint_item_address">Address</string>
@@ -112,7 +112,7 @@
     <string name="female">Female</string>
     <string name="undefined">not set</string>
     <string name="hint_nom">FirstName</string>
-    <string name="hint_prenom">LastName</string>
+    <string name="hint_first_name">LastName</string>
     <string name="no_history">no history</string>
     <string name="close">Close</string>
     <string name="about_item">Read more</string>
@@ -124,7 +124,7 @@
     <string name="hint_woman">Female</string>
     <string name="title_gender">Gender:</string>
     <string name="description_public_name">NB: The public name will be shown on your comments and pictures</string>
-    <string name="hint_fullname">FullName</string>
+    <string name="hint_full_name">FullName</string>
     <string name="hint_message">Message</string>
     <string name="hint_company">Company</string>
     <string name="btn_submit_request">Submit</string>
@@ -178,7 +178,7 @@
     <string name="be_the_first">Not yet evaluated,\nbe the first to evaluate this item.</string>
     <string name="loading_msg">Loading ...</string>
     <string name="english">Englisch</string>
-    <string name="frensh">Französisch</string>
+    <string name="french">Französisch</string>
     <string name="german">Deutsche</string>
     <string name="no_item_fetched">There is no item</string>
     <string name="langue_title">Sprache:</string>
@@ -196,6 +196,19 @@
     <string name="no_notif">No notif yet</string>
     <string name="comment_deleted_successfully">Comment deleted successfully</string>
     <string name="date_time_format">yyyy MMM dd HH:mm</string>
+    <string name="msg_connect_notif">Connectez-vous et consultez vos notifications</string>
+    <string name="msg_connect_history">Connectez-vous et consultez vos activitées</string>
+    <string name="create_account">Create your account</string>
+    <string name="camera_text">Camera</string>
+    <string name="gallery_text">Gallery</string>
+    <string name="icon_layout">layout icon</string>
+    <string name="icon_linkedin">LinkedIn icon</string>
+    <string name="icon_twitter">Twitter icon</string>
+    <string name="icon_google_plus">Google plus icon</string>
+    <string name="icon_instagram">Instagram icon</string>
+    <string name="icon_facebook">Facebook icon</string>
+    <string name="btn_valider">Valider</string>
+    <string name="already_signaled_msg">Vous avez signaler cet item</string>
 
     <string-array name="labels">
         <item>Not set</item>

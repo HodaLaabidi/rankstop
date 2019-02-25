@@ -7,8 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemEvalsFragment;
-
 /**
  * Created by amardeep on 11/7/2017.
  */

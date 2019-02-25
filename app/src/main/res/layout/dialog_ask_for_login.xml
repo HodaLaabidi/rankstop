@@ -44,8 +44,9 @@
             android:backgroundTint="@color/colorGray"
             android:text="@string/cancel"
             android:textAllCaps="false"
+            android:textSize="13sp"
             android:textColor="@android:color/white"
-            app:cornerRadius="@dimen/raduis_btn_dialog" />
+            app:cornerRadius="@dimen/radius_btn_dialog" />
 
         <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
             android:id="@+id/positive_btn"
@@ -54,8 +55,9 @@
             android:layout_height="wrap_content"
             android:text="@string/connect"
             android:textAllCaps="false"
+            android:textSize="13sp"
             android:textColor="@android:color/white"
-            app:cornerRadius="@dimen/raduis_btn_dialog" />
+            app:cornerRadius="@dimen/radius_btn_dialog" />
     </LinearLayout>
 
 </LinearLayout>

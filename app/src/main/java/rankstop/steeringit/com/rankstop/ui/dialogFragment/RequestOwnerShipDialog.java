@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -46,9 +45,9 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.input_layout_fullname)
+    @BindView(R.id.input_layout_full_name)
     TextInputLayout inputLayoutFullName;
-    @BindView(R.id.input_fullname)
+    @BindView(R.id.input_full_name)
     RSETMedium inputFullName;
 
     @BindView(R.id.input_layout_email)
@@ -303,6 +302,7 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
             unbinder.unbind();
         if (presenter != null)
             presenter.onDestroy();
+        rootView = null;
 
         super.onDestroyView();
     }
