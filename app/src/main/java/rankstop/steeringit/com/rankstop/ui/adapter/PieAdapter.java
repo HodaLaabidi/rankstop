@@ -134,9 +134,13 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
         private void initPieChart(Item item) {
             // values of the pie
             ArrayList<PieEntry> pieEntry = new ArrayList<>();
-            pieEntry.add(new PieEntry(item.getGood(), ""));
-            pieEntry.add(new PieEntry(item.getNeutral(), ""));
-            pieEntry.add(new PieEntry(item.getBad(), ""));
+
+            if (item.getGood() > 0)
+                pieEntry.add(new PieEntry(item.getGood(), ""));
+            if (item.getNeutral() > 0)
+                pieEntry.add(new PieEntry(item.getNeutral(), ""));
+            if (item.getBad() > 0)
+                pieEntry.add(new PieEntry(item.getBad(), ""));
 
 
             pieChart.setUsePercentValues(true);

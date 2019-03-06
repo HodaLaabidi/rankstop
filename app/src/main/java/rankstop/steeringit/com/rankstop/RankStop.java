@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.squareup.leakcanary.RefWatcher;
 
+import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.utils.LocaleManager;
 
 public class RankStop extends Application {
@@ -16,6 +17,7 @@ public class RankStop extends Application {
     private RefWatcher refWatcher;
     private final String TAG = "App";
     public static LocaleManager localeManager;
+    //public static User currentUser = null;
 
     private static RankStop mInstance;
     public static String currentLanguage;

@@ -237,9 +237,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
                     @Override
                     public void onCancel() {
-                        // App code
                         rsLoader.dismiss();
-                        //Toast.makeText(getContext(), "cancel", Toast.LENGTH_SHORT).show();
 
                     }
 

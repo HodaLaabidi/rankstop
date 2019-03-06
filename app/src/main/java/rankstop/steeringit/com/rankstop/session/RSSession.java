@@ -28,7 +28,6 @@ public class RSSession {
     public static void refreshLocalStorage(UserInfo userInfo) {
         RSLocalStorage rsLocalStorage = getLocalStorage();
         rsLocalStorage.setUserInfo(userInfo);
-
         saveIntoSharedPreferences(rsLocalStorage);
     }
 

@@ -162,16 +162,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         public void setData(Item item) {
             this.item = item;
             itemName.setText(item.getItemDetails().getTitle());
-            if (item.getNumberEval() > 1){
-                countReviewsTV.setText(String.valueOf(item.getNumberEval()) +" "+ multipleReview);
-            }else {
-                countReviewsTV.setText(String.valueOf(item.getNumberEval()) +" "+ singleReview);
+            if (item.getNumberEval() > 1) {
+                countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " " + multipleReview);
+            } else {
+                countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " " + singleReview);
             }
 
-            if (item.getNumberFollows() > 1){
-                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) +" "+ multipleFollower);
-            }else {
-                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) +" "+ singleFollower);
+            if (item.getNumberFollows() > 1) {
+                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " " + multipleFollower);
+            } else {
+                countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " " + singleFollower);
             }
 
             likeIcon.setChecked(item.isFollow());
@@ -196,13 +196,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
             // values of the pie
             boolean isPieEmpty = false;
             ArrayList<PieEntry> pieEntry = new ArrayList<>();
-            if (item.getGood() == 0 && item.getNeutral() == 0 && item.getBad() == 0){
+            if (item.getGood() == 0 && item.getNeutral() == 0 && item.getBad() == 0) {
                 isPieEmpty = true;
                 pieEntry.add(new PieEntry(1, ""));
-            }else {
-                pieEntry.add(new PieEntry(item.getGood(), ""));
-                pieEntry.add(new PieEntry(item.getNeutral(), ""));
-                pieEntry.add(new PieEntry(item.getBad(), ""));
+            } else {
+                if (item.getGood() > 0)
+                    pieEntry.add(new PieEntry(item.getGood(), ""));
+                if (item.getNeutral() > 0)
+                    pieEntry.add(new PieEntry(item.getNeutral(), ""));
+                if (item.getBad() > 0)
+                    pieEntry.add(new PieEntry(item.getBad(), ""));
             }
 
 
@@ -210,9 +213,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
             // define center text of the pie
 
             pieChart.setCenterTextSize(14f);
-            SpannableString spannablecontent=new SpannableString(item.getScoreItem() + scoreOf5);
-            spannablecontent.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),0,item.getScoreItem().length(),0);
-            spannablecontent.setSpan(new RelativeSizeSpan(2f), 0,item.getScoreItem().length(), 0);
+            SpannableString spannablecontent = new SpannableString(item.getScoreItem() + scoreOf5);
+            spannablecontent.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, item.getScoreItem().length(), 0);
+            spannablecontent.setSpan(new RelativeSizeSpan(2f), 0, item.getScoreItem().length(), 0);
             pieChart.setCenterText(spannablecontent);
 
             pieChart.setCenterTextColor(primaryColor);
@@ -243,9 +246,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
             // scale when select a pie slice
             dataSet.setSelectionShift(5f);
             // colors of the pie slices
-            if (isPieEmpty){
+            if (isPieEmpty) {
                 dataSet.setColors(new int[]{R.color.colorLightGray}, context);
-            }else {
+            } else {
                 dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, context);
             }
             // initialize PieData

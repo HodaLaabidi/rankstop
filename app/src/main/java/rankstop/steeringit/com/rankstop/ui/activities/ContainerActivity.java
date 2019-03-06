@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -115,8 +116,12 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
 
     public void manageSession(boolean isLoggedIn, RSNavigationData rsNavigationData) {
         this.isLoggedIn = isLoggedIn;
-        if (isLoggedIn)
+        if (isLoggedIn) {
             rsNavigationData.setUserId(RSSession.getCurrentUser().get_id());
+            //RankStop.currentUser = RSSession.getCurrentUser();
+        }else {
+            //RankStop.currentUser = null;
+        }
 
         switch (rsNavigationData.getFrom()) {
             case RSConstants.FRAGMENT_MY_EVALS:

@@ -3,9 +3,9 @@
     <color name="colorPrimary">#344955</color>
     <color name="colorPrimaryDark">#232F34</color>
     <color name="colorAccent">#F9AA33</color>
-    <color name="colorRedPie">#D92727</color>
-    <color name="colorOrangePie">#FC8F12</color>
-    <color name="colorGreenPie">#6FCC43</color>
+    <color name="colorRedPie">#f44336</color>
+    <color name="colorOrangePie">#FFa000</color>
+    <color name="colorGreenPie">#4caf50</color>
 
     <color name="colorTitleText">#17262a</color>
     <color name="colorSubTitleText">#394b52</color>

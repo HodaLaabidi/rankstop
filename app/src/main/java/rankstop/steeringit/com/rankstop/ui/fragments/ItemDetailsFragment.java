@@ -345,9 +345,12 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             isPieEmpty = true;
             pieEntry.add(new PieEntry(1, ""));
         } else {
-            pieEntry.add(new PieEntry(item.getGood(), ""));
-            pieEntry.add(new PieEntry(item.getNeutral(), ""));
-            pieEntry.add(new PieEntry(item.getBad(), ""));
+            if (item.getGood() > 0)
+                pieEntry.add(new PieEntry(item.getGood(), ""));
+            if (item.getNeutral() > 0)
+                pieEntry.add(new PieEntry(item.getNeutral(), ""));
+            if (item.getBad() > 0)
+                pieEntry.add(new PieEntry(item.getBad(), ""));
         }
 
 
