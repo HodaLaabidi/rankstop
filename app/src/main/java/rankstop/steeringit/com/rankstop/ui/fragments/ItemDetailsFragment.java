@@ -338,19 +338,31 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     }
 
     private void initPieChart(Item item) {
-
+        int[] tabColor;
         // values of the pie
         ArrayList<PieEntry> pieEntry = new ArrayList<>();
         if (item.getGood() == 0 && item.getNeutral() == 0 && item.getBad() == 0) {
             isPieEmpty = true;
             pieEntry.add(new PieEntry(1, ""));
+            tabColor = new int[]{R.color.colorLightGray};
         } else {
-            if (item.getGood() > 0)
+            List<Integer> intList = new ArrayList<Integer>();
+            if (item.getGood() > 0) {
                 pieEntry.add(new PieEntry(item.getGood(), ""));
-            if (item.getNeutral() > 0)
+                intList.add(R.color.colorGreenPie);
+            }
+            if (item.getNeutral() > 0) {
                 pieEntry.add(new PieEntry(item.getNeutral(), ""));
-            if (item.getBad() > 0)
+                intList.add(R.color.colorOrangePie);
+            }
+            if (item.getBad() > 0) {
                 pieEntry.add(new PieEntry(item.getBad(), ""));
+                intList.add(R.color.colorRedPie);
+            }
+            tabColor = new int[intList.size()];
+            for (int i =0; i < intList.size(); i++) {
+                tabColor[i] = intList.get(i);
+            }
         }
 
 
@@ -388,11 +400,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         // scale when select a pie slice
         dataSet.setSelectionShift(5f);
         // colors of the pie slices
-        if (isPieEmpty) {
-            dataSet.setColors(new int[]{R.color.colorLightGray}, getContext());
-        } else {
-            dataSet.setColors(new int[]{R.color.colorGreenPie, R.color.colorOrangePie, R.color.colorRedPie}, getContext());
-        }
+        dataSet.setColors(tabColor, getContext());
         // initialize PieData
         PieData data = new PieData(dataSet);
         data.setValueTextSize(10f);
