@@ -1,19 +1,16 @@
 package rankstop.steeringit.com.rankstop.ui.activities;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.MenuItem;
 
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -37,8 +34,6 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
     private BottomNavigationView navigation;
     private FragmentManager fragmentManager;
     private boolean isLoggedIn = false;
-    private Handler handler;
-    private Runnable runnable;
 
     private WeakReference<ContainerActivity> activity;
 
@@ -47,7 +42,6 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Log.d("TAG_UI", "" + Thread.currentThread().getId());
             Fragment fragment = fragmentManager.findFragmentById(R.id.container);
             switch (item.getItemId()) {
                 case R.id.navigation_home:
@@ -99,28 +93,18 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
 
         fragmentManager = getSupportFragmentManager();
 
-        //backStack change listener
-        fragmentManager.addOnBackStackChangedListener(() -> Log.i("BACK_STACK", "fragment count in back stack: " + fragmentManager.getBackStackEntryCount()));
-
         replaceFragment(HomeFragment.getInstance(), RSConstants.FRAGMENT_HOME);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //fragmentManager.popBackStack();// supprimer la dernière transaction du back stack
-        //fragmentManager.popBackStack(0,0); // supprimer tous les transaction du back stack sauf la première
-        //fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE); Supprimer tous les transactions du back stack
-        //fragmentManager.popBackStack("fragment name",0); Supprimer tous les transactions du back stack sauf la transaction qui a le nom "fragment name"
     }
 
     public void manageSession(boolean isLoggedIn, RSNavigationData rsNavigationData) {
         this.isLoggedIn = isLoggedIn;
         if (isLoggedIn) {
             rsNavigationData.setUserId(RSSession.getCurrentUser().get_id());
-            //RankStop.currentUser = RSSession.getCurrentUser();
-        }else {
-            //RankStop.currentUser = null;
         }
 
         switch (rsNavigationData.getFrom()) {
@@ -186,11 +170,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
             if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof ProfileFragment || fragment instanceof SearchFragment) {
                 fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-                Log.d("TAG_BACK_STACK", "" + Thread.currentThread().getId());
-                if (handler == null)
-                    handler = new Handler();
-                runnable = () -> navigation.setSelectedItemId(R.id.navigation_home);
-                handler.postDelayed(runnable, 200);
+                navigation.setSelectedItemId(R.id.navigation_home);
 
             } else {
                 // test if last
@@ -203,7 +183,6 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                 fragmentManager.popBackStack();
             }
         }
-        //Toast.makeText(this, ""+fragmentManager.getBackStackEntryCount(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -225,8 +204,6 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
     protected void onDestroy() {
         if (activity != null)
             activity.clear();
-        if (handler != null)
-            handler.removeCallbacks(runnable);
         super.onDestroy();
     }
 }

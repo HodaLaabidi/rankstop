@@ -206,11 +206,6 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             }
 
             @Override
-            public void onReadMoreClicked(int position) {
-
-            }
-
-            @Override
             public void onClick(View view, int position) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(RSConstants.COMMENT, comments.get(position));
@@ -222,11 +217,6 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             @Override
             public void onRemoveClicked(int position) {
                 openDialogConfirmation(myComments.get(position));
-            }
-
-            @Override
-            public void onReadMoreClicked(int position) {
-
             }
 
             @Override

@@ -91,7 +91,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ItemHistoryListener listener;
-        private History history;
         private RSTVRegular subjectTV, messageTV, timeTV;
         private RSTVBold dateTV;
 
@@ -106,7 +105,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             subjectTV = itemView.findViewById(R.id.tv_subject);
             dateTV = itemView.findViewById(R.id.tv_date);
             timeTV = itemView.findViewById(R.id.tv_time);
-            //itemView.setOnClickListener(this);
         }
 
         @Override
@@ -115,14 +113,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         }
 
         private void setData(History history) {
-            this.history = history;
 
             String message = "";
             message = history.getMessage();
             if (history.getItem() != null){
                 message += " " + history.getItem().getTitle();
                 Spannable wordtoSpan = new SpannableString(message);
-                //wordtoSpan.setSpan(new ForegroundColorSpan(Color.BLUE), history.getMessage().length()+1, message.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 wordtoSpan.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(@NonNull View widget) {

@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -152,11 +151,6 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     private void initMyEvals() {
         ItemPieListener listener = new ItemPieListener() {
-            @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-                //manageFollow(listMyEvals.get(position).getItemDetails().get_id(), isFollow);
-            }
-
             @Override
             public void onFollowChanged(int position) {
                 manageFollow(listMyEvals.get(position).getItemDetails().get_id(), !listMyEvals.get(position).isFollow());
@@ -310,7 +304,6 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
                     }
                     myEvalsAdapter.addAll(listingItemResponse.getItems());
                     if (currentPage < PAGES_COUNT) {
-                        Log.i("TAG_MY_EVALS", "PAGES_COUNT = " + PAGES_COUNT + ", currentPage = " + currentPage + ", userId = " + user.get_id());
                         myEvalsAdapter.addLoadingFooter();
                         isLastPage = false;
                     } else {

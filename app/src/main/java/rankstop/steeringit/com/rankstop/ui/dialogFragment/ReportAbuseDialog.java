@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -70,6 +69,12 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     @BindString(R.string.loading_msg)
     String loadingMsg;
 
+    @BindString(R.string.no_data_msg)
+    String noDataMsg;
+
+    @BindString(R.string.done_msg)
+    String doneMsg;
+
     private RSPresenter.abusePresenter abusePresenter;
     private List<Abuse> abuseList;
     private String itemId, abuseId;
@@ -114,16 +119,12 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         createLoader();
         RSNavigationData rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         itemId = rsNavigationData.getItemId();
-
         abusePresenter = new PresenterAbuseImpl(ReportAbuseDialog.this);
-
         abusesRG.setOnCheckedChangeListener((group, checkedId) -> abuseId = abuseList.get(abusesRG.indexOfChild(group.findViewById(checkedId))).get_id());
         loadAbuseList();
-
     }
 
     @Override
@@ -139,7 +140,6 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
 
     @Override
     public void onDestroyView() {
-
         if (unbinder != null)
             unbinder.unbind();
         rootView = null;
@@ -147,7 +147,6 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
         instance = null;
         if (abusePresenter != null)
             abusePresenter.onDestroy();
-
         super.onDestroyView();
     }
 
@@ -163,7 +162,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
                 abusesRG.addView(rb);
             }
         } catch (Exception e) {
-            displayServerFeedBack("No data");
+            displayServerFeedBack(noDataMsg);
         }
     }
 
@@ -182,11 +181,6 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     }
 
     @Override
-    public void onDialogCanceled() {
-        dismiss();
-    }
-
-    @Override
     public void onSuccess(String target, Object data) {
         switch (target) {
             case RSConstants.LOAD_ABUSES_LIST:
@@ -194,7 +188,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
                 initAbusesList(abuseList);
                 break;
             case RSConstants.REPORT_ABUSES:
-                Toast.makeText(getContext(), "done", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), doneMsg, Toast.LENGTH_SHORT).show();
                 dismiss();
                 break;
         }
@@ -204,7 +198,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     public void onFailure(String target) {
         switch (target) {
             case RSConstants.LOAD_ABUSES_LIST:
-                displayServerFeedBack("No data");
+                displayServerFeedBack(noDataMsg);
                 break;
             case RSConstants.REPORT_ABUSES:
                 break;

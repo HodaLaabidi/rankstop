@@ -12,8 +12,6 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +22,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -225,7 +222,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                             if (user != null) {
                                 performSocialLogin(user);
                             } else {
-                                Log.i("TAG_REGISTER", "user null");
                             }
                         });
 
@@ -244,9 +240,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
-                        Log.i("TAG_REGISTER_ERROR", exception.getMessage());
                         rsLoader.dismiss();
-                        //Toast.makeText(getContext(), "error = "+exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -270,14 +264,14 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     public void dialogLogin(String email) {
         LoginDialog dialog = LoginDialog.newInstance(inputEmail.getText().toString().trim(), rsNavigationData);
         dialog.setCancelable(false);
-        String LOGIN_DIALOG_TAG = "game_dialog_tag";
+        String LOGIN_DIALOG_TAG = "LOGIN_DIALOG";
         dialog.show(getFragmentManager(), LOGIN_DIALOG_TAG);
     }
 
     public void dialogRegister(String email) {
         RegisterDialog dialog = RegisterDialog.newInstance(inputEmail.getText().toString().trim(), rsNavigationData);
         dialog.setCancelable(false);
-        String REGISTER_DIALOG_TAG = "game_dialog_tag";
+        String REGISTER_DIALOG_TAG = "REGISTER_DIALOG";
         dialog.show(getFragmentManager(), REGISTER_DIALOG_TAG);
     }
 
@@ -329,16 +323,10 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     }
 
     @Override
-    public void findEmailError() {
-
-    }
-
-    @Override
     public void socialLoginSuccess(Object data) {
 
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
-        //Log.i("TAG_REGISTER",""+token);
         RSSession.startSession(token);
 
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
@@ -352,7 +340,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Override
     public void socialLoginError(String message) {
         Toast.makeText(getContext(), "" + message, Toast.LENGTH_LONG).show();
-        Log.i("TAG_REGISTER", "" + message);
     }
 
     @Override
@@ -373,7 +360,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        //Toast.makeText(getContext(), "code  = "+requestCode, Toast.LENGTH_LONG).show();
         if (requestCode == 1) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
@@ -402,7 +388,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
             //updateUI(null);
         }
     }
@@ -505,7 +490,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
-                Log.i("KEY_HASH", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();

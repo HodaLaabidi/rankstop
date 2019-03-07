@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -12,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,10 +31,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +45,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -510,6 +504,12 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     Drawable expandLess;
     @BindString(R.string.off_line)
     String offlineMsg;
+    @BindString(R.string.gps_disabled_msg)
+    String gpsDisabledMsg;
+    @BindString(R.string.gps_positive_btn_msg)
+    String positiveBtnText;
+    @BindString(R.string.cancel)
+    String negativeBtnText;
 
     // current location
     @OnClick(R.id.btn_change_pwd)
@@ -564,15 +564,15 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     private void showGPSDisabledAlertToUser() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+        alertDialogBuilder.setMessage(gpsDisabledMsg)
                 .setCancelable(false)
-                .setPositiveButton("Goto Settings Page To Enable GPS",
+                .setPositiveButton(positiveBtnText,
                         (dialog, id) -> {
                             Intent callGPSSettingIntent = new Intent(
                                     android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivityForResult(callGPSSettingIntent, RSConstants.REQUEST_CODE);
                         });
-        alertDialogBuilder.setNegativeButton("Cancel",
+        alertDialogBuilder.setNegativeButton(negativeBtnText,
                 (dialog, id) -> dialog.cancel());
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
@@ -618,7 +618,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         presenterUpdateProfile = new PresenterUpdateProfileImpl(UpdateProfileFragment.this, getContext());
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
-        Log.i("TAG_LIST_COUNTRY", "fragment resumed");
         currentUser = (User) getArguments().getSerializable(RSConstants.CURRENT_USER);
         presenterUpdateProfile.loadCountriesList();
         bindData(currentUser);
@@ -765,10 +764,8 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 Country[] array = new Gson().fromJson(new Gson().toJson(data), Country[].class);
                 countries = Arrays.asList(array);
                 initCountriesList();
-                Log.i("TAG_LIST_COUNTRY", "" + countries.size());
                 break;
             case RSConstants.UPDATE_PROFILE:
-                //fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
                 fragmentActionListener.pop();
                 break;
         }
@@ -790,11 +787,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     @Override
     public void onOldPwdIncorrect(String message) {
         inputLayoutOldPwd.setError(oldPwdErrorMsg);
-    }
-
-    @Override
-    public void onPwdMismatch(String message) {
-
     }
 
     @Override
@@ -835,11 +827,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         Toast.makeText(context, offlineMsg, Toast.LENGTH_LONG).show();
     }
 
-
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //inflater.inflate(R.menu.profile_menu, menu);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -866,12 +853,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                     setUserAddress(findCountry(getCountryCode(currentUserLatLang)), getCity(currentUserLatLang));
                 }
             });
-
-            /*Location userCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            if (userCurrentLocation != null) {
-                LatLng currentUserLatLang = new LatLng(userCurrentLocation.getLatitude(), userCurrentLocation.getLongitude());
-                setUserAddress(findCountry(getCountryCode(currentUserLatLang)), getCity(currentUserLatLang));
-            }*/
         }
     }
 
@@ -888,17 +869,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         try {
             String city = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1).get(0).getLocality();
             return city != null ? city : "";
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    private String getCountry(LatLng latLng) {
-        geocoder = new Geocoder(getContext(), Locale.getDefault());
-        try {
-            String country = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1).get(0).getCountryName();
-            return country != null ? country : "";
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1105,13 +1075,9 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 }
                 String path = MediaStore.Images.Media.insertImage(RankStop.getInstance().getContentResolver(), BitmapFactory.decodeFile(mPhotoFile.getAbsolutePath()), "Image Description", null);
                 imageUri = Uri.parse(path);
-                /*ImagePipeline imagePipeline = Fresco.getImagePipeline();
-                imagePipeline.evictFromCache(userPicUri);
-                imagePipeline.clearCaches();*/
                 avatar.setImageURI(imageUri);
             }
         } else if (resultCode == RESULT_CANCELED) {
-            //Toast.makeText(getContext(), "You cancelled the operation", Toast.LENGTH_SHORT).show();
         }
     }
 

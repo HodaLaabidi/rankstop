@@ -2,7 +2,6 @@ package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.File;
 
@@ -34,16 +33,9 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
     }
 
     @Override
-    public void editPassword() {
-        if (standardView != null) {
-        }
-    }
-
-    @Override
     public void editProfile(RSRequestEditProfile user) {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
-                Log.i("TAG_IMG_URI", "" + user.getFile());
                 MultipartBody.Part part = null;
                 if (user.getFile() != null) {
                     part = prepareFilePart("file", user.getFile());

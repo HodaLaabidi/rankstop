@@ -91,13 +91,6 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
     }
 
     @Override
-    public void onCancelClick() {
-        if (abuseView != null) {
-            abuseView.onDialogCanceled();
-        }
-    }
-
-    @Override
     public void onDestroy() {
         if (callAbusesList != null)
             if (callAbusesList.isExecuted())

@@ -17,16 +17,10 @@ public abstract class LinearScrollListener extends RecyclerView.OnScrollListener
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        Log.i("TAG_PIX", "from listener");
-
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-        Log.i("TAG_PIX", "from listener visibleItemCount = "+visibleItemCount);
-        Log.i("TAG_PIX", "from listener totalItemCount = "+totalItemCount);
-        Log.i("TAG_PIX", "from listener firstVisibleItemPosition = "+ firstVisibleItemPosition);
-        Log.i("TAG_PIX", "from listener getTotalPageCount() = "+ getTotalPageCount());
         if (!isLoading() && !isLastPage()) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
                 loadMoreItems();

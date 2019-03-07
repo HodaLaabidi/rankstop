@@ -47,7 +47,6 @@ public class RSConstants {
     public static final String CURRENT_USER = "user";
     public static final String USER_HISTORY = "user history";
     public static final String USER_ID = "user id";
-    public static final String RS_QUERY = "query";
     public static final String CATEGORY = "category";
     public static final String PICTURE = "picture";
     public static final String PICTURES = "picList";
@@ -58,7 +57,6 @@ public class RSConstants {
     public static final String FILTERED_PICTURES = "filtered pictures";
     public static final String MY_PIX = "my pix";
     public static final String ALL_PIX = "all pix";
-    public static final String GALLERY = "gallery";
     public static final String COUNTRIES_LIST = "countries list";
     public static final String CURRENT_DATE = "currentDate";
     public static final String SOCIAL_LOGIN = "social login";
@@ -81,7 +79,6 @@ public class RSConstants {
     public static final String ACTION_COMMENT = "action comment";
     public static final String ACTION_PIX = "action pix";
     public static final String RS_ACTION = "rs action";
-    public static final String RS_EDIT_LANG = "rs edit language";
     public static final String LIST_NOTIFS = "notifications list";
     public static final String EDIT_NOTIF_VISIBILITY = "edit notif visibility";
     public static final int MIN_AGE_USER = 10;
@@ -108,7 +105,6 @@ public class RSConstants {
     public static final String FRAGMENT_ADD_ITEM = "add item fragment";
     public static final String FRAGMENT_SETTINGS = "settings fragment";
     public static final String FRAGMENT_HISTORY = "history fragment";
-    public static final String FRAGMENT_CONTACT = "contact fragment";
     public static final String FRAGMENT_NOTIF = "notif fragment";
     public static final String FRAGMENT_LISTING_ITEMS = "listing items fragment";
     public static final String FRAGMENT_SEARCH = "search fragment";

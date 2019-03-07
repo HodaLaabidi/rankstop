@@ -21,11 +21,6 @@ public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAd
 
     private List<CriteriaEval> criteriasEvaluated;
 
-    /*public MyEvalCriteriaAdapter(List<CriteriaEval> criteriasEvaluated, Context context) {
-        this.criteriasEvaluated = criteriasEvaluated;
-        this.context = context;
-    }*/
-
     public MyEvalCriteriaAdapter() {
         this.criteriasEvaluated = new ArrayList<>();
     }

@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;

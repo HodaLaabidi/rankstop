@@ -200,10 +200,6 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         createLoader();
     }
 
-    /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.rs_menu, menu);
-    }*/
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -211,15 +207,6 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         switch (itemId) {
             case android.R.id.home:
                 getActivity().onBackPressed();
-                break;
-            case R.id.setting:
-                //fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
-                break;
-            case R.id.history:
-                //fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
-                break;
-            case R.id.contact:
-                //openContactDialog();
                 break;
         }
 
@@ -231,12 +218,6 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
-
-    /*private void openContactDialog() {
-        ContactDialog dialog = new ContactDialog();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        dialog.show(ft, ContactDialog.TAG);
-    }*/
 
     private static ListNotifFragment instance;
 

@@ -17,7 +17,6 @@ public class RankStop extends Application {
     private RefWatcher refWatcher;
     private final String TAG = "App";
     public static LocaleManager localeManager;
-    //public static User currentUser = null;
 
     private static RankStop mInstance;
     public static String currentLanguage;

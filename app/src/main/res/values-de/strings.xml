@@ -209,6 +209,11 @@
     <string name="icon_facebook">Facebook icon</string>
     <string name="btn_valider">Valider</string>
     <string name="already_signaled_msg">Vous avez signaler cet item</string>
+    <string name="register_failed_msg">Register failed</string>
+    <string name="no_data_msg">No data</string>
+    <string name="done_msg">Done</string>
+    <string name="gps_disabled_msg">GPS is disabled in your device. Would you like to enable it?</string>
+    <string name="gps_positive_btn_msg">Go to Settings Page To Enable GPS</string>
 
     <string-array name="labels">
         <item>Not set</item>

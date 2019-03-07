@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -261,18 +260,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
             pieChart.setData(data);
             //pieChart.setHighlightPerTapEnabled(false);
             pieChart.setTouchEnabled(false);
-            // add listener of value selection
-            /*pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-                @Override
-                public void onValueSelected(Entry e, Highlight h) {
-                    Toast.makeText(context, "" + e.getY(), Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onNothingSelected() {
-
-                }
-            });*/
         }
     }
 

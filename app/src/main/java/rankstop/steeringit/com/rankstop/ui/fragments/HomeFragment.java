@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -210,7 +209,6 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         super.onActivityCreated(savedInstanceState);
         bindViews();
 
-        Log.i("TAG_LISTING", "on activity created");
         itemPresenter = new PresenterItemImpl(HomeFragment.this);
         rsRequestListItem.setLang(RankStop.getDeviceLanguage());
         getCurrentUser();
@@ -219,13 +217,6 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         } else {
             onOffLine();
         }
-
-        /*try {
-            rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
-            Toast.makeText(getContext(), "" + (rsNavigationData == null), Toast.LENGTH_SHORT).show();
-            //manageFollow(rsNavigationData.getItemId(), true);
-        } catch (Exception e) {
-        }*/
     }
 
     private void getCurrentUser() {
@@ -270,11 +261,6 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         recyclerViewTopRanked.setVisibility(View.VISIBLE);
         ItemPieListener listener = new ItemPieListener() {
             @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-
-            }
-
-            @Override
             public void onFollowChanged(int position) {
                 manageFollow(listTopRankedItem.get(position).getItemDetails().get_id(), !listTopRankedItem.get(position).isFollow());
             }
@@ -297,11 +283,6 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
     private void initTopViewed(List<Item> listTopViewedItem) {
         recyclerViewTopViewed.setVisibility(View.VISIBLE);
         ItemPieListener listener = new ItemPieListener() {
-            @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-
-            }
-
             @Override
             public void onFollowChanged(int position) {
                 manageFollow(listTopViewedItem.get(position).getItemDetails().get_id(), !listTopViewedItem.get(position).isFollow());
@@ -326,11 +307,6 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         recyclerViewTopFollowed.setVisibility(View.VISIBLE);
         ItemPieListener listener = new ItemPieListener() {
             @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-
-            }
-
-            @Override
             public void onFollowChanged(int position) {
                 manageFollow(listTopFollowedItem.get(position).getItemDetails().get_id(), !listTopFollowedItem.get(position).isFollow());
             }
@@ -353,11 +329,6 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
     private void initTopCommented(List<Item> listTopCommentedItem) {
         recyclerViewTopCommented.setVisibility(View.VISIBLE);
         ItemPieListener listener = new ItemPieListener() {
-            @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-
-            }
-
             @Override
             public void onFollowChanged(int position) {
                 manageFollow(listTopCommentedItem.get(position).getItemDetails().get_id(), !listTopCommentedItem.get(position).isFollow());

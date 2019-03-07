@@ -7,12 +7,6 @@ public class Localisation implements Serializable {
     private String address, city, governorate, country;
     private float longitude, latitude;
 
-    /*public Localisation(String address, float longitude, float latitude) {
-        this.address = address;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }*/
-
     public String getAddress() {
         return address;
     }

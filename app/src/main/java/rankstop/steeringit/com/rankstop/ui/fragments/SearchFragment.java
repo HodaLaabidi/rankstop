@@ -174,11 +174,6 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     private void initItemsList() {
         ItemPieListener itemsListener = new ItemPieListener() {
             @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-
-            }
-
-            @Override
             public void onFollowChanged(int position) {
 
             }

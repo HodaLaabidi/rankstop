@@ -36,9 +36,6 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
     @BindString(R.string.off_line)
     String offlineMsg;
 
-    private static int MAX_PAGES = 3;
-    private static int MAX_FIELD_TO_LOAD = RSConstants.MAX_FIELD_TO_LOAD;
-
     private PagerAdapter mPagerAdapter;
 
     private List<Picture> filteredPictures;
@@ -67,8 +64,6 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
         if (filteredPictures.get(filteredPictures.size() - 1).getPictureEval() == null)
             filteredPictures.remove(filteredPictures.size() - 1);
 
-        //Log.i("TAG_PHOTO", "filteredPictures = " + filteredPictures.size() + ", pictures = " + nbrPic + ", url = " + filteredPictures.get(filteredPictures.size() - 1).getPictureEval());
-
         int rest = nbrPic % RSConstants.MAX_FIELD_TO_LOAD;
         if (rest == 0) {
             currentPages = nbrPic / RSConstants.MAX_FIELD_TO_LOAD;
@@ -79,8 +74,6 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
             isLastPage = true;
         }
 
-        //Toast.makeText(this, "size = "+filteredPictures.size()+"\nisLastPage = "+isLastPage, Toast.LENGTH_LONG).show();
-
         itemPresenter = new PresenterItemImpl(this);
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), filteredPictures);
@@ -89,12 +82,10 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
-                //Log.i("TAG_PHOTO","i = "+i+", i1 = "+i1);
             }
 
             @Override
             public void onPageSelected(int i) {
-                //Log.i("TAG_PHOTO", "i = " + i);
                 if (!isLastPage) {
                     if (i == filteredPictures.size() - 1) {
                         currentPages++;

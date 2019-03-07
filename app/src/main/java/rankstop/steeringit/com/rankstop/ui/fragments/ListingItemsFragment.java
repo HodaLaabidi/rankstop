@@ -124,11 +124,6 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     private void initItemsList() {
         ItemPieListener itemsListener = new ItemPieListener() {
             @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-
-            }
-
-            @Override
             public void onFollowChanged(int position) {
                 manageFollow(itemsList.get(position).getItemDetails().get_id(), !itemsList.get(position).isFollow());
             }

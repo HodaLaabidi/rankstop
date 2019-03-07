@@ -53,8 +53,6 @@ public interface RSView {
 
         void findEmailSuccess(boolean isEmailExist, Object data);
 
-        void findEmailError();
-
         void socialLoginSuccess(Object data);
 
         void socialLoginError(String message);
@@ -152,8 +150,6 @@ public interface RSView {
 
         void onOldPwdIncorrect(String message);
 
-        void onPwdMismatch(String message);
-
         void showProgressBar(String target);
 
         void hideProgressBar(String target);
@@ -166,8 +162,6 @@ public interface RSView {
     interface AbuseView {
 
         void onReportClicked();
-
-        void onDialogCanceled();
 
         void onSuccess(String target, Object data);
 

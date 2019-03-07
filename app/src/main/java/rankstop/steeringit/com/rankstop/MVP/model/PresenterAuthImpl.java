@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -94,8 +93,6 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
-
-                        Log.i("TAG_REGISTER", "failure");
                         if (!call.isCanceled())
                             signupView.hideProgressBar(RSConstants.SOCIAL_LOGIN);
                     }

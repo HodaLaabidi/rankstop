@@ -104,7 +104,6 @@ public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.ViewHolder> 
             this.listener = listener;
             messageTV = itemView.findViewById(R.id.tv_message);
             dateTV = itemView.findViewById(R.id.tv_date);
-            //itemView.setOnClickListener(this);
         }
 
         @Override

@@ -1,10 +1,8 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -43,7 +41,6 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -132,6 +129,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     String addItemTitle;
     @BindString(R.string.off_line)
     String offlineMsg;
+    @BindString(R.string.gps_disabled_msg)
+    String gpsDisabledMsg;
+    @BindString(R.string.gps_positive_btn_msg)
+    String positiveBtnText;
+    @BindString(R.string.cancel)
+    String negativeBtnText;
 
     @BindInt(R.integer.max_length_50)
     int maxLength50;
@@ -300,7 +303,6 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     private void checkGPS() {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            //Toast.makeText(getContext(), "GPS is Enabled in your device", Toast.LENGTH_LONG).show();
         } else {
             showGPSDisabledAlertToUser();
             return;
@@ -365,12 +367,6 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                     addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
                 }
             });
-            /*Location userCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            if (userCurrentLocation != null) {
-                addMarker(userCurrentLocation.getLatitude(), userCurrentLocation.getLongitude());
-            }else{
-                Toast.makeText(getContext(), "userCurrentLocation"+ userCurrentLocation, Toast.LENGTH_LONG).show();
-            }*/
         }
     }
 
@@ -501,15 +497,15 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     private void showGPSDisabledAlertToUser() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+        alertDialogBuilder.setMessage(gpsDisabledMsg)
                 .setCancelable(false)
-                .setPositiveButton("Goto Settings Page To Enable GPS",
+                .setPositiveButton(positiveBtnText,
                         (dialog, id) -> {
                             Intent callGPSSettingIntent = new Intent(
                                     android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivityForResult(callGPSSettingIntent, RSConstants.REQUEST_CODE);
                         });
-        alertDialogBuilder.setNegativeButton("Cancel",
+        alertDialogBuilder.setNegativeButton(negativeBtnText,
                 (dialog, id) -> {
                     dialog.cancel();
                     addMarker(RSConstants.FAKE_LATITUDE, RSConstants.FAKE_LONGITUDE);
@@ -525,22 +521,8 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         }
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //Log.i("LIFE_CYCLE", "" + TAG + " onStart");
-    }
-
-    @Override
-    public void onPause() {
-        //Log.i("LIFE_CYCLE", "" + TAG + " onPause");
-        super.onPause();
-    }
-
     @Override
     public void onStop() {
-        //Log.i("LIFE_CYCLE", "" + TAG + " onStop");
         if (googleApiClient != null)
             googleApiClient.disconnect();
         super.onStop();
@@ -556,18 +538,6 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         if (itemPresenter != null)
             itemPresenter.onDestroyItem();
         super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        //Log.i("LIFE_CYCLE", "" + TAG + " onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDetach() {
-        //Log.i("LIFE_CYCLE", "" + TAG + " onDetach");
-        super.onDetach();
     }
 
 

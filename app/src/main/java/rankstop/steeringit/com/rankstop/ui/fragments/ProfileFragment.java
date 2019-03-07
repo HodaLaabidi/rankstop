@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -212,8 +211,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         } else {
             onOffLine();
         }
-
-        Log.i("USER_ID", "" + userInfo.getUser().get_id());
     }
 
     private void bindViews() {
@@ -347,11 +344,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         recyclerViewOwnedItem.setVisibility(View.VISIBLE);
         ItemPieListener listener = new ItemPieListener() {
             @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-                //manageFollow(listOwnedItem.get(position).getItemDetails().get_id(), isFollow);
-            }
-
-            @Override
             public void onFollowChanged(int position) {
                 manageFollow(listOwnedItem.get(position).getItemDetails().get_id(), !listOwnedItem.get(position).isFollow());
             }
@@ -375,11 +367,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         recyclerViewCreatedItem.setVisibility(View.VISIBLE);
         ItemPieListener listener = new ItemPieListener() {
             @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-                //manageFollow(listCreatedItem.get(position).getItemDetails().get_id(), isFollow);
-            }
-
-            @Override
             public void onFollowChanged(int position) {
                 manageFollow(listCreatedItem.get(position).getItemDetails().get_id(), !listCreatedItem.get(position).isFollow());
             }
@@ -402,11 +389,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     private void initFollowedItem(List<Item> listFollowedItem) {
         recyclerViewFollowedItem.setVisibility(View.VISIBLE);
         ItemPieListener listener = new ItemPieListener() {
-            @Override
-            public void onFollowChanged(boolean isFollow, int position) {
-                //manageFollow(listFollowedItem.get(position).getItemDetails().get_id(), isFollow);
-            }
-
             @Override
             public void onFollowChanged(int position) {
                 manageFollow(listFollowedItem.get(position).getItemDetails().get_id(), !listFollowedItem.get(position).isFollow());

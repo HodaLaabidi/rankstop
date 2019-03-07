@@ -75,7 +75,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     String offlineMsg;
 
     @OnClick(R.id.btn_connect)
-    void connect(){
+    void connect() {
         RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_HISTORY, RSConstants.ACTION_CONNECT, "", "", "", "", "");
         navigateToSignUp(rsNavigationData);
     }
@@ -143,11 +143,6 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     private void initItemsList() {
         ItemHistoryListener itemListener = new ItemHistoryListener() {
             @Override
-            public void onHideClicked(boolean hide, int position) {
-
-            }
-
-            @Override
             public void onClick(View view, int position) {
                 fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(historiesList.get(position).getItem().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             }
@@ -197,10 +192,6 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.rs_menu, menu);
-    }*/
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -208,15 +199,6 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
         switch (itemId) {
             case android.R.id.home:
                 getActivity().onBackPressed();
-                break;
-            case R.id.setting:
-                //fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
-                break;
-            case R.id.contact:
-                //openContactDialog();
-                break;
-            case R.id.notifications:
-                //fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
         }
 
@@ -228,12 +210,6 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
     }
-
-    /*private void openContactDialog() {
-        ContactDialog dialog = new ContactDialog();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        dialog.show(ft, ContactDialog.TAG);
-    }*/
 
     private static HistoryFragment instance;
 

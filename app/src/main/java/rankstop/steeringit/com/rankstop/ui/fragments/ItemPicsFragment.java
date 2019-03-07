@@ -205,10 +205,6 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
             }
 
             @Override
-            public void onReadMoreClicked(int position) {
-            }
-
-            @Override
             public void onClick(View view, int position) {
                 startActivity(
                         new Intent(getContext(), DiaporamaActivity.class)
@@ -225,10 +221,6 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
             @Override
             public void onRemoveClicked(int position) {
                 openDialogConfirmation(myPictures.get(position));
-            }
-
-            @Override
-            public void onReadMoreClicked(int position) {
             }
 
             @Override

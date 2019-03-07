@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -102,6 +101,8 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
 
     @BindString(R.string.field_required)
     String requiredField;
+    @BindString(R.string.register_failed_msg)
+    String registerFailedMsg;
     @BindString(R.string.login_dialog_empty_password)
     String minLength6Msg;
     @BindInt(R.integer.min_length_pwd)
@@ -230,9 +231,7 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
 
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
-        Log.i("TAG_REGISTER", "" + token);
         RSSession.startSession(token);
-        //Toast.makeText(getContext(), "register success", Toast.LENGTH_SHORT).show();
 
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
             registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER);
@@ -245,7 +244,7 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
 
     @Override
     public void registerError() {
-        Toast.makeText(getContext(), "register failed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), registerFailedMsg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

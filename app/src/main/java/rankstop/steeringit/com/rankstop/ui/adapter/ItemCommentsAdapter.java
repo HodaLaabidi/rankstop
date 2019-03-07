@@ -26,6 +26,7 @@ import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Comment;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapter.ViewHolder> {
@@ -108,7 +109,6 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
         private RelativeLayout layout;
         private LinearLayout commentContainer;
         private CardView cardView;
-        private RSBTNMedium readMoreBTN;
         private ImageButton removeCommentBTN;
         private SimpleDraweeView avatar;
         @BindString(R.string.date_time_format)
@@ -128,7 +128,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
             removeCommentBTN = itemView.findViewById(R.id.btn_remove_comment);
             avatar = itemView.findViewById(R.id.avatar);
 
-            if (target.equals("mine")) {
+            if (target.equals(RSConstants.MINE)) {
                 try {
                     RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams((int)RankStop.getInstance().getResources().getDimension(R.dimen.width_comment_card), (int)RankStop.getInstance().getResources().getDimension(R.dimen.width_comment_card));
                     cardView.setLayoutParams(layoutParams);
@@ -143,7 +143,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
                 @Override
                 public void onGlobalLayout() {
                     try {
-                        if (target.equals("other")) {
+                        if (target.equals(RSConstants.OTHER)) {
                             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, commentContainer.getWidth());
                             commentContainer.setLayoutParams(layoutParams);
                         }
@@ -154,26 +154,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
             });
 
             try {
-                readMoreBTN.setOnClickListener(this);
                 removeCommentBTN.setOnClickListener(this);
-                /*commentTV.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        try {
-                            int heightTV = commentTV.getHeight();
-                            int heightLine = commentTV.getLineHeight();
-                            int lineCount = commentTV.getLineCount();
-                            int maxLines = heightTV / heightLine - 3;
-                            commentTV.setMaxLines(maxLines);
-                            if (maxLines >= 0)
-                                if (lineCount > maxLines)
-                                    readMoreBTN.setVisibility(View.VISIBLE);
-                            Log.i("TAG_COMMENT", "heightTV = " + heightTV + ", heightLine = " + heightLine + ", lineCount = " + lineCount + ", maxLines = " + maxLines);
-                            commentTV.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        } catch (Exception e) {
-                        }
-                    }
-                });*/
             } catch (Exception e) {
             }
             itemView.setOnClickListener(this);
@@ -226,12 +207,9 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
         isLoadingAdded = false;
 
         int position = comments.size() - 1;
-        Comment comment = getItem(position);
 
-        //if (comment != null) {
         comments.remove(position);
         notifyItemRemoved(position);
-        //}
     }
 
     public Comment getItem(int position) {

@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -61,7 +60,6 @@ public class RSLoader extends DialogFragment {
     private void onDialogShow(AlertDialog dialog) {
 
         dialog.getWindow().setLayout((int) getContext().getResources().getDimension(R.dimen.w_dialog_login), LinearLayout.LayoutParams.WRAP_CONTENT);
-        //dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
     }
 
     @Override

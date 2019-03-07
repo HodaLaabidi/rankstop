@@ -83,7 +83,6 @@ public interface RSPresenter {
         void loadAbusesList(String langue);
         void reportAbuse(RSRequestReportAbuse rsRequestReportAbuse);
         void onOkClick();
-        void onCancelClick();
         void onDestroy();
     }
 
@@ -94,7 +93,6 @@ public interface RSPresenter {
     }
 
     interface UpdateProfilePresenter{
-        void editPassword();
         void editProfile(RSRequestEditProfile user);
         void loadCountriesList();
         void onDestroy();

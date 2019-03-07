@@ -219,7 +219,7 @@ public interface API {
     Call<RSResponse> search(@Query("q") String query, @Query("lang") String lang);
 
     // search items
-    @GET("country/getAllCountryWorld")
+    @GET("country/getAllCountry")
     Call<RSResponse> loadCountries();
 
     // report abuse
