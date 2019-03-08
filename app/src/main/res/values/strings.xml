@@ -219,6 +219,13 @@
     <string name="done_msg">Done</string>
     <string name="gps_disabled_msg">GPS is disabled in your device. Would you like to enable it?</string>
     <string name="gps_positive_btn_msg">Go to Settings Page To Enable GPS</string>
+    <string name="email_sent_forgot_pwd">We sent you an email, check your mailbox</string>
+    <string name="no_email_founded_forgot_pwd">Email doesn\'t exist</string>
+    <string name="privacy_policy_text">terms and privacy policy</string>
+    <string name="privacy_policy_msg">By signing up you agree to our</string>
+    <string name="review_added_successfully">Review added successfully</string>
+    <string name="review_updated_successfully">Review updated successfully</string>
+    <string name="item_added_successfully">Item added successfully</string>
 
     <string-array name="labels">
         <item>Not set</item>

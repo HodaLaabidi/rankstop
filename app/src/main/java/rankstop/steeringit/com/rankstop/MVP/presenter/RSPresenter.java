@@ -18,6 +18,7 @@ public interface RSPresenter {
     interface LoginPresenter {
         void performLogin(User user);
         void followItem(RSFollow rsFollow, String target);
+        void forgotPassword(String email);
         void onDestroyLogin();
     }
 

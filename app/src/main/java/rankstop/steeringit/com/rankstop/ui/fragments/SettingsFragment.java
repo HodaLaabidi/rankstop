@@ -86,7 +86,6 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
     }
 
     private void bindViews() {
-        setFragmentActionListener((ContainerActivity) getActivity());
         createLoader();
         presenter = new PresenterDeviceLangImpl(SettingsFragment.this);
 
@@ -104,7 +103,6 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
         }
 
         listLangRG.setOnCheckedChangeListener((group, checkedId) -> {
-            Toast.makeText(getContext(), "checked = ", Toast.LENGTH_SHORT).show();
             if (checkedId == R.id.rb_en)
                 manageLanguage("en");
             else if (checkedId == R.id.rb_fr)
@@ -122,10 +120,6 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
         }
     }
 
-    /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.rs_menu, menu);
-    }*/
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -134,31 +128,10 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-            case R.id.history:
-                //fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
-                break;
-            case R.id.contact:
-                //openContactDialog();
-                break;
-            case R.id.notifications:
-                //fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
-                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-    private FragmentActionListener fragmentActionListener;
-
-    public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
-        this.fragmentActionListener = fragmentActionListener;
-    }
-
-    /*private void openContactDialog() {
-        ContactDialog dialog = new ContactDialog();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        dialog.show(ft, ContactDialog.TAG);
-    }*/
 
     private static SettingsFragment instance;
 
@@ -173,7 +146,6 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
     public void onDestroyView() {
         instance = null;
         rootView = null;
-        fragmentActionListener = null;
         if (unbinder != null)
             unbinder.unbind();
         if (presenter != null)
@@ -191,7 +163,6 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
         if (restartProcess) {
             System.exit(0);
         } else {
-            Toast.makeText(getContext(), "Activity restarted", Toast.LENGTH_SHORT).show();
         }
         return true;
     }

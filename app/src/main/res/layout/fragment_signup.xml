@@ -68,8 +68,7 @@
             android:layout_width="@dimen/btn_login_width"
             android:layout_height="wrap_content"
             android:text="@string/fb_text"
-            app:backgroundTint="@color/colorFB"
-            app:icon="@drawable/ic_email_24dp" />
+            app:backgroundTint="@color/colorFB" />
 
         <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
             android:id="@+id/google_login_btn"
@@ -77,7 +76,14 @@
             android:layout_width="@dimen/btn_login_width"
             android:layout_height="wrap_content"
             android:text="@string/gl_text"
-            app:backgroundTint="@color/colorGoogle"
-            app:icon="@drawable/ic_email_24dp" />
+            app:backgroundTint="@color/colorGoogle" />
+
+        <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
+            android:id="@+id/tv_rs_privacy_policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:gravity="center"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

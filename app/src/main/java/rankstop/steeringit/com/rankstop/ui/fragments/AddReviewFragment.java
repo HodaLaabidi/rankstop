@@ -205,6 +205,12 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         return x == 0;
     }
 
+    @BindString(R.string.review_added_successfully)
+    String reviewAddedSuccessfully;
+    @BindString(R.string.review_updated_successfully)
+    String reviewUpdatedSuccessfully;
+    @BindString(R.string.item_added_successfully)
+    String itemAddedSuccessfully;
     @BindString(R.string.loading_msg)
     String loadingMsg;
     private RSLoader rsLoader;
@@ -487,14 +493,14 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
                 }
                 break;
             case RSConstants.ADD_REVIEW:
-                navigateToItemDetails(rsAddReview.getItemId(), "Review added successfully");
+                navigateToItemDetails(rsAddReview.getItemId(), reviewAddedSuccessfully);
                 break;
             case RSConstants.UPDATE_REVIEW:
-                navigateToItemDetails(rsAddReview.getItemId(), "Review updated successfully");
+                navigateToItemDetails(rsAddReview.getItemId(), reviewUpdatedSuccessfully);
                 break;
             case RSConstants.ADD_ITEM:
                 ResponseAddItem responseAddItem = new Gson().fromJson(new Gson().toJson(data), ResponseAddItem.class);
-                navigateToItemDetails(responseAddItem.getId(), "Item added successfully");
+                navigateToItemDetails(responseAddItem.getId(), itemAddedSuccessfully);
                 break;
             case RSConstants.LOAD_MY_EVAL:
                 myEval = new Gson().fromJson(new Gson().toJson(data), Evaluation.class);

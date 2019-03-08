@@ -4,14 +4,19 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +53,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
 import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
 import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
@@ -101,6 +107,9 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @BindView(R.id.input_layout_email)
     TextInputLayout inputLayoutEmail;
 
+    @BindView(R.id.tv_rs_privacy_policy)
+    RSTVRegular privacyPolicyTV;
+
     @BindString(R.string.email_format_incorrect)
     String emailFormatIncorrect;
     @BindString(R.string.field_required)
@@ -108,11 +117,17 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @BindString(R.string.off_line)
     String offlineMsg;
 
+    @BindString(R.string.privacy_policy_text)
+    String privacyPolicyText;
+
+    @BindString(R.string.privacy_policy_msg)
+    String privacyPolicyMsg;
+
     @OnClick(R.id.rs_login_btn)
     void rsLogin() {
         if (validForm(inputEmail.getText().toString().trim())) {
             if (RSNetwork.isConnected())
-                signupPresenter.performFindEmail(inputEmail.getText().toString().trim());
+                signupPresenter.performFindEmail(inputEmail.getText().toString().trim().toLowerCase());
             else
                 onOffLine();
         }
@@ -208,6 +223,23 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         signupPresenter = new PresenterAuthImpl(fragmentContext.get());
         callbackManager = CallbackManager.Factory.create();
 
+        String value = privacyPolicyMsg + " " + privacyPolicyText;
+        Spannable wordtoSpan = new SpannableString(value);
+        wordtoSpan.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                try {
+                    i.setData(Uri.parse(RSConstants.PRIVACY_POLICY_LINK));
+                    startActivity(i);
+                } catch (Exception e) {
+                }
+            }
+        }, privacyPolicyMsg.length()+1, value.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        privacyPolicyTV.setText(wordtoSpan);
+        privacyPolicyTV.setMovementMethod(LinkMovementMethod.getInstance());
+
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
@@ -262,14 +294,14 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     }
 
     public void dialogLogin(String email) {
-        LoginDialog dialog = LoginDialog.newInstance(inputEmail.getText().toString().trim(), rsNavigationData);
+        LoginDialog dialog = LoginDialog.newInstance(inputEmail.getText().toString().trim().toLowerCase(), rsNavigationData);
         dialog.setCancelable(false);
         String LOGIN_DIALOG_TAG = "LOGIN_DIALOG";
         dialog.show(getFragmentManager(), LOGIN_DIALOG_TAG);
     }
 
     public void dialogRegister(String email) {
-        RegisterDialog dialog = RegisterDialog.newInstance(inputEmail.getText().toString().trim(), rsNavigationData);
+        RegisterDialog dialog = RegisterDialog.newInstance(inputEmail.getText().toString().trim().toLowerCase(), rsNavigationData);
         dialog.setCancelable(false);
         String REGISTER_DIALOG_TAG = "REGISTER_DIALOG";
         dialog.show(getFragmentManager(), REGISTER_DIALOG_TAG);
@@ -315,10 +347,10 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             if (findEmailResponse.isConnectSocialMedia()) {
                 Toast.makeText(getContext(), useFBLoginMsg, Toast.LENGTH_LONG).show();
             } else {
-                dialogLogin(inputEmail.getText().toString().trim());
+                dialogLogin(inputEmail.getText().toString().trim().toLowerCase());
             }
         } else {
-            dialogRegister(inputEmail.getText().toString().trim());
+            dialogRegister(inputEmail.getText().toString().trim().toLowerCase());
         }
     }
 
@@ -377,7 +409,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
             RSRequestSocialLogin user = new RSRequestSocialLogin();
             user.setProvider(RSConstants.PROVIDER_GOOGLE);
-            user.setEmail(account.getEmail());
+            user.setEmail(account.getEmail().toLowerCase());
             user.setFirstName(account.getGivenName());
             user.setLastName(account.getFamilyName());
             user.setId(account.getId());
@@ -466,7 +498,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             rsAddress.setCity(object.getJSONObject("location").getString("name"));
 
             RSRequestSocialLogin user = new RSRequestSocialLogin();
-            user.setEmail(object.getString("email"));
+            user.setEmail(object.getString("email").toLowerCase());
             user.setBirthday(object.getString("birthday"));
             user.setGender(object.getString("gender"));
             user.setFirstName(object.getString("first_name"));

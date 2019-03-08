@@ -19,6 +19,10 @@ public interface RSView {
 
         void hideProgressBar(String target);
 
+        void onSuccess(String target);
+
+        void onError(String target);
+
         void onOffLine();
     }
 

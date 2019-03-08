@@ -265,4 +265,9 @@ public interface API {
     @FormUrlEncoded
     @POST("notif/ChangeStatusNotification")
     Call<RSResponse> editNotifVisibility(@Field("notifId") String userId);
+
+    // edit notif visibility
+    @FormUrlEncoded
+    @POST("users/forgot")
+    Call<RSResponse> forgotPassword(@Field("email") String email);
 }

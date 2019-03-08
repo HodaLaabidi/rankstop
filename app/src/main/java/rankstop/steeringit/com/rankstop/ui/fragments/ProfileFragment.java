@@ -230,18 +230,24 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     }
 
     private void bindLocalData() {
-        setUserPic(userInfo.getUser().getPictureProfile());
-        setUserName(userInfo.getUser().getUsername());
-        setEmail(userInfo.getUser().getEmail());
-        setPhone(userInfo.getUser().getPhone());
-        setGender(userInfo.getUser().getGender());
-        setBirthDay(RSDateParser.convertToDateFormat(userInfo.getUser().getBirthDate(), dateFormat));
-        setCountry(userInfo.getUser().getLocation().getCountry().getCountryName());
-        setCity(userInfo.getUser().getLocation().getCity());
-        setFullName(userInfo.getUser().getFirstName(), userInfo.getUser().getLastName());
-        setEvalsNumber(userInfo.getCountEval());
-        setCommentsNumber(userInfo.getCountComments());
-        setPixNumber(userInfo.getCountPictures());
+        try {
+            setUserPic(userInfo.getUser().getPictureProfile());
+            setUserName(userInfo.getUser().getUsername());
+            setEmail(userInfo.getUser().getEmail());
+            setPhone(userInfo.getUser().getPhone());
+            setGender(userInfo.getUser().getGender());
+            if (userInfo.getUser().getBirthDate() != null) {
+                setBirthDay(RSDateParser.convertToDateFormat(userInfo.getUser().getBirthDate(), dateFormat));
+            }else {
+                setBirthDay(userInfo.getUser().getBirthDate());
+            }
+            setCountry(userInfo.getUser().getLocation().getCountry().getCountryName());
+            setCity(userInfo.getUser().getLocation().getCity());
+            setFullName(userInfo.getUser().getFirstName(), userInfo.getUser().getLastName());
+            setEvalsNumber(userInfo.getCountEval());
+            setCommentsNumber(userInfo.getCountComments());
+            setPixNumber(userInfo.getCountPictures());
+        }catch (Exception e) {}
     }
 
     private void setUserName(String value) {

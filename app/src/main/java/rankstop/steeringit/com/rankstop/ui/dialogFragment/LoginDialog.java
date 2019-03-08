@@ -59,6 +59,10 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
     int minLength6;
     @BindString(R.string.off_line)
     String offLineMsg;
+    @BindString(R.string.email_sent_forgot_pwd)
+    String emailSentMsg;
+    @BindString(R.string.no_email_founded_forgot_pwd)
+    String noEmailFoundedMsg;
 
     @OnClick(R.id.negative_btn)
     void cancelDialog() {
@@ -82,7 +86,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
     @OnClick(R.id.forget_password_btn)
     void resetPassword() {
         if (RSNetwork.isConnected()) {
-
+            loginPresenter.forgotPassword(getArguments().getString(RSConstants.EMAIL));
         } else {
             onOffLine();
         }
@@ -228,6 +232,9 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
             case RSConstants.LOGIN:
                 rsLoader.show(getFragmentManager(), RSLoader.TAG);
                 break;
+            case RSConstants.FORGOT_PWD:
+                rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                break;
         }
     }
 
@@ -240,7 +247,20 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
             case RSConstants.FOLLOW_ITEM:
                 rsLoader.dismiss();
                 break;
+            case RSConstants.FORGOT_PWD:
+                rsLoader.dismiss();
+                break;
         }
+    }
+
+    @Override
+    public void onSuccess(String target) {
+        Toast.makeText(getContext(), emailSentMsg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onError(String target) {
+        Toast.makeText(getContext(), noEmailFoundedMsg, Toast.LENGTH_LONG).show();
     }
 
     @Override

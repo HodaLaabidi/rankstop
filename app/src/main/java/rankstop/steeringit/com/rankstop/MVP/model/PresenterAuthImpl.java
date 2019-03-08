@@ -36,7 +36,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
         this.registerView = registerView;
     }
 
-    private Call<RSResponse> callFindEmail, callLogin, callRegister, callFollowItem, callSocialLogin;
+    private Call<RSResponse> callFindEmail, callLogin, callForgotPwd, callRegister, callFollowItem, callSocialLogin;
     private Call<GeoPluginResponse> callAddress;
     private Call<RSDeviceIP> callDeviceIP;
 
@@ -205,6 +205,36 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
+    public void forgotPassword(String email) {
+        if (RSNetwork.isConnected()) {
+            if (loginView != null) {
+                loginView.showProgressBar(RSConstants.FORGOT_PWD);
+                callLogin = WebService.getInstance().getApi().forgotPassword(email);
+                callLogin.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 0) {
+                            loginView.onError(RSConstants.FORGOT_PWD);
+                        } else if (response.body().getStatus() == 1) {
+                            loginView.onSuccess(RSConstants.FORGOT_PWD);
+                        }
+
+                        loginView.hideProgressBar(RSConstants.FORGOT_PWD);
+                    }
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!call.isCanceled())
+                            loginView.hideProgressBar(RSConstants.FORGOT_PWD);
+                    }
+                });
+            }
+        }else {
+            loginView.onOffLine();
+        }
+    }
+
+    @Override
     public void onDestroyLogin() {
         loginView = null;
         if (callLogin != null)
@@ -214,6 +244,10 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
         if (callFollowItem != null)
             if (callFollowItem.isExecuted())
                 callFollowItem.cancel();
+
+        if (callForgotPwd != null)
+            if (callForgotPwd.isExecuted())
+                callForgotPwd.cancel();
     }
 
     private boolean isValidEmail(String value) {

@@ -628,8 +628,10 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         inputLastNameET.setText(user.getLastName());
         inputUserNameET.setText(user.getUsername());
         inputPhoneET.setText(user.getPhone());
-        birthDateET.setText(RSDateParser.convertToDateFormat(user.getBirthDate(), dateFormat));
-        currentDate = RSDateParser.convertToDateFormat(user.getBirthDate(), dateFormat);
+        if (user.getBirthDate() != null) {
+            birthDateET.setText(RSDateParser.convertToDateFormat(user.getBirthDate(), dateFormat));
+            currentDate = RSDateParser.convertToDateFormat(user.getBirthDate(), dateFormat);
+        }
         initPublicNameView();
         initGenderView();
         setUserPic(user.getPictureProfile());
@@ -648,17 +650,20 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         String[] publicNameArray = new String[]{usernameText, fullNameText};
         SpinnerPublicNameAdapter spinnerPublicNameAdapter = new SpinnerPublicNameAdapter(getContext(), publicNameArray);
         publicNameSpinner.setAdapter(spinnerPublicNameAdapter);
-        setPublicName(currentUser.getNameToUse());
+        if (currentUser.getNameToUse() != null)
+            setPublicName(currentUser.getNameToUse());
     }
 
     private void setPublicName(RSPublicUserName publicName) {
-        if (publicName.getType().toLowerCase().trim().equals("username")) {
-            publicNameSpinner.setSelection(0);
-        } else if (publicName.getType().toLowerCase().trim().equals("fullname")) {
-            publicNameSpinner.setSelection(1);
-        }
+        if (publicName.getType() != null) {
+            if (publicName.getType().toLowerCase().trim().equals("username")) {
+                publicNameSpinner.setSelection(0);
+            } else if (publicName.getType().toLowerCase().trim().equals("fullname")) {
+                publicNameSpinner.setSelection(1);
+            }
 
-        selectedPublicName = publicName.getType();
+            selectedPublicName = publicName.getType();
+        }
     }
 
     private void setGender(String gender) {

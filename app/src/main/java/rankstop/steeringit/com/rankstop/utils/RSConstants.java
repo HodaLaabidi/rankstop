@@ -4,6 +4,9 @@ import rankstop.steeringit.com.rankstop.R;
 
 public class RSConstants {
 
+
+    public static final String PRIVACY_POLICY_LINK = "http://rs.steeringit.lc/PrivacyPolicy";
+
     public static final String ITEM_CREATED = "created";
     public static final String ITEM_FOLLOWED = "followed";
     public static final String ITEM_OWNED = "owned";
@@ -83,6 +86,7 @@ public class RSConstants {
     public static final String EDIT_NOTIF_VISIBILITY = "edit notif visibility";
     public static final int MIN_AGE_USER = 10;
     public static final String FORMAT_DATE = "date format";
+    public static final String FORGOT_PWD = "forgot password";
     public static String _ID = "id";
 
     // parameters
