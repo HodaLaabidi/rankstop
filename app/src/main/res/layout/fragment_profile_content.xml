@@ -505,7 +505,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/p_text_no_item"
-                        android:text="You don't follow any item"/>
+                        android:text="@string/no_item_followed"/>
                 </LinearLayout>
 
                 <ProgressBar

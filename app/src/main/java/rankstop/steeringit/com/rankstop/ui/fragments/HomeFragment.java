@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
@@ -34,6 +35,7 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
@@ -233,6 +235,11 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
     }
 
     private void loadHomeData() {
+        try{
+            Integer.parseInt("uuihuuh");
+        }catch (Exception e) {
+            Crashlytics.logException(e);
+        }
         rsRequestListItem.setPage(1);
         rsRequestListItem.setPerPage(RSConstants.MAX_ITEM_TO_LOAD);
         loadTopRankedItem();

@@ -74,10 +74,10 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
     }
 
     @Override
-    public void loadCountriesList() {
+    public void loadCountriesList(String lang) {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
-                callloadCountries = WebService.getInstance().getApi().loadCountries();
+                callloadCountries = WebService.getInstance().getApi().loadCountries(lang);
                 standardView.showProgressBar(RSConstants.COUNTRIES_LIST);
                 callloadCountries.enqueue(new Callback<RSResponse>() {
                     @Override

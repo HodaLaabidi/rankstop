@@ -22,6 +22,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaNote;
@@ -62,7 +63,7 @@ public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHo
         @BindView(R.id.bar_chart)
         BarChart barChart;
         @BindView(R.id.bar_chart_title_view)
-        RSTVRegular barChartTitleView;
+        RSTVBold barChartTitleView;
 
         @BindString(R.string.text_good)
         String goodText;

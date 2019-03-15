@@ -1,8 +1,27 @@
 <resources>
+
+    <string name="icon_layout" translatable="false">layout icon</string>
+    <string name="icon_linkedin" translatable="false">LinkedIn icon</string>
+    <string name="icon_twitter" translatable="false">Twitter icon</string>
+    <string name="icon_google_plus" translatable="false">Google plus icon</string>
+    <string name="icon_instagram" translatable="false">Instagram icon</string>
+    <string name="icon_facebook" translatable="false">Facebook icon</string>
     <string name="app_name" translatable="false">RankStop</string>
     <string name="facebook_app_id" translatable="false">181280639373362</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb181280639373362</string>
     <string name="title_activity_container" translatable="false">RankStop</string>
+    <string name="fb_text" translatable="false">Facebook</string>
+    <string name="gl_text" translatable="false">Google</string>
+    <string name="linkedin_text" translatable="false">Linkedin</string>
+    <string name="server_date_format" translatable="false">yyyy-MM-dd</string>
+    <string name="hint_twitter" translatable="false">Twitter</string>
+    <string name="hint_google" translatable="false">Google</string>
+    <string name="hint_linkedin" translatable="false">LinkedIn</string>
+    <string name="hint_facebook" translatable="false">Facebook</string>
+    <string name="hint_instagram" translatable="false">Instagram</string>
+
+
+    <!-- ***************************************************************** -->
     <string name="title_home">Home</string>
     <string name="title_add_item">Add item</string>
     <string name="title_my_evals">My evaluations</string>
@@ -47,13 +66,6 @@
     <string name="text_add_item">Add</string>
     <string name="text_category">Category</string>
     <string name="hint_review_comment">Comment</string>
-    <string name="flash_auto">Flash auto</string>
-    <string name="flash_off">Flash off</string>
-    <string name="flash_on">Flash on</string>
-    <string name="camera_permission_not_granted">Camera app cannot do anything without camera permission.</string>
-    <string name="camera_permission_confirmation">This app demonstrates the usage of CameraView. In order to do that, it needs permission to access camera.</string>
-    <string name="picture_taken">Picture taken</string>
-    <string name="switch_camera">Switch_camera</string>
     <string name="text_history">History</string>
     <string name="text_logout">Logout</string>
     <string name="title_login">Login</string>
@@ -74,12 +86,7 @@
     <string name="update_item_pics">Modifier la gallery</string>
     <string name="report_abuse">Report abuse</string>
     <string name="alert_login_to_report_abuse">Connectez vous pour signaler cet item</string>
-    <string name="hint_facebook">Facebook</string>
     <string name="update_item_title">Modifier item</string>
-    <string name="hint_instagram">Instagram</string>
-    <string name="hint_twitter">Twitter</string>
-    <string name="hint_google">Google</string>
-    <string name="hint_linkedin">LinkedIn</string>
     <string name="save_changes">Save changes</string>
     <string name="improve_review_pix">improve your review by adding pictures</string>
     <string name="add_pix">Présentez votre item avec des photos (max 5)</string>
@@ -105,9 +112,6 @@
     <string name="text_search_home_header">what are you looking for ?</string>
     <string name="start_with_rs">Démarrer avec RankStop</string>
     <string name="or_connect_with">or connect with</string>
-    <string name="fb_text" translatable="false">Facebook</string>
-    <string name="gl_text" translatable="false">Google</string>
-    <string name="linkedin_text" translatable="false">Linkedin</string>
     <string name="text_btn_login">Se connecter</string>
     <string name="title_search">Search</string>
     <string name="hint_gender">Gender</string>
@@ -173,7 +177,7 @@
     <string name="text_request_ownership">Request Ownership</string>
     <string name="use_fb_login_msg">Please use your facebook account to login</string>
     <string name="no_item_created">If you want to evaluate any product, shop, brand, doctor and you don\'t find it in Rankstop data base, you can add it and evaluate it.</string>
-    <string name="contact_ownership">Contact us if there is an item present your product, brand, shop, ...</string>
+    <string name="contact_ownership">Vous pouvez demander la propriété des pages avec le statut \"Propriété: ouverte\"\n Ou veuillez nous contacter.</string>
     <string name="contact_us_ownership">Contact us</string>
     <string name="cancel_edit_pwd">Cancel password change</string>
     <string name="social_network">Social networks</string>
@@ -199,19 +203,12 @@
     <string name="internal_storage">Internal storage</string>
     <string name="no_notif">No notif yet</string>
     <string name="comment_deleted_successfully">Comment deleted successfully</string>
-    <string name="server_date_format" translatable="false">yyyy-MM-dd</string>
     <string name="date_time_format">MMM dd yyyy HH:mm</string>
     <string name="msg_connect_notif">Connectez-vous et consultez vos notifications</string>
     <string name="msg_connect_history">Connectez-vous et consultez vos activitées</string>
     <string name="create_account">Create your account</string>
     <string name="camera_text">Camera</string>
     <string name="gallery_text">Gallery</string>
-    <string name="icon_layout">layout icon</string>
-    <string name="icon_linkedin">LinkedIn icon</string>
-    <string name="icon_twitter">Twitter icon</string>
-    <string name="icon_google_plus">Google plus icon</string>
-    <string name="icon_instagram">Instagram icon</string>
-    <string name="icon_facebook">Facebook icon</string>
     <string name="btn_valider">Valider</string>
     <string name="already_signaled_msg">Vous avez signaler cet item</string>
     <string name="register_failed_msg">Register failed</string>
@@ -226,6 +223,12 @@
     <string name="review_added_successfully">Review added successfully</string>
     <string name="review_updated_successfully">Review updated successfully</string>
     <string name="item_added_successfully">Item added successfully</string>
+    <string name="not_set">Not set</string>
+    <string name="normal">Normal</string>
+    <string name="high">High</string>
+    <string name="importance">Importance du critère:</string>
+    <string name="no_item_followed">You don\'t follow any item</string>
+    <string name="undefined_name">Nom non défini</string>
 
     <string-array name="labels">
         <item>Not set</item>

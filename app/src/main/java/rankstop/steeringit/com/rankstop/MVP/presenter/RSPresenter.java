@@ -95,7 +95,7 @@ public interface RSPresenter {
 
     interface UpdateProfilePresenter{
         void editProfile(RSRequestEditProfile user);
-        void loadCountriesList();
+        void loadCountriesList(String lang);
         void onDestroy();
     }
 

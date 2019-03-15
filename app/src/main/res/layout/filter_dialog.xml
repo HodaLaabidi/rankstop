@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehaviour">
+
+    <LinearLayout
+        android:id="@+id/layout_take_pic"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_layout_b_sheet_d"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_layout_b_sheet_d">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera"
+            android:contentDescription="@string/icon_layout" />
+
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_layout_b_sheet_d"
+            android:text="@string/camera_text"
+            android:textSize="@dimen/size_text_b_sheet_d" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_choose_pic"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_layout_b_sheet_d"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_layout_b_sheet_d">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_black_24dp"
+            android:contentDescription="@string/icon_layout" />
+
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_layout_b_sheet_d"
+            android:text="@string/gallery_text"
+            android:textSize="@dimen/size_text_b_sheet_d" />
+
+    </LinearLayout>
+
+</LinearLayout>

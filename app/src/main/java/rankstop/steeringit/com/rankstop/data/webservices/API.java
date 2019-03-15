@@ -219,8 +219,9 @@ public interface API {
     Call<RSResponse> search(@Query("q") String query, @Query("lang") String lang);
 
     // search items
-    @GET("country/getAllCountry")
-    Call<RSResponse> loadCountries();
+    @FormUrlEncoded
+    @POST("country/getAllCountry")
+    Call<RSResponse> loadCountries(@Field("lang") String lang);
 
     // report abuse
     @POST("items/search")

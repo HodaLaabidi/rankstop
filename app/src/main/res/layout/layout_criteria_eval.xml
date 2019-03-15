@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_margin="8dp">
-        <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
+        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
             android:id="@+id/tv_criteria_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,13 +30,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorGray"
-                android:textSize="14sp"
+                android:textSize="@dimen/size_importance_title"
                 android:layout_marginEnd="5dp"
-                android:text="Importance:"/>
+                android:text="@string/importance"/>
 
             <RadioGroup
                 android:id="@+id/importance_toggle"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/width_importance"
                 android:layout_height="wrap_content"
                 android:checkedButton="@id/importance_normal"
                 android:background="@drawable/rs_view_outline"
@@ -51,8 +51,8 @@
                     android:background="@drawable/toggle_widget_background"
                     android:gravity="center"
                     android:padding="2dp"
-                    android:text="Normal"
-                    android:textSize="12sp"
+                    android:text="@string/normal"
+                    android:textSize="@dimen/size_importance_value"
                     android:layout_margin="1dp"
                     android:textColor="@android:color/white" />
 
@@ -65,8 +65,8 @@
                     android:button="@null"
                     android:padding="2dp"
                     android:gravity="center"
-                    android:text="High"
-                    android:textSize="12sp"
+                    android:text="@string/high"
+                    android:textSize="@dimen/size_importance_value"
                     android:layout_margin="1dp"
                     android:textColor="@color/colorAccent" />
             </RadioGroup>

@@ -1,11 +1,13 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
@@ -14,9 +16,11 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -522,10 +527,27 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     }
 
     private void tintMenuIcon(MenuItem item, @ColorRes int color) {
-        Drawable wrapDrawable = DrawableCompat.wrap(item.getIcon());
-        if (wrapDrawable != null) {
-            DrawableCompat.setTint(wrapDrawable, getResources().getColor(color));
-            item.setIcon(wrapDrawable);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Drawable wrapDrawable = DrawableCompat.wrap(item.getIcon());
+            int couleur = ContextCompat.getColor(getContext(), color);
+            if (wrapDrawable != null) {
+                DrawableCompat.setTint(wrapDrawable, couleur);
+                item.setIcon(wrapDrawable);
+            }
+        }else {
+            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+            Drawable wrapDrawable = DrawableCompat.wrap(item.getIcon());
+            int couleur = getResources().getColor(color);
+            /*if (wrapDrawable != null) {
+                //DrawableCompat.setTint(wrapDrawable, couleur);
+                wrapDrawable.setColorFilter(couleur, PorterDuff.Mode.DARKEN);
+                item.setIcon(wrapDrawable);
+            }*/
+            if (item.getIcon() == null){
+                Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(getContext(), ",not null", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

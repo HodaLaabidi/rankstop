@@ -619,7 +619,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         currentUser = (User) getArguments().getSerializable(RSConstants.CURRENT_USER);
-        presenterUpdateProfile.loadCountriesList();
+        presenterUpdateProfile.loadCountriesList(RankStop.getDeviceLanguage());
         bindData(currentUser);
     }
 

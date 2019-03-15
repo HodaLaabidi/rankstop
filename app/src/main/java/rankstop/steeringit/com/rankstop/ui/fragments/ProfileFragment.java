@@ -124,6 +124,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     String female;
     @BindString(R.string.undefined)
     String undefined;
+    @BindString(R.string.undefined_name)
+    String undefinedName;
     @BindString(R.string.off_line)
     String offlineMsg;
     @BindString(R.string.date_format)
@@ -160,7 +162,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     @OnClick(R.id.btn_contact_us)
     void contactUs() {
-
+        openContactDialog();
     }
 
     @OnClick(R.id.btn_add_item)
@@ -267,7 +269,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         if (!fullname.equals(""))
             fullNameTV.setText(fullname);
         else
-            fullNameTV.setText(undefined);
+            fullNameTV.setText(undefinedName);
     }
 
     private void setEmail(String value) {

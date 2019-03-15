@@ -16,7 +16,9 @@ import java.util.List;
 
 import butterknife.BindColor;
 import butterknife.BindDimen;
+import butterknife.BindString;
 import butterknife.ButterKnife;
+import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 import rankstop.steeringit.com.rankstop.ui.callbacks.CriteriaEvalListener;
@@ -55,7 +57,7 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
         private boolean isGray = true, isRed = false, isGreen = false, isOrange = false;
 
         private SignSeekBar signSeekBar;
-        private RSTVRegular criteriaNameTV;
+        private RSTVBold criteriaNameTV;
         private RadioGroup importanceToggle;
         private int lastCheckedId = R.id.importance_normal;
 
@@ -71,6 +73,8 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
         int accentColor;
         @BindColor(R.color.colorGray)
         int grayColor;
+        @BindString(R.string.not_set)
+        String notSet;
 
         @BindDimen(R.dimen.thumb_text_size)
         int thumbTextSize;
@@ -101,7 +105,7 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
 
             signSeekBar.setValueFormatListener(progress -> {
                 if (progress == -1)
-                    return "Not set";
+                    return notSet;
                 else
                     return "" + (int) progress + "/5";
             });

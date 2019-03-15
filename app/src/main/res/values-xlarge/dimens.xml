@@ -136,4 +136,7 @@
     <dimen name="size_text_b_sheet_d">16sp</dimen>
     <dimen name="padding_layout_b_sheet_d">16dp</dimen>
     <dimen name="height_layout_b_sheet_d">56dp</dimen>
+    <dimen name="width_importance">110dp</dimen>
+    <dimen name="size_importance_value">12sp</dimen>
+    <dimen name="size_importance_title">14sp</dimen>
 </resources>

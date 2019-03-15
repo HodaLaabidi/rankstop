@@ -7,12 +7,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +39,7 @@ import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterSearchImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -57,16 +58,18 @@ import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.DataFetchedAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemsAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemsFetchedAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FilterDialogListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSFilterDialog;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.RxSearchObservable;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
-public class SearchFragment extends Fragment implements RSView.SearchView {
+public class SearchFragment extends Fragment implements RSView.SearchView, FilterDialogListener {
     //views
     private View rootView;
     private Unbinder unbinder;
@@ -324,9 +327,9 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
                 .map(value -> new RSResponseSearch());
     }
 
-    /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        /*MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         // Use a custom search icon for the SearchView in AppBar
         int searchImgId = android.support.v7.appcompat.R.id.search_button;
@@ -338,8 +341,8 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         et.setTextColor(Color.BLACK);
         et.setHintTextColor(Color.BLACK);
         searchItem.expandActionView();
-        searchView.requestFocus();
-    }*/
+        searchView.requestFocus();*/
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -348,6 +351,12 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
         switch (itemId) {
             case android.R.id.home:
                 getActivity().onBackPressed();
+                break;
+            case R.id.filter:
+                RSFilterDialog dialog = new RSFilterDialog();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                dialog.setTargetFragment(this, 0);
+                dialog.show(ft, RSFilterDialog.TAG);
                 break;
         }
 
@@ -463,5 +472,15 @@ public class SearchFragment extends Fragment implements RSView.SearchView {
     @Override
     public void onOffLine() {
         Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCountryClicked() {
+
+    }
+
+    @Override
+    public void onTopRankCheched() {
+
     }
 }

@@ -180,6 +180,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
                         //update review
                         if (rsAddReview.getComment().equals("") && listPics.size() == 0) {
                             Toast.makeText(getContext(), noValueChanged, Toast.LENGTH_LONG).show();
+                            fragmentActionListener.pop();
                         } else {
                             // Modification de l'item lors de l'ajout d'un commentaire ou de photos sans modifier l'évaluation des critères
                             rsAddReview.setEvalId(myEval.get_id());
@@ -201,6 +202,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         }
         if (!isItemEvaluated(criteriaEvalList)) {
             Toast.makeText(getContext(), noEvalMessage, Toast.LENGTH_LONG).show();
+            x++;
         }
         return x == 0;
     }
