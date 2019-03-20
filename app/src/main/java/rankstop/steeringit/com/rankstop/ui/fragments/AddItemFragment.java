@@ -452,6 +452,10 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.rs_menu, menu);
+        if (!RSSession.isLoggedIn()) {
+            MenuItem item = menu.findItem(R.id.logout);
+            item.setVisible(false);
+        }
     }
 
     @Override
@@ -461,6 +465,10 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         switch (itemId) {
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
+                break;
+            case R.id.logout:
+                RSSession.cancelSession();
+                ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.FRAGMENT_SIGN_UP, ""));
                 break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);

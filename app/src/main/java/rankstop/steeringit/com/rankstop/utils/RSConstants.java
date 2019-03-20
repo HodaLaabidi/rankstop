@@ -87,6 +87,8 @@ public class RSConstants {
     public static final int MIN_AGE_USER = 10;
     public static final String FORMAT_DATE = "date format";
     public static final String FORGOT_PWD = "forgot password";
+    public static final String LOAD_CATEGORIES_USED_BY_LOCATION = "load categories used by location";
+    public static final String SEARCH_ITEMS_FILTERED = "search items filtered";
     public static String _ID = "id";
 
     // parameters

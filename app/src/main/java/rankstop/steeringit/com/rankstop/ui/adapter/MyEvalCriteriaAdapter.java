@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindColor;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
@@ -54,6 +55,8 @@ public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAd
         int orangeColor;
         @BindColor(R.color.colorGreenPie)
         int greenColor;
+        @BindString(R.string.not_set)
+        String notSet;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,7 +71,7 @@ public class MyEvalCriteriaAdapter extends RecyclerView.Adapter<MyEvalCriteriaAd
         public void setData(CriteriaEval criteriaEval) {
             criteriaNameTV.setText(((Criteria) criteriaEval.getCriteria()).getName().toString());
             if (criteriaEval.getNote() == -1){
-                criteriaNoteTV.setText("Not set");progressBar.setProgress(0);
+                criteriaNoteTV.setText(notSet);progressBar.setProgress(0);
             }else {
                 criteriaNoteTV.setText(String.valueOf(criteriaEval.getNote())+"/5");
                 progressBar.setProgress(criteriaEval.getNote()*2+1);

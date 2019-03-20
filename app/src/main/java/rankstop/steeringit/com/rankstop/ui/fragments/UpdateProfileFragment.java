@@ -71,6 +71,7 @@ import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.RSPublicUserName;
 import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
@@ -142,10 +143,13 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     @BindView(R.id.input_city)
     RSETMedium inputCityET;
 
-    @BindView(R.id.input_layout_phone)
-    TextInputLayout phoneInputLayout;
     @BindView(R.id.input_phone)
     RSETMedium inputPhoneET;
+
+    @BindView(R.id.tv_error_birthday)
+    RSTVMedium birthDateLayout;
+    @BindView(R.id.et_birth_date)
+    RSBTNMedium birthDateET;
 
     @BindView(R.id.countries_spinner)
     AppCompatSpinner countriesSpinner;
@@ -155,9 +159,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @BindView(R.id.public_name_spinner)
     AppCompatSpinner publicNameSpinner;
-
-    @BindView(R.id.et_birth_date)
-    RSBTNMedium birthDateET;
 
     @BindView(R.id.input_layout_old_pwd)
     TextInputLayout inputLayoutOldPwd;
@@ -269,26 +270,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                         lastNameInputLayout.setErrorEnabled(false);
                     } else {
                         lastNameInputLayout.setError(requiredField);
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            },
-            phoneTextWatcher = new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (s.toString().trim().length() > 0) {
-                        phoneInputLayout.setErrorEnabled(false);
-                    } else {
-                        phoneInputLayout.setError(requiredField);
                     }
                 }
 
@@ -423,8 +404,8 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         userNameInputLayout.setErrorEnabled(false);
         firstNameInputLayout.setErrorEnabled(false);
         lastNameInputLayout.setErrorEnabled(false);
-        phoneInputLayout.setErrorEnabled(false);
         cityInputLayout.setErrorEnabled(false);
+        birthDateLayout.setVisibility(View.GONE);
 
         if (TextUtils.isEmpty(inputUserNameET.getText().toString().trim())) {
             userNameInputLayout.setError(requiredField);
@@ -438,12 +419,12 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
             lastNameInputLayout.setError(requiredField);
             x++;
         }
-        if (TextUtils.isEmpty(inputPhoneET.getText().toString().trim())) {
-            phoneInputLayout.setError(requiredField);
-            x++;
-        }
         if (TextUtils.isEmpty(inputCityET.getText().toString().trim())) {
             cityInputLayout.setError(requiredField);
+            x++;
+        }
+        if (TextUtils.isEmpty(birthDateET.getText().toString().trim())) {
+            birthDateLayout.setVisibility(View.VISIBLE);
             x++;
         }
 
@@ -475,7 +456,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         inputUserNameET.addTextChangedListener(userNameTextWatcher);
         inputFirstNameET.addTextChangedListener(firstNameTextWatcher);
         inputLastNameET.addTextChangedListener(lastNameTextWatcher);
-        inputPhoneET.addTextChangedListener(phoneTextWatcher);
         inputCityET.addTextChangedListener(cityTextWatcher);
 
         inputOldPasswordET.addTextChangedListener(oldPwdTextWatcher);
@@ -748,7 +728,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         inputUserNameET.removeTextChangedListener(userNameTextWatcher);
         inputFirstNameET.removeTextChangedListener(firstNameTextWatcher);
         inputLastNameET.removeTextChangedListener(lastNameTextWatcher);
-        inputPhoneET.removeTextChangedListener(phoneTextWatcher);
         inputCityET.removeTextChangedListener(cityTextWatcher);
         inputOldPasswordET.removeTextChangedListener(oldPwdTextWatcher);
         inputNewPasswordET.removeTextChangedListener(newPwdTextWatcher);

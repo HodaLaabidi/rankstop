@@ -161,7 +161,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     String alertLoginToSendReqOwnershipMsg;
     @BindString(R.string.already_followed)
     String alreadyFollowedMsg;
-    @BindString(R.string.update_item_pics)
+    @BindString(R.string.update_item)
     String updateItemPicsMsg;
     @BindString(R.string.evals_title)
     String evalsTitleMsg;
@@ -431,6 +431,10 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.item_details_menu, menu);
         menuItem = menu.findItem(R.id.action_favorite);
+        if (!RSSession.isLoggedIn()) {
+            MenuItem item = menu.findItem(R.id.logout);
+            item.setVisible(false);
+        }
         initToolbarStyle();
     }
 
@@ -439,6 +443,11 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         switch (item.getItemId()) {
             case android.R.id.home:
                 getActivity().onBackPressed();
+                break;
+
+            case R.id.logout:
+                RSSession.cancelSession();
+                ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.FRAGMENT_SIGN_UP, ""));
                 break;
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);

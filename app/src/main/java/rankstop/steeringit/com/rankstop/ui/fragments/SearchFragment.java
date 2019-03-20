@@ -50,6 +50,7 @@ import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseSearch;
@@ -327,9 +328,9 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
                 .map(value -> new RSResponseSearch());
     }
 
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
-        /*MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         // Use a custom search icon for the SearchView in AppBar
         int searchImgId = android.support.v7.appcompat.R.id.search_button;
@@ -341,8 +342,8 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
         et.setTextColor(Color.BLACK);
         et.setHintTextColor(Color.BLACK);
         searchItem.expandActionView();
-        searchView.requestFocus();*/
-    }
+        searchView.requestFocus();
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -352,12 +353,12 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-            case R.id.filter:
+            /*case R.id.filter:
                 RSFilterDialog dialog = new RSFilterDialog();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 dialog.setTargetFragment(this, 0);
                 dialog.show(ft, RSFilterDialog.TAG);
-                break;
+                break;*/
         }
 
         return super.onOptionsItemSelected(item);
@@ -395,6 +396,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
                 bindDataFetched(rsResponseSearch);
                 break;
             case RSConstants.SEARCH_ITEMS:
+            case RSConstants.SEARCH_ITEMS_FILTERED:
                 RSResponseListingItem rsResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
                 itemsList.addAll(rsResponse.getItems());
                 if (rsResponse.getCurrent() == 1) {
@@ -475,12 +477,10 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
     }
 
     @Override
-    public void onCountryClicked() {
-
-    }
-
-    @Override
-    public void onTopRankCheched() {
-
+    public void onfilterClicked(RSRequestFilter data) {
+        //searchPresenter.searchItemsFiltered(data);
+        rsRequestItemData.setCatId(data.getCatId());
+        rsRequestItemData.setQ(query);
+        searchPresenter.searchItems(rsRequestItemData);
     }
 }

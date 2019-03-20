@@ -6,6 +6,7 @@ import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
@@ -90,6 +91,7 @@ public interface RSPresenter {
     interface SearchPresenter{
         void search(String query, String lang);
         void searchItems(RSRequestItemByCategory rsRequestSearch);
+        void searchItemsFiltered(RSRequestFilter data);
         void onDestroy();
     }
 
@@ -121,5 +123,8 @@ public interface RSPresenter {
         void onDestroy();
     }
 
-
+    interface SearchFilterPresenter {
+        void loadCategories(String lang);
+        void onDestroy();
+    }
 }

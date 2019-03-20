@@ -5,7 +5,7 @@ import java.io.Serializable;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class History implements Serializable {
-    private String date, _id, subject, message, user, time;
+    private String date, _id, subject, message, user;
     private ItemDetails item;
 
     public String getDate() {

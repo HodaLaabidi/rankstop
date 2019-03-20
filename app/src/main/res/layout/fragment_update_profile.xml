@@ -23,6 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/m_activity">
+
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/avatar"
                     android:layout_width="@dimen/image_width"
@@ -32,16 +33,17 @@
                     app:roundingBorderWidth="2dp"
                     fresco:placeholderImage="@drawable/placeholder"
                     fresco:roundAsCircle="true" />
+
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/fab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end|bottom"
-                    android:src="@drawable/ic_edit"
-                    app:fabSize="mini"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="120dp"/>
+                    android:layout_gravity="end|bottom"
+                    android:layout_marginTop="120dp"
+                    android:src="@drawable/ic_edit"
+                    app:fabSize="mini" />
             </RelativeLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -173,6 +175,16 @@
                     android:text="@string/hint_birthday" />
             </RelativeLayout>
 
+            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                android:id="@+id/tv_error_birthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="@string/field_required"
+                android:textColor="@color/colorRed"
+                android:layout_marginBottom="5dp"/>
+
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -245,6 +257,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/edit_pwd"
                 android:textAllCaps="false"
+                android:textSize="@dimen/btn_edit_pwd_size"
                 android:visibility="gone"
                 app:icon="@drawable/ic_expand_more" />
 

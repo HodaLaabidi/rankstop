@@ -16,6 +16,12 @@
         android:id="@+id/contact"
         android:title="@string/text_contact"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/logout"
+        android:title="@string/text_logout"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/notifications"
         android:icon="@drawable/ic_notifications_black_24dp"

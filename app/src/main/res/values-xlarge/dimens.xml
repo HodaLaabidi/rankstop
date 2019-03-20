@@ -139,4 +139,6 @@
     <dimen name="width_importance">110dp</dimen>
     <dimen name="size_importance_value">12sp</dimen>
     <dimen name="size_importance_title">14sp</dimen>
+    <dimen name="btn_edit_pwd_size">14sp</dimen>
+    <dimen name="with_logo_text">200dp</dimen>
 </resources>

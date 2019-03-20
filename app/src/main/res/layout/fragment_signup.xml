@@ -21,6 +21,11 @@
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/size_text_start_with_rs" />
 
+        <ImageView
+            android:layout_width="@dimen/with_logo_text"
+            android:layout_height="wrap_content"
+            android:src="@drawable/rs_logo_ft"/>
+
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

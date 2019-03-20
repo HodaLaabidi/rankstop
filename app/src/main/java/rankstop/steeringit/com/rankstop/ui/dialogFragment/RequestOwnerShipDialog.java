@@ -267,7 +267,10 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
 
         user = RSSession.getCurrentUser();
 
-        inputFullName.setText(user.getFirstName() + " " + user.getLastName());
+        if (user.getFirstName() != null)
+            inputFullName.setText(user.getFirstName());
+        if (user.getLastName() != null)
+            inputFullName.setText(inputFullName.getText().toString() + " " + user.getLastName());
         inputEmail.setText(user.getEmail());
         inputPhone.setText(user.getPhone());
 

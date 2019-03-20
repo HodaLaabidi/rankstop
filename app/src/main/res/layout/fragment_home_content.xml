@@ -20,17 +20,10 @@
             android:paddingLeft="@dimen/pl_home_header"
             android:paddingRight="@dimen/pl_home_header">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <ImageView
+                android:layout_width="@dimen/with_logo_text"
                 android:layout_height="wrap_content"
-                android:text="RankStop"
-                android:textSize="@dimen/size_app_title" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="rankstop rankstop rankstop"
-                android:textSize="@dimen/size_desc_app" />
+                android:src="@drawable/rs_logo_ft"/>
 
             <android.support.design.widget.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"

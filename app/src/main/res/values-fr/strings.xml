@@ -88,7 +88,7 @@
     <string name="hint_country">Pays</string>
     <string name="hint_city">Ville</string>
     <string name="text_search_home_header">Que cherchez-vous ?</string>
-    <string name="start_with_rs">Démarrer avec RankStop</string>
+    <string name="start_with_rs">Démarrer avec</string>
     <string name="or_connect_with">ou connectez-vous avec</string>
     <string name="text_btn_login">Se connecter</string>
     <string name="title_search">Recherche</string>
@@ -207,6 +207,9 @@
     <string name="importance">Importance du critère:</string>
     <string name="no_item_followed">Pas de page suivies</string>
     <string name="undefined_name">Nom non défini</string>
+    <string name="update_item">Modifier item</string>
+    <string name="filter_text">Filtrer</string>
+    <string name="category_text">Categorie:</string>
 
     <string-array name="labels">
         <item>Not set</item>

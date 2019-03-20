@@ -167,7 +167,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
             fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             finish();
         } else {
-            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof ProfileFragment || fragment instanceof SearchFragment) {
+            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof ProfileFragment || fragment instanceof SearchFragment || fragment instanceof SignupFragment) {
                 fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
                 navigation.setSelectedItemId(R.id.navigation_home);

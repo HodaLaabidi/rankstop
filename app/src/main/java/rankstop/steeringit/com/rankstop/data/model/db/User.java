@@ -4,39 +4,22 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    //@SerializedName("_id")
     private String _id;
-    //@SerializedName("email")
     private String email;
-    //@SerializedName("password")
     private String password;
-    //@SerializedName("username")
     private String username;
-    //@SerializedName("firstName")
     private String firstName;
-    //@SerializedName("lastName")
     private String lastName;
-    //@SerializedName("phone")
     private String phone;
-    //@SerializedName("photo")
     private String photo;
-    //@SerializedName("gender")
     private String gender;
-    //@SerializedName("pictureProfile")
     private String pictureProfile;
-    //@SerializedName("birthDate")
     private String birthDate;
-    //@SerializedName("facebook")
     private SocialNetwork facebook;
-    //@SerializedName("linkedin")
     private SocialNetwork linkedin;
-    //@SerializedName("google")
     private SocialNetwork google;
-    //@SerializedName("nameToUse")
     private RSPublicUserName nameToUse;
-    //@SerializedName("isPasswordExist")
     private boolean isPasswordExist;
-    //@SerializedName("location")
     private RSAddress location;
 
     public User() {

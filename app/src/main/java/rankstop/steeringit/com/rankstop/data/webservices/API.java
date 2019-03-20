@@ -13,6 +13,7 @@ import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
 import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
@@ -227,6 +228,10 @@ public interface API {
     @POST("items/search")
     Call<RSResponse> searchItems(@Body RSRequestItemByCategory rsRequestSearch);
 
+    // report abuse
+    @POST("items/getListItemWithFilter")
+    Call<RSResponse> searchItemsFiltered(@Body RSRequestFilter data);
+
     // send request ownership
     @POST("contact/sendInfoUserBuyItem")
     Call<RSResponse> requestOwnership(@Body RequestOwnership requestOwnership);
@@ -271,4 +276,9 @@ public interface API {
     @FormUrlEncoded
     @POST("users/forgot")
     Call<RSResponse> forgotPassword(@Field("email") String email);
+
+    // load categories list used by locations
+    @FormUrlEncoded
+    @POST("items/getAllCategoriesUsedByLocations")
+    Call<RSResponse> loadCategoriesUsedByLocations(@Field("lang") String langue);
 }

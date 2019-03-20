@@ -13,7 +13,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
     <!-- ***************************splash screen style*************************** -->
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_screen_bg</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
     <!-- *******************************dark toolbar****************************** -->
     <style name="ItemDetailsDarkToolbar" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -52,16 +52,20 @@
         <item name="android:windowExitAnimation">@anim/slide_down</item>
     </style>
     <!-- end of style full screen dialog -->
-    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bg_bottom_sheet_dialog_fragment</item>
-    </style>
 
-    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+
+    <style name="BaseBottomSheetDialog" parent="@style/Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
-        <item name="bottomSheetStyle">@style/BottomSheet</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
+
+    <style name="RSButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/colorAccent</item>
+    </style>
 
     <!-- ****************** style of edit text ****************** -->
     <style name="counterText">

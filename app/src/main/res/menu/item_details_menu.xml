@@ -18,6 +18,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/logout"
+        android:title="@string/text_logout"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_favorite"
         android:icon="@drawable/ic_favorite_border"
         android:title=""

@@ -2,6 +2,7 @@ package rankstop.steeringit.com.rankstop.MVP.model;
 
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
@@ -14,7 +15,7 @@ import retrofit2.Response;
 public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
 
     private RSView.SearchView searchView;
-    private Call<RSResponse> callSearch, callSearchItems;
+    private Call<RSResponse> callSearch, callSearchItems, callSearchItemsFiltered;
 
     public PresenterSearchImpl(RSView.SearchView searchView) {
         this.searchView = searchView;
@@ -76,6 +77,37 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                         if (!callSearchItems.isCanceled()) {
                             searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
                             searchView.onFailure(RSConstants.SEARCH_ITEMS);
+                        }
+                    }
+                });
+            }
+        }else {
+            searchView.onOffLine();
+        }
+    }
+
+    @Override
+    public void searchItemsFiltered(RSRequestFilter data) {
+        if (RSNetwork.isConnected()) {
+            if (searchView != null) {
+                searchView.showProgressBar(RSConstants.SEARCH_ITEMS_FILTERED);
+                callSearchItemsFiltered = WebService.getInstance().getApi().searchItemsFiltered(data);
+                callSearchItemsFiltered.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            searchView.onSuccess(RSConstants.SEARCH_ITEMS_FILTERED, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            searchView.onError(RSConstants.SEARCH_ITEMS_FILTERED);
+                        }
+                        searchView.hideProgressBar(RSConstants.SEARCH_ITEMS_FILTERED);
+                    }
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callSearchItemsFiltered.isCanceled()) {
+                            searchView.hideProgressBar(RSConstants.SEARCH_ITEMS_FILTERED);
+                            searchView.onFailure(RSConstants.SEARCH_ITEMS_FILTERED);
                         }
                     }
                 });

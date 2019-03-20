@@ -75,12 +75,14 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".ui.activities.DiaporamaActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.ItemGalleryActivity"
             android:screenOrientation="portrait" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

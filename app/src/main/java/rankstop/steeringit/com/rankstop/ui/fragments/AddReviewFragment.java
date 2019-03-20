@@ -63,6 +63,7 @@ import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 import rankstop.steeringit.com.rankstop.data.model.db.Evaluation;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.ResponseAddItem;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
@@ -410,6 +411,10 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.rs_menu, menu);
+        if (!RSSession.isLoggedIn()) {
+            MenuItem item = menu.findItem(R.id.logout);
+            item.setVisible(false);
+        }
     }
 
     @Override
@@ -419,6 +424,10 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         switch (itemId) {
             case android.R.id.home:
                 getActivity().onBackPressed();
+                break;
+            case R.id.logout:
+                RSSession.cancelSession();
+                ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.FRAGMENT_SIGN_UP, ""));
                 break;
             case R.id.setting:
                 fragmentActionListener.startFragment(SettingsFragment.getInstance(), RSConstants.FRAGMENT_SETTINGS);
