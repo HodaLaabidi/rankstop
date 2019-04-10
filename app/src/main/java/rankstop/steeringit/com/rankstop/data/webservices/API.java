@@ -55,8 +55,20 @@ public interface API {
     // register by email and password
     @Multipart
     @POST("users/updateUser")
-    Call<RSResponse> updateUser(@Part MultipartBody.Part part, @Part("dataToSend") RSRequestEditProfile user, @Part("userId") RequestBody userId);
-
+    Call<RSResponse> updateUser(
+            @Part MultipartBody.Part part,
+            @Part("firstName") RequestBody firstName,
+            @Part("lastName") RequestBody lastName,
+            @Part("phone") RequestBody phone,
+            @Part("gender") RequestBody gender,
+            @Part("birthDate") RequestBody birthDate,
+            @Part("username") RequestBody username,
+            @Part("nameToUse") RequestBody nameToUse,
+            @Part("city") RequestBody city,
+            @Part("countryName") RequestBody countryName,
+            @Part("countryCode") RequestBody countryCode,
+            @Part("userId") RequestBody userId
+    );
     // load user info
     @FormUrlEncoded
     @POST("users/userInfo")

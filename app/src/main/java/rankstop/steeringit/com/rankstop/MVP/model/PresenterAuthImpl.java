@@ -1,6 +1,9 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
 
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -52,6 +55,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     callFindEmail.enqueue(new Callback<RSResponse>() {
                         @Override
                         public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+//                            Log.d("ttttt",response.body().getStatus()+"");
                             if (response.body().getStatus() == 2) {
                                 signupView.findEmailSuccess(true, response.body().getData());
                             } else if (response.body().getStatus() == 1) {

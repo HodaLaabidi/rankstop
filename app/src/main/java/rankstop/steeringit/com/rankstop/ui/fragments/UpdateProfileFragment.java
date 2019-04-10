@@ -382,7 +382,9 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 rsRequestEditProfile.setFirstName(inputFirstNameET.getText().toString().trim());
                 rsRequestEditProfile.setPhone(inputPhoneET.getText().toString().trim());
                 rsRequestEditProfile.setBirthDate(RSDateParser.convertToDateFormat(birthDateET.getText().toString().trim(), dateFormat, serverDateFormat));
-                rsRequestEditProfile.setLocation(inputCityET.getText().toString().trim(), selectedCountry.getCountryCode(), selectedCountry.getCountryName());
+                rsRequestEditProfile.setCountryName(selectedCountry.getCountryName());
+                rsRequestEditProfile.setCity(inputCityET.getText().toString().trim());
+                rsRequestEditProfile.setCountryCode(selectedCountry.getCountryCode());
                 rsRequestEditProfile.setGender(selectedGender);
                 rsRequestEditProfile.setNameToUse(selectedPublicName);
                 rsRequestEditProfile.setFile(imageUri);

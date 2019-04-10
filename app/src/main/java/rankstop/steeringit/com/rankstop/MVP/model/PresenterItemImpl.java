@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.util.Log;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
@@ -62,6 +64,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             callTopRankedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                    Log.d("response",response.headers().get("")+"");
                     if (response.body().getStatus() == 1) {
                         standardView.onSuccess(RSConstants.TOP_RANKED_ITEMS, response.body().getData());
                     } else if (response.body().getStatus() == 0) {

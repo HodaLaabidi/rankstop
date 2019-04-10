@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,9 +127,9 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @OnClick(R.id.rs_login_btn)
     void rsLogin() {
         if (validForm(inputEmail.getText().toString().trim())) {
-            if (RSNetwork.isConnected())
+            if (RSNetwork.isConnected()) {
                 signupPresenter.performFindEmail(inputEmail.getText().toString().trim().toLowerCase());
-            else
+            }else
                 onOffLine();
         }
     }

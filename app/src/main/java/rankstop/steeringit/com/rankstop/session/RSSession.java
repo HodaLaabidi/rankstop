@@ -17,7 +17,7 @@ public class RSSession {
     private final static String SHARED_PREFERENCES_FILE = "local_storage";
 
     public static void startSession(String token) {
-        RSJWTParser.getPayload(token);
+       // RSJWTParser.getPayload(token);
         User user = new Gson().fromJson(RSJWTParser.getPayload(token).toString(), User.class);
         UserInfo userInfo = new UserInfo(user);
         RSLocalStorage rsLocalStorage = new RSLocalStorage(token, userInfo);

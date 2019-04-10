@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -124,6 +125,8 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
     private int PAGES_COUNT = 1;
     private String query = "";
 
+    private RSRequestFilter dataFiltered;
+
     public static SearchFragment getInstance() {
         //Bundle args = new Bundle();
         //args.putSerializable(RSConstants.RS_ITEM_DETAILS, itemDetails);
@@ -227,12 +230,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .filter(text -> {
                     if (text.isEmpty()) {
-                        categoryTitleTV.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                categoryTitleTV.setVisibility(View.GONE);
-                            }
-                        });
+                        categoryTitleTV.post(() -> categoryTitleTV.setVisibility(View.GONE));
                         categoriesRV.post(() -> categoriesRV.setVisibility(View.GONE));
                         itemsTitleTV.post(() -> itemsTitleTV.setVisibility(View.GONE));
                         itemsRV.post(() -> itemsRV.setVisibility(View.GONE));
@@ -328,22 +326,22 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
                 .map(value -> new RSResponseSearch());
     }
 
-    /*public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        // Use a custom search icon for the SearchView in AppBar
-        int searchImgId = android.support.v7.appcompat.R.id.search_button;
-        ImageView v = (ImageView) searchView.findViewById(searchImgId);
-        //v.setImageResource(R.drawable.search_btn);
-        // Customize searchview text and hint colors
-        int searchEditId = android.support.v7.appcompat.R.id.search_src_text;
-        EditText et = (EditText) searchView.findViewById(searchEditId);
-        et.setTextColor(Color.BLACK);
-        et.setHintTextColor(Color.BLACK);
-        searchItem.expandActionView();
-        searchView.requestFocus();
-    }*/
+        MenuItem searchItem = menu.findItem(R.id.filter);
+//        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//        // Use a custom search icon for the SearchView in AppBar
+//        int searchImgId = android.support.v7.appcompat.R.id.search_button;
+//        ImageView v = (ImageView) searchView.findViewById(searchImgId);
+//        //v.setImageResource(R.drawable.search_btn);
+//        // Customize searchview text and hint colors
+//        int searchEditId = android.support.v7.appcompat.R.id.search_src_text;
+//        EditText et = (EditText) searchView.findViewById(searchEditId);
+//        et.setTextColor(Color.BLACK);
+//        et.setHintTextColor(Color.BLACK);
+//        searchItem.expandActionView();
+//        searchView.requestFocus();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -353,12 +351,16 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
             case android.R.id.home:
                 getActivity().onBackPressed();
                 break;
-            /*case R.id.filter:
+            case R.id.filter:
+                //ouvre
                 RSFilterDialog dialog = new RSFilterDialog();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 dialog.setTargetFragment(this, 0);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("data", dataFiltered);
+                dialog.setArguments(bundle);
                 dialog.show(ft, RSFilterDialog.TAG);
-                break;*/
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -478,9 +480,14 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
 
     @Override
     public void onfilterClicked(RSRequestFilter data) {
+        dataFiltered =data;
         //searchPresenter.searchItemsFiltered(data);
+        currentCategory = new Category();
+        currentCategory.set_id(data.getCatId());
+
         rsRequestItemData.setCatId(data.getCatId());
         rsRequestItemData.setQ(query);
+        rsRequestItemData.setPage(1);
         searchPresenter.searchItems(rsRequestItemData);
     }
 }

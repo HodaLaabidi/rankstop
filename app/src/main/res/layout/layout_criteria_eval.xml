@@ -11,12 +11,13 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_margin="8dp">
+
         <rankstop.steeringit.com.rankstop.customviews.RSTVBold
             android:id="@+id/tv_criteria_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/text_size_criteria"/>
+            android:textSize="@dimen/text_size_criteria" />
 
         <LinearLayout
             android:id="@+id/layout_importance"

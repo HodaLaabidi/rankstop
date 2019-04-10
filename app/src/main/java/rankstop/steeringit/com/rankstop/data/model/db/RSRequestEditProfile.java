@@ -8,6 +8,7 @@ public class RSRequestEditProfile implements Serializable {
 
     private String lastName, firstName, gender, phone, birthDate, username, nameToUse, oldPassword, newPassword, userId;
     private Uri file;
+    private String countryCode,countryName,city;
     private RSAddress location;
 
     public String getLastName() {
@@ -106,5 +107,27 @@ public class RSRequestEditProfile implements Serializable {
         this.userId = userId;
     }
 
+    public String getCountryCode() {
+        return countryCode;
+    }
 
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
 }

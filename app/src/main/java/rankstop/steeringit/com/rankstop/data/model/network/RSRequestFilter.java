@@ -1,11 +1,13 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class RSRequestFilter implements Serializable {
 
     private String userId, catId, lang;
-    private String[] codeCountry, city;
+    private String[] codeCountry;
+    private List<String> city;
     private int perPage, page;
 
     public String getUserId() {
@@ -40,11 +42,11 @@ public class RSRequestFilter implements Serializable {
         this.codeCountry = codeCountry;
     }
 
-    public String[] getCity() {
+    public List<String> getCity() {
         return city;
     }
 
-    public void setCity(String[] city) {
+    public void setCity(List<String> city) {
         this.city = city;
     }
 

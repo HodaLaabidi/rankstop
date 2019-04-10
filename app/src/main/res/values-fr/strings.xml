@@ -210,6 +210,9 @@
     <string name="update_item">Modifier item</string>
     <string name="filter_text">Filtrer</string>
     <string name="category_text">Categorie:</string>
+    <string name="hint_cities">Cities</string>
+    <string name="all">Tout</string>
+    <string name="other">Autre</string>
 
     <string-array name="labels">
         <item>Not set</item>

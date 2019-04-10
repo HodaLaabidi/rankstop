@@ -42,7 +42,16 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                 }
                 callEditProfile = WebService.getInstance().getApi().updateUser(
                         part,
-                        user,
+                        Helpers.createPartFormString(user.getFirstName()),
+                        Helpers.createPartFormString(user.getLastName()),
+                        Helpers.createPartFormString(user.getPhone()),
+                        Helpers.createPartFormString(user.getGender()),
+                        Helpers.createPartFormString(user.getBirthDate()),
+                        Helpers.createPartFormString(user.getUsername()),
+                        Helpers.createPartFormString(user.getNameToUse()),
+                        Helpers.createPartFormString(user.getCity()),
+                        Helpers.createPartFormString(user.getCountryName()),
+                        Helpers.createPartFormString(user.getCountryCode()),
                         Helpers.createPartFormString(user.getUserId())
                 );
                 callEditProfile.enqueue(new Callback<RSResponse>() {
@@ -56,6 +65,10 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                             standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
                         } else if (response.body().getStatus() == 2) {
                             standardView.onOldPwdIncorrect(response.body().getMessage());
+                        } else if (response.body().getStatus() == 3) {
+                            standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                        } else if (response.body().getStatus() == 4) {
+                            standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
                         }
                         //standardView.hideProgressBar(RSConstants.ADD_ITEM);
                     }
