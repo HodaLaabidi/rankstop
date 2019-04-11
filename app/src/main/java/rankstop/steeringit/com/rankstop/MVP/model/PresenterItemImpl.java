@@ -1,14 +1,26 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.data.model.db.FakeUser;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
+import rankstop.steeringit.com.rankstop.ui.fragments.HomeFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -18,8 +30,8 @@ import retrofit2.Response;
 public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
     private RSView.StandardView standardView;
-
-    private Call<RSResponse> callLoadItem, callTopRankedItems, callTopViewedItems, callTopCommentedItems, callTopFollowedItems,
+    private Call<RSResponse> callLogin;
+    private Call<RSResponse> callLoadItem, callTopRankedItems, callTopCommentedItems, callTopViewedItems, callTopFollowedItems,
             callItemCreated, callItemOwned, callItemFollowed, callMyEvals, callCategoriesList, callFollowItem, callUnfollowItem,
             callItemComments, callItemPix, callItemPixByUser, callItemCommentsByUser, callDeletePic, callDeleteComment;
 
@@ -51,7 +63,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -59,16 +71,20 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     @Override
     public void loadTopRankedItems(RSRequestListItem rsRequestListItem) {
         if (standardView != null) {
-            callTopRankedItems = WebService.getInstance().getApi().loadTopRankedItems(rsRequestListItem);
+            callTopRankedItems = WebService.getInstance().getApi().loadTopRankedItems(RSSessionToken.getUsergestToken(), rsRequestListItem);
             standardView.showProgressBar(RSConstants.TOP_RANKED_ITEMS);
             callTopRankedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    Log.d("response",response.headers().get("")+"");
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.TOP_RANKED_ITEMS, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.TOP_RANKED_ITEMS);
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED || response.code() == RSConstants.CODE_NO_TOKEN) {
+                        FakeUser fakeUser = new FakeUser();
+                        Reconnecter(fakeUser, "TopRanked");
+                    } else {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.TOP_RANKED_ITEMS, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.TOP_RANKED_ITEMS);
+                        }
                     }
                     standardView.hideProgressBar(RSConstants.TOP_RANKED_ITEMS);
                 }
@@ -86,14 +102,19 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadTopViewedItems(RSRequestListItem rsRequestListItem) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.TOP_VIEWED_ITEMS);
-            callTopViewedItems = WebService.getInstance().getApi().loadTopViewedItems(rsRequestListItem);
+            callTopViewedItems = WebService.getInstance().getApi().loadTopViewedItems(RSSessionToken.getUsergestToken(), rsRequestListItem);
             callTopViewedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.TOP_VIEWED_ITEMS, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.TOP_VIEWED_ITEMS);
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED || response.code() == RSConstants.CODE_NO_TOKEN) {
+                        FakeUser fakeUser = new FakeUser();
+                        Reconnecter(fakeUser, "TopViewed");
+                    } else {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.TOP_VIEWED_ITEMS, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.TOP_VIEWED_ITEMS);
+                        }
                     }
                     standardView.hideProgressBar(RSConstants.TOP_VIEWED_ITEMS);
                 }
@@ -109,16 +130,22 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
     @Override
     public void loadTopCommentedItems(RSRequestListItem rsRequestListItem) {
+
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.TOP_COMMENTED_ITEMS);
-            callTopCommentedItems = WebService.getInstance().getApi().loadTopCommentedItems(rsRequestListItem);
+            callTopCommentedItems = WebService.getInstance().getApi().loadTopCommentedItems(RSSessionToken.getUsergestToken(), rsRequestListItem);
             callTopCommentedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.TOP_COMMENTED_ITEMS, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.TOP_COMMENTED_ITEMS);
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED || response.code() == RSConstants.CODE_NO_TOKEN) {
+                        FakeUser fakeUser = new FakeUser();
+                        Reconnecter(fakeUser, "TopCommented");
+                    } else {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.TOP_COMMENTED_ITEMS, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.TOP_COMMENTED_ITEMS);
+                        }
                     }
                     standardView.hideProgressBar(RSConstants.TOP_COMMENTED_ITEMS);
                 }
@@ -136,14 +163,19 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadTopFollowedItems(RSRequestListItem rsRequestListItem) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.TOP_FOLLOWED_ITEMS);
-            callTopFollowedItems = WebService.getInstance().getApi().loadTopFollowedItems(rsRequestListItem);
+            callTopFollowedItems = WebService.getInstance().getApi().loadTopFollowedItems(RSSessionToken.getUsergestToken(), rsRequestListItem);
             callTopFollowedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.TOP_FOLLOWED_ITEMS, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.TOP_FOLLOWED_ITEMS);
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED || response.code() == RSConstants.CODE_NO_TOKEN) {
+                        FakeUser fakeUser = new FakeUser();
+                        Reconnecter(fakeUser, "TopFollowed");
+                    } else {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.TOP_FOLLOWED_ITEMS, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.TOP_FOLLOWED_ITEMS);
+                        }
                     }
                     standardView.hideProgressBar(RSConstants.TOP_FOLLOWED_ITEMS);
                 }
@@ -161,15 +193,15 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadItemCreated(RSRequestListItem rsRequestListItem) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.ITEM_CREATED);
-            callItemCreated = WebService.getInstance().getApi().loadItemCreated(rsRequestListItem);
+            callItemCreated = WebService.getInstance().getApi().loadItemCreated(RSSessionToken.getUsergestToken(), rsRequestListItem);
             callItemCreated.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.ITEM_CREATED, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.ITEM_CREATED);
-                    }
+//                    if (response.body().getStatus() == 1) {
+//                        standardView.onSuccess(RSConstants.ITEM_CREATED, response.body().getData());
+//                    } else if (response.body().getStatus() == 0) {
+//                        standardView.onFailure(RSConstants.ITEM_CREATED);
+//                    }
                     standardView.hideProgressBar(RSConstants.ITEM_CREATED);
                 }
 
@@ -186,15 +218,15 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadItemOwned(RSRequestListItem rsRequestListItem) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.ITEM_OWNED);
-            callItemOwned = WebService.getInstance().getApi().loadItemOwned(rsRequestListItem);
+            callItemOwned = WebService.getInstance().getApi().loadItemOwned(RSSessionToken.getUsergestToken(), rsRequestListItem);
             callItemOwned.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.ITEM_OWNED, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.ITEM_OWNED);
-                    }
+//                    if (response.body().getStatus() == 1) {
+//                        standardView.onSuccess(RSConstants.ITEM_OWNED, response.body().getData());
+//                    } else if (response.body().getStatus() == 0) {
+//                        standardView.onFailure(RSConstants.ITEM_OWNED);
+//                    }
                     standardView.hideProgressBar(RSConstants.ITEM_OWNED);
                 }
 
@@ -211,7 +243,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void loadItemFollowed(RSRequestListItem rsRequestListItem) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.ITEM_FOLLOWED);
-            callItemFollowed = WebService.getInstance().getApi().loadItemFollowed(rsRequestListItem);
+            callItemFollowed = WebService.getInstance().getApi().loadItemFollowed(RSSessionToken.getUsergestToken(), rsRequestListItem);
             callItemFollowed.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
@@ -258,7 +290,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -288,7 +320,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -316,7 +348,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -343,7 +375,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -374,7 +406,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -405,7 +437,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -436,7 +468,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -467,7 +499,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -498,7 +530,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -529,13 +561,57 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
 
+    private void Reconnecter(FakeUser fakeUser, String Emplacement) {
+        callLogin = WebService.getInstance().getApi().REloginUser(fakeUser);
+        callLogin.enqueue(new Callback<RSResponse>() {
+            @Override
+            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                if (response.body().getStatus() == 1) {
+                    RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(response.body().getData()), RSResponseLogin.class);
+                    String token = loginResponse.getToken();
+                    RSSessionToken.refreshLocalStorage(token, true);
+                    RSRequestListItem rsRequestListItem = new RSRequestListItem();
+                    rsRequestListItem.setUserId(RSSession.getCurrentUser().get_id());
+                    rsRequestListItem.setPage(1);
+                    rsRequestListItem.setPerPage(RSConstants.MAX_ITEM_TO_LOAD);
+                    rsRequestListItem.setLang(RankStop.getDeviceLanguage());
+                    switch (Emplacement) {
+                        case "TopRanked":
+                            loadTopRankedItems(rsRequestListItem);
+                            break;
+                        case "TopViewed":
+                            loadTopFollowedItems(rsRequestListItem);
+                            break;
+                        case "TopCommented":
+                            loadTopCommentedItems(rsRequestListItem);
+                            break;
+                        case "TopFollowed":
+                            loadTopViewedItems(rsRequestListItem);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RSResponse> call, Throwable t) {
+                if (call.isCanceled())
+                    Log.i("err", t.getMessage() + "");
+
+            }
+        });
+    }
+
     @Override
     public void onDestroyItem() {
+        if (callLogin != null)
+            if (callLogin.isExecuted())
+                callLogin.cancel();
+
         if (callLoadItem != null)
             if (callLoadItem.isExecuted())
                 callLoadItem.cancel();

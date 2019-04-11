@@ -4,6 +4,7 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -25,7 +26,7 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.USER_INFO);
-                callUserInfo = WebService.getInstance().getApi().loadUserInfo(id);
+                callUserInfo = WebService.getInstance().getApi().loadUserInfo(RSSessionToken.getUsergestToken(),id);
                 callUserInfo.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {

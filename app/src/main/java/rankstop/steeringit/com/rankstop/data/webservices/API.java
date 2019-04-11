@@ -5,7 +5,9 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
+import rankstop.steeringit.com.rankstop.data.model.db.FakeUser;
 import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
 import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
 import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
@@ -20,11 +22,14 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -43,6 +48,9 @@ public interface API {
 
     @POST("users/signIn")
     Call<RSResponse> loginUser(@Body User user);
+
+    @POST("users/signIn")
+    Call<RSResponse> REloginUser(@Body FakeUser user);
 
     // register by email and password
     @POST("users/signUp")
@@ -69,10 +77,11 @@ public interface API {
             @Part("countryCode") RequestBody countryCode,
             @Part("userId") RequestBody userId
     );
+
     // load user info
     @FormUrlEncoded
     @POST("users/userInfo")
-    Call<RSResponse> loadUserInfo(@Field("id") String id);
+    Call<RSResponse> loadUserInfo(@Header(RSConstants.HEADER_TOKEN) String token, @Field("id") String id);
 
     // load user history
     @POST("history/storiesByUser")
@@ -90,31 +99,31 @@ public interface API {
 
     // load list of items created by user
     @POST("items/getItemCreatedByUser")
-    Call<RSResponse> loadItemCreated(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadItemCreated(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // load list of items followed by user
     @POST("follows/listItemFollowersByUser")
-    Call<RSResponse> loadItemFollowed(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadItemFollowed(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // load list of items owned by user
     @POST("items/getItemAllByUserOwner")
-    Call<RSResponse> loadItemOwned(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadItemOwned(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // load list of top ranked items
     @POST("items/getListItemByTopRank")
-    Call<RSResponse> loadTopRankedItems(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadTopRankedItems(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // load list of top viewed items
     @POST("items/getItemAllByTopView")
-    Call<RSResponse> loadTopViewedItems(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadTopViewedItems(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // load list of top commented items
     @POST("items/getListItemByTopComments")
-    Call<RSResponse> loadTopCommentedItems(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadTopCommentedItems(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // load list of top followed items
     @POST("items/getListItemByTopFollowed")
-    Call<RSResponse> loadTopFollowedItems(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadTopFollowedItems(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // load list of my evals
     @POST("items/getItemAllByUserEvaluated")

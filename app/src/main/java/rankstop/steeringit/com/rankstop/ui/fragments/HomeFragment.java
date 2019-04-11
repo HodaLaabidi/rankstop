@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,13 +36,17 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
-import rankstop.steeringit.com.rankstop.data.model.db.Category;
+import rankstop.steeringit.com.rankstop.data.model.db.FakeUser;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
+import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -53,6 +58,10 @@ import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
 import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class HomeFragment extends Fragment implements RSView.StandardView {
 
@@ -188,6 +197,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
     private RSPresenter.ItemPresenter itemPresenter;
     private RSRequestListItem rsRequestListItem = new RSRequestListItem();
     private User user;
+    private Call<RSResponse> callLogin;
     private String itemIdToFollow;
     private RSNavigationData rsNavigationData = new RSNavigationData();
     private WeakReference<HomeFragment> fragmentContext;
@@ -214,8 +224,38 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         itemPresenter = new PresenterItemImpl(HomeFragment.this);
         rsRequestListItem.setLang(RankStop.getDeviceLanguage());
         getCurrentUser();
+
         if (RSNetwork.isConnected()) {
-            loadHomeData();
+            if (RSSessionToken.getLocalStorage() == null) {
+                FakeUser user = new FakeUser();
+//                Log.d("tt",user.getEmail()+"");
+                callLogin = WebService.getInstance().getApi().REloginUser(user);
+                callLogin.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body().getStatus() == 1) {
+                            RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(response.body().getData()), RSResponseLogin.class);
+                            String token = loginResponse.getToken();
+                            RSSessionToken.startSession(token, true);
+//                            Toast.makeText(instance.getContext(), RSSessionToken.getUsergestToken() + "///"
+//                                    + RSSessionToken.getStatutGestConnected(), Toast.LENGTH_SHORT).show();
+                            loadHomeData();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!call.isCanceled()) {
+
+                        }
+                    }
+                });
+            } else {
+                loadHomeData();
+//                Toast.makeText(instance.getContext(), RSSessionToken.getUsergestToken() + "///"
+//                        + RSSessionToken.getStatutGestConnected(), Toast.LENGTH_SHORT).show();
+            }
+
         } else {
             onOffLine();
         }
@@ -235,9 +275,9 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
     }
 
     private void loadHomeData() {
-        try{
+        try {
             Integer.parseInt("uuihuuh");
-        }catch (Exception e) {
+        } catch (Exception e) {
             Crashlytics.logException(e);
         }
         rsRequestListItem.setPage(1);

@@ -97,6 +97,13 @@ public class RSConstants {
     public static final int REQUEST_CODE = 1;
     public static final int MAX_FIELD_TO_LOAD = 5;
 
+    //fake user
+    public static final String HEADER_TOKEN = "X-Access-Token";
+    public static final String PASSWORD_FAKE_USER = "rankstop-android";
+    public static final String EMAIL_FAKE_USER = "rankStop-android@steeringit.com";
+    public static final int CODE_TOKEN_EXPIRED = 401;
+    public static final int CODE_NO_TOKEN = 403;
+
     // colors
     public static final int PIE_GREEN = R.color.colorGreenPie;
     public static final int PIE_ORANGE = R.color.colorOrangePie;
