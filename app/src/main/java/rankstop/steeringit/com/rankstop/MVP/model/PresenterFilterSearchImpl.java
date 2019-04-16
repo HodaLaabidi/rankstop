@@ -4,6 +4,8 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -25,16 +27,21 @@ public class PresenterFilterSearchImpl implements RSPresenter.SearchFilterPresen
         if (RSNetwork.isConnected()) {
             if (searchView != null) {
                 searchView.showProgressBar(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
-                callSearch = WebService.getInstance().getApi().loadCategoriesUsedByLocations(lang);
+                callSearch = WebService.getInstance().getApi().loadCategoriesUsedByLocations(RSSessionToken.getUsergestToken(), lang);
                 callSearch.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            searchView.onSuccess(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            searchView.onError(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadCategories(lang);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                searchView.onSuccess(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                searchView.onError(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
+                            }
+                            searchView.hideProgressBar(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
                         }
-                        searchView.hideProgressBar(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
                     }
 
                     @Override
@@ -46,7 +53,7 @@ public class PresenterFilterSearchImpl implements RSPresenter.SearchFilterPresen
                     }
                 });
             }
-        }else {
+        } else {
             searchView.onOffLine();
         }
     }

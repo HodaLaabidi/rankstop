@@ -13,6 +13,8 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.FileUtils;
 import rankstop.steeringit.com.rankstop.utils.Helpers;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
@@ -41,6 +43,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                     part = prepareFilePart("file", user.getFile());
                 }
                 callEditProfile = WebService.getInstance().getApi().updateUser(
+                        RSSessionToken.getUsergestToken(),
                         part,
                         Helpers.createPartFormString(user.getFirstName()),
                         Helpers.createPartFormString(user.getLastName()),
@@ -57,20 +60,25 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                 callEditProfile.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.UPDATE_PROFILE, response.body().getData());
-                            standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.UPDATE_PROFILE);
-                            standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
-                        } else if (response.body().getStatus() == 2) {
-                            standardView.onOldPwdIncorrect(response.body().getMessage());
-                        } else if (response.body().getStatus() == 3) {
-                            standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
-                        } else if (response.body().getStatus() == 4) {
-                            standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            editProfile(user);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.UPDATE_PROFILE, response.body().getData());
+                                standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.UPDATE_PROFILE);
+                                standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                            } else if (response.body().getStatus() == 2) {
+                                standardView.onOldPwdIncorrect(response.body().getMessage());
+                            } else if (response.body().getStatus() == 3) {
+                                standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                            } else if (response.body().getStatus() == 4) {
+                                standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                            }
+                            //standardView.hideProgressBar(RSConstants.ADD_ITEM);
                         }
-                        //standardView.hideProgressBar(RSConstants.ADD_ITEM);
                     }
 
                     @Override
@@ -81,7 +89,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -90,17 +98,23 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
     public void loadCountriesList(String lang) {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
-                callloadCountries = WebService.getInstance().getApi().loadCountries(lang);
+                callloadCountries = WebService.getInstance().getApi().loadCountries(RSSessionToken.getUsergestToken(), lang);
                 standardView.showProgressBar(RSConstants.COUNTRIES_LIST);
                 callloadCountries.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.COUNTRIES_LIST, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError(RSConstants.COUNTRIES_LIST);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.COUNTRIES_LIST);
+                            loadCountriesList(lang);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.COUNTRIES_LIST, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError(RSConstants.COUNTRIES_LIST);
+                            }
+                            standardView.hideProgressBar(RSConstants.COUNTRIES_LIST);
                         }
-                        standardView.hideProgressBar(RSConstants.COUNTRIES_LIST);
                     }
 
                     @Override
@@ -112,7 +126,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }

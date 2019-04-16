@@ -1,9 +1,15 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.util.Log;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,16 +29,23 @@ public class PresenterDeviceLangImpl implements RSPresenter.EditDeviceLangPresen
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar();
-                callEditLang = WebService.getInstance().getApi().editDeviceLanguage(userId, lang);
+                callEditLang = WebService.getInstance().getApi().editDeviceLanguage(RSSessionToken.getUsergestToken(), userId, lang);
                 callEditLang.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(lang, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError();
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            standardView.hideProgressBar();
+                            editLang(userId, lang);
+
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(lang, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError();
+                            }
+                            standardView.hideProgressBar();
                         }
-                        standardView.hideProgressBar();
                     }
 
                     @Override
@@ -44,7 +57,7 @@ public class PresenterDeviceLangImpl implements RSPresenter.EditDeviceLangPresen
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }

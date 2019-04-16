@@ -1,26 +1,15 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
-import android.util.Log;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.data.model.db.FakeUser;
-import rankstop.steeringit.com.rankstop.data.model.db.User;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
 import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.session.RSSessionToken;
-import rankstop.steeringit.com.rankstop.ui.fragments.HomeFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -30,7 +19,6 @@ import retrofit2.Response;
 public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
     private RSView.StandardView standardView;
-    private Call<RSResponse> callLogin;
     private Call<RSResponse> callLoadItem, callTopRankedItems, callTopCommentedItems, callTopViewedItems, callTopFollowedItems,
             callItemCreated, callItemOwned, callItemFollowed, callMyEvals, callCategoriesList, callFollowItem, callUnfollowItem,
             callItemComments, callItemPix, callItemPixByUser, callItemCommentsByUser, callDeletePic, callDeleteComment;
@@ -44,14 +32,19 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ONE_ITEM);
-                callLoadItem = WebService.getInstance().getApi().loadItem(itemId, userId, lang);
+                callLoadItem = WebService.getInstance().getApi().loadItem(RSSessionToken.getUsergestToken(), itemId, userId, lang);
                 callLoadItem.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.ONE_ITEM, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.ONE_ITEM);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadItem(itemId, userId, lang);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.ONE_ITEM, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.ONE_ITEM);
+                            }
                         }
                         standardView.hideProgressBar(RSConstants.ONE_ITEM);
                     }
@@ -76,17 +69,17 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             callTopRankedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED || response.code() == RSConstants.CODE_NO_TOKEN) {
-                        FakeUser fakeUser = new FakeUser();
-                        Reconnecter(fakeUser, "TopRanked");
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                        RSSession.Reconnecter();
+                        loadTopRankedItems(rsRequestListItem);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.TOP_RANKED_ITEMS, response.body().getData());
                         } else if (response.body().getStatus() == 0) {
                             standardView.onFailure(RSConstants.TOP_RANKED_ITEMS);
                         }
+                        standardView.hideProgressBar(RSConstants.TOP_RANKED_ITEMS);
                     }
-                    standardView.hideProgressBar(RSConstants.TOP_RANKED_ITEMS);
                 }
 
                 @Override
@@ -106,17 +99,17 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             callTopViewedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED || response.code() == RSConstants.CODE_NO_TOKEN) {
-                        FakeUser fakeUser = new FakeUser();
-                        Reconnecter(fakeUser, "TopViewed");
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                        RSSession.Reconnecter();
+                        loadTopViewedItems(rsRequestListItem);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.TOP_VIEWED_ITEMS, response.body().getData());
                         } else if (response.body().getStatus() == 0) {
                             standardView.onFailure(RSConstants.TOP_VIEWED_ITEMS);
                         }
+                        standardView.hideProgressBar(RSConstants.TOP_VIEWED_ITEMS);
                     }
-                    standardView.hideProgressBar(RSConstants.TOP_VIEWED_ITEMS);
                 }
 
                 @Override
@@ -137,17 +130,17 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             callTopCommentedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED || response.code() == RSConstants.CODE_NO_TOKEN) {
-                        FakeUser fakeUser = new FakeUser();
-                        Reconnecter(fakeUser, "TopCommented");
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                        RSSession.Reconnecter();
+                        loadTopCommentedItems(rsRequestListItem);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.TOP_COMMENTED_ITEMS, response.body().getData());
                         } else if (response.body().getStatus() == 0) {
                             standardView.onFailure(RSConstants.TOP_COMMENTED_ITEMS);
                         }
+                        standardView.hideProgressBar(RSConstants.TOP_COMMENTED_ITEMS);
                     }
-                    standardView.hideProgressBar(RSConstants.TOP_COMMENTED_ITEMS);
                 }
 
                 @Override
@@ -167,17 +160,17 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             callTopFollowedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED || response.code() == RSConstants.CODE_NO_TOKEN) {
-                        FakeUser fakeUser = new FakeUser();
-                        Reconnecter(fakeUser, "TopFollowed");
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                        RSSession.Reconnecter();
+                        loadTopFollowedItems(rsRequestListItem);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.TOP_FOLLOWED_ITEMS, response.body().getData());
                         } else if (response.body().getStatus() == 0) {
                             standardView.onFailure(RSConstants.TOP_FOLLOWED_ITEMS);
                         }
+                        standardView.hideProgressBar(RSConstants.TOP_FOLLOWED_ITEMS);
                     }
-                    standardView.hideProgressBar(RSConstants.TOP_FOLLOWED_ITEMS);
                 }
 
                 @Override
@@ -197,12 +190,17 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             callItemCreated.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-//                    if (response.body().getStatus() == 1) {
-//                        standardView.onSuccess(RSConstants.ITEM_CREATED, response.body().getData());
-//                    } else if (response.body().getStatus() == 0) {
-//                        standardView.onFailure(RSConstants.ITEM_CREATED);
-//                    }
-                    standardView.hideProgressBar(RSConstants.ITEM_CREATED);
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                        RSSession.Reconnecter();
+                        loadItemCreated(rsRequestListItem);
+                    } else {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.ITEM_CREATED, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.ITEM_CREATED);
+                        }
+                        standardView.hideProgressBar(RSConstants.ITEM_CREATED);
+                    }
                 }
 
                 @Override
@@ -222,12 +220,17 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             callItemOwned.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-//                    if (response.body().getStatus() == 1) {
-//                        standardView.onSuccess(RSConstants.ITEM_OWNED, response.body().getData());
-//                    } else if (response.body().getStatus() == 0) {
-//                        standardView.onFailure(RSConstants.ITEM_OWNED);
-//                    }
-                    standardView.hideProgressBar(RSConstants.ITEM_OWNED);
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                        RSSession.Reconnecter();
+                        loadItemOwned(rsRequestListItem);
+                    } else {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.ITEM_OWNED, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.ITEM_OWNED);
+                        }
+                        standardView.hideProgressBar(RSConstants.ITEM_OWNED);
+                    }
                 }
 
                 @Override
@@ -247,12 +250,17 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             callItemFollowed.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        standardView.onSuccess(RSConstants.ITEM_FOLLOWED, response.body().getData());
-                    } else if (response.body().getStatus() == 0) {
-                        standardView.onFailure(RSConstants.ITEM_FOLLOWED);
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                        RSSession.Reconnecter();
+                        loadItemFollowed(rsRequestListItem);
+                    } else {
+                        if (response.body().getStatus() == 1) {
+                            standardView.onSuccess(RSConstants.ITEM_FOLLOWED, response.body().getData());
+                        } else if (response.body().getStatus() == 0) {
+                            standardView.onFailure(RSConstants.ITEM_FOLLOWED);
+                        }
+                        standardView.hideProgressBar(RSConstants.ITEM_FOLLOWED);
                     }
-                    standardView.hideProgressBar(RSConstants.ITEM_FOLLOWED);
                 }
 
                 @Override
@@ -269,16 +277,21 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.MY_EVALS);
-                callMyEvals = WebService.getInstance().getApi().loadMyEvals(rsRequestListItem);
+                callMyEvals = WebService.getInstance().getApi().loadMyEvals(RSSessionToken.getUsergestToken(), rsRequestListItem);
                 callMyEvals.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.MY_EVALS, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError(RSConstants.MY_EVALS);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadMyEvals(rsRequestListItem);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.MY_EVALS, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError(RSConstants.MY_EVALS);
+                            }
+                            standardView.hideProgressBar(RSConstants.MY_EVALS);
                         }
-                        standardView.hideProgressBar(RSConstants.MY_EVALS);
                     }
 
                     @Override
@@ -300,16 +313,21 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.LOAD_CATEGORIES);
-                callCategoriesList = WebService.getInstance().getApi().loadCategoriesList(lang);
+                callCategoriesList = WebService.getInstance().getApi().loadCategoriesList(RSSessionToken.getUsergestToken(), lang);
                 callCategoriesList.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.LOAD_CATEGORIES, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.LOAD_CATEGORIES);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadCategoriesList(lang);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.LOAD_CATEGORIES, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.LOAD_CATEGORIES);
+                            }
+                            standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
                         }
-                        standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
                     }
 
                     @Override
@@ -329,14 +347,19 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void followItem(RSFollow rsFollow) {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
-                callFollowItem = WebService.getInstance().getApi().followItem(rsFollow);
+                callFollowItem = WebService.getInstance().getApi().followItem(RSSessionToken.getUsergestToken(), rsFollow);
                 callFollowItem.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.FOLLOW_ITEM, "1");
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onSuccess(RSConstants.FOLLOW_ITEM, "0");
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            followItem(rsFollow);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.FOLLOW_ITEM, "1");
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onSuccess(RSConstants.FOLLOW_ITEM, "0");
+                            }
                         }
                     }
 
@@ -357,14 +380,19 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     public void unfollowItem(RSFollow rsFollow) {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
-                callUnfollowItem = WebService.getInstance().getApi().unfollowItem(rsFollow);
+                callUnfollowItem = WebService.getInstance().getApi().unfollowItem(RSSessionToken.getUsergestToken(), rsFollow);
                 callUnfollowItem.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.UNFOLLOW_ITEM, null);
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.UNFOLLOW_ITEM);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            unfollowItem(rsFollow);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.UNFOLLOW_ITEM, null);
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.UNFOLLOW_ITEM);
+                            }
                         }
                     }
 
@@ -385,16 +413,21 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_COMMENTS);
-                callItemComments = WebService.getInstance().getApi().loadItemComments(rsRequestItemData);
+                callItemComments = WebService.getInstance().getApi().loadItemComments(RSSessionToken.getUsergestToken(), rsRequestItemData);
                 callItemComments.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.ITEM_COMMENTS, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.ITEM_COMMENTS);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadItemComments(rsRequestItemData);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.ITEM_COMMENTS, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.ITEM_COMMENTS);
+                            }
+                            standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
                         }
-                        standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
                     }
 
                     @Override
@@ -416,16 +449,21 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
-                callItemCommentsByUser = WebService.getInstance().getApi().loadItemCommentsByUser(rsRequestItemData);
+                callItemCommentsByUser = WebService.getInstance().getApi().loadItemCommentsByUser(RSSessionToken.getUsergestToken(), rsRequestItemData);
                 callItemCommentsByUser.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.ITEM_COMMENTS_BY_USER, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.ITEM_COMMENTS_BY_USER);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadItemCommentsByUser(rsRequestItemData);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.ITEM_COMMENTS_BY_USER, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.ITEM_COMMENTS_BY_USER);
+                            }
+                            standardView.hideProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
                         }
-                        standardView.hideProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
                     }
 
                     @Override
@@ -447,16 +485,21 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_PIX);
-                callItemPix = WebService.getInstance().getApi().loadItemPix(rsRequestItemData);
+                callItemPix = WebService.getInstance().getApi().loadItemPix(RSSessionToken.getUsergestToken(), rsRequestItemData);
                 callItemPix.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.ITEM_PIX, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.ITEM_PIX);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadItemPix(rsRequestItemData);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.ITEM_PIX, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.ITEM_PIX);
+                            }
+                            standardView.hideProgressBar(RSConstants.ITEM_PIX);
                         }
-                        standardView.hideProgressBar(RSConstants.ITEM_PIX);
                     }
 
                     @Override
@@ -478,16 +521,21 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_PIX_BY_USER);
-                callItemPixByUser = WebService.getInstance().getApi().loadItemPixByUser(rsRequestItemData);
+                callItemPixByUser = WebService.getInstance().getApi().loadItemPixByUser(RSSessionToken.getUsergestToken(), rsRequestItemData);
                 callItemPixByUser.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.ITEM_PIX_BY_USER, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.ITEM_PIX_BY_USER);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadItemPixByUser(rsRequestItemData);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.ITEM_PIX_BY_USER, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.ITEM_PIX_BY_USER);
+                            }
+                            standardView.hideProgressBar(RSConstants.ITEM_PIX_BY_USER);
                         }
-                        standardView.hideProgressBar(RSConstants.ITEM_PIX_BY_USER);
                     }
 
                     @Override
@@ -509,16 +557,21 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.DELETE_COMMENT);
-                callDeleteComment = WebService.getInstance().getApi().deleteComment(commentId, itemId);
+                callDeleteComment = WebService.getInstance().getApi().deleteComment(RSSessionToken.getUsergestToken(), commentId, itemId);
                 callDeleteComment.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.DELETE_COMMENT, commentId);
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.DELETE_COMMENT);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            deleteComment(commentId, itemId);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.DELETE_COMMENT, commentId);
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.DELETE_COMMENT);
+                            }
+                            standardView.hideProgressBar(RSConstants.DELETE_COMMENT);
                         }
-                        standardView.hideProgressBar(RSConstants.DELETE_COMMENT);
                     }
 
                     @Override
@@ -540,16 +593,22 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.DELETE_PICTURE);
-                callDeletePic = WebService.getInstance().getApi().deletePicture(pictureId, itemId);
+                callDeletePic = WebService.getInstance().getApi().deletePicture(RSSessionToken.getUsergestToken(), pictureId, itemId);
                 callDeletePic.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.DELETE_PICTURE, pictureId);
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.DELETE_PICTURE);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.DELETE_PICTURE);
+                            deletePicture(pictureId, itemId);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.DELETE_PICTURE, pictureId);
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.DELETE_PICTURE);
+                            }
+                            standardView.hideProgressBar(RSConstants.DELETE_PICTURE);
                         }
-                        standardView.hideProgressBar(RSConstants.DELETE_PICTURE);
                     }
 
                     @Override
@@ -566,51 +625,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         }
     }
 
-    private void Reconnecter(FakeUser fakeUser, String Emplacement) {
-        callLogin = WebService.getInstance().getApi().REloginUser(fakeUser);
-        callLogin.enqueue(new Callback<RSResponse>() {
-            @Override
-            public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                if (response.body().getStatus() == 1) {
-                    RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(response.body().getData()), RSResponseLogin.class);
-                    String token = loginResponse.getToken();
-                    RSSessionToken.refreshLocalStorage(token, true);
-                    RSRequestListItem rsRequestListItem = new RSRequestListItem();
-                    rsRequestListItem.setUserId(RSSession.getCurrentUser().get_id());
-                    rsRequestListItem.setPage(1);
-                    rsRequestListItem.setPerPage(RSConstants.MAX_ITEM_TO_LOAD);
-                    rsRequestListItem.setLang(RankStop.getDeviceLanguage());
-                    switch (Emplacement) {
-                        case "TopRanked":
-                            loadTopRankedItems(rsRequestListItem);
-                            break;
-                        case "TopViewed":
-                            loadTopFollowedItems(rsRequestListItem);
-                            break;
-                        case "TopCommented":
-                            loadTopCommentedItems(rsRequestListItem);
-                            break;
-                        case "TopFollowed":
-                            loadTopViewedItems(rsRequestListItem);
-                            break;
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RSResponse> call, Throwable t) {
-                if (call.isCanceled())
-                    Log.i("err", t.getMessage() + "");
-
-            }
-        });
-    }
-
     @Override
     public void onDestroyItem() {
-        if (callLogin != null)
-            if (callLogin.isExecuted())
-                callLogin.cancel();
 
         if (callLoadItem != null)
             if (callLoadItem.isExecuted())

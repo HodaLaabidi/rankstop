@@ -11,6 +11,8 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.model.network.RSUpdateItem;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.Helpers;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
@@ -40,6 +42,7 @@ public class PresenterUpdateItemImpl implements RSPresenter.UpdateItemPresenter 
                     parts.add(Helpers.prepareFilePart("gallery", rsUpdateItem.getGallery().get(i), context));
                 }
                 callUpdateItem = WebService.getInstance().getApi().updateItem(
+                        RSSessionToken.getUsergestToken(),
                         parts,
                         Helpers.createPartFormString(rsUpdateItem.getItemId()),
                         Helpers.createPartFormString(rsUpdateItem.getUrlFacebook()),
@@ -52,14 +55,20 @@ public class PresenterUpdateItemImpl implements RSPresenter.UpdateItemPresenter 
                 callUpdateItem.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            updateItemView.onSuccess(RSConstants.UPDATE_ITEM, response.body().getData());
-                            //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
-                        } else if (response.body().getStatus() == 0) {
-                            updateItemView.onError(RSConstants.UPDATE_ITEM);
-                            //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            updateItemView.hideProgressBar();
+                            updateItem(rsUpdateItem);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                updateItemView.onSuccess(RSConstants.UPDATE_ITEM, response.body().getData());
+                                //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
+                            } else if (response.body().getStatus() == 0) {
+                                updateItemView.onError(RSConstants.UPDATE_ITEM);
+                                //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
+                            }
+                            updateItemView.hideProgressBar();
                         }
-                        updateItemView.hideProgressBar();
                     }
 
                     @Override
@@ -71,7 +80,7 @@ public class PresenterUpdateItemImpl implements RSPresenter.UpdateItemPresenter 
                     }
                 });
             }
-        }else {
+        } else {
             updateItemView.onOffLine();
         }
     }

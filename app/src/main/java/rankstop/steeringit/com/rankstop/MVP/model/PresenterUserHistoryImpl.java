@@ -1,10 +1,14 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.util.Log;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -25,16 +29,21 @@ public class PresenterUserHistoryImpl implements RSPresenter.UserHistoryPresente
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.USER_HISTORY);
-                callUserHistory = WebService.getInstance().getApi().loadUserHistory(rsRequestListItem);
+                callUserHistory = WebService.getInstance().getApi().loadUserHistory(RSSessionToken.getUsergestToken(), rsRequestListItem);
                 callUserHistory.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.USER_HISTORY, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError(RSConstants.USER_HISTORY);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                           loadHistory(rsRequestListItem);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.USER_HISTORY, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError(RSConstants.USER_HISTORY);
+                            }
+                            standardView.hideProgressBar(RSConstants.USER_HISTORY);
                         }
-                        standardView.hideProgressBar(RSConstants.USER_HISTORY);
                     }
 
                     @Override
@@ -46,7 +55,7 @@ public class PresenterUserHistoryImpl implements RSPresenter.UserHistoryPresente
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }

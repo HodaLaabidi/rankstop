@@ -15,6 +15,8 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.Urls;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -74,7 +76,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     signupView.findEmailValidations();
                 }
             }
-        }else {
+        } else {
             signupView.onOffLine();
         }
     }
@@ -102,7 +104,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     }
                 });
             }
-        }else {
+        } else {
             signupView.onOffLine();
         }
     }
@@ -143,7 +145,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     }
                 });
             }
-        }else {
+        } else {
             loginView.onOffLine();
         }
     }
@@ -151,34 +153,38 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     @Override
     public void followItem(RSFollow rsFollow, String target) {
         if (RSNetwork.isConnected()) {
-            callFollowItem = WebService.getInstance().getApi().followItem(rsFollow);
+            callFollowItem = WebService.getInstance().getApi().followItem(RSSessionToken.getUsergestToken(), rsFollow);
             callFollowItem.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                    if (response.body().getStatus() == 1) {
-                        if (target.equals(RSConstants.LOGIN)) {
-                            loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
-                            loginView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                        } else if (target.equals(RSConstants.REGISTER)) {
-                            registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
-                            registerView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                        } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
-                            signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
-                            signupView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                        }
-                    } else if (response.body().getStatus() == 0) {
-                        if (target.equals(RSConstants.LOGIN)) {
-                            loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
-                            loginView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                        } else if (target.equals(RSConstants.REGISTER)) {
-                            registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
-                            registerView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                        } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
-                            signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
-                            signupView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                    if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                        RSSession.Reconnecter();
+                        followItem(rsFollow, target);
+                    } else {
+                        if (response.body().getStatus() == 1) {
+                            if (target.equals(RSConstants.LOGIN)) {
+                                loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                                loginView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                            } else if (target.equals(RSConstants.REGISTER)) {
+                                registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                                registerView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                            } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
+                                signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                                signupView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                            }
+                        } else if (response.body().getStatus() == 0) {
+                            if (target.equals(RSConstants.LOGIN)) {
+                                loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                                loginView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                            } else if (target.equals(RSConstants.REGISTER)) {
+                                registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                                registerView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                            } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
+                                signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                                signupView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                            }
                         }
                     }
-
                 }
 
                 @Override
@@ -197,7 +203,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     }
                 }
             });
-        }else {
+        } else {
             if (target.equals(RSConstants.LOGIN)) {
                 loginView.onOffLine();
             } else if (target.equals(RSConstants.REGISTER)) {
@@ -233,7 +239,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     }
                 });
             }
-        }else {
+        } else {
             loginView.onOffLine();
         }
     }
@@ -284,7 +290,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     }
                 });
             }
-        }else {
+        } else {
             registerView.onOffLine();
         }
     }
@@ -319,7 +325,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     }
                 }
             });
-        }else {
+        } else {
             if (target.equals(RSConstants.REGISTER)) {
                 registerView.onOffLine();
             } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
@@ -365,7 +371,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     }
                 }
             });
-        }else {
+        } else {
             if (target.equals(RSConstants.REGISTER)) {
                 registerView.onOffLine();
             } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {

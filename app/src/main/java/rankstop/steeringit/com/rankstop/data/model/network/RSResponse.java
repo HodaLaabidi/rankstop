@@ -13,6 +13,7 @@ public class RSResponse implements Serializable {
     @SerializedName("message")
     private String message;
 
+
     public RSResponse(int status, Object data, String message) {
         this.status = status;
         this.data = data;

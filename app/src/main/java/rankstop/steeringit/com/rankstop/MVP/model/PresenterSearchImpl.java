@@ -6,6 +6,8 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -29,16 +31,21 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                     if (callSearch.isExecuted())
                         callSearch.cancel();
                 searchView.showProgressBar(RSConstants.SEARCH);
-                callSearch = WebService.getInstance().getApi().search(query, lang);
+                callSearch = WebService.getInstance().getApi().search(RSSessionToken.getUsergestToken(), query, lang);
                 callSearch.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            searchView.onSuccess(RSConstants.SEARCH, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            searchView.onError(RSConstants.SEARCH);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            search(query, lang);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                searchView.onSuccess(RSConstants.SEARCH, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                searchView.onError(RSConstants.SEARCH);
+                            }
+                            searchView.hideProgressBar(RSConstants.SEARCH);
                         }
-                        searchView.hideProgressBar(RSConstants.SEARCH);
                     }
 
                     @Override
@@ -50,7 +57,7 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             searchView.onOffLine();
         }
     }
@@ -60,16 +67,21 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
         if (RSNetwork.isConnected()) {
             if (searchView != null) {
                 searchView.showProgressBar(RSConstants.SEARCH_ITEMS);
-                callSearchItems = WebService.getInstance().getApi().searchItems(rsRequestSearch);
+                callSearchItems = WebService.getInstance().getApi().searchItems(RSSessionToken.getUsergestToken(), rsRequestSearch);
                 callSearchItems.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            searchView.onSuccess(RSConstants.SEARCH_ITEMS, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            searchView.onError(RSConstants.SEARCH_ITEMS);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            searchItems(rsRequestSearch);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                searchView.onSuccess(RSConstants.SEARCH_ITEMS, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                searchView.onError(RSConstants.SEARCH_ITEMS);
+                            }
+                            searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
                         }
-                        searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
                     }
 
                     @Override
@@ -81,7 +93,7 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             searchView.onOffLine();
         }
     }
@@ -91,16 +103,21 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
         if (RSNetwork.isConnected()) {
             if (searchView != null) {
                 searchView.showProgressBar(RSConstants.SEARCH_ITEMS_FILTERED);
-                callSearchItemsFiltered = WebService.getInstance().getApi().searchItemsFiltered(data);
+                callSearchItemsFiltered = WebService.getInstance().getApi().searchItemsFiltered(RSSessionToken.getUsergestToken(), data);
                 callSearchItemsFiltered.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            searchView.onSuccess(RSConstants.SEARCH_ITEMS_FILTERED, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            searchView.onError(RSConstants.SEARCH_ITEMS_FILTERED);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            searchItemsFiltered(data);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                searchView.onSuccess(RSConstants.SEARCH_ITEMS_FILTERED, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                searchView.onError(RSConstants.SEARCH_ITEMS_FILTERED);
+                            }
+                            searchView.hideProgressBar(RSConstants.SEARCH_ITEMS_FILTERED);
                         }
-                        searchView.hideProgressBar(RSConstants.SEARCH_ITEMS_FILTERED);
                     }
 
                     @Override
@@ -112,7 +129,7 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             searchView.onOffLine();
         }
     }

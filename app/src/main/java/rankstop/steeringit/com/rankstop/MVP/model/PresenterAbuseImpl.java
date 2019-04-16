@@ -5,6 +5,8 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -23,19 +25,25 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
 
     @Override
     public void loadAbusesList(String langue) {
-        if (RSNetwork.isConnected()){
+        if (RSNetwork.isConnected()) {
             if (abuseView != null) {
                 abuseView.showProgressBar(RSConstants.LOAD_ABUSES_LIST);
-                callAbusesList = WebService.getInstance().getApi().loadAbusesList(langue);
+                callAbusesList = WebService.getInstance().getApi().loadAbusesList(RSSessionToken.getUsergestToken(), langue);
                 callAbusesList.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            abuseView.onSuccess(RSConstants.LOAD_ABUSES_LIST, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            abuseView.onFailure(RSConstants.LOAD_ABUSES_LIST);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            abuseView.hideProgressBar(RSConstants.LOAD_ABUSES_LIST);
+                            loadAbusesList(langue);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                abuseView.onSuccess(RSConstants.LOAD_ABUSES_LIST, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                abuseView.onFailure(RSConstants.LOAD_ABUSES_LIST);
+                            }
+                            abuseView.hideProgressBar(RSConstants.LOAD_ABUSES_LIST);
                         }
-                        abuseView.hideProgressBar(RSConstants.LOAD_ABUSES_LIST);
                     }
 
                     @Override
@@ -47,7 +55,7 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
                     }
                 });
             }
-        }else {
+        } else {
             abuseView.onOffLine();
         }
     }
@@ -57,16 +65,22 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
         if (RSNetwork.isConnected()) {
             if (abuseView != null) {
                 abuseView.showProgressBar(RSConstants.REPORT_ABUSES);
-                callReportAbuse = WebService.getInstance().getApi().reportAbuse(rsRequestReportAbuse);
+                callReportAbuse = WebService.getInstance().getApi().reportAbuse(RSSessionToken.getUsergestToken(), rsRequestReportAbuse);
                 callReportAbuse.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            abuseView.onSuccess(RSConstants.REPORT_ABUSES, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            abuseView.onFailure(RSConstants.REPORT_ABUSES);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            abuseView.hideProgressBar(RSConstants.REPORT_ABUSES);
+                            reportAbuse(rsRequestReportAbuse);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                abuseView.onSuccess(RSConstants.REPORT_ABUSES, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                abuseView.onFailure(RSConstants.REPORT_ABUSES);
+                            }
+                            abuseView.hideProgressBar(RSConstants.REPORT_ABUSES);
                         }
-                        abuseView.hideProgressBar(RSConstants.REPORT_ABUSES);
                     }
 
                     @Override
@@ -78,7 +92,7 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
                     }
                 });
             }
-        }else {
+        } else {
             abuseView.onOffLine();
         }
     }

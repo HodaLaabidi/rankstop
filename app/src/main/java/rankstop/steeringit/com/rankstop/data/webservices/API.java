@@ -64,6 +64,7 @@ public interface API {
     @Multipart
     @POST("users/updateUser")
     Call<RSResponse> updateUser(
+            @Header(RSConstants.HEADER_TOKEN) String token,
             @Part MultipartBody.Part part,
             @Part("firstName") RequestBody firstName,
             @Part("lastName") RequestBody lastName,
@@ -85,17 +86,17 @@ public interface API {
 
     // load user history
     @POST("history/storiesByUser")
-    Call<RSResponse> loadUserHistory(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadUserHistory(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // load categories list
     @FormUrlEncoded
     @POST("categories/getCategory")
-    Call<RSResponse> loadCategoriesList(@Field("lang") String lang);
+    Call<RSResponse> loadCategoriesList(@Header(RSConstants.HEADER_TOKEN) String token, @Field("lang") String lang);
 
     // load category by id
     @FormUrlEncoded
     @POST("categories/getCategoryById")
-    Call<RSResponse> loadCategory(@Field("_id") String id, @Field("lang") String lang);
+    Call<RSResponse> loadCategory(@Header(RSConstants.HEADER_TOKEN) String token, @Field("_id") String id, @Field("lang") String lang);
 
     // load list of items created by user
     @POST("items/getItemCreatedByUser")
@@ -127,41 +128,42 @@ public interface API {
 
     // load list of my evals
     @POST("items/getItemAllByUserEvaluated")
-    Call<RSResponse> loadMyEvals(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadMyEvals(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // follow item
     @POST("follows/follow")
-    Call<RSResponse> followItem(@Body RSFollow rsFollow);
+    Call<RSResponse> followItem(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSFollow rsFollow);
 
     // unfollow item
     @POST("follows/unfollow")
-    Call<RSResponse> unfollowItem(@Body RSFollow rsFollow);
+    Call<RSResponse> unfollowItem(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSFollow rsFollow);
 
     // load item by id
     @FormUrlEncoded
     @POST("items/getItemByIdAndIdUser")
-    Call<RSResponse> loadItem(@Field("itemId") String itemId, @Field("userId") String userId, @Field("lang") String lang);
+    Call<RSResponse> loadItem(@Header(RSConstants.HEADER_TOKEN) String token, @Field("itemId") String itemId, @Field("userId") String userId, @Field("lang") String lang);
 
     // load item comments
     @POST("eval/getComments")
-    Call<RSResponse> loadItemComments(@Body RSRequestItemData rsRequestItemData);
+    Call<RSResponse> loadItemComments(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestItemData rsRequestItemData);
 
     // load user's item comments
     @POST("eval/getCommentsByUser")
-    Call<RSResponse> loadItemCommentsByUser(@Body RSRequestItemData rsRequestItemData);
+    Call<RSResponse> loadItemCommentsByUser(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestItemData rsRequestItemData);
 
     // load item pictures
     @POST("eval/getPictures")
-    Call<RSResponse> loadItemPix(@Body RSRequestItemData rsRequestItemData);
+    Call<RSResponse> loadItemPix(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestItemData rsRequestItemData);
 
     // load user's item pictures
     @POST("eval/getPicturesByUser")
-    Call<RSResponse> loadItemPixByUser(@Body RSRequestItemData rsRequestItemData);
+    Call<RSResponse> loadItemPixByUser(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestItemData rsRequestItemData);
 
     // add item with review
     @Multipart
     @POST("eval/addReviews&Item")
     Call<RSResponse> addItem(
+            @Header(RSConstants.HEADER_TOKEN) String token,
             @Part List<MultipartBody.Part> parts,
             @Part("userId") RequestBody userId,
             @Part("evalCri") List<CriteriaEval> evalCri,
@@ -182,6 +184,7 @@ public interface API {
     @Multipart
     @POST("eval/addReviews")
     Call<RSResponse> addReview(
+            @Header(RSConstants.HEADER_TOKEN) String token,
             @Part List<MultipartBody.Part> parts,
             @Part("comment") RequestBody comment,
             @Part("userId") RequestBody userId,
@@ -193,6 +196,7 @@ public interface API {
     @Multipart
     @POST("eval/updateReview")
     Call<RSResponse> updateReview(
+            @Header(RSConstants.HEADER_TOKEN) String token,
             @Part List<MultipartBody.Part> parts,
             @Part("text") RequestBody comment,
             @Part("userId") RequestBody userId,
@@ -211,21 +215,22 @@ public interface API {
     // load user eval
     @FormUrlEncoded
     @POST("eval/getLastEvalUser")
-    Call<RSResponse> loadMyEval(@Field("userId") String userId, @Field("itemId") String itemId);
+    Call<RSResponse> loadMyEval(@Header(RSConstants.HEADER_TOKEN) String token, @Field("userId") String userId, @Field("itemId") String itemId);
 
     // load report abuses by langue
     @FormUrlEncoded
     @POST("reportAbuses/findAbuse")
-    Call<RSResponse> loadAbusesList(@Field("lang") String langue);
+    Call<RSResponse> loadAbusesList(@Header(RSConstants.HEADER_TOKEN) String token, @Field("lang") String langue);
 
     // report abuse
     @POST("reportAbuses/addReportAbuse")
-    Call<RSResponse> reportAbuse(@Body RSRequestReportAbuse rsRequestReportAbuse);
+    Call<RSResponse> reportAbuse(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestReportAbuse rsRequestReportAbuse);
 
     // add review
     @Multipart
     @POST("items/updateItemAndGallery")
     Call<RSResponse> updateItem(
+            @Header(RSConstants.HEADER_TOKEN) String token,
             @Part List<MultipartBody.Part> parts,
             @Part("itemId") RequestBody itemId,
             @Part("urlFacebook") RequestBody urlFacebook,
@@ -238,28 +243,28 @@ public interface API {
 
     // search items
     @GET("items/searchKey")
-    Call<RSResponse> search(@Query("q") String query, @Query("lang") String lang);
+    Call<RSResponse> search(@Header(RSConstants.HEADER_TOKEN) String token, @Query("q") String query, @Query("lang") String lang);
 
     // search items
     @FormUrlEncoded
     @POST("country/getAllCountry")
-    Call<RSResponse> loadCountries(@Field("lang") String lang);
+    Call<RSResponse> loadCountries(@Header(RSConstants.HEADER_TOKEN) String token, @Field("lang") String lang);
 
     // report abuse
     @POST("items/search")
-    Call<RSResponse> searchItems(@Body RSRequestItemByCategory rsRequestSearch);
+    Call<RSResponse> searchItems(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestItemByCategory rsRequestSearch);
 
     // report abuse
     @POST("items/getListItemWithFilter")
-    Call<RSResponse> searchItemsFiltered(@Body RSRequestFilter data);
+    Call<RSResponse> searchItemsFiltered(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestFilter data);
 
     // send request ownership
     @POST("contact/sendInfoUserBuyItem")
-    Call<RSResponse> requestOwnership(@Body RequestOwnership requestOwnership);
+    Call<RSResponse> requestOwnership(@Header(RSConstants.HEADER_TOKEN) String token, @Body RequestOwnership requestOwnership);
 
     // send request ownership
     @POST("contact/sendContact")
-    Call<RSResponse> contact(@Body RSContact rsContact);
+    Call<RSResponse> contact(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSContact rsContact);
 
     //
     @GET("json.gp")
@@ -272,26 +277,26 @@ public interface API {
     // delete comment
     @FormUrlEncoded
     @POST("items/deleteComments")
-    Call<RSResponse> deleteComment(@Field("commentId") String commentId, @Field("itemId") String itemId);
+    Call<RSResponse> deleteComment(@Header(RSConstants.HEADER_TOKEN) String token, @Field("commentId") String commentId, @Field("itemId") String itemId);
 
     // delete comment
     @FormUrlEncoded
     @POST("items/deletePictures")
-    Call<RSResponse> deletePicture(@Field("pictureId") String pictureId, @Field("itemId") String itemId);
+    Call<RSResponse> deletePicture(@Header(RSConstants.HEADER_TOKEN) String token, @Field("pictureId") String pictureId, @Field("itemId") String itemId);
 
     // delete comment
     @FormUrlEncoded
     @POST("users/changeLanguage")
-    Call<RSResponse> editDeviceLanguage(@Field("userId") String userId, @Field("lang") String lang);
+    Call<RSResponse> editDeviceLanguage(@Header(RSConstants.HEADER_TOKEN) String token, @Field("userId") String userId, @Field("lang") String lang);
 
     // load list notif
     @POST("notif/findNotification")
-    Call<RSResponse> loadListNotif(@Body RSRequestListItem rsRequestListItem);
+    Call<RSResponse> loadListNotif(@Header(RSConstants.HEADER_TOKEN) String token, @Body RSRequestListItem rsRequestListItem);
 
     // edit notif visibility
     @FormUrlEncoded
     @POST("notif/ChangeStatusNotification")
-    Call<RSResponse> editNotifVisibility(@Field("notifId") String userId);
+    Call<RSResponse> editNotifVisibility(@Header(RSConstants.HEADER_TOKEN) String token, @Field("notifId") String userId);
 
     // edit notif visibility
     @FormUrlEncoded
@@ -301,5 +306,5 @@ public interface API {
     // load categories list used by locations
     @FormUrlEncoded
     @POST("items/getAllCategoriesUsedByLocations")
-    Call<RSResponse> loadCategoriesUsedByLocations(@Field("lang") String langue);
+    Call<RSResponse> loadCategoriesUsedByLocations(@Header(RSConstants.HEADER_TOKEN) String token, @Field("lang") String langue);
 }

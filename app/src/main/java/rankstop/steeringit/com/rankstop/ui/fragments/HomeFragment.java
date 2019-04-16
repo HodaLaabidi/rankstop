@@ -228,7 +228,6 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         if (RSNetwork.isConnected()) {
             if (RSSessionToken.getLocalStorage() == null) {
                 FakeUser user = new FakeUser();
-//                Log.d("tt",user.getEmail()+"");
                 callLogin = WebService.getInstance().getApi().REloginUser(user);
                 callLogin.enqueue(new Callback<RSResponse>() {
                     @Override
@@ -246,7 +245,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
                         if (!call.isCanceled()) {
-
+                            Log.i("err",t.getMessage());
                         }
                     }
                 });
@@ -255,7 +254,6 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 //                Toast.makeText(instance.getContext(), RSSessionToken.getUsergestToken() + "///"
 //                        + RSSessionToken.getStatutGestConnected(), Toast.LENGTH_SHORT).show();
             }
-
         } else {
             onOffLine();
         }

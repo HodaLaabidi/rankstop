@@ -6,6 +6,8 @@ import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
 import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -26,16 +28,22 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.SEND_REQ_OWNER_SHIP);
-                callReqOwnership = WebService.getInstance().getApi().requestOwnership(requestOwnership);
+                callReqOwnership = WebService.getInstance().getApi().requestOwnership(RSSessionToken.getUsergestToken(), requestOwnership);
                 callReqOwnership.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.SEND_REQ_OWNER_SHIP, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError(RSConstants.SEND_REQ_OWNER_SHIP);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.SEND_REQ_OWNER_SHIP);
+                            requestOwnership(requestOwnership);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.SEND_REQ_OWNER_SHIP, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError(RSConstants.SEND_REQ_OWNER_SHIP);
+                            }
+                            standardView.hideProgressBar(RSConstants.SEND_REQ_OWNER_SHIP);
                         }
-                        standardView.hideProgressBar(RSConstants.SEND_REQ_OWNER_SHIP);
                     }
 
                     @Override
@@ -47,7 +55,7 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -57,16 +65,22 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.RS_CONTACT);
-                callContact = WebService.getInstance().getApi().contact(rsContact);
+                callContact = WebService.getInstance().getApi().contact(RSSessionToken.getUsergestToken(), rsContact);
                 callContact.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.RS_CONTACT, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError(RSConstants.RS_CONTACT);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.RS_CONTACT);
+                            contact(rsContact);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.RS_CONTACT, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError(RSConstants.RS_CONTACT);
+                            }
+                            standardView.hideProgressBar(RSConstants.RS_CONTACT);
                         }
-                        standardView.hideProgressBar(RSConstants.RS_CONTACT);
                     }
 
                     @Override
@@ -78,7 +92,7 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }

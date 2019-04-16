@@ -15,6 +15,8 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.FileUtils;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
@@ -39,16 +41,21 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.LOAD_CATEGORY);
-                callLoadCategory = WebService.getInstance().getApi().loadCategory(id, lang);
+                callLoadCategory = WebService.getInstance().getApi().loadCategory(RSSessionToken.getUsergestToken(), id, lang);
                 callLoadCategory.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.LOAD_CATEGORY, response.body().getData());
-                            standardView.showMessage(RSConstants.LOAD_CATEGORY, response.body().getMessage());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.hideProgressBar(RSConstants.LOAD_CATEGORY);
-                            standardView.onError(RSConstants.LOAD_CATEGORY);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadCategory(id, lang);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.LOAD_CATEGORY, response.body().getData());
+                                standardView.showMessage(RSConstants.LOAD_CATEGORY, response.body().getMessage());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.hideProgressBar(RSConstants.LOAD_CATEGORY);
+                                standardView.onError(RSConstants.LOAD_CATEGORY);
+                            }
                         }
                     }
 
@@ -61,7 +68,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     }
                 });
             }
-        }else{
+        } else {
             standardView.onOffLine();
         }
     }
@@ -77,6 +84,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 }
 
                 callAddReview = WebService.getInstance().getApi().addReview(
+                        RSSessionToken.getUsergestToken(),
                         parts,
                         createPartFormString(rsAddReview.getComment()),
                         createPartFormString(rsAddReview.getUserId()),
@@ -87,14 +95,20 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 callAddReview.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.ADD_REVIEW, response.body().getData());
-                            standardView.showMessage(RSConstants.ADD_REVIEW, response.body().getMessage());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError(RSConstants.ADD_REVIEW);
-                            standardView.showMessage(RSConstants.ADD_REVIEW, response.body().getMessage());
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.ADD_REVIEW);
+                            addReview(rsAddReview);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.ADD_REVIEW, response.body().getData());
+                                standardView.showMessage(RSConstants.ADD_REVIEW, response.body().getMessage());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError(RSConstants.ADD_REVIEW);
+                                standardView.showMessage(RSConstants.ADD_REVIEW, response.body().getMessage());
+                            }
+                            standardView.hideProgressBar(RSConstants.ADD_REVIEW);
                         }
-                        standardView.hideProgressBar(RSConstants.ADD_REVIEW);
                     }
 
                     @Override
@@ -107,7 +121,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -123,6 +137,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 }
 
                 callUpdateReview = WebService.getInstance().getApi().updateReview(
+                        RSSessionToken.getUsergestToken(),
                         parts,
                         createPartFormString(rsAddReview.getComment()),
                         createPartFormString(rsAddReview.getUserId()),
@@ -133,14 +148,20 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 callUpdateReview.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.UPDATE_REVIEW, response.body().getData());
-                            standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError(RSConstants.UPDATE_REVIEW);
-                            standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            standardView.showProgressBar(RSConstants.UPDATE_REVIEW);
+                            updateReview(rsAddReview);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.UPDATE_REVIEW, response.body().getData());
+                                standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError(RSConstants.UPDATE_REVIEW);
+                                standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
+                            }
+                            standardView.hideProgressBar(RSConstants.UPDATE_REVIEW);
                         }
-                        standardView.hideProgressBar(RSConstants.UPDATE_REVIEW);
                     }
 
                     @Override
@@ -153,7 +174,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -168,6 +189,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     parts.add(prepareFilePart("files", rsAddItem.getFiles().get(i)));
                 }
                 callAddItem = WebService.getInstance().getApi().addItem(
+                        RSSessionToken.getUsergestToken(),
                         parts,
                         createPartFormString(rsAddItem.getUserId()),
                         rsAddItem.getEvalCri(),
@@ -186,14 +208,20 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 callAddItem.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.ADD_ITEM, response.body().getData());
-                            standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError(RSConstants.ADD_ITEM);
-                            standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.ADD_ITEM);
+                            addItem(rsAddItem);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.ADD_ITEM, response.body().getData());
+                                standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError(RSConstants.ADD_ITEM);
+                                standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
+                            }
+                            standardView.hideProgressBar(RSConstants.ADD_ITEM);
                         }
-                        standardView.hideProgressBar(RSConstants.ADD_ITEM);
                     }
 
                     @Override
@@ -206,7 +234,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
@@ -215,17 +243,22 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     public void loadMyEval(String userId, String itemId) {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
-                callLoadMyEval = WebService.getInstance().getApi().loadMyEval(userId, itemId);
+                callLoadMyEval = WebService.getInstance().getApi().loadMyEval(RSSessionToken.getUsergestToken(), userId, itemId);
                 callLoadMyEval.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1 || response.body().getStatus() == 2) {
-                            standardView.onSuccess(RSConstants.LOAD_MY_EVAL, response.body().getData());
-                            //standardView.showMessage(RSConstants.LOAD_MY_EVAL, response.body().getMessage());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onError(RSConstants.LOAD_MY_EVAL);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadMyEval(userId,itemId);
+                        } else {
+                            if (response.body().getStatus() == 1 || response.body().getStatus() == 2) {
+                                standardView.onSuccess(RSConstants.LOAD_MY_EVAL, response.body().getData());
+                                //standardView.showMessage(RSConstants.LOAD_MY_EVAL, response.body().getMessage());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onError(RSConstants.LOAD_MY_EVAL);
+                            }
+                            standardView.hideProgressBar(RSConstants.LOAD_MY_EVAL);
                         }
-                        standardView.hideProgressBar(RSConstants.LOAD_MY_EVAL);
                     }
 
                     @Override
@@ -237,7 +270,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }

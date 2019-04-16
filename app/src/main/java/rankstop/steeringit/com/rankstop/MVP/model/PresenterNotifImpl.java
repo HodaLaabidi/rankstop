@@ -5,6 +5,8 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
@@ -21,19 +23,23 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
     }
 
 
-
     @Override
     public void loadListNotif(RSRequestListItem rsRequestListItem) {
         if (RSNetwork.isConnected()) {
             if (notifView != null) {
-                callLoadListNotif = WebService.getInstance().getApi().loadListNotif(rsRequestListItem);
+                callLoadListNotif = WebService.getInstance().getApi().loadListNotif(RSSessionToken.getUsergestToken(), rsRequestListItem);
                 callLoadListNotif.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            notifView.onSuccess(RSConstants.LIST_NOTIFS, response.body().getData(), null);
-                        } else if (response.body().getStatus() == 0) {
-                            notifView.onError(RSConstants.LIST_NOTIFS);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadListNotif(rsRequestListItem);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                notifView.onSuccess(RSConstants.LIST_NOTIFS, response.body().getData(), null);
+                            } else if (response.body().getStatus() == 0) {
+                                notifView.onError(RSConstants.LIST_NOTIFS);
+                            }
                         }
                     }
 
@@ -45,7 +51,7 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             notifView.onOffLine();
         }
     }
@@ -55,16 +61,21 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
         if (RSNetwork.isConnected()) {
             if (notifView != null) {
                 notifView.showProgressBar(RSConstants.EDIT_NOTIF_VISIBILITY);
-                callEditNotifVisibility = WebService.getInstance().getApi().editNotifVisibility(notifId);
+                callEditNotifVisibility = WebService.getInstance().getApi().editNotifVisibility(RSSessionToken.getUsergestToken(), notifId);
                 callEditNotifVisibility.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            notifView.onSuccess(RSConstants.EDIT_NOTIF_VISIBILITY, response.body().getData(), itemId);
-                        } else if (response.body().getStatus() == 0) {
-                            notifView.onError(RSConstants.EDIT_NOTIF_VISIBILITY);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            editNotifVisibility(notifId, itemId);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                notifView.onSuccess(RSConstants.EDIT_NOTIF_VISIBILITY, response.body().getData(), itemId);
+                            } else if (response.body().getStatus() == 0) {
+                                notifView.onError(RSConstants.EDIT_NOTIF_VISIBILITY);
+                            }
+                            notifView.hideProgressBar(RSConstants.EDIT_NOTIF_VISIBILITY);
                         }
-                        notifView.hideProgressBar(RSConstants.EDIT_NOTIF_VISIBILITY);
                     }
 
                     @Override
@@ -76,7 +87,7 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             notifView.onOffLine();
         }
     }

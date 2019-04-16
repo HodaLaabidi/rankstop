@@ -4,6 +4,7 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
 import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
 import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
@@ -26,16 +27,21 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.USER_INFO);
-                callUserInfo = WebService.getInstance().getApi().loadUserInfo(RSSessionToken.getUsergestToken(),id);
+                callUserInfo = WebService.getInstance().getApi().loadUserInfo(RSSessionToken.getUsergestToken(), id);
                 callUserInfo.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            standardView.onSuccess(RSConstants.USER_INFO, response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            standardView.onFailure(RSConstants.USER_INFO);
+                        if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            RSSession.Reconnecter();
+                            loadUserInfo(id);
+                        } else {
+                            if (response.body().getStatus() == 1) {
+                                standardView.onSuccess(RSConstants.USER_INFO, response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                standardView.onFailure(RSConstants.USER_INFO);
+                            }
+                            standardView.hideProgressBar(RSConstants.USER_INFO);
                         }
-                        standardView.hideProgressBar(RSConstants.USER_INFO);
                     }
 
                     @Override
@@ -45,7 +51,7 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
                     }
                 });
             }
-        }else {
+        } else {
             standardView.onOffLine();
         }
     }
