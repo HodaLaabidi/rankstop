@@ -212,6 +212,7 @@
     <string name="hint_cities">Cities</string>
     <string name="all">All</string>
     <string name="other">Other</string>
+    <string name="pas_de_item">Pas de item ...</string>
 
     <string-array name="labels">
         <item>Not set</item>

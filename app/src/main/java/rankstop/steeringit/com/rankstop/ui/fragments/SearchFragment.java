@@ -14,6 +14,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +49,7 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
@@ -89,7 +91,8 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
     RSTVBold itemsTitleTV;
     @BindView(R.id.rv_items)
     RecyclerView itemsRV;
-
+    @BindView(R.id.tv_titre_nosearch)
+    RSTVRegular msgNoshearch;
     @BindView(R.id.rv_items_fetched)
     RecyclerView itemsByCategoryRV;
 
@@ -328,7 +331,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.filter);
+//        MenuItem searchItem = menu.findItem(R.id.filter);
 //        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 //        // Use a custom search icon for the SearchView in AppBar
 //        int searchImgId = android.support.v7.appcompat.R.id.search_button;
@@ -434,9 +437,10 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
 
             categoriesRV.setVisibility(View.VISIBLE);
             categoryTitleTV.setVisibility(View.VISIBLE);
-
+            msgNoshearch.setVisibility(View.GONE);
             dataFetchedAdapter.refreshData(categoriesFetched);
         } else {
+            msgNoshearch.setVisibility(View.VISIBLE);
             categoriesRV.setVisibility(View.GONE);
             categoryTitleTV.setVisibility(View.GONE);
         }
