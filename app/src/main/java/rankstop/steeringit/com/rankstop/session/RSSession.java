@@ -62,6 +62,7 @@ public class RSSession {
         SharedPreferences sharedPreferences = RankStop.getInstance().getSharedPreferences(SHARED_PREFERENCES_FILE, MODE_PRIVATE);
         String localStorage = sharedPreferences.getString(SHARED_PREFERENCES_FILE, "");
         return new Gson().fromJson(localStorage, RSLocalStorage.class);
+
     }
 
     public static void cancelSession() {
