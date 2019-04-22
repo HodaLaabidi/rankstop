@@ -47,6 +47,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.LOAD_CATEGORY);
                             loadCategory(id, lang);
                         } else {
                             if (response.body().getStatus() == 1) {
@@ -249,6 +250,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.LOAD_MY_EVAL);
                             loadMyEval(userId,itemId);
                         } else {
                             if (response.body().getStatus() == 1 || response.body().getStatus() == 2) {

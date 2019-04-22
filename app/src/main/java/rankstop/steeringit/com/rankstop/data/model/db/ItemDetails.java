@@ -14,6 +14,7 @@ public class ItemDetails implements Serializable {
     private int evaluations, numberView;
     private List<Gallery> gallery;
     private Localisation location;
+    private int bad, good, neutral;
 
     public ItemDetails(Category category, String createdAt, String lastDateView, String updatedAt, String title, String description, String urlFacebook, String urlGooglePlus, String urlInstagram, String urlLinkedIn, String urlTwitter, String _id, Object creator, Object owner, int evaluations, int numberView) {
         this.category = category;
@@ -199,5 +200,29 @@ public class ItemDetails implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public int getBad() {
+        return bad;
+    }
+
+    public void setBad(int bad) {
+        this.bad = bad;
+    }
+
+    public int getGood() {
+        return good;
+    }
+
+    public void setGood(int good) {
+        this.good = good;
+    }
+
+    public int getNeutral() {
+        return neutral;
+    }
+
+    public void setNeutral(int neutral) {
+        this.neutral = neutral;
     }
 }

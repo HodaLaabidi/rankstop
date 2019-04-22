@@ -101,7 +101,7 @@ public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHo
             // disable drawing grid vertical lines on bar chart
             xAxis.setDrawGridLines(false);
             // disable drawing values on x axe
-            //xAxis.setDrawLabels(false);
+           // xAxis.setDrawLabels(false);
             ArrayList xVals = new ArrayList();
             xVals.add("");
             xVals.add(goodText);

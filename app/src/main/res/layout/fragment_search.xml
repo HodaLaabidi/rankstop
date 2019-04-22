@@ -42,11 +42,22 @@
                 android:id="@+id/tv_titre_nosearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:text="@string/pas_de_item"
                 android:layout_gravity="center"
-                android:textSize="18sp"
+                android:layout_marginTop="50dp"
+                android:gravity="center"
                 android:padding="@dimen/m_activity"
+                android:text="@string/pas_de_item"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
+                android:id="@+id/btn_add_item_shearch"
+                style="@style/RSButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/add_item_shearch"
                 android:visibility="gone" />
 
             <rankstop.steeringit.com.rankstop.customviews.RSTVBold

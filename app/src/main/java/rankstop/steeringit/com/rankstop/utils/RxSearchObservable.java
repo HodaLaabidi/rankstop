@@ -1,9 +1,9 @@
 package rankstop.steeringit.com.rankstop.utils;
 
 import android.support.v7.widget.SearchView;
-
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
+
 
 public class RxSearchObservable {
 
@@ -13,7 +13,8 @@ public class RxSearchObservable {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                subject.onComplete();
+                //subject.onComplete();
+                searchView.clearFocus();
                 return false;
             }
 

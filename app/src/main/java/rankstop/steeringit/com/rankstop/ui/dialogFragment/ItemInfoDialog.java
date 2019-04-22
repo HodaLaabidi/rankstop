@@ -8,9 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +45,12 @@ public class ItemInfoDialog extends DialogFragment {
 
     @BindView(R.id.tv_title)
     RSTVBold titleTV;
+    @BindView(R.id.tv_goode)
+    RSTVMedium goodeTV;
+    @BindView(R.id.tv_bade)
+    RSTVMedium badeTV;
+    @BindView(R.id.tv_nutre)
+    RSTVMedium nutreTV;
 
     @BindView(R.id.ic_facebook)
     ImageButton icFacebookBTN;
@@ -153,6 +163,24 @@ public class ItemInfoDialog extends DialogFragment {
         dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
 
         itemDetails = (ItemDetails) getArguments().getSerializable(RSConstants.RS_ITEM_DETAILS);
+        //Add item
+        if (itemDetails != null) {
+            DecimalFormat df = new DecimalFormat();
+            df.setMaximumFractionDigits(2); //arrondi à 2 chiffres apres la virgules
+            df.setMinimumFractionDigits(0);
+
+            int Totale = itemDetails.getGood() + itemDetails.getBad() + itemDetails.getNeutral();
+
+            double pourcentageGoode = ((double) itemDetails.getGood() / Totale) * 100;
+            double pourcentageBade = ((double) itemDetails.getBad() / Totale) * 100;
+            double pourcentageNutre = ((double) itemDetails.getNeutral() / Totale) * 100;
+
+          //  Log.i("totale",  Double.parseDouble(df.format(pourcentageGoode))+ "//" + Double.parseDouble(df.format(pourcentageBade)) + "//" + Double.parseDouble(df.format(pourcentageNutre)));
+            goodeTV.setText(String.format("%s %%", String.valueOf(df.format(pourcentageGoode))));
+            badeTV.setText(String.format("%s %%", String.valueOf(df.format(pourcentageBade))));
+            nutreTV.setText(String.format("%s %%", String.valueOf(df.format(pourcentageNutre))));
+        }
+
 
         descriptionTV.setText(itemDetails.getDescription());
         titleTV.setText(itemDetails.getTitle());

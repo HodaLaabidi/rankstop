@@ -30,85 +30,178 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/size_title_dialog" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                    android:id="@+id/tv_goode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:drawableStart="@drawable/ic_pie_green"
+                    android:drawablePadding="5dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/size_title_dialog" />
+
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                    android:id="@+id/tv_descgoode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/mb_text_category"
+                    android:gravity="center|start"
+                    android:text="@string/valuations_positives"
+                    android:textColor="@color/colorGray"
+                    android:textSize="@dimen/text_size_dialog" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                    android:id="@+id/tv_nutre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:drawableStart="@drawable/ic_pie_yellow"
+                    android:drawablePadding="5dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/size_title_dialog" />
+
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                    android:id="@+id/tv_descnutre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/mb_text_category"
+                    android:gravity="center|start"
+                    android:text="@string/valuations_neutres"
+                    android:textColor="@color/colorGray"
+                    android:textSize="@dimen/text_size_dialog" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                    android:id="@+id/tv_bade"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:drawableStart="@drawable/ic_pie_red"
+                    android:drawablePadding="5dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/size_title_dialog" />
+
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                    android:id="@+id/tv_descbade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/mb_text_category"
+                    android:gravity="center|start"
+                    android:text="@string/valuations_n_gatives"
+                    android:textColor="@color/colorGray"
+                    android:textSize="@dimen/text_size_dialog" />
+            </LinearLayout>
+
+        </LinearLayout>
+
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorGray"
             android:layout_marginBottom="@dimen/mb_text_category"
+            android:textColor="@color/colorGray"
             android:textSize="@dimen/text_size_dialog" />
 
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorGray"
-            android:gravity="center_vertical"
-            android:drawablePadding="@dimen/p_ic_tv"
             android:layout_marginStart="@dimen/ms_ic_tv"
             android:layout_marginBottom="@dimen/mb_ic_tv"
+            android:drawableStart="@drawable/ic_location"
+            android:drawablePadding="@dimen/p_ic_tv"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorGray"
             android:textSize="@dimen/text_size_category_item_details"
-            android:visibility="gone"
-            android:drawableStart="@drawable/ic_location"/>
+            android:visibility="gone" />
 
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorGray"
-            android:gravity="center_vertical"
-            android:drawablePadding="@dimen/p_ic_tv"
             android:layout_marginBottom="@dimen/mb_ic_tv"
+            android:drawableStart="@drawable/ic_phone"
+            android:drawablePadding="@dimen/p_ic_tv"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorGray"
             android:textSize="@dimen/text_size_category_item_details"
-            android:visibility="gone"
-            android:drawableStart="@drawable/ic_phone"/>
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="@dimen/mt_contact_section"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
+
             <ImageButton
                 android:id="@+id/ic_facebook"
                 android:layout_width="@dimen/btn_width_contact"
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
-                android:visibility="gone"
                 android:background="@drawable/ic_facebook"
-                android:contentDescription="@string/icon_facebook" />
+                android:contentDescription="@string/icon_facebook"
+                android:visibility="gone" />
+
             <ImageButton
                 android:id="@+id/ic_instagram"
                 android:layout_width="@dimen/btn_width_contact"
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
-                android:visibility="gone"
                 android:background="@drawable/ic_instagram"
-                android:contentDescription="@string/icon_instagram"/>
+                android:contentDescription="@string/icon_instagram"
+                android:visibility="gone" />
+
             <ImageButton
                 android:id="@+id/ic_google_plus"
                 android:layout_width="@dimen/btn_width_contact"
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
-                android:visibility="gone"
                 android:background="@drawable/ic_google_plus"
-                android:contentDescription="@string/icon_google_plus"/>
+                android:contentDescription="@string/icon_google_plus"
+                android:visibility="gone" />
+
             <ImageButton
                 android:id="@+id/ic_twitter"
                 android:layout_width="@dimen/btn_width_contact"
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
-                android:visibility="gone"
                 android:background="@drawable/ic_twitter"
-                android:contentDescription="@string/icon_twitter"/>
+                android:contentDescription="@string/icon_twitter"
+                android:visibility="gone" />
+
             <ImageButton
                 android:id="@+id/ic_linkedin"
                 android:layout_width="@dimen/btn_width_contact"
                 android:layout_height="@dimen/btn_width_contact"
                 android:layout_margin="@dimen/btn_m_contact"
-                android:visibility="gone"
                 android:background="@drawable/ic_linkedin"
-                android:contentDescription="@string/icon_linkedin"/>
+                android:contentDescription="@string/icon_linkedin"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 
@@ -117,12 +210,12 @@
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="@dimen/m_btn_dialog"
         android:text="@string/close"
         android:textAllCaps="false"
-        android:layout_gravity="end"
         android:textColor="@color/colorInfo"
-        app:cornerRadius="@dimen/radius_btn_dialog"
-        android:layout_margin="@dimen/m_btn_dialog"
-        android:textSize="@dimen/text_size_dialog"/>
+        android:textSize="@dimen/text_size_dialog"
+        app:cornerRadius="@dimen/radius_btn_dialog" />
 
 </LinearLayout>

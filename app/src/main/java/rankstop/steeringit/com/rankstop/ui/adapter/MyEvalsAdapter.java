@@ -292,6 +292,7 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             data.setValueTextColor(Color.WHITE);
             // disable/ enable values on the piechart
             dataSet.setDrawValues(!isPieEmpty);
+            data.setDrawValues(false);
             // affect data to pieChart
             pieChart.setData(data);
             //pieChart.setHighlightPerTapEnabled(false);

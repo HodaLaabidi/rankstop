@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -37,17 +40,20 @@ import butterknife.BindInt;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterSearchImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
@@ -93,6 +99,8 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
     RecyclerView itemsRV;
     @BindView(R.id.tv_titre_nosearch)
     RSTVRegular msgNoshearch;
+    @BindView(R.id.btn_add_item_shearch)
+    RSBTNMedium btnAdditem;
     @BindView(R.id.rv_items_fetched)
     RecyclerView itemsByCategoryRV;
 
@@ -175,10 +183,37 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
         if (RSSession.isLoggedIn())
             rsRequestItemData.setUserId(RSSession.getCurrentUser().get_id());
 
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                if (!"".equals(query)) {
+//
+//                }
+//                Log.i("tsize", categoriesFetched.size()+"t");
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return true;
+//            }
+//        });
         bindViews();
         initSearchListener();
         initItemsList();
 
+    }
+
+    @OnClick(R.id.btn_add_item_shearch)
+    public void AddItem() {
+        replaceFragment(AddItemFragment.getInstance(), RSConstants.FRAGMENT_ADD_ITEM);
+    }
+
+    private void replaceFragment(Fragment fragment, String tag) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment);
+        fragmentTransaction.addToBackStack(tag);
+        fragmentTransaction.commit();
     }
 
     private void initItemsList() {
@@ -249,6 +284,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
                 .subscribe(result -> {
                     //bind data here
                 });
+
     }
 
     private void bindViews() {
@@ -321,6 +357,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
     private Observable<RSResponseSearch> dataFromNetwork(final String query) {
 
         this.query = query;
+        searchView.setOnCloseListener(() -> false);
         searchPresenter.search(query, RankStop.getDeviceLanguage());
         itemsByCategoryRV.post(() -> itemsByCategoryRV.setVisibility(View.GONE));
 
@@ -438,9 +475,11 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
             categoriesRV.setVisibility(View.VISIBLE);
             categoryTitleTV.setVisibility(View.VISIBLE);
             msgNoshearch.setVisibility(View.GONE);
+            btnAdditem.setVisibility(View.GONE);
             dataFetchedAdapter.refreshData(categoriesFetched);
         } else {
             msgNoshearch.setVisibility(View.VISIBLE);
+            btnAdditem.setVisibility(View.VISIBLE);
             categoriesRV.setVisibility(View.GONE);
             categoryTitleTV.setVisibility(View.GONE);
         }
@@ -484,7 +523,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
 
     @Override
     public void onfilterClicked(RSRequestFilter data) {
-        dataFiltered =data;
+        dataFiltered = data;
         //searchPresenter.searchItemsFiltered(data);
         currentCategory = new Category();
         currentCategory.set_id(data.getCatId());

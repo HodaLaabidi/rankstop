@@ -27,6 +27,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -370,6 +371,10 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             }
         }
 
+        //Log.i("goode",item.getGood()+"");
+        item.getItemDetails().setGood(item.getGood());
+        item.getItemDetails().setBad(item.getBad());
+        item.getItemDetails().setNeutral(item.getNeutral());
 
         pieChart.setUsePercentValues(true);
         pieChart.setCenterTextSize(14f);
@@ -412,6 +417,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         data.setValueTextColor(Color.WHITE);
         // disable/ enable values on the pieChart
         dataSet.setDrawValues(!isPieEmpty);
+        data.setDrawValues(false);
         // affect data to pieChart
         pieChart.setData(data);
         // add listener of value selection

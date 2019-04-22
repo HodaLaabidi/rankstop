@@ -213,7 +213,11 @@
     <string name="hint_cities">Cities</string>
     <string name="all">Tout</string>
     <string name="other">Autre</string>
-    <string name="pas_de_item">Pas de item ...</string>
+    <string name="pas_de_item">La page n\'a pas été trouvée \n Vous pouvez l\'ajouter ici</string>
+    <string name="add_item_shearch">Ajouter un item</string>
+    <string name="valuations_positives">Évaluations Positives</string>
+    <string name="valuations_n_gatives">Évaluations négatives</string>
+    <string name="valuations_neutres">Évaluations Neutres</string>
 
     <string-array name="labels">
         <item>Not set</item>
