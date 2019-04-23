@@ -51,6 +51,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+                                                <entry key="scalingPercent" value="80" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -61,9 +62,9 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundLayerName" value="ic_launcher_background" />
-                                      <entry key="foregroundImage" value="C:\Users\admin\Desktop\rankstop_logo.jpg" />
+                                      <entry key="foregroundImage" value="C:\Users\admin\Desktop\RS_icon_1024.png" />
                                       <entry key="foregroundLayerName" value="ic_launcher_foreground" />
-                                      <entry key="outputName" value="ic_rankstop_logo" />
+                                      <entry key="outputName" value="ic_rs_launcher" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -101,8 +102,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\admin\Desktop\rankstop_logo.jpg" />
-                                      <entry key="outputName" value="ic_rankstop_logo" />
+                                      <entry key="imageAsset" value="C:\Users\admin\Desktop\RS_icon_1024.png" />
+                                      <entry key="outputName" value="ic_logo" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -131,11 +132,6 @@
                             </entry>
                           </map>
                         </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="LAUNCHER_LEGACY" />
-                          </map>
-                        </option>
                       </PersistentState>
                     </value>
                   </entry>
@@ -155,8 +151,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_pie_yellow" />
-                            <entry key="sourceFile" value="C:\Users\admin\Desktop\pie_yellow.svg" />
+                            <entry key="outputName" value="ic_rs_icon" />
+                            <entry key="sourceFile" value="C:\Users\admin\Desktop\RS_icon.svg" />
                           </map>
                         </option>
                       </PersistentState>
