@@ -2,6 +2,7 @@ package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -131,7 +132,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     public void updateReview(RSAddReview rsAddReview) {
         if (RSNetwork.isConnected()) {
             if (standardView != null) {
-                standardView.showProgressBar(RSConstants.UPDATE_REVIEW);
+                //standardView.showProgressBar(RSConstants.UPDATE_REVIEW);
                 List<MultipartBody.Part> parts = new ArrayList<>();
                 for (int i = 0; i < rsAddReview.getFiles().size(); i++) {
                     parts.add(prepareFilePart("files", rsAddReview.getFiles().get(i)));
@@ -151,7 +152,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            standardView.showProgressBar(RSConstants.UPDATE_REVIEW);
+                            //standardView.showProgressBar(RSConstants.UPDATE_REVIEW);
                             updateReview(rsAddReview);
                         } else {
                             if (response.body().getStatus() == 1) {
@@ -161,7 +162,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                                 standardView.onError(RSConstants.UPDATE_REVIEW);
                                 standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
                             }
-                            standardView.hideProgressBar(RSConstants.UPDATE_REVIEW);
+                            //standardView.hideProgressBar(RSConstants.UPDATE_REVIEW);
                         }
                     }
 
@@ -169,7 +170,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     public void onFailure(Call<RSResponse> call, Throwable t) {
                         if (!call.isCanceled()) {
                             standardView.onFailure(RSConstants.UPDATE_REVIEW);
-                            standardView.showMessage(RSConstants.UPDATE_REVIEW, "erreur");
+                            //standardView.showMessage(RSConstants.UPDATE_REVIEW, "erreur");
                             standardView.hideProgressBar(RSConstants.UPDATE_REVIEW);
                         }
                     }

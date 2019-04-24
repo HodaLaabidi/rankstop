@@ -283,6 +283,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.MY_EVALS);
                             loadMyEvals(rsRequestListItem);
                         } else {
                             if (response.body().getStatus() == 1) {
@@ -319,6 +320,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
                             loadCategoriesList(lang);
                         } else {
                             if (response.body().getStatus() == 1) {
@@ -419,6 +421,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
                             loadItemComments(rsRequestItemData);
                         } else {
                             if (response.body().getStatus() == 1) {
@@ -455,6 +458,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
                             loadItemCommentsByUser(rsRequestItemData);
                         } else {
                             if (response.body().getStatus() == 1) {
@@ -491,6 +495,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.ITEM_PIX);
                             loadItemPix(rsRequestItemData);
                         } else {
                             if (response.body().getStatus() == 1) {
@@ -527,6 +532,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.ITEM_PIX_BY_USER);
                             loadItemPixByUser(rsRequestItemData);
                         } else {
                             if (response.body().getStatus() == 1) {
@@ -563,6 +569,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            standardView.hideProgressBar(RSConstants.DELETE_COMMENT);
                             deleteComment(commentId, itemId);
                         } else {
                             if (response.body().getStatus() == 1) {

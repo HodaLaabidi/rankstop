@@ -76,7 +76,7 @@
     <string name="login_show_eval">Login to show your evaluations</string>
     <string name="search_items">Search items and evaluate them</string>
     <string name="no_item_evaluated">There is no item evaluated</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="alert_login_to_follow">To follow this item you should login before</string>
     <string name="alert_login_to_add_review">To evaluate this item you should login before</string>
     <string name="already_followed">you already follow this item</string>
@@ -232,7 +232,7 @@
     <string name="update_item">Update item</string>
     <string name="filter_text">Filter</string>
     <string name="category_text">Category:</string>
-    <string name="splash">splash</string>
+    <string name="splash" translatable="false">splash</string>
     <string name="hint_cities">Cities</string>
     <string name="all">All</string>
     <string name="other">Other</string>
