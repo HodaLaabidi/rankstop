@@ -57,7 +57,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     callFindEmail.enqueue(new Callback<RSResponse>() {
                         @Override
                         public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-//                            Log.d("ttttt",response.body().getStatus()+"");
+                            // Log.d("ttttt",response.body().getStatus()+"");
                             if (response.body().getStatus() == 2) {
                                 signupView.findEmailSuccess(true, response.body().getData());
                             } else if (response.body().getStatus() == 1) {

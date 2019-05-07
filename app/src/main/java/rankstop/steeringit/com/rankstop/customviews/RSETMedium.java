@@ -1,12 +1,15 @@
 package rankstop.steeringit.com.rankstop.customviews;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.design.widget.TextInputEditText;
 import android.util.AttributeSet;
 
 public class RSETMedium extends TextInputEditText {
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public RSETMedium(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();

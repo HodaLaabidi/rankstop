@@ -61,7 +61,18 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
         if (RSNetwork.isConnected()) {
             if (notifView != null) {
                 notifView.showProgressBar(RSConstants.EDIT_NOTIF_VISIBILITY);
-                callEditNotifVisibility = WebService.getInstance().getApi().editNotifVisibility(RSSessionToken.getUsergestToken(), notifId);
+
+
+
+                // the two lines below  may stay like that until i fix it i just added null value %%% i got editNotifVisibility not found %%%
+
+                // ****************************************************************************************************
+                callEditNotifVisibility = null;
+                //callEditNotifVisibility = WebService.getInstance().getApi().editNotifVisibility(RSSessionToken.getUsergestToken(), notifId);
+                // ****************************************************************************************************
+
+
+
                 callEditNotifVisibility.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {

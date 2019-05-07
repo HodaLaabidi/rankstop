@@ -296,7 +296,7 @@ public interface API {
     // edit notif visibility
     @FormUrlEncoded
     @POST("notif/ChangeStatusNotification")
-    Call<RSResponse> editNotifVisibility(@Header(RSConstants.HEADER_TOKEN) String token, @Field("notifId") String userId);
+    Call<RSResponse> tina(@Header(RSConstants.HEADER_TOKEN) String token, @Field("notifId") String userId);
 
     // edit notif visibility
     @FormUrlEncoded
