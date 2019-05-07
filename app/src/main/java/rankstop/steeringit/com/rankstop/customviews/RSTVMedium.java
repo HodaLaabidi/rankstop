@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 
 public class RSTVMedium extends AppCompatTextView {
 
+    // LOLLIPOP version implementation
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public RSTVMedium(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

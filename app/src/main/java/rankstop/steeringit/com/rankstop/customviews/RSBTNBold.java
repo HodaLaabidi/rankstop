@@ -8,6 +8,7 @@ import android.support.design.button.MaterialButton;
 import android.util.AttributeSet;
 
 public class RSBTNBold extends MaterialButton {
+    // LOLLIPOP version implementation
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public RSBTNBold(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

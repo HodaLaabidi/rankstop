@@ -8,6 +8,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 public class RSTVBold extends AppCompatTextView {
+    // LOLLIPOP version implementation
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public RSTVBold(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

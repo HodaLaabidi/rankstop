@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 
 public class RSRBMedium extends AppCompatRadioButton {
 
+    // LOLLIPOP version implementation
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public RSRBMedium(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

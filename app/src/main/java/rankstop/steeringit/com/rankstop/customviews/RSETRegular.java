@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 
 public class RSETRegular extends TextInputEditText {
 
+    // LOLLIPOP version implementation
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public RSETRegular(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

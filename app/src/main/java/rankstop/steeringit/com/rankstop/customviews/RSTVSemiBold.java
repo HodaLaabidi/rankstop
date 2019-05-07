@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 
 public class RSTVSemiBold extends AppCompatTextView {
 
+    // LOLLIPOP version implementationgit
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public RSTVSemiBold(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
