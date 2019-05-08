@@ -233,23 +233,29 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.body().getStatus() == 1) {
+                            Log.e("test" , response.body().getStatus()+"!");
                             RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(response.body().getData()), RSResponseLogin.class);
                             String token = loginResponse.getToken();
                             RSSessionToken.startSession(token, true);
 //                            Toast.makeText(instance.getContext(), RSSessionToken.getUsergestToken() + "///"
 //                                    + RSSessionToken.getStatutGestConnected(), Toast.LENGTH_SHORT).show();
                             loadHomeData();
+                        } else {
+
+                            Log.e("test" , response.body().getStatus()+"!");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
                         if (!call.isCanceled()) {
-                            Log.i("err",t.getMessage());
+                            Log.i("test",t.getMessage());
+
                         }
                     }
                 });
             } else {
+                Log.e("test" , "no");
                 loadHomeData();
 //                Toast.makeText(instance.getContext(), RSSessionToken.getUsergestToken() + "///"
 //                        + RSSessionToken.getStatutGestConnected(), Toast.LENGTH_SHORT).show();

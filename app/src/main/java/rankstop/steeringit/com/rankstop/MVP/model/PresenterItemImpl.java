@@ -1,6 +1,8 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
 
+import android.util.Log;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
@@ -36,6 +38,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                 callLoadItem.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        Log.e("test" ,response.code() +"!" );
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             loadItem(itemId, userId, lang);
@@ -51,6 +54,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
+                        Log.e("test" ,call +"!" );
                         if (!call.isCanceled())
                             standardView.hideProgressBar(RSConstants.ONE_ITEM);
                     }
@@ -69,6 +73,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             callTopRankedItems.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                    Log.e("test from *itemImpl" , response.code()+" !");
                     if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                         RSSession.Reconnecter();
                         loadTopRankedItems(rsRequestListItem);
@@ -84,6 +89,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
                 @Override
                 public void onFailure(Call<RSResponse> call, Throwable t) {
+                    Log.e("test from *itemImpl on failure" , " !");
                     if (!callTopRankedItems.isCanceled())
                         standardView.hideProgressBar(RSConstants.TOP_RANKED_ITEMS);
                 }
