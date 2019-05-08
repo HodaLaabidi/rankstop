@@ -89,6 +89,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
                 @Override
                 public void onFailure(Call<RSResponse> call, Throwable t) {
+
                     Log.e("test from *itemImpl on failure" , " !");
                     if (!callTopRankedItems.isCanceled())
                         standardView.hideProgressBar(RSConstants.TOP_RANKED_ITEMS);
