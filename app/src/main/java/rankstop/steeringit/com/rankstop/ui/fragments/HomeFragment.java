@@ -226,12 +226,15 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         getCurrentUser();
 
         if (RSNetwork.isConnected()) {
+            Log.e("test" , "online");
             if (RSSessionToken.getLocalStorage() == null) {
+                Log.e("test" , "token is null from home");
                 FakeUser user = new FakeUser();
                 callLogin = WebService.getInstance().getApi().REloginUser(user);
                 callLogin.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        Log.e("test" , response.body().getStatus()+"!");
                         if (response.body().getStatus() == 1) {
                             Log.e("test" , response.body().getStatus()+"!");
                             RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(response.body().getData()), RSResponseLogin.class);
@@ -262,6 +265,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
             }
         } else {
             onOffLine();
+            Log.e("test" , "offline");
         }
     }
 
