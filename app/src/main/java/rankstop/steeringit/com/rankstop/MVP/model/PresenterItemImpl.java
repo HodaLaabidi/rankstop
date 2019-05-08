@@ -156,6 +156,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         standardView.hideProgressBar(RSConstants.TOP_COMMENTED_ITEMS);
                 }
             });
+            // test
         }
     }
 
