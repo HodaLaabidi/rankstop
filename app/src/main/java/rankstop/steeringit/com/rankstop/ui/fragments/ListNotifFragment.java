@@ -128,7 +128,7 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
             rsRequestListItem.setUserId(RSSession.getCurrentUser().get_id());
             rsRequestListItem.setLang(RankStop.getDeviceLanguage());
             rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 progressBar.setVisibility(View.VISIBLE);
                 laodData(currentPage);
             } else {
@@ -143,9 +143,9 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
 
     private void initItemsList() {
         RecyclerViewClickListener itemListener = (view, position) -> {
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 if (notifsList.get(position).isVisibility()) {
-                    listNotifPresenter.editNotifVisibility(notifsList.get(position).get_id(), notifsList.get(position).getItem().get_id());
+                    listNotifPresenter.editNotifVisibility(notifsList.get(position).get_id(), notifsList.get(position).getItem().get_id(), getContext());
                 } else {
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(notifsList.get(position).getItem().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 }
@@ -189,7 +189,7 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
 
     private void laodData(int pageNumber) {
         rsRequestListItem.setPage(pageNumber);
-        listNotifPresenter.loadListNotif(rsRequestListItem);
+        listNotifPresenter.loadListNotif(rsRequestListItem, getContext());
     }
 
     private void bindViews() {
@@ -241,7 +241,7 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         if (unbinder != null)
             unbinder.unbind();
         if (listNotifPresenter != null)
-            listNotifPresenter.onDestroy();
+            listNotifPresenter.onDestroy(getContext());
         super.onDestroyView();
     }
 

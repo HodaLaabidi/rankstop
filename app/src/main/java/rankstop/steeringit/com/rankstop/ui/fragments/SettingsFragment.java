@@ -114,7 +114,7 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
 
     private void manageLanguage(String lang) {
         if (RSSession.isLoggedIn()) {
-            presenter.editLang(RSSession.getCurrentUser().get_id(), lang);
+            presenter.editLang(RSSession.getCurrentUser().get_id(), lang, getContext());
         } else {
             setNewLocale(lang, false);
         }
@@ -149,7 +149,7 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
         if (unbinder != null)
             unbinder.unbind();
         if (presenter != null)
-            presenter.onDestroy();
+            presenter.onDestroy(getContext());
         super.onDestroyView();
     }
 

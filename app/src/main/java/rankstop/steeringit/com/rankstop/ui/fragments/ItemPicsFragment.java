@@ -101,7 +101,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
 
     @OnClick({R.id.btn_add_pix2, R.id.btn_add_pix})
     void addComment() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             if (RSSession.isLoggedIn()) {
                 RSAddReview rsAddReview = new RSAddReview();
                 rsAddReview.setItemId(currentItem.getItemDetails().get_id());
@@ -236,7 +236,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
                                 .putExtra(RSConstants.RS_REQUEST_ITEM_DATA, rsRequestItemData));
             }
         };
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             progressBar.setVisibility(View.VISIBLE);
             mpProgressBar.setVisibility(View.VISIBLE);
             loadItemPix(currentPage);
@@ -332,7 +332,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
 
     private void loadItemPix(int pageNumber) {
         rsRequestItemData.setPage(pageNumber);
-        itemPresenter.loadItemPix(rsRequestItemData);
+        itemPresenter.loadItemPix(rsRequestItemData, getContext());
     }
 
     private void loadMyItemPix(int pageNumber) {
@@ -341,7 +341,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
                 + "\nitemId = " + rsRequestItemData.getItemId()
                 + "\npage = " + rsRequestItemData.getPage()
                 + "\nperPage = " + rsRequestItemData.getPerPage(), Toast.LENGTH_LONG).show();*/
-        itemPresenter.loadItemPixByUser(rsRequestItemData);
+        itemPresenter.loadItemPixByUser(rsRequestItemData, getContext());
     }
 
     private List<Picture> getFilterOutput(List<Picture> pictures, int filter, String target) {
@@ -664,6 +664,6 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
 
     @Override
     public void onConfirmClicked(String targetId) {
-        itemPresenter.deletePicture(targetId, itemId);
+        itemPresenter.deletePicture(targetId, itemId, getContext());
     }
 }

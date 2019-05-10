@@ -8,8 +8,8 @@ import rankstop.steeringit.com.rankstop.RankStop;
 
 public class RSNetwork {
 
-    public static boolean isConnected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) RankStop.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static boolean isConnected(Context context) {
+        ConnectivityManager connectivityManager =  (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
     }

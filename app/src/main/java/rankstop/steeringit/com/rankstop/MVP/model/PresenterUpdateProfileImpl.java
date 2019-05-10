@@ -35,8 +35,8 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
     }
 
     @Override
-    public void editProfile(RSRequestEditProfile user) {
-        if (RSNetwork.isConnected()) {
+    public void editProfile(RSRequestEditProfile user, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 MultipartBody.Part part = null;
                 if (user.getFile() != null) {
@@ -62,7 +62,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            editProfile(user);
+                            editProfile(user, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.UPDATE_PROFILE, response.body().getData());
@@ -95,8 +95,8 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
     }
 
     @Override
-    public void loadCountriesList(String lang) {
-        if (RSNetwork.isConnected()) {
+    public void loadCountriesList(String lang, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 callloadCountries = WebService.getInstance().getApi().loadCountries(RSSessionToken.getUsergestToken(), lang);
                 standardView.showProgressBar(RSConstants.COUNTRIES_LIST);
@@ -106,7 +106,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.COUNTRIES_LIST);
-                            loadCountriesList(lang);
+                            loadCountriesList(lang, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.COUNTRIES_LIST, response.body().getData());
@@ -132,7 +132,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callEditProfile != null)
             if (callEditProfile.isExecuted())
                 callEditProfile.cancel();

@@ -38,8 +38,8 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     }
 
     @Override
-    public void loadCategory(String id, String lang) {
-        if (RSNetwork.isConnected()) {
+    public void loadCategory(String id, String lang, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.LOAD_CATEGORY);
                 callLoadCategory = WebService.getInstance().getApi().loadCategory(RSSessionToken.getUsergestToken(), id, lang);
@@ -49,7 +49,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.LOAD_CATEGORY);
-                            loadCategory(id, lang);
+                            loadCategory(id, lang, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.LOAD_CATEGORY, response.body().getData());
@@ -76,8 +76,8 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     }
 
     @Override
-    public void addReview(RSAddReview rsAddReview) {
-        if (RSNetwork.isConnected()) {
+    public void addReview(RSAddReview rsAddReview, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ADD_REVIEW);
                 List<MultipartBody.Part> parts = new ArrayList<>();
@@ -100,7 +100,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.ADD_REVIEW);
-                            addReview(rsAddReview);
+                            addReview(rsAddReview, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.ADD_REVIEW, response.body().getData());
@@ -129,8 +129,8 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     }
 
     @Override
-    public void updateReview(RSAddReview rsAddReview) {
-        if (RSNetwork.isConnected()) {
+    public void updateReview(RSAddReview rsAddReview, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 //standardView.showProgressBar(RSConstants.UPDATE_REVIEW);
                 List<MultipartBody.Part> parts = new ArrayList<>();
@@ -153,7 +153,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             //standardView.showProgressBar(RSConstants.UPDATE_REVIEW);
-                            updateReview(rsAddReview);
+                            updateReview(rsAddReview, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.UPDATE_REVIEW, response.body().getData());
@@ -182,8 +182,8 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     }
 
     @Override
-    public void addItem(RSAddReview rsAddItem) {
-        if (RSNetwork.isConnected()) {
+    public void addItem(RSAddReview rsAddItem, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ADD_ITEM);
                 List<MultipartBody.Part> parts = new ArrayList<>();
@@ -213,7 +213,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.ADD_ITEM);
-                            addItem(rsAddItem);
+                            addItem(rsAddItem, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.ADD_ITEM, response.body().getData());
@@ -242,8 +242,8 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     }
 
     @Override
-    public void loadMyEval(String userId, String itemId) {
-        if (RSNetwork.isConnected()) {
+    public void loadMyEval(String userId, String itemId, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 callLoadMyEval = WebService.getInstance().getApi().loadMyEval(RSSessionToken.getUsergestToken(), userId, itemId);
                 callLoadMyEval.enqueue(new Callback<RSResponse>() {
@@ -252,7 +252,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.LOAD_MY_EVAL);
-                            loadMyEval(userId,itemId);
+                            loadMyEval(userId,itemId, context);
                         } else {
                             if (response.body().getStatus() == 1 || response.body().getStatus() == 2) {
                                 standardView.onSuccess(RSConstants.LOAD_MY_EVAL, response.body().getData());
@@ -292,7 +292,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callLoadMyEval != null)
             if (callLoadMyEval.isExecuted())
                 callLoadMyEval.cancel();

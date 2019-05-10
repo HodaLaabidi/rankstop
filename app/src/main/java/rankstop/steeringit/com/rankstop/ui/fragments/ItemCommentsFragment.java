@@ -93,7 +93,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
 
     @OnClick({R.id.btn_add_comment2, R.id.btn_add_comment})
     void addComment() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             if (RSSession.isLoggedIn()) {
                 RSAddReview rsAddReview = new RSAddReview();
                 rsAddReview.setItemId(currentItem.getItemDetails().get_id());
@@ -190,7 +190,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             addCommentBTN.setVisibility(View.VISIBLE);
         }
         rsRequestItemData = new RSRequestItemData(itemId, userId, RSConstants.MAX_FIELD_TO_LOAD, 1);
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             progressBar.setVisibility(View.VISIBLE);
             mcProgressBar.setVisibility(View.VISIBLE);
             loadItemComments(currentPage);
@@ -320,12 +320,12 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
 
     private void loadItemComments(int pageNumber) {
         rsRequestItemData.setPage(pageNumber);
-        itemPresenter.loadItemComments(rsRequestItemData);
+        itemPresenter.loadItemComments(rsRequestItemData, getContext());
     }
 
     private void loadMyItemComments(int pageNumber) {
         rsRequestItemData.setPage(pageNumber);
-        itemPresenter.loadItemCommentsByUser(rsRequestItemData);
+        itemPresenter.loadItemCommentsByUser(rsRequestItemData, getContext());
     }
 
     private void bindViews() {
@@ -651,6 +651,6 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
 
     @Override
     public void onConfirmClicked(String targetId) {
-        itemPresenter.deleteComment(targetId, itemId);
+        itemPresenter.deleteComment(targetId, itemId, getContext());
     }
 }

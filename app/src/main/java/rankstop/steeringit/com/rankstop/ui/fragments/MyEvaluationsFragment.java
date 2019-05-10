@@ -146,7 +146,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     }
 
     private void loadMyEvals(RSRequestListItem rsRequestListItem) {
-        itemPresenter.loadMyEvals(rsRequestListItem);
+        itemPresenter.loadMyEvals(rsRequestListItem, getContext());
     }
 
     private void initMyEvals() {
@@ -158,7 +158,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected())
+                if (RSNetwork.isConnected(getContext()))
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listMyEvals.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 else
                     onOffLine();
@@ -202,9 +202,9 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     private void manageFollow(String itemId, boolean isFollow) {
         RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
         if (isFollow)
-            itemPresenter.followItem(rsFollow);
+            itemPresenter.followItem(rsFollow, getContext());
         else
-            itemPresenter.unfollowItem(rsFollow);
+            itemPresenter.unfollowItem(rsFollow, getContext());
 
     }
 
@@ -283,7 +283,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
             unbinder.unbind();
         rootView = null;
         if (itemPresenter != null)
-            itemPresenter.onDestroyItem();
+            itemPresenter.onDestroyItem(getContext());
         fragmentActionListener = null;
         super.onDestroyView();
     }

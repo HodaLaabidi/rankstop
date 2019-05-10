@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.content.Context;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
@@ -24,8 +26,8 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
     }
 
     @Override
-    public void search(String query, String lang) {
-        if (RSNetwork.isConnected()) {
+    public void search(String query, String lang, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (searchView != null) {
                 if (callSearch != null)
                     if (callSearch.isExecuted())
@@ -37,7 +39,7 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            search(query, lang);
+                            search(query, lang, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 searchView.onSuccess(RSConstants.SEARCH, response.body().getData());
@@ -63,8 +65,8 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
     }
 
     @Override
-    public void searchItems(RSRequestItemByCategory rsRequestSearch) {
-        if (RSNetwork.isConnected()) {
+    public void searchItems(RSRequestItemByCategory rsRequestSearch, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (searchView != null) {
                 searchView.showProgressBar(RSConstants.SEARCH_ITEMS);
                 callSearchItems = WebService.getInstance().getApi().searchItems(RSSessionToken.getUsergestToken(), rsRequestSearch);
@@ -74,7 +76,7 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
-                            searchItems(rsRequestSearch);
+                            searchItems(rsRequestSearch, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 searchView.onSuccess(RSConstants.SEARCH_ITEMS, response.body().getData());
@@ -100,8 +102,8 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
     }
 
     @Override
-    public void searchItemsFiltered(RSRequestFilter data) {
-        if (RSNetwork.isConnected()) {
+    public void searchItemsFiltered(RSRequestFilter data, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (searchView != null) {
                 searchView.showProgressBar(RSConstants.SEARCH_ITEMS_FILTERED);
                 callSearchItemsFiltered = WebService.getInstance().getApi().searchItemsFiltered(RSSessionToken.getUsergestToken(), data);
@@ -110,7 +112,7 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            searchItemsFiltered(data);
+                            searchItemsFiltered(data, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 searchView.onSuccess(RSConstants.SEARCH_ITEMS_FILTERED, response.body().getData());
@@ -136,7 +138,7 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callSearchItems != null)
             if (callSearchItems.isExecuted())
                 callSearchItems.cancel();

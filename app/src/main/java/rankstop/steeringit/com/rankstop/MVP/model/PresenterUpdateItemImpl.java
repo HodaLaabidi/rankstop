@@ -33,8 +33,8 @@ public class PresenterUpdateItemImpl implements RSPresenter.UpdateItemPresenter 
     }
 
     @Override
-    public void updateItem(RSUpdateItem rsUpdateItem) {
-        if (RSNetwork.isConnected()) {
+    public void updateItem(RSUpdateItem rsUpdateItem, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (updateItemView != null) {
                 updateItemView.showProgressBar();
                 List<MultipartBody.Part> parts = new ArrayList<>();
@@ -58,7 +58,7 @@ public class PresenterUpdateItemImpl implements RSPresenter.UpdateItemPresenter 
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             updateItemView.hideProgressBar();
-                            updateItem(rsUpdateItem);
+                            updateItem(rsUpdateItem, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 updateItemView.onSuccess(RSConstants.UPDATE_ITEM, response.body().getData());
@@ -86,7 +86,7 @@ public class PresenterUpdateItemImpl implements RSPresenter.UpdateItemPresenter 
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callUpdateItem != null)
             if (callUpdateItem.isExecuted())
                 callUpdateItem.cancel();

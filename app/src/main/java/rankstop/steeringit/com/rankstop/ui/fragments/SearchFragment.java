@@ -225,7 +225,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected()) {
+                if (RSNetwork.isConnected(getContext())) {
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsList.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 } else {
                     onOffLine();
@@ -321,7 +321,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
         categoriesFetched = new ArrayList<>();
         RecyclerViewClickListener categoriesListener = (view, position) -> {
             currentCategory = categoriesFetched.get(position);
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 loadItems(rsRequestItemData);
             } else {
                 onOffLine();
@@ -334,7 +334,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
         // items fetched
         itemsFetched = new ArrayList<>();
         RecyclerViewClickListener itemsFetchedListener = (view, position) -> {
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsFetched.get(position).get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
             } else {
                 onOffLine();
@@ -348,7 +348,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
     private void loadItems(RSRequestItemByCategory rsRequestItemData) {
         rsRequestItemData.setCatId(currentCategory.get_id());
         rsRequestItemData.setQ(query);
-        searchPresenter.searchItems(rsRequestItemData);
+        searchPresenter.searchItems(rsRequestItemData, getContext());
     }
 
     /**
@@ -358,7 +358,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
 
         this.query = query;
         searchView.setOnCloseListener(() -> false);
-        searchPresenter.search(query, RankStop.getDeviceLanguage());
+        searchPresenter.search(query, RankStop.getDeviceLanguage(), getContext());
         itemsByCategoryRV.post(() -> itemsByCategoryRV.setVisibility(View.GONE));
 
         return Observable.just(true)
@@ -425,7 +425,7 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
             unbinder.unbind();
         instance = null;
         if (searchPresenter != null)
-            searchPresenter.onDestroy();
+            searchPresenter.onDestroy(getContext());
         rootView = null;
         super.onDestroyView();
     }
@@ -531,6 +531,6 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
         rsRequestItemData.setCatId(data.getCatId());
         rsRequestItemData.setQ(query);
         rsRequestItemData.setPage(1);
-        searchPresenter.searchItems(rsRequestItemData);
+        searchPresenter.searchItems(rsRequestItemData, getContext());
     }
 }

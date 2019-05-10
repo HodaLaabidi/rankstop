@@ -67,11 +67,11 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
     @OnClick(R.id.positive_btn)
     void onClick(View v) {
         if (validForm(passwordEditText.getText().toString().trim(), confirmPasswordEditText.getText().toString().trim())) {
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 user = new User();
                 user.setPassword(passwordEditText.getText().toString().trim());
                 user.setEmail(getArguments().getString(RSConstants.EMAIL));
-                registerPresenter.getPublicIP("json", RSConstants.REGISTER);
+                registerPresenter.getPublicIP("json", RSConstants.REGISTER, getContext());
             } else {
                 onOffLine();
             }
@@ -234,7 +234,7 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
         RSSession.startSession(token);
 
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-            registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER);
+            registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER, getContext());
         } else {
             dismiss();
             rsLoader.dismiss();
@@ -290,23 +290,23 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
         RSAddress address = new RSAddress();
         address.setCountry(new Country(response.getGeoplugin_countryCode(), response.getGeoplugin_countryName()));
         user.setLocation(address);
-        registerPresenter.performRegister(user);
+        registerPresenter.performRegister(user, getContext());
     }
 
     @Override
     public void onAddressFailed() {
-        registerPresenter.performRegister(user);
+        registerPresenter.performRegister(user, getContext());
     }
 
     @Override
     public void onPublicIPFetched(RSDeviceIP response) {
         RSDeviceIP rsDeviceIP = new Gson().fromJson(new Gson().toJson(response), RSDeviceIP.class);
-        registerPresenter.getAddress(rsDeviceIP.getIp(), RSConstants.REGISTER);
+        registerPresenter.getAddress(rsDeviceIP.getIp(), RSConstants.REGISTER, getContext());
     }
 
     @Override
     public void onPublicIPFailed() {
-        registerPresenter.performRegister(user);
+        registerPresenter.performRegister(user, getContext());
     }
 
     @Override
@@ -322,7 +322,7 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
             unbinder.unbind();
         instance = null;
         if (registerPresenter != null)
-            registerPresenter.onDestroyRegister();
+            registerPresenter.onDestroyRegister(getContext());
         super.onDestroyView();
     }
 }

@@ -112,7 +112,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         rsUpdateItem.setUrlGooglePlus(inputGoogle.getText().toString());
         rsUpdateItem.setGallery(listNewPics);
         rsUpdateItem.setPicDelete(listDeletedPics);
-        presenterUpdateItem.updateItem(rsUpdateItem);
+        presenterUpdateItem.updateItem(rsUpdateItem, getContext());
     }
 
     @OnClick(R.id.btn_take_pic)
@@ -249,7 +249,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         if (unbinder != null)
             unbinder.unbind();
         if (presenterUpdateItem != null)
-            presenterUpdateItem.onDestroy();
+            presenterUpdateItem.onDestroy(getContext());
         if (listPics != null)
             listPics.clear();
         listPics = null;

@@ -72,11 +72,11 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
     @OnClick(R.id.positive_btn)
     void onClick(View v) {
         if (validForm(passwordEditText.getText().toString().trim())) {
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 User user = new User();
                 user.setPassword(passwordEditText.getText().toString().trim());
                 user.setEmail(getArguments().getString(RSConstants.EMAIL));
-                loginPresenter.performLogin(user);
+                loginPresenter.performLogin(user, getContext());
             } else {
                 onOffLine();
             }
@@ -85,8 +85,8 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
 
     @OnClick(R.id.forget_password_btn)
     void resetPassword() {
-        if (RSNetwork.isConnected()) {
-            loginPresenter.forgotPassword(getArguments().getString(RSConstants.EMAIL));
+        if (RSNetwork.isConnected(getContext())) {
+            loginPresenter.forgotPassword(getArguments().getString(RSConstants.EMAIL), getContext());
         } else {
             onOffLine();
         }
@@ -195,7 +195,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
         String token = loginResponse.getToken();
         RSSession.startSession(token);
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-            loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN);
+            loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN, getContext());
         } else {
             rsLoader.dismiss();
             dismiss();
@@ -275,7 +275,7 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
             unbinder.unbind();
         instance = null;
         if (loginPresenter != null)
-            loginPresenter.onDestroyLogin();
+            loginPresenter.onDestroyLogin(getContext());
         super.onDestroyView();
     }
 }

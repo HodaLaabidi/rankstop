@@ -375,7 +375,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     @OnClick(R.id.btn_save_changes)
     public void saveChanges() {
         if (validForm()) {
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 RSRequestEditProfile rsRequestEditProfile = new RSRequestEditProfile();
                 rsRequestEditProfile.setUsername(inputUserNameET.getText().toString().trim());
                 rsRequestEditProfile.setLastName(inputLastNameET.getText().toString().trim());
@@ -394,7 +394,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                     rsRequestEditProfile.setOldPassword(inputOldPasswordET.getText().toString().trim());
                 }
                 inputLayoutOldPwd.setError("");
-                presenterUpdateProfile.editProfile(rsRequestEditProfile);
+                presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext());
             } else {
                 onOffLine();
             }
@@ -601,7 +601,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         currentUser = (User) getArguments().getSerializable(RSConstants.CURRENT_USER);
-        presenterUpdateProfile.loadCountriesList(RankStop.getDeviceLanguage());
+        presenterUpdateProfile.loadCountriesList(RankStop.getDeviceLanguage(), getContext());
         bindData(currentUser);
     }
 
@@ -739,7 +739,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
             unbinder.unbind();
         instance = null;
         if (presenterUpdateProfile != null)
-            presenterUpdateProfile.onDestroy();
+            presenterUpdateProfile.onDestroy(getContext());
         super.onDestroyView();
     }
 

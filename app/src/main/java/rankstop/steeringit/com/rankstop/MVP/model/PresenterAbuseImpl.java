@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.content.Context;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
@@ -24,8 +26,8 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
     }
 
     @Override
-    public void loadAbusesList(String langue) {
-        if (RSNetwork.isConnected()) {
+    public void loadAbusesList(String langue, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (abuseView != null) {
                 abuseView.showProgressBar(RSConstants.LOAD_ABUSES_LIST);
                 callAbusesList = WebService.getInstance().getApi().loadAbusesList(RSSessionToken.getUsergestToken(), langue);
@@ -35,7 +37,7 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             abuseView.hideProgressBar(RSConstants.LOAD_ABUSES_LIST);
-                            loadAbusesList(langue);
+                            loadAbusesList(langue, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 abuseView.onSuccess(RSConstants.LOAD_ABUSES_LIST, response.body().getData());
@@ -61,8 +63,8 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
     }
 
     @Override
-    public void reportAbuse(RSRequestReportAbuse rsRequestReportAbuse) {
-        if (RSNetwork.isConnected()) {
+    public void reportAbuse(RSRequestReportAbuse rsRequestReportAbuse, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (abuseView != null) {
                 abuseView.showProgressBar(RSConstants.REPORT_ABUSES);
                 callReportAbuse = WebService.getInstance().getApi().reportAbuse(RSSessionToken.getUsergestToken(), rsRequestReportAbuse);
@@ -72,7 +74,7 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             abuseView.hideProgressBar(RSConstants.REPORT_ABUSES);
-                            reportAbuse(rsRequestReportAbuse);
+                            reportAbuse(rsRequestReportAbuse, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 abuseView.onSuccess(RSConstants.REPORT_ABUSES, response.body().getData());
@@ -98,14 +100,14 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
     }
 
     @Override
-    public void onOkClick() {
+    public void onOkClick(Context context) {
         if (abuseView != null) {
             abuseView.onReportClicked();
         }
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callAbusesList != null)
             if (callAbusesList.isExecuted())
                 callAbusesList.cancel();

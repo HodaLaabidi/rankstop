@@ -127,8 +127,8 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @OnClick(R.id.rs_login_btn)
     void rsLogin() {
         if (validForm(inputEmail.getText().toString().trim())) {
-            if (RSNetwork.isConnected()) {
-                signupPresenter.performFindEmail(inputEmail.getText().toString().trim().toLowerCase());
+            if (RSNetwork.isConnected(getContext())) {
+                signupPresenter.performFindEmail(inputEmail.getText().toString().trim().toLowerCase(), getContext());
             }else
                 onOffLine();
         }
@@ -136,8 +136,10 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     @OnClick(R.id.fb_login_btn)
     void fbLogin() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
+
             LoginManager.getInstance().logOut();
+
             LoginManager.getInstance().logInWithReadPermissions(fragmentContext.get(), Arrays.asList("public_profile", "email", "user_birthday", "user_gender", "user_location"));
         } else {
             onOffLine();
@@ -147,7 +149,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     @OnClick(R.id.google_login_btn)
     void googleLogin() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, 1);
         } else {
@@ -330,7 +332,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         if (unbinder != null)
             unbinder.unbind();
         if (signupPresenter != null)
-            signupPresenter.onDestroyFindEmail();
+            signupPresenter.onDestroyFindEmail(getContext());
         super.onDestroyView();
     }
 
@@ -363,7 +365,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         RSSession.startSession(token);
 
         if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-            signupPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.SOCIAL_LOGIN);
+            signupPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.SOCIAL_LOGIN, getContext());
         } else {
             rsLoader.dismiss();
             ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
@@ -427,7 +429,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     private void performSocialLogin(RSRequestSocialLogin user) {
         this.user = user;
-        signupPresenter.getPublicIP("json", RSConstants.SOCIAL_LOGIN);
+        signupPresenter.getPublicIP("json", RSConstants.SOCIAL_LOGIN, getContext());
     }
 
     @Override
@@ -467,23 +469,23 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         RSAddress address = new RSAddress();
         address.setCountry(new Country(response.getGeoplugin_countryCode(), response.getGeoplugin_countryName()));
         user.setLocation(address);
-        signupPresenter.performSocialLogin(user);
+        signupPresenter.performSocialLogin(user, getContext());
     }
 
     @Override
     public void onAddressFailed() {
-        signupPresenter.performSocialLogin(user);
+        signupPresenter.performSocialLogin(user, getContext());
     }
 
     @Override
     public void onPublicIPFetched(RSDeviceIP response) {
         RSDeviceIP rsDeviceIP = new Gson().fromJson(new Gson().toJson(response), RSDeviceIP.class);
-        signupPresenter.getAddress(rsDeviceIP.getIp(), RSConstants.SOCIAL_LOGIN);
+        signupPresenter.getAddress(rsDeviceIP.getIp(), RSConstants.SOCIAL_LOGIN, getContext());
     }
 
     @Override
     public void onPublicIPFailed() {
-        signupPresenter.performSocialLogin(user);
+        signupPresenter.performSocialLogin(user, getContext());
     }
 
     @Override

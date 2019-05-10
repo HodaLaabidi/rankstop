@@ -127,7 +127,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
             rsRequestListItem.setUserId(RSSession.getCurrentUser().get_id());
             rsRequestListItem.setLang(RankStop.getDeviceLanguage());
             rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 progressBar.setVisibility(View.VISIBLE);
                 loadData(currentPage);
             } else {
@@ -182,7 +182,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
 
     private void loadData(int pageNumber) {
         rsRequestListItem.setPage(pageNumber);
-        userHistoryPresenter.loadHistory(rsRequestListItem);
+        userHistoryPresenter.loadHistory(rsRequestListItem, getContext());
     }
 
     private void bindViews() {
@@ -238,7 +238,7 @@ public class HistoryFragment extends Fragment implements RSView.StandardView {
         if (unbinder != null)
             unbinder.unbind();
         if (userHistoryPresenter != null)
-            userHistoryPresenter.onDestroy();
+            userHistoryPresenter.onDestroy(getContext());
         if (fragmentContext != null)
             fragmentContext.clear();
         fragmentContext = null;

@@ -163,7 +163,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
 
     @OnClick(R.id.btn_add_review)
     void addReview() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             if (validForm()) {
                 rsAddReview.setComment(commentInput.getText().toString().trim());
                 rsAddReview.setUserId(userId);
@@ -172,11 +172,11 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
 
                 if (rsAddReview.getItemId() == null) {
                     // add item with review
-                    addReviewPresenter.addItem(rsAddReview);
+                    addReviewPresenter.addItem(rsAddReview, getContext());
                 } else {
                     if (isEvalChanged(myCriteriaEvalList, criteriaEvalList)) {
                         // Modification de l'item lors ajout d'un commentaire ou photos sans changer l'évaluation des critères
-                        addReviewPresenter.addReview(rsAddReview);
+                        addReviewPresenter.addReview(rsAddReview, getContext());
                     } else {
                         //update review
                         if (rsAddReview.getComment().equals("") && listPics.size() == 0) {
@@ -185,7 +185,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
                         } else {
                             // Modification de l'item lors de l'ajout d'un commentaire ou de photos sans modifier l'évaluation des critères
                             rsAddReview.setEvalId(myEval.get_id());
-                            addReviewPresenter.updateReview(rsAddReview);
+                            addReviewPresenter.updateReview(rsAddReview, getContext());
                         }
                     }
                 }
@@ -314,8 +314,8 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     }
 
     private void loadCategoriesList(String id) {
-        if (RSNetwork.isConnected())
-            addReviewPresenter.loadCategory(id, RankStop.getDeviceLanguage());
+        if (RSNetwork.isConnected(getContext()))
+            addReviewPresenter.loadCategory(id, RankStop.getDeviceLanguage(), getContext());
         else
             onOffLine();
     }
@@ -484,7 +484,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
         if (listPics != null)
             listPics.clear();
         if (addReviewPresenter != null)
-            addReviewPresenter.onDestroy();
+            addReviewPresenter.onDestroy(getContext());
         if (unbinder != null)
             unbinder.unbind();
         super.onDestroyView();
@@ -497,7 +497,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
             case RSConstants.LOAD_CATEGORY:
                 currentCategory = new Gson().fromJson(new Gson().toJson(data), Category.class);
                 if (from.equals(RSConstants.FRAGMENT_SIGN_UP)) {
-                    addReviewPresenter.loadMyEval(userId, rsAddReview.getItemId());
+                    addReviewPresenter.loadMyEval(userId, rsAddReview.getItemId(), getContext());
                 } else {
                     rsLoader.dismiss();
                     initCriteriasList(currentCategory);

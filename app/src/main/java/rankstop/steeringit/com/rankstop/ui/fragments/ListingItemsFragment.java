@@ -130,7 +130,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected()) {
+                if (RSNetwork.isConnected(getContext())) {
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemsList.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 } else {
                     onOffLine();
@@ -174,9 +174,9 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         if (isLoggedIn) {
             RSFollow rsFollow = new RSFollow(currentUser.get_id(), itemId);
             if (isFollow)
-                itemPresenter.followItem(rsFollow);
+                itemPresenter.followItem(rsFollow, getContext());
             else
-                itemPresenter.unfollowItem(rsFollow);
+                itemPresenter.unfollowItem(rsFollow, getContext());
         } else {
             openAlertDialog(alertLoginToFollowMsg, itemId);
         }
@@ -198,25 +198,25 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         rsRequestListItem.setPage(pageNumber);
         switch (target) {
             case RSConstants.ITEM_CREATED:
-                itemPresenter.loadItemCreated(rsRequestListItem);
+                itemPresenter.loadItemCreated(rsRequestListItem, getContext());
                 break;
             case RSConstants.ITEM_OWNED:
-                itemPresenter.loadItemOwned(rsRequestListItem);
+                itemPresenter.loadItemOwned(rsRequestListItem, getContext());
                 break;
             case RSConstants.ITEM_FOLLOWED:
-                itemPresenter.loadItemFollowed(rsRequestListItem);
+                itemPresenter.loadItemFollowed(rsRequestListItem , getContext());
                 break;
             case RSConstants.TOP_RANKED_ITEMS:
-                itemPresenter.loadTopRankedItems(rsRequestListItem);
+                itemPresenter.loadTopRankedItems(rsRequestListItem, getContext());
                 break;
             case RSConstants.TOP_COMMENTED_ITEMS:
-                itemPresenter.loadTopCommentedItems(rsRequestListItem);
+                itemPresenter.loadTopCommentedItems(rsRequestListItem, getContext());
                 break;
             case RSConstants.TOP_VIEWED_ITEMS:
-                itemPresenter.loadTopViewedItems(rsRequestListItem);
+                itemPresenter.loadTopViewedItems(rsRequestListItem, getContext());
                 break;
             case RSConstants.TOP_FOLLOWED_ITEMS:
-                itemPresenter.loadTopFollowedItems(rsRequestListItem);
+                itemPresenter.loadTopFollowedItems(rsRequestListItem, getContext());
                 break;
         }
     }
@@ -345,7 +345,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         if (fragmentContext != null)
             fragmentContext.clear();
         if (itemPresenter != null)
-            itemPresenter.onDestroyItem();
+            itemPresenter.onDestroyItem(getContext());
         if (itemsAdapter != null)
             itemsAdapter.clear();
         itemsAdapter = null;

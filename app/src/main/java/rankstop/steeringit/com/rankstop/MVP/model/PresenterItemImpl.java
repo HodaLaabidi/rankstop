@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
 
+import android.content.Context;
 import android.util.Log;
 
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -30,8 +31,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadItem(String itemId, String userId, String lang) {
-        if (RSNetwork.isConnected()) {
+    public void loadItem(String itemId, String userId, String lang, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ONE_ITEM);
                 callLoadItem = WebService.getInstance().getApi().loadItem(RSSessionToken.getUsergestToken(), itemId, userId, lang);
@@ -41,7 +42,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         Log.e("test" ,response.code() +"!" );
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            loadItem(itemId, userId, lang);
+                            loadItem(itemId, userId, lang, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.ONE_ITEM, response.body().getData());
@@ -66,7 +67,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadTopRankedItems(RSRequestListItem rsRequestListItem) {
+    public void loadTopRankedItems(RSRequestListItem rsRequestListItem, Context context) {
         Log.e("test", "loadTopRankedItems");
         if (standardView != null) {
             callTopRankedItems = WebService.getInstance().getApi().loadTopRankedItems(RSSessionToken.getUsergestToken(), rsRequestListItem);
@@ -77,7 +78,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     Log.e("test from *itemImpl" , response.code()+" !");
                     if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                         RSSession.Reconnecter();
-                        loadTopRankedItems(rsRequestListItem);
+                        loadTopRankedItems(rsRequestListItem, context);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.TOP_RANKED_ITEMS, response.body().getData());
@@ -100,7 +101,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadTopViewedItems(RSRequestListItem rsRequestListItem) {
+    public void loadTopViewedItems(RSRequestListItem rsRequestListItem, Context context) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.TOP_VIEWED_ITEMS);
             callTopViewedItems = WebService.getInstance().getApi().loadTopViewedItems(RSSessionToken.getUsergestToken(), rsRequestListItem);
@@ -111,7 +112,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            loadTopViewedItems(rsRequestListItem);
+                            loadTopViewedItems(rsRequestListItem, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.TOP_VIEWED_ITEMS, response.body().getData());
@@ -136,7 +137,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadTopCommentedItems(RSRequestListItem rsRequestListItem) {
+    public void loadTopCommentedItems(RSRequestListItem rsRequestListItem, Context context) {
 
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.TOP_COMMENTED_ITEMS);
@@ -146,7 +147,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                     if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                         RSSession.Reconnecter();
-                        loadTopCommentedItems(rsRequestListItem);
+                        loadTopCommentedItems(rsRequestListItem, context);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.TOP_COMMENTED_ITEMS, response.body().getData());
@@ -168,7 +169,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadTopFollowedItems(RSRequestListItem rsRequestListItem) {
+    public void loadTopFollowedItems(RSRequestListItem rsRequestListItem, Context context) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.TOP_FOLLOWED_ITEMS);
             callTopFollowedItems = WebService.getInstance().getApi().loadTopFollowedItems(RSSessionToken.getUsergestToken(), rsRequestListItem);
@@ -177,7 +178,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                     if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                         RSSession.Reconnecter();
-                        loadTopFollowedItems(rsRequestListItem);
+                        loadTopFollowedItems(rsRequestListItem , context);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.TOP_FOLLOWED_ITEMS, response.body().getData());
@@ -198,7 +199,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadItemCreated(RSRequestListItem rsRequestListItem) {
+    public void loadItemCreated(RSRequestListItem rsRequestListItem, Context context) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.ITEM_CREATED);
             callItemCreated = WebService.getInstance().getApi().loadItemCreated(RSSessionToken.getUsergestToken(), rsRequestListItem);
@@ -207,7 +208,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                     if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                         RSSession.Reconnecter();
-                        loadItemCreated(rsRequestListItem);
+                        loadItemCreated(rsRequestListItem , context);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.ITEM_CREATED, response.body().getData());
@@ -228,7 +229,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadItemOwned(RSRequestListItem rsRequestListItem) {
+    public void loadItemOwned(RSRequestListItem rsRequestListItem, Context context) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.ITEM_OWNED);
             callItemOwned = WebService.getInstance().getApi().loadItemOwned(RSSessionToken.getUsergestToken(), rsRequestListItem);
@@ -237,7 +238,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                     if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                         RSSession.Reconnecter();
-                        loadItemOwned(rsRequestListItem);
+                        loadItemOwned(rsRequestListItem , context);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.ITEM_OWNED, response.body().getData());
@@ -258,7 +259,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadItemFollowed(RSRequestListItem rsRequestListItem) {
+    public void loadItemFollowed(RSRequestListItem rsRequestListItem , Context context) {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.ITEM_FOLLOWED);
             callItemFollowed = WebService.getInstance().getApi().loadItemFollowed(RSSessionToken.getUsergestToken(), rsRequestListItem);
@@ -267,7 +268,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                     if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                         RSSession.Reconnecter();
-                        loadItemFollowed(rsRequestListItem);
+                        loadItemFollowed(rsRequestListItem , context);
                     } else {
                         if (response.body().getStatus() == 1) {
                             standardView.onSuccess(RSConstants.ITEM_FOLLOWED, response.body().getData());
@@ -288,8 +289,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadMyEvals(RSRequestListItem rsRequestListItem) {
-        if (RSNetwork.isConnected()) {
+    public void loadMyEvals(RSRequestListItem rsRequestListItem, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.MY_EVALS);
                 callMyEvals = WebService.getInstance().getApi().loadMyEvals(RSSessionToken.getUsergestToken(), rsRequestListItem);
@@ -299,7 +300,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.MY_EVALS);
-                            loadMyEvals(rsRequestListItem);
+                            loadMyEvals(rsRequestListItem , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.MY_EVALS, response.body().getData());
@@ -325,8 +326,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadCategoriesList(String lang) {
-        if (RSNetwork.isConnected()) {
+    public void loadCategoriesList(String lang, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.LOAD_CATEGORIES);
                 callCategoriesList = WebService.getInstance().getApi().loadCategoriesList(RSSessionToken.getUsergestToken(), lang);
@@ -336,7 +337,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
-                            loadCategoriesList(lang);
+                            loadCategoriesList(lang , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.LOAD_CATEGORIES, response.body().getData());
@@ -361,8 +362,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void followItem(RSFollow rsFollow) {
-        if (RSNetwork.isConnected()) {
+    public void followItem(RSFollow rsFollow, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 callFollowItem = WebService.getInstance().getApi().followItem(RSSessionToken.getUsergestToken(), rsFollow);
                 callFollowItem.enqueue(new Callback<RSResponse>() {
@@ -370,7 +371,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            followItem(rsFollow);
+                            followItem(rsFollow , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.FOLLOW_ITEM, "1");
@@ -394,8 +395,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void unfollowItem(RSFollow rsFollow) {
-        if (RSNetwork.isConnected()) {
+    public void unfollowItem(RSFollow rsFollow, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 callUnfollowItem = WebService.getInstance().getApi().unfollowItem(RSSessionToken.getUsergestToken(), rsFollow);
                 callUnfollowItem.enqueue(new Callback<RSResponse>() {
@@ -403,7 +404,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            unfollowItem(rsFollow);
+                            unfollowItem(rsFollow , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.UNFOLLOW_ITEM, null);
@@ -426,8 +427,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadItemComments(RSRequestItemData rsRequestItemData) {
-        if (RSNetwork.isConnected()) {
+    public void loadItemComments(RSRequestItemData rsRequestItemData, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_COMMENTS);
                 callItemComments = WebService.getInstance().getApi().loadItemComments(RSSessionToken.getUsergestToken(), rsRequestItemData);
@@ -437,7 +438,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
-                            loadItemComments(rsRequestItemData);
+                            loadItemComments(rsRequestItemData , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.ITEM_COMMENTS, response.body().getData());
@@ -463,8 +464,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadItemCommentsByUser(RSRequestItemData rsRequestItemData) {
-        if (RSNetwork.isConnected()) {
+    public void loadItemCommentsByUser(RSRequestItemData rsRequestItemData, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
                 callItemCommentsByUser = WebService.getInstance().getApi().loadItemCommentsByUser(RSSessionToken.getUsergestToken(), rsRequestItemData);
@@ -474,7 +475,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.ITEM_COMMENTS_BY_USER);
-                            loadItemCommentsByUser(rsRequestItemData);
+                            loadItemCommentsByUser(rsRequestItemData , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.ITEM_COMMENTS_BY_USER, response.body().getData());
@@ -500,8 +501,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadItemPix(RSRequestItemData rsRequestItemData) {
-        if (RSNetwork.isConnected()) {
+    public void loadItemPix(RSRequestItemData rsRequestItemData, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_PIX);
                 callItemPix = WebService.getInstance().getApi().loadItemPix(RSSessionToken.getUsergestToken(), rsRequestItemData);
@@ -511,7 +512,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.ITEM_PIX);
-                            loadItemPix(rsRequestItemData);
+                            loadItemPix(rsRequestItemData , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.ITEM_PIX, response.body().getData());
@@ -537,8 +538,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void loadItemPixByUser(RSRequestItemData rsRequestItemData) {
-        if (RSNetwork.isConnected()) {
+    public void loadItemPixByUser(RSRequestItemData rsRequestItemData, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_PIX_BY_USER);
                 callItemPixByUser = WebService.getInstance().getApi().loadItemPixByUser(RSSessionToken.getUsergestToken(), rsRequestItemData);
@@ -548,7 +549,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.ITEM_PIX_BY_USER);
-                            loadItemPixByUser(rsRequestItemData);
+                            loadItemPixByUser(rsRequestItemData , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.ITEM_PIX_BY_USER, response.body().getData());
@@ -574,8 +575,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void deleteComment(String commentId, String itemId) {
-        if (RSNetwork.isConnected()) {
+    public void deleteComment(String commentId, String itemId, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.DELETE_COMMENT);
                 callDeleteComment = WebService.getInstance().getApi().deleteComment(RSSessionToken.getUsergestToken(), commentId, itemId);
@@ -585,7 +586,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.DELETE_COMMENT);
-                            deleteComment(commentId, itemId);
+                            deleteComment(commentId, itemId , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.DELETE_COMMENT, commentId);
@@ -611,8 +612,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void deletePicture(String pictureId, String itemId) {
-        if (RSNetwork.isConnected()) {
+    public void deletePicture(String pictureId, String itemId, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.DELETE_PICTURE);
                 callDeletePic = WebService.getInstance().getApi().deletePicture(RSSessionToken.getUsergestToken(), pictureId, itemId);
@@ -622,7 +623,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                         if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.DELETE_PICTURE);
-                            deletePicture(pictureId, itemId);
+                            deletePicture(pictureId, itemId , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.DELETE_PICTURE, pictureId);
@@ -648,7 +649,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
-    public void onDestroyItem() {
+    public void onDestroyItem(Context context) {
 
         if (callLoadItem != null)
             if (callLoadItem.isExecuted())

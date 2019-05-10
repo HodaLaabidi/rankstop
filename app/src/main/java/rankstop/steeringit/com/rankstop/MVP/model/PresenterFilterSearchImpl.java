@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.content.Context;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
@@ -23,8 +25,8 @@ public class PresenterFilterSearchImpl implements RSPresenter.SearchFilterPresen
     }
 
     @Override
-    public void loadCategories(String lang) {
-        if (RSNetwork.isConnected()) {
+    public void loadCategories(String lang, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (searchView != null) {
                 searchView.showProgressBar(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
                 callSearch = WebService.getInstance().getApi().loadCategoriesUsedByLocations(RSSessionToken.getUsergestToken(), lang);
@@ -33,7 +35,7 @@ public class PresenterFilterSearchImpl implements RSPresenter.SearchFilterPresen
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            loadCategories(lang);
+                            loadCategories(lang, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 searchView.onSuccess(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION, response.body().getData());
@@ -59,7 +61,7 @@ public class PresenterFilterSearchImpl implements RSPresenter.SearchFilterPresen
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callSearch != null)
             if (callSearch.isExecuted())
                 callSearch.cancel();

@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.content.Context;
 import android.util.Log;
 
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -25,8 +26,8 @@ public class PresenterDeviceLangImpl implements RSPresenter.EditDeviceLangPresen
     }
 
     @Override
-    public void editLang(String userId, String lang) {
-        if (RSNetwork.isConnected()) {
+    public void editLang(String userId, String lang, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar();
                 callEditLang = WebService.getInstance().getApi().editDeviceLanguage(RSSessionToken.getUsergestToken(), userId, lang);
@@ -36,7 +37,7 @@ public class PresenterDeviceLangImpl implements RSPresenter.EditDeviceLangPresen
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar();
-                            editLang(userId, lang);
+                            editLang(userId, lang, context);
 
                         } else {
                             if (response.body().getStatus() == 1) {
@@ -63,7 +64,7 @@ public class PresenterDeviceLangImpl implements RSPresenter.EditDeviceLangPresen
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callEditLang != null)
             if (callEditLang.isExecuted())
                 callEditLang.cancel();

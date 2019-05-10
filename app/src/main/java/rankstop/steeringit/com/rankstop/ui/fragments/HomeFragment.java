@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -111,7 +112,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
     @OnClick(R.id.more_page_top_ranked)
     void moreRanked() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
             rsNavigationData.setSection(RSConstants.TOP_RANKED_ITEMS);
             fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
@@ -125,7 +126,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
     @OnClick(R.id.more_page_top_viewed)
     void moreViewed() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
             rsNavigationData.setSection(RSConstants.TOP_VIEWED_ITEMS);
             fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
@@ -140,7 +141,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
     @OnClick(R.id.more_page_top_commented)
     void moreCommented() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
             rsNavigationData.setSection(RSConstants.TOP_COMMENTED_ITEMS);
             fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
@@ -154,7 +155,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
     @OnClick(R.id.more_page_top_followed)
     void moreFollowed() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
             rsNavigationData.setSection(RSConstants.TOP_FOLLOWED_ITEMS);
             fragmentActionListener.startFragment(ListingItemsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_LISTING_ITEMS);
@@ -166,7 +167,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
     @OnClick(R.id.btn_search)
     void search() {
-        if (RSNetwork.isConnected())
+        if (RSNetwork.isConnected(getContext()))
             fragmentActionListener.navigateTo(R.id.navigation_search, RSConstants.FRAGMENT_SEARCH);
         else
             onOffLine();
@@ -225,7 +226,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         rsRequestListItem.setLang(RankStop.getDeviceLanguage());
         getCurrentUser();
 
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             Log.e("test" , "online");
             if (RSSessionToken.getLocalStorage() == null) {
                 Log.e("test" , "token is null from home");
@@ -297,19 +298,19 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
     }
 
     private void loadTopRankedItem() {
-        itemPresenter.loadTopRankedItems(rsRequestListItem);
+        itemPresenter.loadTopRankedItems(rsRequestListItem, getContext());
     }
 
     private void loadTopViewedItem() {
-        itemPresenter.loadTopViewedItems(rsRequestListItem);
+        itemPresenter.loadTopViewedItems(rsRequestListItem, getContext());
     }
 
     private void loadTopFollowedItem() {
-        itemPresenter.loadTopFollowedItems(rsRequestListItem);
+        itemPresenter.loadTopFollowedItems(rsRequestListItem, getContext());
     }
 
     private void loadTopCommentedItem() {
-        itemPresenter.loadTopCommentedItems(rsRequestListItem);
+        itemPresenter.loadTopCommentedItems(rsRequestListItem, getContext());
     }
 
     private void initTopRanked(List<Item> listTopRankedItem) {
@@ -322,7 +323,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected())
+                if (RSNetwork.isConnected(getContext()))
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopRankedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 else
                     onOffLine();
@@ -345,7 +346,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected())
+                if (RSNetwork.isConnected(getContext()))
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopViewedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 else
                     onOffLine();
@@ -368,7 +369,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected())
+                if (RSNetwork.isConnected(getContext()))
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopFollowedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 else
                     onOffLine();
@@ -391,7 +392,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected())
+                if (RSNetwork.isConnected(getContext()))
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listTopCommentedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 else
                     onOffLine();
@@ -409,9 +410,9 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         if (RSSession.isLoggedIn()) {
             RSFollow rsFollow = new RSFollow(user.get_id(), itemId);
             if (isFollow)
-                itemPresenter.followItem(rsFollow);
+                itemPresenter.followItem(rsFollow, getContext());
             else
-                itemPresenter.unfollowItem(rsFollow);
+                itemPresenter.unfollowItem(rsFollow, getContext());
         } else {
             openAlertDialog(alertLoginToFollowMsg, itemId);
         }
@@ -478,7 +479,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         fragmentActionListener = null;
         rootView = null;
         if (itemPresenter != null)
-            itemPresenter.onDestroyItem();
+            itemPresenter.onDestroyItem(getContext());
         if (unbinder != null)
             unbinder.unbind();
         super.onDestroyView();

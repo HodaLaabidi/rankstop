@@ -46,8 +46,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     private Call<RSDeviceIP> callDeviceIP;
 
     @Override
-    public void performFindEmail(String email) {
-        if (RSNetwork.isConnected()) {
+    public void performFindEmail(String email, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (signupView != null) {
                 if (isValidEmail(email)) {
                     signupView.showProgressBar(RSConstants.LOGIN);
@@ -82,8 +82,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void performSocialLogin(RSRequestSocialLogin user) {
-        if (RSNetwork.isConnected()) {
+    public void performSocialLogin(RSRequestSocialLogin user, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (signupView != null) {
                 callSocialLogin = WebService.getInstance().getApi().socialLogin(user);
                 callSocialLogin.enqueue(new Callback<RSResponse>() {
@@ -110,7 +110,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void onDestroyFindEmail() {
+    public void onDestroyFindEmail(Context context) {
         signupView = null;
         if (callFindEmail != null)
             if (callFindEmail.isExecuted())
@@ -122,8 +122,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void performLogin(User user) {
-        if (RSNetwork.isConnected()) {
+    public void performLogin(User user, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (loginView != null) {
                 loginView.showProgressBar(RSConstants.LOGIN);
                 callLogin = WebService.getInstance().getApi().loginUser(user);
@@ -151,15 +151,15 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void followItem(RSFollow rsFollow, String target) {
-        if (RSNetwork.isConnected()) {
+    public void followItem(RSFollow rsFollow, String target, Context context) {
+        if (RSNetwork.isConnected(context)) {
             callFollowItem = WebService.getInstance().getApi().followItem(RSSessionToken.getUsergestToken(), rsFollow);
             callFollowItem.enqueue(new Callback<RSResponse>() {
                 @Override
                 public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                     if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                         RSSession.Reconnecter();
-                        followItem(rsFollow, target);
+                        followItem(rsFollow, target, context);
                     } else {
                         if (response.body().getStatus() == 1) {
                             if (target.equals(RSConstants.LOGIN)) {
@@ -215,8 +215,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void forgotPassword(String email) {
-        if (RSNetwork.isConnected()) {
+    public void forgotPassword(String email, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (loginView != null) {
                 loginView.showProgressBar(RSConstants.FORGOT_PWD);
                 callLogin = WebService.getInstance().getApi().forgotPassword(email);
@@ -245,7 +245,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void onDestroyLogin() {
+    public void onDestroyLogin(Context context) {
         loginView = null;
         if (callLogin != null)
             if (callLogin.isExecuted())
@@ -268,8 +268,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void performRegister(User user) {
-        if (RSNetwork.isConnected()) {
+    public void performRegister(User user, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (registerView != null) {
                 callRegister = WebService.getInstance().getApi().registerUser(user);
                 callRegister.enqueue(new Callback<RSResponse>() {
@@ -296,8 +296,8 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void getAddress(String ip, String target) {
-        if (RSNetwork.isConnected()) {
+    public void getAddress(String ip, String target, Context context) {
+        if (RSNetwork.isConnected(context)) {
             callAddress = WebService.getInstance(Urls.GEO_PLUGIN_URL, null).getApi().getAddressFromIP(ip);
             callAddress.enqueue(new Callback<GeoPluginResponse>() {
                 @Override
@@ -335,9 +335,9 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void getPublicIP(String format, String target) {
+    public void getPublicIP(String format, String target, Context context) {
 
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(context)) {
             if (target.equals(RSConstants.REGISTER)) {
                 registerView.showProgressBar(RSConstants.PUBLIC_IP);
             } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
@@ -381,7 +381,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     }
 
     @Override
-    public void onDestroyRegister() {
+    public void onDestroyRegister(Context context) {
         registerView = null;
         if (callRegister != null)
             if (callRegister.isExecuted())

@@ -195,7 +195,7 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
             requestOwnerShip.setTitleItem(itemName);
             requestOwnerShip.setUserId(user.get_id());
 
-            presenter.requestOwnership(requestOwnerShip);
+            presenter.requestOwnership(requestOwnerShip, getContext());
         }
     }
 
@@ -304,7 +304,7 @@ public class RequestOwnerShipDialog extends DialogFragment implements RSView.Sta
         if (unbinder != null)
             unbinder.unbind();
         if (presenter != null)
-            presenter.onDestroy();
+            presenter.onDestroy(getContext());
         rootView = null;
 
         super.onDestroyView();

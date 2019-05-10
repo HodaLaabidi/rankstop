@@ -182,7 +182,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     @OnClick(R.id.btn_add_review)
     void addReview() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             if (isLoggedIn) {
                 RSAddReview rsAddReview = new RSAddReview();
                 rsAddReview.setItemId(item.getItemDetails().get_id());
@@ -204,7 +204,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     @OnClick(R.id.btn_report_abuse)
     void reportAbuse() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             if (isLoggedIn) {
                 RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ITEM_DETAILS, RSConstants.ACTION_REPORT_ABUSE, "", itemId, "", "", "");
                 openAbusesDialog(rsNavigationData);
@@ -224,7 +224,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     @OnClick(R.id.tv_item_category)
     void goToSearch() {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             fragmentActionListener.startFragment(SearchFragment.getInstance(currentCategory), RSConstants.FRAGMENT_SEARCH);
         } else {
             onOffLine();
@@ -239,7 +239,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             bundle.putString(RSConstants.ITEM_NAME, item.getItemDetails().getTitle());
             openOwnershipDialog(bundle);
         } else {
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ITEM_DETAILS, RSConstants.ACTION_SEND_REQ_OWNERSHIP, alertLoginToSendReqOwnershipMsg, itemId, "", "", "");
                 askToLoginDialog(rsNavigationData);
             } else {
@@ -326,7 +326,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             itemId = rsNavigationData.getItemId();
         }
 
-        itemPresenter.loadItem(itemId, userId, RankStop.getDeviceLanguage());
+        itemPresenter.loadItem(itemId, userId, RankStop.getDeviceLanguage(), getContext());
     }
 
     private void initGallery(List<Gallery> listGalleryPics) {
@@ -514,9 +514,9 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         if (isLoggedIn) {
             RSFollow rsFollow = new RSFollow(currentUser.get_id(), itemId);
             if (isFollow)
-                itemPresenter.followItem(rsFollow);
+                itemPresenter.followItem(rsFollow, getContext());
             else
-                itemPresenter.unfollowItem(rsFollow);
+                itemPresenter.unfollowItem(rsFollow, getContext());
             isFavorite = isFollow;
         } else {
             RSNavigationData rsNavigationData = new RSNavigationData(RSConstants.FRAGMENT_ADD_REVIEW, RSConstants.ACTION_FOLLOW, alertLoginToFollowMsg, itemId, "", "", "");
@@ -614,7 +614,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         if (unbinder != null)
             unbinder.unbind();
         if (itemPresenter != null)
-            itemPresenter.onDestroyItem();
+            itemPresenter.onDestroyItem(getContext());
         for (int i = 0; i < listMenuItem.size(); i++) {
             tintMenuIcon(listMenuItem.get(i), android.R.color.white);
 

@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.content.Context;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
@@ -24,8 +26,8 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
     }
 
     @Override
-    public void requestOwnership(RequestOwnership requestOwnership) {
-        if (RSNetwork.isConnected()) {
+    public void requestOwnership(RequestOwnership requestOwnership, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.SEND_REQ_OWNER_SHIP);
                 callReqOwnership = WebService.getInstance().getApi().requestOwnership(RSSessionToken.getUsergestToken(), requestOwnership);
@@ -35,7 +37,7 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.SEND_REQ_OWNER_SHIP);
-                            requestOwnership(requestOwnership);
+                            requestOwnership(requestOwnership, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.SEND_REQ_OWNER_SHIP, response.body().getData());
@@ -61,8 +63,8 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
     }
 
     @Override
-    public void contact(RSContact rsContact) {
-        if (RSNetwork.isConnected()) {
+    public void contact(RSContact rsContact, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.RS_CONTACT);
                 callContact = WebService.getInstance().getApi().contact(RSSessionToken.getUsergestToken(), rsContact);
@@ -72,7 +74,7 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
                             standardView.hideProgressBar(RSConstants.RS_CONTACT);
-                            contact(rsContact);
+                            contact(rsContact, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.RS_CONTACT, response.body().getData());
@@ -98,7 +100,7 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callReqOwnership != null)
             if (callReqOwnership.isExecuted())
                 callReqOwnership.cancel();

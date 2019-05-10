@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.content.Context;
 import android.util.Log;
 
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
@@ -25,8 +26,8 @@ public class PresenterUserHistoryImpl implements RSPresenter.UserHistoryPresente
     }
 
     @Override
-    public void loadHistory(RSRequestListItem rsRequestListItem) {
-        if (RSNetwork.isConnected()) {
+    public void loadHistory(RSRequestListItem rsRequestListItem, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.USER_HISTORY);
                 callUserHistory = WebService.getInstance().getApi().loadUserHistory(RSSessionToken.getUsergestToken(), rsRequestListItem);
@@ -35,7 +36,7 @@ public class PresenterUserHistoryImpl implements RSPresenter.UserHistoryPresente
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                           loadHistory(rsRequestListItem);
+                           loadHistory(rsRequestListItem , context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.USER_HISTORY, response.body().getData());
@@ -61,7 +62,7 @@ public class PresenterUserHistoryImpl implements RSPresenter.UserHistoryPresente
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callUserHistory != null)
             if (callUserHistory.isExecuted())
                 callUserHistory.cancel();

@@ -177,13 +177,13 @@ public class ContactDialog extends DialogFragment implements RSView.StandardView
         subject = inputSubject.getText().toString().trim();
         message = inputMessage.getText().toString().trim();
         if (validForm()) {
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 RSContact rsContact = new RSContact();
                 rsContact.setName(fullname);
                 rsContact.setEmail(email);
                 rsContact.setSubject(subject);
                 rsContact.setMessage(message);
-                presenter.contact(rsContact);
+                presenter.contact(rsContact, getContext());
             } else {
                 onOffLine();
             }
@@ -298,7 +298,7 @@ public class ContactDialog extends DialogFragment implements RSView.StandardView
         if (unbinder != null)
             unbinder.unbind();
         if (presenter != null)
-            presenter.onDestroy();
+            presenter.onDestroy(getContext());
         super.onDestroyView();
     }
 

@@ -63,7 +63,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
 
     @OnClick(R.id.positive_btn)
     void reportAbuse() {
-        abusePresenter.onOkClick();
+        abusePresenter.onOkClick(getContext());
     }
 
     @BindString(R.string.loading_msg)
@@ -146,12 +146,12 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
         abusesRG = null;
         instance = null;
         if (abusePresenter != null)
-            abusePresenter.onDestroy();
+            abusePresenter.onDestroy(getContext());
         super.onDestroyView();
     }
 
     private void loadAbuseList() {
-        abusePresenter.loadAbusesList(RankStop.getDeviceLanguage());
+        abusePresenter.loadAbusesList(RankStop.getDeviceLanguage(), getContext());
     }
 
     private void initAbusesList(List<Abuse> abuseList) {
@@ -174,7 +174,7 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
     @Override
     public void onReportClicked() {
         if (abuseId != null) {
-            abusePresenter.reportAbuse(new RSRequestReportAbuse(RSSession.getCurrentUser().get_id(), itemId, abuseId));
+            abusePresenter.reportAbuse(new RSRequestReportAbuse(RSSession.getCurrentUser().get_id(), itemId, abuseId), getContext());
         } else {
             Toast.makeText(getContext(), chooseReason, Toast.LENGTH_SHORT).show();
         }

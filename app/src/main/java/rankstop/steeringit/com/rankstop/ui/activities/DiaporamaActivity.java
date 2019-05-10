@@ -104,9 +104,9 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
     private void loadItemPix(int pageNumber) {
         rsRequestItemData.setPage(pageNumber);
         if (from.equals(RSConstants.MY_PIX))
-            itemPresenter.loadItemPixByUser(rsRequestItemData);
+            itemPresenter.loadItemPixByUser(rsRequestItemData, getBaseContext());
         else if (from.equals(RSConstants.ALL_PIX))
-            itemPresenter.loadItemPix(rsRequestItemData);
+            itemPresenter.loadItemPix(rsRequestItemData, getBaseContext());
     }
 
     @Override
@@ -221,7 +221,7 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
         if (unbinder != null)
             unbinder.unbind();
         if (itemPresenter != null)
-            itemPresenter.onDestroyItem();
+            itemPresenter.onDestroyItem(getBaseContext());
 
         super.onDestroy();
     }

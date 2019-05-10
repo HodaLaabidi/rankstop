@@ -1,7 +1,9 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -149,7 +151,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         itemDescription = descriptionET.getText().toString().trim();
 
         if (validForm()) {
-            if (RSNetwork.isConnected()) {
+            if (RSNetwork.isConnected(getContext())) {
                 try {
                     // pour 'valider l'ajout du cet item, tu dois l'évaluer
                     rsAddItem.setCategoryId(selectedCategory.get_id());
@@ -231,8 +233,8 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         bindViews();
     }
 
-    private void loadCategoriesList() {
-        itemPresenter.loadCategoriesList(RankStop.getDeviceLanguage());
+    private void loadCategoriesList(Context context) {
+        itemPresenter.loadCategoriesList(RankStop.getDeviceLanguage(),context);
     }
 
     private void bindViews() {
@@ -241,12 +243,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         setFragmentActionListener((ContainerActivity) getActivity());
 
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             if (RSSession.isLoggedIn()) {
                 scrollView.setVisibility(View.VISIBLE);
                 itemPresenter = new PresenterItemImpl(AddItemFragment.this);
                 categorySpinner.setOnItemSelectedListener(this);
-                loadCategoriesList();
+                loadCategoriesList(getContext());
                 locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
                 nameET.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -328,6 +330,31 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         uiSettings.setZoomControlsEnabled(true);
         uiSettings.setScrollGesturesEnabled(true);
         uiSettings.setMyLocationButtonEnabled(true);
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                List<Address> addresses;
+                String address = "";
+                try {
+                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                    address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+
+                    addressET.setText(address);
+                    Marker marker = null;
+                    mMap.clear();
+                    marker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng));
+
+                    rsAddItem.setCity(getCity(marker.getPosition()));
+                    rsAddItem.setCountry(getCountry(marker.getPosition()));
+                    rsAddItem.setGovernorate(getGovernorate(marker.getPosition()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
@@ -544,7 +571,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         if (unbinder != null)
             unbinder.unbind();
         if (itemPresenter != null)
-            itemPresenter.onDestroyItem();
+            itemPresenter.onDestroyItem(getContext());
         super.onDestroyView();
     }
 

@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.content.Context;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
@@ -24,8 +26,8 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
 
 
     @Override
-    public void loadListNotif(RSRequestListItem rsRequestListItem) {
-        if (RSNetwork.isConnected()) {
+    public void loadListNotif(RSRequestListItem rsRequestListItem, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (notifView != null) {
                 callLoadListNotif = WebService.getInstance().getApi().loadListNotif(RSSessionToken.getUsergestToken(), rsRequestListItem);
                 callLoadListNotif.enqueue(new Callback<RSResponse>() {
@@ -33,7 +35,7 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            loadListNotif(rsRequestListItem);
+                            loadListNotif(rsRequestListItem, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 notifView.onSuccess(RSConstants.LIST_NOTIFS, response.body().getData(), null);
@@ -57,8 +59,8 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
     }
 
     @Override
-    public void editNotifVisibility(String notifId, String itemId) {
-        if (RSNetwork.isConnected()) {
+    public void editNotifVisibility(String notifId, String itemId, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (notifView != null) {
                 notifView.showProgressBar(RSConstants.EDIT_NOTIF_VISIBILITY);
 
@@ -78,7 +80,7 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            editNotifVisibility(notifId, itemId);
+                            editNotifVisibility(notifId, itemId, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 notifView.onSuccess(RSConstants.EDIT_NOTIF_VISIBILITY, response.body().getData(), itemId);
@@ -104,7 +106,7 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Context context) {
         if (callLoadListNotif != null)
             if (callLoadListNotif.isExecuted())
                 callLoadListNotif.cancel();

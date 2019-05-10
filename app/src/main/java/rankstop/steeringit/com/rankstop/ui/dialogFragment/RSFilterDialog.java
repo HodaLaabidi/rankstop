@@ -133,7 +133,7 @@ public class RSFilterDialog extends BottomSheetDialogFragment implements RSView.
         super.onActivityCreated(savedInstanceState);
 
         presenter = new PresenterFilterSearchImpl(RSFilterDialog.this);
-        presenter.loadCategories(RankStop.getDeviceLanguage());
+        presenter.loadCategories(RankStop.getDeviceLanguage(), getContext());
 
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

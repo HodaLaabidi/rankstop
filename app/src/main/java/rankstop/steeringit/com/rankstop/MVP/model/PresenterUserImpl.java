@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
+import android.content.Context;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
@@ -23,8 +25,8 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
     }
 
     @Override
-    public void loadUserInfo(String id) {
-        if (RSNetwork.isConnected()) {
+    public void loadUserInfo(String id, Context context) {
+        if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.USER_INFO);
                 callUserInfo = WebService.getInstance().getApi().loadUserInfo(RSSessionToken.getUsergestToken(), id);
@@ -33,7 +35,7 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            loadUserInfo(id);
+                            loadUserInfo(id, context);
                         } else {
                             if (response.body().getStatus() == 1) {
                                 standardView.onSuccess(RSConstants.USER_INFO, response.body().getData());
@@ -57,7 +59,7 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
     }
 
     @Override
-    public void onDestroyUser() {
+    public void onDestroyUser(Context context) {
         if (callUserInfo != null)
             if (callUserInfo.isExecuted())
                 callUserInfo.cancel();

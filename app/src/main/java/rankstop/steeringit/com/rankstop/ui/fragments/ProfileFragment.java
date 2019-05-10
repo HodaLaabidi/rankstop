@@ -136,7 +136,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     @OnClick({R.id.more_page_created, R.id.more_page_owned, R.id.more_page_followed, R.id.btn_update_profile})
     public void manageBtn(MaterialButton v) {
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
             switch (v.getId()) {
                 case R.id.more_page_created:
@@ -208,7 +208,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
         bindViews();
         bindLocalData();
-        if (RSNetwork.isConnected()) {
+        if (RSNetwork.isConnected(getContext())) {
             loadData();
         } else {
             onOffLine();
@@ -333,19 +333,19 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     }
 
     private void loadProfileData() {
-        userPresenter.loadUserInfo(userInfo.getUser().get_id());
+        userPresenter.loadUserInfo(userInfo.getUser().get_id(), getContext());
     }
 
     private void loadOwnedItem() {
-        itemPresenter.loadItemOwned(rsRequestListItem);
+        itemPresenter.loadItemOwned(rsRequestListItem, getContext());
     }
 
     private void loadCreatedItem() {
-        itemPresenter.loadItemCreated(rsRequestListItem);
+        itemPresenter.loadItemCreated(rsRequestListItem, getContext());
     }
 
     private void loadFollowedItem() {
-        itemPresenter.loadItemFollowed(rsRequestListItem);
+        itemPresenter.loadItemFollowed(rsRequestListItem, getContext());
     }
 
     private void initOwnedItem(List<Item> listOwnedItem) {
@@ -358,7 +358,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected())
+                if (RSNetwork.isConnected(getContext()))
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listOwnedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 else
                     onOffLine();
@@ -381,7 +381,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected())
+                if (RSNetwork.isConnected(getContext()))
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listCreatedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 else
                     onOffLine();
@@ -404,7 +404,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
             @Override
             public void onClick(View view, int position) {
-                if (RSNetwork.isConnected())
+                if (RSNetwork.isConnected(getContext()))
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(listFollowedItem.get(position).getItemDetails().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                 else
                     onOffLine();
@@ -421,9 +421,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         itemIdToFollow = itemId;
         RSFollow rsFollow = new RSFollow(userInfo.getUser().get_id(), itemId);
         if (isFollow) {
-            itemPresenter.followItem(rsFollow);
+            itemPresenter.followItem(rsFollow, getContext());
         } else {
-            itemPresenter.unfollowItem(rsFollow);
+            itemPresenter.unfollowItem(rsFollow, getContext());
         }
     }
 
@@ -498,9 +498,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
             listCreatedItem.clear();
 
         if (itemPresenter != null)
-            itemPresenter.onDestroyItem();
+            itemPresenter.onDestroyItem(getContext());
         if (userPresenter != null)
-            userPresenter.onDestroyUser();
+            userPresenter.onDestroyUser(getContext());
         if (unbinder != null)
             unbinder.unbind();
         super.onDestroyView();
