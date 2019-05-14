@@ -41,12 +41,14 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.customviews.RSTVSemiBold;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
+import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
@@ -599,7 +601,12 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+       // Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
+
+
+
     }
 
     private void setFilterListener() {

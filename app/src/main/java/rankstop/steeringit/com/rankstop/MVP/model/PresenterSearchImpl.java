@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
@@ -20,6 +21,7 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
 
     private RSView.SearchView searchView;
     private Call<RSResponse> callSearch, callSearchItems, callSearchItemsFiltered;
+    private static final String TAG = "PresenterSearchImpl";
 
     public PresenterSearchImpl(RSView.SearchView searchView) {
         this.searchView = searchView;
@@ -75,13 +77,16 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            Log.e(TAG , "reconnect");
                             searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
                             searchItems(rsRequestSearch, context);
                         } else {
                             if (response.body().getStatus() == 1) {
+                                Log.e(TAG , " status code = " + response.body().getStatus()+"");
                                 searchView.onSuccess(RSConstants.SEARCH_ITEMS, response.body().getData());
                             } else if (response.body().getStatus() == 0) {
                                 searchView.onError(RSConstants.SEARCH_ITEMS);
+                                Log.e(TAG , " status code = " + response.body().getStatus()+"");
                             }
                             searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
                         }

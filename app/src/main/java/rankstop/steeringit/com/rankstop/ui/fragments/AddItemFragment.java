@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,6 +63,7 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
@@ -75,13 +78,16 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.LOCATION_SERVICE;
+import static rankstop.steeringit.com.rankstop.utils.RSConstants.PLACE_PICKER_REQUEST_CODE;
 
 public class AddItemFragment extends Fragment implements RSView.StandardView, AdapterView.OnItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
 
     private static AddItemFragment instance;
     private String itemName, itemDescription;
+    private  static final String TAG = "AddItemFragment";
 
     private Unbinder unbinder;
     @BindView(R.id.progress_bar)
@@ -239,6 +245,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     private void bindViews() {
 
+
         toolbar.setTitle(addItemTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         setFragmentActionListener((ContainerActivity) getActivity());
@@ -250,6 +257,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                 categorySpinner.setOnItemSelectedListener(this);
                 loadCategoriesList(getContext());
                 locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+                addressET.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
                 nameET.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -348,6 +361,27 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                     rsAddItem.setCity(getCity(marker.getPosition()));
                     rsAddItem.setCountry(getCountry(marker.getPosition()));
                     rsAddItem.setGovernorate(getGovernorate(marker.getPosition()));
+                    currentLatitude = latLng.latitude;
+                    currentLongitude = latLng.longitude;
+                    mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                        @Override
+                        public void onMarkerDragStart(Marker marker) {
+
+                        }
+
+                        @Override
+                        public void onMarkerDrag(Marker marker) {
+
+                        }
+
+                        @Override
+                        public void onMarkerDragEnd(Marker marker) {
+                            addressET.setText(getAddress(marker.getPosition()));
+                            rsAddItem.setCity(getCity(marker.getPosition()));
+                            rsAddItem.setCountry(getCountry(marker.getPosition()));
+                            rsAddItem.setGovernorate(getGovernorate(marker.getPosition()));
+                        }
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -549,12 +583,21 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         alert.show();
     }
 
+
+
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RSConstants.REQUEST_CODE) {
             initMaps();
         }
+
     }
+
+
+
 
     @Override
     public void onStop() {
@@ -624,7 +667,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     private void navigateToSignUp(RSNavigationData rsNavigationData) {

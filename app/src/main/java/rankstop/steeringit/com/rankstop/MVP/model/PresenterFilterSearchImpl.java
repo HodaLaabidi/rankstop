@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
@@ -17,6 +18,7 @@ import retrofit2.Response;
 public class PresenterFilterSearchImpl implements RSPresenter.SearchFilterPresenter {
 
     private RSView.SearchView searchView;
+    private static final String TAG = "PresenterFilterSearchImpl";
 
     private Call<RSResponse> callSearch;
 
@@ -34,12 +36,15 @@ public class PresenterFilterSearchImpl implements RSPresenter.SearchFilterPresen
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            Log.e(TAG , "reconnect");
                             RSSession.Reconnecter();
                             loadCategories(lang, context);
                         } else {
                             if (response.body().getStatus() == 1) {
+                                Log.e(TAG , response.body().getStatus()+"");
                                 searchView.onSuccess(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION, response.body().getData());
                             } else if (response.body().getStatus() == 0) {
+                                Log.e(TAG , response.body().getStatus()+"");
                                 searchView.onError(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
                             }
                             searchView.hideProgressBar(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);

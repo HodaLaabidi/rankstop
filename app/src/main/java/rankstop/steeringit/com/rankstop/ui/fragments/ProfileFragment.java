@@ -36,6 +36,7 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
@@ -742,7 +743,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     @Override

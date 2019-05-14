@@ -129,4 +129,8 @@ public class RSConstants {
     public static final String FRAGMENT_HOME = "home fragment";
     public static final String FRAGMENT_ITEM_DETAILS = "item details fragment";
     public static final String FRAGMENT_UPDATE_PROFILE = "fragment update profile";
+
+
+    // PlacePicker Request Code
+    public static final int PLACE_PICKER_REQUEST_CODE = 1 ;
 }

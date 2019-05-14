@@ -66,6 +66,7 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
@@ -798,7 +799,9 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+       // Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     private void openOwnershipDialog(Bundle bundle) {

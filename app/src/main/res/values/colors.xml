@@ -14,6 +14,7 @@
     <color name="colorBlack">#222222</color>
     <color name="colorLightGray">#E0E0E0</color>
     <color name="colorGreen">#00ff00</color>
+    <color name="colorGreenTwo">#43A047</color>
     <color name="colorBlue">#0000ff</color>
     <color name="colorWarning">#FF9800</color>
     <color name="colorLinkedIn">#0077B5</color>
@@ -22,4 +23,7 @@
     <color name="colorInfo">#2196F3</color>
     <color name="colorDarkBlack">#000000</color>
     <color name="colorWhite">#ffffff</color>
+    <color name="lightGray">#F1F1F1</color>
+    <color name="colorGrey">#B1BAC4</color>
+    <color name="colorDarkGrey">#3e3e3e</color>
 </resources>

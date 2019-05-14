@@ -218,6 +218,7 @@
     <string name="valuations_positives">Évaluations Positives</string>
     <string name="valuations_n_gatives">Évaluations négatives</string>
     <string name="valuations_neutres">Évaluations Neutres</string>
+    <string name="error" translatable="false">Erreur</string>
 
     <string-array name="labels">
         <item>Not set</item>
@@ -228,4 +229,5 @@
         <item>4</item>
         <item>5</item>
     </string-array>
+
 </resources>

@@ -73,6 +73,7 @@
     <string name="text_contact">Contact</string>
     <string name="title_edit_profile">Edit profile</string>
     <string name="off_line">You are now off line</string>
+    <string name="error">Error</string>
     <string name="login_show_eval">Login to show your evaluations</string>
     <string name="search_items">Search items and evaluate them</string>
     <string name="no_item_evaluated">There is no item evaluated</string>

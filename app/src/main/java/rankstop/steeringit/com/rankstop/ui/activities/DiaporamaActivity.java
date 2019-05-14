@@ -21,6 +21,7 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
@@ -156,7 +157,9 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getApplicationContext(), offlineMsg, Toast.LENGTH_LONG).show();
+       // Toast.makeText(getApplicationContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(DiaporamaActivity.this, getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     private void managePicsList(RSResponseItemData rsResponseItemData) {

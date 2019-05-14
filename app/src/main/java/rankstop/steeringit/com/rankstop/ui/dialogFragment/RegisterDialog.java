@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
@@ -311,7 +312,9 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offLineMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), offLineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offLineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     @Override

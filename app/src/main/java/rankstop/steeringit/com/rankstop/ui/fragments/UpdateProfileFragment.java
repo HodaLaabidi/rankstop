@@ -70,6 +70,7 @@ import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Country;
@@ -810,7 +811,9 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @Override
     public void onOffLine() {
-        Toast.makeText(context, offlineMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, offlineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     @Override

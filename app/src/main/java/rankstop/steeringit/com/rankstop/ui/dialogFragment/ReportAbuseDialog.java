@@ -27,6 +27,7 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Abuse;
@@ -236,6 +237,8 @@ public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseVie
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offLineMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), offLineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offLineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 }

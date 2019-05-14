@@ -53,6 +53,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Country;
@@ -490,7 +491,9 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+       // Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     private RSRequestSocialLogin getData(JSONObject object) {
