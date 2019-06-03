@@ -207,9 +207,9 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             }
 
             @Override
-            public void onClick(View view, int position) {
+            public void onClick(View view, int position, List<Comment> listComments) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(RSConstants.COMMENT, comments.get(position));
+                bundle.putSerializable(RSConstants.COMMENT, listComments.get(position));
                 bundle.putString(RSConstants.USER_ID, userId);
                 showFullComment(bundle);
             }
@@ -221,9 +221,9 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
             }
 
             @Override
-            public void onClick(View view, int position) {
+            public void onClick(View view, int position, List<Comment>listComments ) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(RSConstants.COMMENT, myComments.get(position));
+                bundle.putSerializable(RSConstants.COMMENT, listComments.get(position));
                 bundle.putString(RSConstants.USER_ID, userId);
                 showFullComment(bundle);
             }

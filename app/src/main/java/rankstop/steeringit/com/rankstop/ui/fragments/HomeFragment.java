@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 
@@ -421,10 +420,10 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.rs_menu, menu);
-        if (!RSSession.isLoggedIn()) {
+
             MenuItem item = menu.findItem(R.id.logout);
             item.setVisible(false);
-        }
+
     }
 
     @Override
@@ -634,6 +633,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         switch (target) {
             case RSConstants.TOP_RANKED_ITEMS:
                 progressBarTopRanked.setVisibility(View.VISIBLE);
+
                 break;
             case RSConstants.TOP_COMMENTED_ITEMS:
                 progressBarTopCommented.setVisibility(View.VISIBLE);

@@ -65,13 +65,8 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
                 notifView.showProgressBar(RSConstants.EDIT_NOTIF_VISIBILITY);
 
 
-
-                // the two lines below  may stay like that until i fix it i just added null value %%% i got editNotifVisibility not found %%%
-
-                // ****************************************************************************************************
                 callEditNotifVisibility = null;
-                //callEditNotifVisibility = WebService.getInstance().getApi().editNotifVisibility(RSSessionToken.getUsergestToken(), notifId);
-                // ****************************************************************************************************
+                callEditNotifVisibility = WebService.getInstance().getApi().editNotifVisibility(RSSessionToken.getUsergestToken(), notifId);
 
 
 

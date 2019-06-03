@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_marginLeft="@dimen/p_card_rv_item"
+    android:layout_marginRight="@dimen/p_card_rv_item"
+    android:layout_marginBottom="@dimen/p_card_rv_item"
+    android:foreground="?android:selectableItemBackground"
+    tools:context=".ui.activities.ContainerActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <CheckBox
+            android:id="@+id/icon_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/p_card_rv_item"
+            android:background="@drawable/like_icon"
+            android:button="@null"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="true"
+            android:stateListAnimator="@animator/scale" />
+        <LinearLayout
+
+            android:orientation="horizontal"
+            android:background="@drawable/bg_loading_item"
+            android:id="@+id/first_layout"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="@dimen/width_pie_item"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/p_card_rv_item"
+            android:layout_marginBottom="@dimen/p_card_rv_item"
+            android:layout_below="@+id/icon_like" />
+        <LinearLayout
+            android:layout_marginBottom="@dimen/p_card_rv_item"
+            android:layout_marginTop="@dimen/p_card_rv_item"
+            android:layout_below="@+id/icon_like"
+            android:background="@drawable/bg_loading_item"
+            android:orientation="horizontal"
+            android:id="@+id/line"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/first_layout"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"/>
+        <LinearLayout
+            android:layout_marginLeft="5dp"
+            android:layout_below="@+id/icon_like"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/line"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="@dimen/p_card_rv_item"
+            android:layout_marginBottom="@dimen/p_card_rv_item"
+            android:orientation="vertical"
+            android:background="@drawable/bg_loading_item"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+            <rankstop.steeringit.com.rankstop.utils.DisabledRecyclerView
+                android:id="@+id/recycler_view_criteria_evaluated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <!--<android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_criteria_evaluated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>-->
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

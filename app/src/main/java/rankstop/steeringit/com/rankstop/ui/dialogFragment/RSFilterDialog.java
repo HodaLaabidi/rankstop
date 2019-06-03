@@ -81,28 +81,30 @@ public class RSFilterDialog extends BottomSheetDialogFragment implements RSView.
         RSRequestFilter data = new RSRequestFilter();
         data.setCatId(selectedCategory.getCategory().get_id());
         String[] countryCode = new String[1];
-        if (selectedLocation.getCountry().getCountryName().equals(allCountry)) {
-            countryCode[0] = "";
-        } else {
-            List<String> listCityt = new ArrayList<>();
-            countryCode[0] = selectedLocation.getCountry().getCountryCode();
-            for (int i = 0; i < citiesContainer.getChildCount(); i++) {
-                if (citiesContainer.getChildAt(i) instanceof CheckBox) {
-                    CheckBox checkBox = (CheckBox) citiesContainer.getChildAt(i);
-                    if (checkBox.isChecked()) {
-                        if (checkBox.getText().toString().equals(otherCity)) {
-                            listCityt.add("");
-                        } else {
-                            listCityt.add(checkBox.getText().toString());
-                        }
+       if (selectedLocation != null){
+           if (selectedLocation.getCountry().getCountryName().equals(allCountry)) {
+               countryCode[0] = "";
+           } else {
+               List<String> listCityt = new ArrayList<>();
+               countryCode[0] = selectedLocation.getCountry().getCountryCode();
+               for (int i = 0; i < citiesContainer.getChildCount(); i++) {
+                   if (citiesContainer.getChildAt(i) instanceof CheckBox) {
+                       CheckBox checkBox = (CheckBox) citiesContainer.getChildAt(i);
+                       if (checkBox.isChecked()) {
+                           if (checkBox.getText().toString().equals(otherCity)) {
+                               listCityt.add("");
+                           } else {
+                               listCityt.add(checkBox.getText().toString());
+                           }
 
-                        //Toast.makeText(getContext(), ""+checkBox.getText().toString(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-            data.setCity(listCityt);
-        }
-        data.setCodeCountry(countryCode);
+                           //Toast.makeText(getContext(), ""+checkBox.getText().toString(), Toast.LENGTH_SHORT).show();
+                       }
+                   }
+               }
+               data.setCity(listCityt);
+           }
+           data.setCodeCountry(countryCode);
+       }
 
 
         callback.onfilterClicked(data);

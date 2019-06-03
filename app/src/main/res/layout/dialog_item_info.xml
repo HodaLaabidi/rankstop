@@ -128,6 +128,7 @@
 
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_address"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/ms_ic_tv"
@@ -138,6 +139,23 @@
             android:textColor="@color/colorGray"
             android:textSize="@dimen/text_size_category_item_details"
             android:visibility="gone" />
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:id="@+id/itinerary_link"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_directions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                android:textColor="@color/colorRedPie"
+                android:text="@string/itinerary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_phone"

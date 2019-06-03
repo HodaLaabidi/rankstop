@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -39,6 +40,9 @@ public class ItemInfoDialog extends DialogFragment {
 
     @BindView(R.id.tv_address)
     RSTVMedium addressTV;
+
+    @BindView(R.id.itinerary_link)
+    LinearLayout itineraryLink ;
 
     @BindView(R.id.tv_phone)
     RSTVMedium phoneTV;
@@ -217,6 +221,19 @@ public class ItemInfoDialog extends DialogFragment {
             if (!itemDetails.getLocation().getAddress().equals("")) {
                 addressTV.setVisibility(View.VISIBLE);
                 addressTV.setText(itemDetails.getLocation().getAddress());
+                itineraryLink.setVisibility(View.VISIBLE);
+                itineraryLink.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("geo:"+itemDetails.getLocation().getLatitude()+","+itemDetails.getLocation().getLongitude()));
+                        intent.setPackage("com.google.android.apps.maps");
+                        startActivity(intent);
+
+                    }
+                });
             }
         } catch (Exception e) {
         }

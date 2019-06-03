@@ -66,6 +66,11 @@ dependencies {
     implementation 'com.google.android.gms:play-services-plus:16.0.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
     implementation 'com.android.support:multidex:1.0.1'
+
+    // skeleton librairy
+    implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
+    // used to include json file splash screen animation
+    implementation "com.airbnb.android:lottie:2.0.0"
 }
 
 apply plugin: 'com.google.gms.google-services'

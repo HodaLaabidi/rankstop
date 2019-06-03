@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
@@ -79,6 +80,9 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     @BindString(R.string.off_line)
     String offlineMsg;
+
+    @BindView(R.id.shimmer_recycler_view)
+    ShimmerRecyclerView shimmerRecyclerView ;
 
     @OnClick(R.id.btn_login_or_search)
     void fun() {
@@ -143,6 +147,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
             nodataTV.setText(getResources().getString(R.string.login_show_eval));
             layoutNoItem.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
+            shimmerRecyclerView.setVisibility(View.GONE);
         }
     }
 
@@ -217,10 +222,10 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.rs_menu, menu);
-        if (!RSSession.isLoggedIn()) {
+
             MenuItem item = menu.findItem(R.id.logout);
             item.setVisible(false);
-        }
+
     }
 
     @Override
@@ -358,12 +363,27 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
 
     @Override
     public void showProgressBar(String target) {
-        progressBar.setVisibility(View.VISIBLE);
+        // shimmer recycler view must be shown only for first page otherwise progressbar will be shown
+        if (currentPage == 1){
+            shimmerRecyclerView.setVisibility(View.VISIBLE);
+            shimmerRecyclerView.showShimmerAdapter();
+
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
     public void hideProgressBar(String target) {
-        progressBar.setVisibility(View.GONE);
+
+        if (currentPage == 1){
+            shimmerRecyclerView.hideShimmerAdapter();
+
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+
     }
 
     @Override

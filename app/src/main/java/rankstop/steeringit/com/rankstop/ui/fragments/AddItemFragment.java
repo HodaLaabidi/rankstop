@@ -513,10 +513,10 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.rs_menu, menu);
-        if (!RSSession.isLoggedIn()) {
+
             MenuItem item = menu.findItem(R.id.logout);
             item.setVisible(false);
-        }
+
     }
 
     @Override

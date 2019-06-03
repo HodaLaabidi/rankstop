@@ -167,7 +167,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
                     mListener.onRemoveClicked(getAdapterPosition());
                     break;
                 default:
-                    mListener.onClick(v, getAdapterPosition());
+                    mListener.onClick(v, getAdapterPosition(), comments);
             }
         }
 

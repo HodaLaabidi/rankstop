@@ -46,6 +46,7 @@ import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.customviews.RSTVSemiBold;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
+import rankstop.steeringit.com.rankstop.data.model.db.Comment;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
 import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
@@ -59,7 +60,7 @@ import rankstop.steeringit.com.rankstop.ui.activities.DiaporamaActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ItemPixAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.DialogConfirmationListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardForItemPicsListener;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AlertConfirmationDialog;
 import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
 import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
@@ -143,7 +144,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     String pictureDeletedSuccessfully;
 
 
-    private ReviewCardListener listener, myListener;
+    private ReviewCardForItemPicsListener listener, myListener;
     private ItemPixAdapter itemPicsAdapter, myItemPixAdapter;
     private List<Picture> pictures, myPictures;
     private Category currentCategory;
@@ -200,7 +201,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
         }
         rsRequestItemData = new RSRequestItemData(itemId, userId, RSConstants.MAX_FIELD_TO_LOAD, 1);
         setFragmentActionListener((ContainerActivity) getActivity());
-        listener = new ReviewCardListener() {
+        listener = new ReviewCardForItemPicsListener() {
             @Override
             public void onRemoveClicked(int position) {
 
@@ -219,7 +220,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
                                 .putExtra(RSConstants.RS_REQUEST_ITEM_DATA, rsRequestItemData));
             }
         };
-        myListener = new ReviewCardListener() {
+        myListener = new ReviewCardForItemPicsListener() {
             @Override
             public void onRemoveClicked(int position) {
                 openDialogConfirmation(myPictures.get(position));

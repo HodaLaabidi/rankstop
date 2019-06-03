@@ -227,5 +227,6 @@
         <item>4</item>
         <item>5</item>
     </string-array>
-    <string name="error" translatable="false">Error</string>
+    <string name="error" >Error</string>
+    <string name="itinerary">See itinerary</string>
 </resources>

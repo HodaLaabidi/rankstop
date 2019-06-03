@@ -417,7 +417,10 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             user.setFirstName(account.getGivenName());
             user.setLastName(account.getFamilyName());
             user.setId(account.getId());
-            user.setPhotoUrl(account.getPhotoUrl().toString());
+            if (account.getPhotoUrl() != null){
+                user.setPhotoUrl(account.getPhotoUrl().toString());
+            }
+
 
             performSocialLogin(user);
 

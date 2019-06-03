@@ -414,7 +414,10 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         adapterFollowedItem = new PieAdapter(listFollowedItem, listener);
         recyclerViewFollowedItem.setLayoutManager(new LinearLayoutManager(recyclerViewFollowedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewFollowedItem.setAdapter(adapterFollowedItem);
-        recyclerViewFollowedItem.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
+        if (recyclerViewFollowedItem.getItemDecorationCount() == 0){
+            recyclerViewFollowedItem.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
+        }
+
         recyclerViewFollowedItem.setNestedScrollingEnabled(false);
     }
 
@@ -539,10 +542,16 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 break;
             case RSConstants.ITEM_FOLLOWED:
                 listingItemResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
+                if (listFollowedItem != null){
+                listFollowedItem.clear();
+                }
                 listFollowedItem = listingItemResponse.getItems();
                 if (listFollowedItem.size() == 0) {
                     layoutItemFollowed.setVisibility(View.VISIBLE);
+                    recyclerViewFollowedItem.setVisibility(View.GONE);
                 } else {
+                    recyclerViewFollowedItem.setVisibility(View.VISIBLE);
+                    layoutItemFollowed.setVisibility(View.GONE);
                     initFollowedItem(listFollowedItem);
                     if (listingItemResponse.getPages() > 1)
                         moreFollowedBtn.setVisibility(View.VISIBLE);
@@ -640,18 +649,21 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         if (indexIntoOwnedList != -1) {
             listOwnedItem.get(indexIntoOwnedList).setFollow(follow);
             adapterOwnedItem.notifyItemChanged(indexIntoOwnedList, "icon");
+            loadFollowedItem();
         }
 
         int indexIntoCreatedList = findItemIndex(listCreatedItem, itemId);
         if (indexIntoCreatedList != -1) {
             listCreatedItem.get(indexIntoCreatedList).setFollow(follow);
             adapterCreatedItem.notifyItemChanged(indexIntoCreatedList, "icon");
+            loadFollowedItem();
         }
 
         int indexIntoFollowedList = findItemIndex(listFollowedItem, itemId);
         if (indexIntoFollowedList != -1) {
             listFollowedItem.get(indexIntoFollowedList).setFollow(follow);
             adapterFollowedItem.notifyItemChanged(indexIntoFollowedList, "icon");
+            loadFollowedItem();
         }
     }
 

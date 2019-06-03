@@ -23,14 +23,16 @@ import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.data.model.db.Comment;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardForItemPicsListener;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHolder> {
 
-    private ReviewCardListener listener;
+    private ReviewCardForItemPicsListener listener;
     private List<Picture> pictures;
     private String target;
 
@@ -38,7 +40,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemPixAdapter(ReviewCardListener listener, String target) {
+    public ItemPixAdapter(ReviewCardForItemPicsListener listener, String target) {
         this.listener = listener;
         this.pictures = new ArrayList<>();
         this.target = target;
@@ -103,7 +105,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ReviewCardListener mListener;
+        private ReviewCardForItemPicsListener mListener;
         private RSTVMedium usernameTV, dateTV;
         private RelativeLayout layout;
         private ImageButton removePicBTN;
@@ -114,7 +116,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
         @BindString(R.string.date_time_format)
         String dateTimeFormat;
 
-        public ViewHolder(@NonNull View itemView, ReviewCardListener listener) {
+        public ViewHolder(@NonNull View itemView, ReviewCardForItemPicsListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mListener = listener;

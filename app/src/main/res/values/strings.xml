@@ -242,6 +242,8 @@
     <string name="valuations_positives">Positive evaluations</string>
     <string name="valuations_n_gatives">Negative evaluations</string>
     <string name="valuations_neutres">Neutral Evaluations</string>
+    <string name="splash_screen_text" translatable="false">Global Rating Platform</string>
+    <string name="itinerary">See itinerary</string>
 
     <string-array name="labels">
         <item>Not set</item>
