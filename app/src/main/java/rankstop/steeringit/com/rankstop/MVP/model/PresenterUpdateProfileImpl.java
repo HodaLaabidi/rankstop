@@ -64,18 +64,20 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                             RSSession.Reconnecter();
                             editProfile(user, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.UPDATE_PROFILE, response.body().getData());
-                                standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onFailure(RSConstants.UPDATE_PROFILE);
-                                standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
-                            } else if (response.body().getStatus() == 2) {
-                                standardView.onOldPwdIncorrect(response.body().getMessage());
-                            } else if (response.body().getStatus() == 3) {
-                                standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
-                            } else if (response.body().getStatus() == 4) {
-                                standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(RSConstants.UPDATE_PROFILE, response.body().getData());
+                                    standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onFailure(RSConstants.UPDATE_PROFILE);
+                                    standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                                } else if (response.body().getStatus() == 2) {
+                                    standardView.onOldPwdIncorrect(response.body().getMessage());
+                                } else if (response.body().getStatus() == 3) {
+                                    standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                                } else if (response.body().getStatus() == 4) {
+                                    standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
+                                }
                             }
                             //standardView.hideProgressBar(RSConstants.ADD_ITEM);
                         }
@@ -108,10 +110,12 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                             standardView.hideProgressBar(RSConstants.COUNTRIES_LIST);
                             loadCountriesList(lang, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.COUNTRIES_LIST, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onError(RSConstants.COUNTRIES_LIST);
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(RSConstants.COUNTRIES_LIST, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onError(RSConstants.COUNTRIES_LIST);
+                                }
                             }
                             standardView.hideProgressBar(RSConstants.COUNTRIES_LIST);
                         }

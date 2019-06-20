@@ -254,4 +254,10 @@
         <item>4</item>
         <item>5</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_scanner">Scanner</string>
+    <string name="profil">Profil</string>
+    <string name="hint_item_barcode">Barcode</string>
 </resources>

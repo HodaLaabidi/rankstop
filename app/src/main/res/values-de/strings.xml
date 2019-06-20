@@ -229,4 +229,6 @@
     </string-array>
     <string name="error" >Error</string>
     <string name="itinerary">See itinerary</string>
+    <string name="title_scanner">Scanner</string>
+    <string name="profil">Profil</string>
 </resources>

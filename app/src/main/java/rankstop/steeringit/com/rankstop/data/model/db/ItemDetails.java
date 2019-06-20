@@ -9,19 +9,20 @@ public class ItemDetails implements Serializable {
 
     private Object category;
     private String createdAt, lastDateView, updatedAt, phone;
-    private String title, description, urlFacebook, urlInstagram, urlGooglePlus, urlLinkedIn, urlTwitter, _id;
+    private String title, description, urlFacebook, urlInstagram, urlGooglePlus, urlLinkedIn, urlTwitter, _id , barcode;
     private Object creator, owner;
     private int evaluations, numberView;
     private List<Gallery> gallery;
     private Localisation location;
     private int bad, good, neutral;
 
-    public ItemDetails(Category category, String createdAt, String lastDateView, String updatedAt, String title, String description, String urlFacebook, String urlGooglePlus, String urlInstagram, String urlLinkedIn, String urlTwitter, String _id, Object creator, Object owner, int evaluations, int numberView) {
+    public ItemDetails(Category category, String createdAt, String lastDateView, String updatedAt, String title,String barcode , String description, String urlFacebook, String urlGooglePlus, String urlInstagram, String urlLinkedIn, String urlTwitter, String _id, Object creator, Object owner, int evaluations, int numberView) {
         this.category = category;
         this.createdAt = createdAt;
         this.lastDateView = lastDateView;
         this.updatedAt = updatedAt;
         this.title = title;
+        this.barcode = barcode ;
         this.description = description;
         this.urlFacebook = urlFacebook;
         this.urlGooglePlus = urlGooglePlus;
@@ -33,6 +34,14 @@ public class ItemDetails implements Serializable {
         this.owner = owner;
         this.evaluations = evaluations;
         this.numberView = numberView;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 
     public Object getCategory() {

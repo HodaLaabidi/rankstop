@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
@@ -18,6 +20,8 @@ public class SpinnerCategoryAdapter extends ArrayAdapter<Category> {
 
     private Context mContext;
     private List<Category> categoriesList;
+
+    private static  RSTVMedium categoryNameTV ;
 
     public SpinnerCategoryAdapter(@NonNull Context context, List<Category> list) {
         super(context, 0, list);
@@ -40,7 +44,7 @@ public class SpinnerCategoryAdapter extends ArrayAdapter<Category> {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_list_category,parent,false);
         }
-        RSTVMedium categoryNameTV = convertView.findViewById(R.id.text_view);
+         categoryNameTV = convertView.findViewById(R.id.text_view);
 
         Category currentCategory = categoriesList.get(position);
 
@@ -50,4 +54,27 @@ public class SpinnerCategoryAdapter extends ArrayAdapter<Category> {
         return convertView;
 
     }
+
+    public Category  refreshSpinner (String categoryId ){
+
+        //Stream category = this.categoriesList.stream().filter(p -> p.get_id().equals("categoryId"));
+
+        for (Category category : this.categoriesList) {
+            if (categoryId.equals(category.get_id())) {
+                Category  currentCategory = category ;
+                categoryNameTV.setText(currentCategory.getName());
+                return currentCategory ;
+            }
+        }
+
+       return new Category();
+
+
+
+    }
+
+
+
+
+
 }

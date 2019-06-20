@@ -17,223 +17,243 @@
             android:background="@drawable/ic_info_outline" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/min_height_report_dialog"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_dialog">
+       <android.support.v4.widget.NestedScrollView
+           android:id="@+id/scroll_view"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+           <LinearLayout
+               android:orientation="vertical"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:minHeight="@dimen/min_height_report_dialog"
+                   android:orientation="vertical"
+                   android:padding="@dimen/padding_dialog">
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/size_title_dialog" />
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                       android:id="@+id/tv_title"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/colorPrimary"
+                       android:textSize="@dimen/size_title_dialog" />
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:layout_marginTop="2dp"
+                       android:id="@+id/tv_barcode"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/colorPrimary"
+                       android:textSize="12dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:layout_marginTop="10dp"
+                       android:layout_marginBottom="10dp"
+                       android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           android:orientation="horizontal">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                    android:id="@+id/tv_goode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:drawableStart="@drawable/ic_pie_green"
-                    android:drawablePadding="5dp"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/size_title_dialog" />
+                           <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                               android:id="@+id/tv_goode"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:layout_marginEnd="10dp"
+                               android:drawableStart="@drawable/ic_pie_green"
+                               android:drawablePadding="5dp"
+                               android:textColor="@color/colorPrimary"
+                               android:textSize="@dimen/size_title_dialog" />
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                    android:id="@+id/tv_descgoode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/mb_text_category"
-                    android:gravity="center|start"
-                    android:text="@string/valuations_positives"
-                    android:textColor="@color/colorGray"
-                    android:textSize="@dimen/text_size_dialog" />
-            </LinearLayout>
+                           <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                               android:id="@+id/tv_descgoode"
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:layout_marginBottom="@dimen/mb_text_category"
+                               android:gravity="center|start"
+                               android:text="@string/valuations_positives"
+                               android:textColor="@color/colorGray"
+                               android:textSize="@dimen/text_size_dialog" />
+                       </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           android:orientation="horizontal">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                    android:id="@+id/tv_nutre"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:drawableStart="@drawable/ic_pie_yellow"
-                    android:drawablePadding="5dp"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/size_title_dialog" />
+                           <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                               android:id="@+id/tv_nutre"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:layout_marginEnd="10dp"
+                               android:drawableStart="@drawable/ic_pie_yellow"
+                               android:drawablePadding="5dp"
+                               android:textColor="@color/colorPrimary"
+                               android:textSize="@dimen/size_title_dialog" />
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                    android:id="@+id/tv_descnutre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/mb_text_category"
-                    android:gravity="center|start"
-                    android:text="@string/valuations_neutres"
-                    android:textColor="@color/colorGray"
-                    android:textSize="@dimen/text_size_dialog" />
-            </LinearLayout>
+                           <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                               android:id="@+id/tv_descnutre"
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:layout_marginBottom="@dimen/mb_text_category"
+                               android:gravity="center|start"
+                               android:text="@string/valuations_neutres"
+                               android:textColor="@color/colorGray"
+                               android:textSize="@dimen/text_size_dialog" />
+                       </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           android:orientation="horizontal">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                    android:id="@+id/tv_bade"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:drawableStart="@drawable/ic_pie_red"
-                    android:drawablePadding="5dp"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/size_title_dialog" />
+                           <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                               android:id="@+id/tv_bade"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:layout_marginEnd="10dp"
+                               android:drawableStart="@drawable/ic_pie_red"
+                               android:drawablePadding="5dp"
+                               android:textColor="@color/colorPrimary"
+                               android:textSize="@dimen/size_title_dialog" />
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                    android:id="@+id/tv_descbade"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/mb_text_category"
-                    android:gravity="center|start"
-                    android:text="@string/valuations_n_gatives"
-                    android:textColor="@color/colorGray"
-                    android:textSize="@dimen/text_size_dialog" />
-            </LinearLayout>
+                           <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                               android:id="@+id/tv_descbade"
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:layout_marginBottom="@dimen/mb_text_category"
+                               android:gravity="center|start"
+                               android:text="@string/valuations_n_gatives"
+                               android:textColor="@color/colorGray"
+                               android:textSize="@dimen/text_size_dialog" />
+                       </LinearLayout>
 
-        </LinearLayout>
+                   </LinearLayout>
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-            android:id="@+id/tv_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/mb_text_category"
-            android:textColor="@color/colorGray"
-            android:textSize="@dimen/text_size_dialog" />
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:id="@+id/tv_description"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_marginBottom="@dimen/mb_text_category"
+                       android:textColor="@color/colorGray"
+                       android:textSize="@dimen/text_size_dialog" />
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-            android:id="@+id/tv_address"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/ms_ic_tv"
-            android:layout_marginBottom="@dimen/mb_ic_tv"
-            android:drawableStart="@drawable/ic_location"
-            android:drawablePadding="@dimen/p_ic_tv"
-            android:gravity="center_vertical"
-            android:textColor="@color/colorGray"
-            android:textSize="@dimen/text_size_category_item_details"
-            android:visibility="gone" />
-        <LinearLayout
-            android:layout_marginTop="10dp"
-            android:visibility="gone"
-            android:id="@+id/itinerary_link"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:src="@drawable/ic_directions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                android:textColor="@color/colorRedPie"
-                android:text="@string/itinerary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:id="@+id/tv_address"
+                       android:layout_marginTop="10dp"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_marginStart="@dimen/ms_ic_tv"
+                       android:layout_marginBottom="@dimen/mb_ic_tv"
+                       android:drawableStart="@drawable/ic_location"
+                       android:drawablePadding="@dimen/p_ic_tv"
+                       android:gravity="center_vertical"
+                       android:textColor="@color/colorGray"
+                       android:textSize="@dimen/text_size_category_item_details"
+                       android:visibility="gone" />
+                  <LinearLayout
+                      android:visibility="gone"
+                      android:id="@+id/ll_map_fragment"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content">
+                      <fragment
+                          android:name="com.google.android.gms.maps.SupportMapFragment"
+                          xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:layout_margin="20dp"
+                          android:id="@+id/map_item_info"
+                          class="rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment"
+                          android:layout_width="match_parent"
+                          android:layout_height="120dp" />
+                  </LinearLayout>
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-            android:id="@+id/tv_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/mb_ic_tv"
-            android:drawableStart="@drawable/ic_phone"
-            android:drawablePadding="@dimen/p_ic_tv"
-            android:gravity="center_vertical"
-            android:textColor="@color/colorGray"
-            android:textSize="@dimen/text_size_category_item_details"
-            android:visibility="gone" />
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:id="@+id/tv_phone"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_marginBottom="@dimen/mb_ic_tv"
+                       android:drawableStart="@drawable/ic_phone"
+                       android:drawablePadding="@dimen/p_ic_tv"
+                       android:gravity="center_vertical"
+                       android:textColor="@color/colorGray"
+                       android:textSize="@dimen/text_size_category_item_details"
+                       android:visibility="gone" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/mt_contact_section"
-            android:gravity="center"
-            android:orientation="horizontal">
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_marginTop="@dimen/mt_contact_section"
+                       android:gravity="center"
+                       android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/ic_facebook"
-                android:layout_width="@dimen/btn_width_contact"
-                android:layout_height="@dimen/btn_width_contact"
-                android:layout_margin="@dimen/btn_m_contact"
-                android:background="@drawable/ic_facebook"
-                android:contentDescription="@string/icon_facebook"
-                android:visibility="gone" />
+                       <ImageButton
+                           android:id="@+id/ic_facebook"
+                           android:layout_width="@dimen/btn_width_contact"
+                           android:layout_height="@dimen/btn_width_contact"
+                           android:layout_margin="@dimen/btn_m_contact"
+                           android:background="@drawable/ic_facebook"
+                           android:contentDescription="@string/icon_facebook"
+                           android:visibility="gone" />
 
-            <ImageButton
-                android:id="@+id/ic_instagram"
-                android:layout_width="@dimen/btn_width_contact"
-                android:layout_height="@dimen/btn_width_contact"
-                android:layout_margin="@dimen/btn_m_contact"
-                android:background="@drawable/ic_instagram"
-                android:contentDescription="@string/icon_instagram"
-                android:visibility="gone" />
+                       <ImageButton
+                           android:id="@+id/ic_instagram"
+                           android:layout_width="@dimen/btn_width_contact"
+                           android:layout_height="@dimen/btn_width_contact"
+                           android:layout_margin="@dimen/btn_m_contact"
+                           android:background="@drawable/ic_instagram"
+                           android:contentDescription="@string/icon_instagram"
+                           android:visibility="gone" />
 
-            <ImageButton
-                android:id="@+id/ic_google_plus"
-                android:layout_width="@dimen/btn_width_contact"
-                android:layout_height="@dimen/btn_width_contact"
-                android:layout_margin="@dimen/btn_m_contact"
-                android:background="@drawable/ic_google_plus"
-                android:contentDescription="@string/icon_google_plus"
-                android:visibility="gone" />
+                       <ImageButton
+                           android:id="@+id/ic_google_plus"
+                           android:layout_width="@dimen/btn_width_contact"
+                           android:layout_height="@dimen/btn_width_contact"
+                           android:layout_margin="@dimen/btn_m_contact"
+                           android:background="@drawable/ic_google_plus"
+                           android:contentDescription="@string/icon_google_plus"
+                           android:visibility="gone" />
 
-            <ImageButton
-                android:id="@+id/ic_twitter"
-                android:layout_width="@dimen/btn_width_contact"
-                android:layout_height="@dimen/btn_width_contact"
-                android:layout_margin="@dimen/btn_m_contact"
-                android:background="@drawable/ic_twitter"
-                android:contentDescription="@string/icon_twitter"
-                android:visibility="gone" />
+                       <ImageButton
+                           android:id="@+id/ic_twitter"
+                           android:layout_width="@dimen/btn_width_contact"
+                           android:layout_height="@dimen/btn_width_contact"
+                           android:layout_margin="@dimen/btn_m_contact"
+                           android:background="@drawable/ic_twitter"
+                           android:contentDescription="@string/icon_twitter"
+                           android:visibility="gone" />
 
-            <ImageButton
-                android:id="@+id/ic_linkedin"
-                android:layout_width="@dimen/btn_width_contact"
-                android:layout_height="@dimen/btn_width_contact"
-                android:layout_margin="@dimen/btn_m_contact"
-                android:background="@drawable/ic_linkedin"
-                android:contentDescription="@string/icon_linkedin"
-                android:visibility="gone" />
-        </LinearLayout>
-    </LinearLayout>
+                       <ImageButton
+                           android:id="@+id/ic_linkedin"
+                           android:layout_width="@dimen/btn_width_contact"
+                           android:layout_height="@dimen/btn_width_contact"
+                           android:layout_margin="@dimen/btn_m_contact"
+                           android:background="@drawable/ic_linkedin"
+                           android:contentDescription="@string/icon_linkedin"
+                           android:visibility="gone" />
+                   </LinearLayout>
+               </LinearLayout>
+               <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
+                   android:layout_alignParentBottom="true"
+                   android:layout_alignParentEnd="true"
+                   android:layout_below="@id/scroll_view"
+                   android:id="@+id/negative_btn"
+                   style="@style/Widget.MaterialComponents.Button.TextButton"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="end"
+                   android:layout_margin="@dimen/m_btn_dialog"
+                   android:text="@string/close"
+                   android:textAllCaps="false"
+                   android:textColor="@color/colorInfo"
+                   android:textSize="@dimen/text_size_dialog"
+                   app:cornerRadius="@dimen/radius_btn_dialog" />
+           </LinearLayout>
+       </android.support.v4.widget.NestedScrollView>
 
-    <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
-        android:id="@+id/negative_btn"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_margin="@dimen/m_btn_dialog"
-        android:text="@string/close"
-        android:textAllCaps="false"
-        android:textColor="@color/colorInfo"
-        android:textSize="@dimen/text_size_dialog"
-        app:cornerRadius="@dimen/radius_btn_dialog" />
+
+
+
 
 </LinearLayout>

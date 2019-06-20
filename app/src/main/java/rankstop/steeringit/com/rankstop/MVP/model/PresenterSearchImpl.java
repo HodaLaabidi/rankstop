@@ -43,10 +43,12 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                             RSSession.Reconnecter();
                             search(query, lang, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                searchView.onSuccess(RSConstants.SEARCH, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                searchView.onError(RSConstants.SEARCH);
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    searchView.onSuccess(RSConstants.SEARCH, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    searchView.onError(RSConstants.SEARCH);
+                                }
                             }
                             searchView.hideProgressBar(RSConstants.SEARCH);
                         }
@@ -81,12 +83,14 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                             searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
                             searchItems(rsRequestSearch, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                Log.e(TAG , " status code = " + response.body().getStatus()+"");
-                                searchView.onSuccess(RSConstants.SEARCH_ITEMS, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                searchView.onError(RSConstants.SEARCH_ITEMS);
-                                Log.e(TAG , " status code = " + response.body().getStatus()+"");
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    Log.e(TAG, " status code = " + response.body().getStatus() + "");
+                                    searchView.onSuccess(RSConstants.SEARCH_ITEMS, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    searchView.onError(RSConstants.SEARCH_ITEMS);
+                                    Log.e(TAG, " status code = " + response.body().getStatus() + "");
+                                }
                             }
                             searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
                         }
@@ -119,10 +123,12 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                             RSSession.Reconnecter();
                             searchItemsFiltered(data, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                searchView.onSuccess(RSConstants.SEARCH_ITEMS_FILTERED, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                searchView.onError(RSConstants.SEARCH_ITEMS_FILTERED);
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    searchView.onSuccess(RSConstants.SEARCH_ITEMS_FILTERED, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    searchView.onError(RSConstants.SEARCH_ITEMS_FILTERED);
+                                }
                             }
                             searchView.hideProgressBar(RSConstants.SEARCH_ITEMS_FILTERED);
                         }

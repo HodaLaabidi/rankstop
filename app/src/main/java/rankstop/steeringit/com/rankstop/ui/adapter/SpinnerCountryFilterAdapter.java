@@ -45,7 +45,9 @@ public class SpinnerCountryFilterAdapter extends ArrayAdapter<LocationFilter> {
         LocationFilter currentCoutry = countriesList.get(position);
 
         if (currentCoutry != null)
-            countryNameTV.setText(currentCoutry.getCountry().getCountryName());
+            if(currentCoutry.getCountry() != null){
+                countryNameTV.setText(currentCoutry.getCountry().getCountryName());
+            }
 
         return convertView;
 

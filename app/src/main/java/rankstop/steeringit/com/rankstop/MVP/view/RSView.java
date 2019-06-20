@@ -99,6 +99,23 @@ public interface RSView {
         void onOffLine();
     }
 
+    interface SearchByBarcodeView {
+
+        void onSuccess(String target, Object data);
+
+        void onFailure(String target, String barcode);
+
+        void onError(String target);
+
+        void showProgressBar(String target);
+
+        void hideProgressBar(String target);
+
+        void showMessage(String target, String message);
+
+        void onOffLine();
+    }
+
     interface EditLangView {
 
         void onSuccess(String lang, Object data);

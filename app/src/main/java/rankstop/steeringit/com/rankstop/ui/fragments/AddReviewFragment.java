@@ -218,6 +218,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     @BindString(R.string.loading_msg)
     String loadingMsg;
     private RSLoader rsLoader;
+    RSNavigationData rsNavigationData = new RSNavigationData();
 
     private void createLoader() {
         rsLoader = RSLoader.newInstance(loadingMsg);
@@ -441,6 +442,12 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
                 break;
             case R.id.notifications:
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
+                break;
+            case R.id.profil:
+                if(RSSession.isLoggedIn())
+                    fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
+                else
+                    fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
                 break;
         }
 

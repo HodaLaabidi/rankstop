@@ -8,4 +8,5 @@
     <integer name="max_length_500">500</integer>
     <integer name="max_lines_comment">8</integer>
     <integer name="min_length_pwd">6</integer>
+    <integer name="max_length_13">13</integer>
 </resources>

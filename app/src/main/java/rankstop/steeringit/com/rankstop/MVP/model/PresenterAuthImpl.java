@@ -58,10 +58,12 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                         @Override
                         public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                             // Log.d("ttttt",response.body().getStatus()+"");
-                            if (response.body().getStatus() == 2) {
-                                signupView.findEmailSuccess(true, response.body().getData());
-                            } else if (response.body().getStatus() == 1) {
-                                signupView.findEmailSuccess(false, null);
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 2) {
+                                    signupView.findEmailSuccess(true, response.body().getData());
+                                } else if (response.body().getStatus() == 1) {
+                                    signupView.findEmailSuccess(false, null);
+                                }
                             }
                             signupView.hideProgressBar(RSConstants.LOGIN);
                         }
@@ -89,11 +91,13 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                 callSocialLogin.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 1) {
-                            signupView.socialLoginSuccess(response.body().getData());
-                        } else if (response.body().getStatus() == 0) {
-                            signupView.hideProgressBar(RSConstants.SOCIAL_LOGIN);
-                            signupView.socialLoginError(response.body().getMessage());
+                        if (response.body() != null) {
+                            if (response.body().getStatus() == 1) {
+                                signupView.socialLoginSuccess(response.body().getData());
+                            } else if (response.body().getStatus() == 0) {
+                                signupView.hideProgressBar(RSConstants.SOCIAL_LOGIN);
+                                signupView.socialLoginError(response.body().getMessage());
+                            }
                         }
                     }
 
@@ -130,11 +134,13 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                 callLogin.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 0) {
-                            loginView.loginError();
-                            loginView.hideProgressBar(RSConstants.LOGIN);
-                        } else if (response.body().getStatus() == 1) {
-                            loginView.loginSuccess(response.body().getData());
+                        if (response.body() != null) {
+                            if (response.body().getStatus() == 0) {
+                                loginView.loginError();
+                                loginView.hideProgressBar(RSConstants.LOGIN);
+                            } else if (response.body().getStatus() == 1) {
+                                loginView.loginSuccess(response.body().getData());
+                            }
                         }
                     }
 
@@ -161,28 +167,39 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                         RSSession.Reconnecter();
                         followItem(rsFollow, target, context);
                     } else {
-                        if (response.body().getStatus() == 1) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus() == 1) {
+                                if (target.equals(RSConstants.LOGIN)) {
+                                    loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                                    loginView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                                } else if (target.equals(RSConstants.REGISTER)) {
+                                    registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                                    registerView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                                } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
+                                    signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                                    signupView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                                }
+                            } else if (response.body().getStatus() == 0) {
+                                if (target.equals(RSConstants.LOGIN)) {
+                                    loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                                    loginView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                                } else if (target.equals(RSConstants.REGISTER)) {
+                                    registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                                    registerView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                                } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
+                                    signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
+                                    signupView.hideProgressBar(RSConstants.FOLLOW_ITEM);
+                                }
+                            }
+                        } else {
                             if (target.equals(RSConstants.LOGIN)) {
-                                loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
                                 loginView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                            } else if (target.equals(RSConstants.REGISTER)) {
-                                registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                            } else if (target.equals(RSConstants.REGISTER)){
                                 registerView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                            } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
-                                signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "1");
+                            } else if (target.equals(RSConstants.SOCIAL_LOGIN)){
                                 signupView.hideProgressBar(RSConstants.FOLLOW_ITEM);
                             }
-                        } else if (response.body().getStatus() == 0) {
-                            if (target.equals(RSConstants.LOGIN)) {
-                                loginView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
-                                loginView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                            } else if (target.equals(RSConstants.REGISTER)) {
-                                registerView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
-                                registerView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                            } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
-                                signupView.onFollowSuccess(RSConstants.FOLLOW_ITEM, "0");
-                                signupView.hideProgressBar(RSConstants.FOLLOW_ITEM);
-                            }
+
                         }
                     }
                 }
@@ -223,10 +240,12 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                 callLogin.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 0) {
-                            loginView.onError(RSConstants.FORGOT_PWD);
-                        } else if (response.body().getStatus() == 1) {
-                            loginView.onSuccess(RSConstants.FORGOT_PWD);
+                        if (response.body() != null) {
+                            if (response.body().getStatus() == 0) {
+                                loginView.onError(RSConstants.FORGOT_PWD);
+                            } else if (response.body().getStatus() == 1) {
+                                loginView.onSuccess(RSConstants.FORGOT_PWD);
+                            }
                         }
 
                         loginView.hideProgressBar(RSConstants.FORGOT_PWD);
@@ -275,11 +294,15 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                 callRegister.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        if (response.body().getStatus() == 0) {
-                            registerView.registerError();
+                        if (response.body() != null) {
+                            if (response.body().getStatus() == 0) {
+                                registerView.registerError();
+                                registerView.hideProgressBar(RSConstants.REGISTER);
+                            } else if (response.body().getStatus() == 1) {
+                                registerView.registerSuccess(response.body().getData());
+                            }
+                        } else {
                             registerView.hideProgressBar(RSConstants.REGISTER);
-                        } else if (response.body().getStatus() == 1) {
-                            registerView.registerSuccess(response.body().getData());
                         }
                     }
 

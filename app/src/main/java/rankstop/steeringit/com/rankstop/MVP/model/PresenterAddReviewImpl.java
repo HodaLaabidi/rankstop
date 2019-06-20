@@ -5,12 +5,14 @@ import android.net.Uri;
 import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
@@ -23,6 +25,7 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Converter;
 import retrofit2.Response;
 
 public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
@@ -51,12 +54,16 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                             standardView.hideProgressBar(RSConstants.LOAD_CATEGORY);
                             loadCategory(id, lang, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.LOAD_CATEGORY, response.body().getData());
-                                standardView.showMessage(RSConstants.LOAD_CATEGORY, response.body().getMessage());
-                            } else if (response.body().getStatus() == 0) {
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(RSConstants.LOAD_CATEGORY, response.body().getData());
+                                    standardView.showMessage(RSConstants.LOAD_CATEGORY, response.body().getMessage());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.hideProgressBar(RSConstants.LOAD_CATEGORY);
+                                    standardView.onError(RSConstants.LOAD_CATEGORY);
+                                }
+                            } else {
                                 standardView.hideProgressBar(RSConstants.LOAD_CATEGORY);
-                                standardView.onError(RSConstants.LOAD_CATEGORY);
                             }
                         }
                     }
@@ -102,12 +109,14 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                             standardView.hideProgressBar(RSConstants.ADD_REVIEW);
                             addReview(rsAddReview, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.ADD_REVIEW, response.body().getData());
-                                standardView.showMessage(RSConstants.ADD_REVIEW, response.body().getMessage());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onError(RSConstants.ADD_REVIEW);
-                                standardView.showMessage(RSConstants.ADD_REVIEW, response.body().getMessage());
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(RSConstants.ADD_REVIEW, response.body().getData());
+                                    standardView.showMessage(RSConstants.ADD_REVIEW, response.body().getMessage());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onError(RSConstants.ADD_REVIEW);
+                                    standardView.showMessage(RSConstants.ADD_REVIEW, response.body().getMessage());
+                                }
                             }
                             standardView.hideProgressBar(RSConstants.ADD_REVIEW);
                         }
@@ -155,12 +164,14 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                             //standardView.showProgressBar(RSConstants.UPDATE_REVIEW);
                             updateReview(rsAddReview, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.UPDATE_REVIEW, response.body().getData());
-                                standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onError(RSConstants.UPDATE_REVIEW);
-                                standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(RSConstants.UPDATE_REVIEW, response.body().getData());
+                                    standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onError(RSConstants.UPDATE_REVIEW);
+                                    standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
+                                }
                             }
                             //standardView.hideProgressBar(RSConstants.UPDATE_REVIEW);
                         }
@@ -190,6 +201,8 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 for (int i = 0; i < rsAddItem.getFiles().size(); i++) {
                     parts.add(prepareFilePart("files", rsAddItem.getFiles().get(i)));
                 }
+
+                Log.e("barcode from presenter " , rsAddItem.getBarcode());
                 callAddItem = WebService.getInstance().getApi().addItem(
                         RSSessionToken.getUsergestToken(),
                         parts,
@@ -198,6 +211,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         createPartFormString(rsAddItem.getCategoryId()),
                         createPartFormString(rsAddItem.getDescription()),
                         createPartFormString(rsAddItem.getTitle()),
+                        createPartFormString(rsAddItem.getBarcode()),
                         createPartFormString(rsAddItem.getAddress()),
                         createPartFormString(rsAddItem.getPhone()),
                         createPartFormString(rsAddItem.getLatitude()),
@@ -206,6 +220,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         createPartFormString(rsAddItem.getGovernorate()),
                         createPartFormString(rsAddItem.getCountry()),
                         createPartFormString(rsAddItem.getComment())
+
                 );
                 callAddItem.enqueue(new Callback<RSResponse>() {
                     @Override
@@ -215,12 +230,14 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                             standardView.hideProgressBar(RSConstants.ADD_ITEM);
                             addItem(rsAddItem, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.ADD_ITEM, response.body().getData());
-                                standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onError(RSConstants.ADD_ITEM);
-                                standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(RSConstants.ADD_ITEM, response.body().getData());
+                                    standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onError(RSConstants.ADD_ITEM);
+                                    standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
+                                }
                             }
                             standardView.hideProgressBar(RSConstants.ADD_ITEM);
                         }
@@ -228,6 +245,8 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
+
+                        Log.e("barcode" , "from on failure");
                         if (!call.isCanceled()) {
                             standardView.onFailure(RSConstants.ADD_ITEM);
                             standardView.showMessage(RSConstants.ADD_ITEM, "erreur");
@@ -254,11 +273,13 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                             standardView.hideProgressBar(RSConstants.LOAD_MY_EVAL);
                             loadMyEval(userId,itemId, context);
                         } else {
-                            if (response.body().getStatus() == 1 || response.body().getStatus() == 2) {
-                                standardView.onSuccess(RSConstants.LOAD_MY_EVAL, response.body().getData());
-                                //standardView.showMessage(RSConstants.LOAD_MY_EVAL, response.body().getMessage());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onError(RSConstants.LOAD_MY_EVAL);
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1 || response.body().getStatus() == 2) {
+                                    standardView.onSuccess(RSConstants.LOAD_MY_EVAL, response.body().getData());
+                                    //standardView.showMessage(RSConstants.LOAD_MY_EVAL, response.body().getMessage());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onError(RSConstants.LOAD_MY_EVAL);
+                                }
                             }
                             standardView.hideProgressBar(RSConstants.LOAD_MY_EVAL);
                         }
@@ -288,7 +309,9 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     }
 
     private RequestBody createPartFormString(String value) {
-        return RequestBody.create(MultipartBody.FORM, value);
+        RequestBody requestBody = RequestBody.create(MultipartBody.FORM, value);
+        return requestBody ;
+
     }
 
     @Override

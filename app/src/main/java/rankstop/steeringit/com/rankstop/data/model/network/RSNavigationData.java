@@ -11,7 +11,21 @@ public class RSNavigationData implements Serializable {
         this.action = action;
     }
 
-    public RSNavigationData() {
+    public RSNavigationData(String from ,String action ,String itemId) {
+        this.from = from ;
+        this.action = action ;
+        this.itemId = itemId ;
+    }
+    public RSNavigationData(String from ,String action ,String itemId,String message) {
+        this.from = from ;
+        this.action = action ;
+        this.itemId = itemId ;
+        this.message = message;
+    }
+
+
+    public RSNavigationData(){
+
     }
 
     public RSNavigationData(String from, String action, String message, String itemId, String userId, String categoryId, String subAction) {

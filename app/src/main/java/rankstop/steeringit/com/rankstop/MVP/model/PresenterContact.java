@@ -39,10 +39,14 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
                             standardView.hideProgressBar(RSConstants.SEND_REQ_OWNER_SHIP);
                             requestOwnership(requestOwnership, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.SEND_REQ_OWNER_SHIP, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onError(RSConstants.SEND_REQ_OWNER_SHIP);
+                            if (response.body() != null) {
+                                if (response.body() != null) {
+                                    if (response.body().getStatus() == 1) {
+                                        standardView.onSuccess(RSConstants.SEND_REQ_OWNER_SHIP, response.body().getData());
+                                    } else if (response.body().getStatus() == 0) {
+                                        standardView.onError(RSConstants.SEND_REQ_OWNER_SHIP);
+                                    }
+                                }
                             }
                             standardView.hideProgressBar(RSConstants.SEND_REQ_OWNER_SHIP);
                         }
@@ -76,10 +80,12 @@ public class PresenterContact implements RSPresenter.ContactPresenter {
                             standardView.hideProgressBar(RSConstants.RS_CONTACT);
                             contact(rsContact, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.RS_CONTACT, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onError(RSConstants.RS_CONTACT);
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(RSConstants.RS_CONTACT, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onError(RSConstants.RS_CONTACT);
+                                }
                             }
                             standardView.hideProgressBar(RSConstants.RS_CONTACT);
                         }

@@ -230,5 +230,7 @@
         <item>5</item>
     </string-array>
     <string name="itinerary">Voir itinéraire</string>
+    <string name="title_scanner">Scanner</string>
+    <string name="profil">Profil</string>
 
 </resources>

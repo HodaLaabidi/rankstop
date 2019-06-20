@@ -170,6 +170,7 @@ public interface API {
             @Part("categoryId") RequestBody categoryId,
             @Part("description") RequestBody description,
             @Part("title") RequestBody title,
+            @Part("barcode") RequestBody barcode,
             @Part("address") RequestBody address,
             @Part("phone") RequestBody phone,
             @Part("latitude") RequestBody latitude,
@@ -307,4 +308,8 @@ public interface API {
     @FormUrlEncoded
     @POST("items/getAllCategoriesUsedByLocations")
     Call<RSResponse> loadCategoriesUsedByLocations(@Header(RSConstants.HEADER_TOKEN) String token, @Field("lang") String langue);
+
+    @FormUrlEncoded
+    @POST("items/getItemByBarCode")
+    Call<RSResponse> searchBarcode(@Header(RSConstants.HEADER_TOKEN) String token , @Field("barcode") String barcode);
 }

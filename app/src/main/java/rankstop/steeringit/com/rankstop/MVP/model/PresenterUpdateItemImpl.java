@@ -60,12 +60,14 @@ public class PresenterUpdateItemImpl implements RSPresenter.UpdateItemPresenter 
                             updateItemView.hideProgressBar();
                             updateItem(rsUpdateItem, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                updateItemView.onSuccess(RSConstants.UPDATE_ITEM, response.body().getData());
-                                //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
-                            } else if (response.body().getStatus() == 0) {
-                                updateItemView.onError(RSConstants.UPDATE_ITEM);
-                                //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    updateItemView.onSuccess(RSConstants.UPDATE_ITEM, response.body().getData());
+                                    //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
+                                } else if (response.body().getStatus() == 0) {
+                                    updateItemView.onError(RSConstants.UPDATE_ITEM);
+                                    //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
+                                }
                             }
                             updateItemView.hideProgressBar();
                         }

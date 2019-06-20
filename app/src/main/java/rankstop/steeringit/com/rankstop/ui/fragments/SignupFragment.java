@@ -365,12 +365,17 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         String token = loginResponse.getToken();
         RSSession.startSession(token);
 
-        if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-            signupPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.SOCIAL_LOGIN, getContext());
-        } else {
-            rsLoader.dismiss();
-            ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
-        }
+            if (rsNavigationData.getAction()== RSConstants.ACTION_FOLLOW) {
+                signupPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.SOCIAL_LOGIN, getContext());
+            } else {
+                rsLoader.dismiss();
+                if ( rsNavigationData.getFrom() == RSConstants.FRAGMENT_PROFILE ||rsNavigationData.getFrom() == RSConstants.FRAGMENT_SIGN_UP )
+                rsNavigationData.setFrom(RSConstants.FRAGMENT_SIGN_UP);
+                if (rsNavigationData == null)
+                    rsNavigationData = new RSNavigationData();
+                ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+            }
+
     }
 
     @Override

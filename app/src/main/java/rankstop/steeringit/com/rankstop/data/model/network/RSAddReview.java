@@ -8,7 +8,7 @@ import java.util.List;
 import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
 
 public class RSAddReview implements Serializable {
-    private String userId, categoryId, description, title, address, latitude, longitude, comment, itemId, evalId, country, governorate, city, phone;
+    private String userId, categoryId, description,barcode, title, address, latitude, longitude, comment, itemId, evalId, country, governorate, city, phone;
     private List<CriteriaEval> evalCri;
     private List<Uri> files;
 
@@ -138,5 +138,13 @@ public class RSAddReview implements Serializable {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 }

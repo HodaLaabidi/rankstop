@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.MenuItem;
 
 import java.lang.ref.WeakReference;
@@ -23,6 +24,7 @@ import rankstop.steeringit.com.rankstop.ui.fragments.ListNotifFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ListingItemsFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ProfileFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.MyEvaluationsFragment;
+import rankstop.steeringit.com.rankstop.ui.fragments.ScannerFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.SearchFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
 import rankstop.steeringit.com.rankstop.R;
@@ -60,7 +62,13 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                     if (!(fragment instanceof MyEvaluationsFragment))
                         replaceFragment(MyEvaluationsFragment.getInstance(), RSConstants.FRAGMENT_MY_EVALS);
                     return true;
-                case R.id.navigation_profile:
+
+
+                case R.id.navigation_scanner:
+                    if (!(fragment instanceof ScannerFragment))
+                        replaceFragment(ScannerFragment.getInstance(), RSConstants.FRAGMENT_SCANNER);
+                    return true;
+                /*case R.id.navigation_profile:
                     if (isLoggedIn) {
                         if (!(fragment instanceof ProfileFragment)) {
                             replaceFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
@@ -72,7 +80,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                             item.setTitle(getResources().getString(R.string.title_login));
                         }
                     }
-                    return true;
+                    return true;*/
             }
             return false;
         }
@@ -81,15 +89,21 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_container);
         ButterKnife.bind(this);
+
+
 
         activity = new WeakReference<>(this);
 
         isLoggedIn = RSSession.isLoggedIn();
 
         navigation = findViewById(R.id.navigation);
+
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        Log.e("navigation max items = " , navigation.getMaxItemCount()+"!");
 
         fragmentManager = getSupportFragmentManager();
 
@@ -107,6 +121,8 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
             rsNavigationData.setUserId(RSSession.getCurrentUser().get_id());
         }
 
+        Log.e("rsNavigationData get from = " , rsNavigationData.getFrom()+"!");
+
         switch (rsNavigationData.getFrom()) {
             case RSConstants.FRAGMENT_MY_EVALS:
                 navigation.setSelectedItemId(R.id.navigation_my_evals);
@@ -115,10 +131,10 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                 navigation.setSelectedItemId(R.id.navigation_add_item);
                 break;
             case RSConstants.FRAGMENT_PROFILE:
-                navigation.setSelectedItemId(R.id.navigation_profile);
+                startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
                 break;
             case RSConstants.FRAGMENT_SIGN_UP:
-                navigation.setSelectedItemId(R.id.navigation_profile);
+                startFragment(ProfileFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_PROFILE);
                 break;
             case RSConstants.FRAGMENT_HOME:
                 //follow mel home
@@ -129,6 +145,19 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                 break;
             case RSConstants.FRAGMENT_NOTIF:
                 startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
+                break;
+            case RSConstants.FRAGMENT_SCANNER:
+                //startFragment(ScannerFragment.getInstance(), RSConstants.FRAGMENT_SCANNER);
+                navigation.setSelectedItemId(R.id.navigation_scanner);
+                break;
+
+            case RSConstants.SEARCH_BARCODE:
+                startFragment(AddItemFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SCANNER);
+                navigation.setSelectedItemId(R.id.navigation_add_item);
+                break;
+            case RSConstants.EXISTING_BARCODE:
+                startFragment(ItemDetailsFragment.getInstance(new RSNavigationData(RSConstants.FRAGMENT_SCANNER,"")), RSConstants.FRAGMENT_SCANNER);
+
                 break;
             case RSConstants.FRAGMENT_LISTING_ITEMS:
                 //follow mel home
@@ -167,7 +196,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
             fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             finish();
         } else {
-            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof ProfileFragment || fragment instanceof SearchFragment || fragment instanceof SignupFragment) {
+            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof ScannerFragment || fragment instanceof SearchFragment ) {
                 fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
                 navigation.setSelectedItemId(R.id.navigation_home);

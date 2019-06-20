@@ -1,18 +1,30 @@
 package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -28,10 +40,16 @@ import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
 
-public class ItemInfoDialog extends DialogFragment {
+public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback {
+
+
+    public static  float latitude = 36.81897f;
+    public static  float longitude = 10.16579f;
 
     private View rootView;
+    Marker marker;
     private FragmentActionListener fragmentActionListener;
     private ItemDetails itemDetails;
 
@@ -41,14 +59,17 @@ public class ItemInfoDialog extends DialogFragment {
     @BindView(R.id.tv_address)
     RSTVMedium addressTV;
 
-    @BindView(R.id.itinerary_link)
-    LinearLayout itineraryLink ;
+    GoogleMap map ;
+
 
     @BindView(R.id.tv_phone)
     RSTVMedium phoneTV;
 
     @BindView(R.id.tv_title)
     RSTVBold titleTV;
+
+    @BindView(R.id.tv_barcode)
+    RSTVMedium barcodeTV ;
     @BindView(R.id.tv_goode)
     RSTVMedium goodeTV;
     @BindView(R.id.tv_bade)
@@ -56,8 +77,15 @@ public class ItemInfoDialog extends DialogFragment {
     @BindView(R.id.tv_nutre)
     RSTVMedium nutreTV;
 
+    private static final float DEFAULT_ZOOM = 15f;
+
     @BindView(R.id.ic_facebook)
     ImageButton icFacebookBTN;
+
+    @BindView(R.id.ll_map_fragment)
+    LinearLayout llMapFragment ;
+
+     AlertDialog alertDialog ;
 
     @BindView(R.id.ic_instagram)
     ImageButton icInstagramBTN;
@@ -68,6 +96,9 @@ public class ItemInfoDialog extends DialogFragment {
     @BindView(R.id.ic_twitter)
     ImageButton icTwitterBTN;
 
+    @BindView(R.id.scroll_view)
+    NestedScrollView scrollView ;
+
     @BindView(R.id.ic_google_plus)
     ImageButton icGooglePlusBTN;
 
@@ -75,6 +106,8 @@ public class ItemInfoDialog extends DialogFragment {
     void closeDialog() {
         dismiss();
     }
+
+    WorkaroundMapFragment mapFragment;
 
     @OnClick(R.id.ic_facebook)
     void navigateToFB() {
@@ -153,13 +186,27 @@ public class ItemInfoDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        rootView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_item_info, null, false);
+        if (rootView == null)
+            rootView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_item_info, null, false);
         unbinder = ButterKnife.bind(this, rootView);
         setFragmentActionListener((ContainerActivity) getActivity());
-
-        final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
-        alertDialog.setCanceledOnTouchOutside(false);
+        mapFragment = (WorkaroundMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map_item_info);
+        mapFragment.getMapAsync(this);
+        mapFragment.setListener(() -> scrollView.requestDisallowInterceptTouchEvent(true));
+        if (alertDialog == null)
+            alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
+        alertDialog.setCanceledOnTouchOutside(true);
         alertDialog.setOnShowListener(dialog -> onDialogShow(alertDialog));
+        alertDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    alertDialog.cancel();
+                }
+                return false;
+            }
+        });
         return alertDialog;
     }
 
@@ -188,6 +235,13 @@ public class ItemInfoDialog extends DialogFragment {
 
         descriptionTV.setText(itemDetails.getDescription());
         titleTV.setText(itemDetails.getTitle());
+
+        if(itemDetails.getBarcode() != null){
+            barcodeTV.setVisibility(View.VISIBLE);
+            barcodeTV.setText(itemDetails.getBarcode());
+        } else {
+            barcodeTV.setVisibility(View.GONE);
+        }
 
         if (itemDetails.getUrlFacebook() != null)
             if (!itemDetails.getUrlFacebook().equals(""))
@@ -221,19 +275,24 @@ public class ItemInfoDialog extends DialogFragment {
             if (!itemDetails.getLocation().getAddress().equals("")) {
                 addressTV.setVisibility(View.VISIBLE);
                 addressTV.setText(itemDetails.getLocation().getAddress());
-                itineraryLink.setVisibility(View.VISIBLE);
-                itineraryLink.setOnClickListener(new View.OnClickListener() {
+                addressTV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse("geo:"+itemDetails.getLocation().getLatitude()+","+itemDetails.getLocation().getLongitude()));
-                        intent.setPackage("com.google.android.apps.maps");
-                        startActivity(intent);
+                        latitude = itemDetails.getLocation().getLatitude();
+                        longitude =  itemDetails.getLocation().getLongitude();
+                        LatLng latlong = new LatLng(latitude,longitude);
+                        map.addMarker(new MarkerOptions().position(latlong));
+                        map.moveCamera(CameraUpdateFactory.newLatLng(latlong));
+                        onMapReady(map);
+                        if (llMapFragment.getVisibility() ==  View.VISIBLE){
+                            llMapFragment.setVisibility(View.GONE);
+                        } else {
+                            llMapFragment.setVisibility(View.VISIBLE);
+                        }
 
                     }
                 });
+
             }
         } catch (Exception e) {
         }
@@ -243,13 +302,44 @@ public class ItemInfoDialog extends DialogFragment {
         this.fragmentActionListener = fragmentActionListener;
     }
 
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        LatLng pp = new LatLng(latitude, longitude);
+
+
+        try {
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(pp);
+            if (marker != null)
+                marker.remove();
+            marker = map.addMarker(markerOptions);
+            moveCamera(pp, DEFAULT_ZOOM, "");
+
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+
+    private void moveCamera(LatLng latLng, float zoom, String title) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+    }
+
+
     @Override
     public void onDestroyView() {
+        map.clear();
+        marker = null;
         rootView = null;
         instance = null;
         unbinder.unbind();
         fragmentActionListener = null;
+        if (mapFragment != null)
+            getActivity().getSupportFragmentManager().beginTransaction().remove(mapFragment).commit();
 
         super.onDestroyView();
     }
+
+
 }

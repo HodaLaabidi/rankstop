@@ -111,6 +111,7 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
     private List<Item> listMyEvals = new ArrayList<>();
     private User user;
     private WeakReference<MyEvaluationsFragment> fragmentContext;
+    RSNavigationData rsNavigationData = new RSNavigationData();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -249,6 +250,11 @@ public class MyEvaluationsFragment extends Fragment implements RSView.StandardVi
             case R.id.notifications:
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
+            case R.id.profil:
+                if(RSSession.isLoggedIn())
+                    fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
+                else
+                    fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
         }
 
         return super.onOptionsItemSelected(item);

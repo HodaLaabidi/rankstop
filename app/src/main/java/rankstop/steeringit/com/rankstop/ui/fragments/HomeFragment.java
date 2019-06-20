@@ -227,17 +227,17 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         getCurrentUser();
 
         if (RSNetwork.isConnected(getContext())) {
-            Log.e("test" , "online");
+
             if (RSSessionToken.getLocalStorage() == null) {
-                Log.e("test" , "token is null from home");
+
                 FakeUser user = new FakeUser();
                 callLogin = WebService.getInstance().getApi().REloginUser(user);
                 callLogin.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        Log.e("test" , response.body().getStatus()+"!");
+
                         if (response.body().getStatus() == 1) {
-                            Log.e("test" , response.body().getStatus()+"!");
+
                             RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(response.body().getData()), RSResponseLogin.class);
                             String token = loginResponse.getToken();
                             RSSessionToken.startSession(token, true);
@@ -246,27 +246,27 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
                             loadHomeData();
                         } else {
 
-                            Log.e("test" , response.body().getStatus()+"!");
+
                         }
                     }
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
                         if (!call.isCanceled()) {
-                            Log.i("test",t.getMessage());
+
 
                         }
                     }
                 });
             } else {
-                Log.e("test" , "no");
+
                 loadHomeData();
 //                Toast.makeText(instance.getContext(), RSSessionToken.getUsergestToken() + "///"
 //                        + RSSessionToken.getStatutGestConnected(), Toast.LENGTH_SHORT).show();
             }
         } else {
             onOffLine();
-            Log.e("test" , "offline");
+
         }
     }
 
@@ -446,6 +446,12 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
                 break;
             case R.id.notifications:
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
+                break;
+            case R.id.profil:
+                if(RSSession.isLoggedIn())
+                    fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
+                 else
+                     fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
                 break;
         }
 

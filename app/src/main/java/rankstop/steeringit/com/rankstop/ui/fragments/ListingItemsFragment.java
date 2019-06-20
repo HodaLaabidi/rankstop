@@ -67,6 +67,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     private String itemIdToFollow;
     private ItemsAdapter itemsAdapter;
     private EndlessScrollListener scrollListener;
+    RSNavigationData rsNavigationData = new RSNavigationData();
 
     // panigation variables
     private int currentPage = 1;
@@ -300,6 +301,13 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
             case R.id.notifications:
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
+            case R.id.profil:
+                if(RSSession.isLoggedIn())
+                    fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
+                else
+                    fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
+                break;
+
         }
 
         return super.onOptionsItemSelected(item);

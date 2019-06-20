@@ -1,15 +1,19 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
-import android.app.Activity;
+
+
 import android.content.Context;
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -85,6 +89,8 @@ import static rankstop.steeringit.com.rankstop.utils.RSConstants.PLACE_PICKER_RE
 public class AddItemFragment extends Fragment implements RSView.StandardView, AdapterView.OnItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
 
+    private static final long REFRESH_ADAPTER_TIMER = 200;
+    private static final float DEFAULT_ZOOM = 12f;
     private static AddItemFragment instance;
     private String itemName, itemDescription;
     private  static final String TAG = "AddItemFragment";
@@ -92,6 +98,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     private Unbinder unbinder;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
+    @BindView(R.id.input_barcode)
+    RSETMedium inputBarcode ;
 
     @BindView(R.id.layout_login)
     LinearLayout loginLayout;
@@ -131,6 +140,10 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     @BindView(R.id.layout_location)
     LinearLayout locationLayout;
 
+    @BindView(R.id.action_scanner)
+    RSTVMedium actionScanner ;
+
+
     @BindString(R.string.field_required)
     String fieldRequired;
     @BindString(R.string.add_item)
@@ -160,13 +173,8 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             if (RSNetwork.isConnected(getContext())) {
                 try {
                     // pour 'valider l'ajout du cet item, tu dois l'évaluer
-                    rsAddItem.setCategoryId(selectedCategory.get_id());
-                    rsAddItem.setTitle(itemName);
-                    rsAddItem.setDescription(itemDescription);
-                    rsAddItem.setAddress(addressET.getText().toString().trim());
-                    rsAddItem.setPhone(phoneET.getText().toString().trim());
-                    rsAddItem.setLatitude("" + currentLatitude);
-                    rsAddItem.setLongitude("" + currentLongitude);
+                    setRsAddItem();
+
                     fragmentActionListener.startFragment(AddReviewFragment.getInstance(rsAddItem, null, "", RSConstants.ACTION_EVAL), RSConstants.FRAGMENT_ADD_REVIEW);
                 } catch (Exception e) {
 
@@ -178,6 +186,18 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         } else {
             scrollView.scrollTo(0, 0);
         }
+    }
+
+    private void setRsAddItem() {
+        rsAddItem = new RSAddReview();
+        rsAddItem.setCategoryId(selectedCategory.get_id());
+        rsAddItem.setTitle(nameET.getText().toString().trim());
+        rsAddItem.setBarcode(inputBarcode.getText().toString().trim());
+        rsAddItem.setDescription(descriptionET.getText().toString().trim());
+        rsAddItem.setAddress(addressET.getText().toString().trim());
+        rsAddItem.setPhone(phoneET.getText().toString().trim());
+        rsAddItem.setLatitude("" + currentLatitude);
+        rsAddItem.setLongitude("" + currentLongitude);
     }
 
     private boolean validForm() {
@@ -206,6 +226,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     }
 
     private View rootView;
+    private static String barcode ;
 
     private GoogleMap mMap;
     private Geocoder geocoder;
@@ -214,16 +235,34 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     private Category selectedCategory;
 
     private double currentLatitude, currentLongitude;
-    private RSAddReview rsAddItem = new RSAddReview();
+    private static RSAddReview rsAddItem ;
+    private SpinnerCategoryAdapter spinnerCategoryAdapter ;
 
     private RSPresenter.ItemPresenter itemPresenter;
     private LocationManager locationManager;
+    private RSNavigationData rsNavigationData = new RSNavigationData();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_add_item, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+
         return rootView;
+    }
+
+
+    public static AddItemFragment getInstance(RSAddReview rsAddView) {
+
+
+        Bundle args = new Bundle();
+        args.putSerializable(RSConstants.RS_ADD_REVIEW, rsAddView);
+        if (instance == null)
+            instance = new AddItemFragment();
+        instance.setArguments(args);
+        if (instance.getArguments() != null) {
+            rsAddItem = (RSAddReview) instance.getArguments().get(RSConstants.RS_ADD_REVIEW);
+        }
+        return instance;
     }
 
     @Override
@@ -257,6 +296,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                 categorySpinner.setOnItemSelectedListener(this);
                 loadCategoriesList(getContext());
                 locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+
+                if(rsAddItem != null){
+
+                  ;
+                    refreshAddItemData(rsAddItem);
+                }
                 addressET.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -282,12 +327,104 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
                     }
                 });
+
+                if (barcode != null){
+                    inputBarcode.setText(barcode);
+                }
+
+                actionScanner.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setRsAddItem();
+                        fragmentActionListener.startFragment(ScannerFragment.getInstance(rsAddItem), RSConstants.FRAGMENT_SCANNER);
+                        ((ContainerActivity) getActivity()).manageSession(true, new RSNavigationData(RSConstants.FRAGMENT_SCANNER, ""));
+
+                    }
+                });
+
             } else {
                 loginLayout.setVisibility(View.VISIBLE);
             }
         } else {
             onOffLine();
         }
+    }
+
+
+
+    private void refreshAddItemData(RSAddReview rsAddItem) {
+
+
+
+
+            if (rsAddItem.getTitle() != null){
+                nameET.setText(rsAddItem.getTitle());
+            }
+            if (rsAddItem.getCategoryId() != null){
+
+
+                      new Handler().postDelayed(new Runnable() {
+                          @Override
+                          public void run() {
+
+                              if (spinnerCategoryAdapter != null) {
+                                  selectedCategory = spinnerCategoryAdapter.refreshSpinner(rsAddItem.getCategoryId());
+                                  if (selectedCategory.get_id() != null){
+                                      if (selectedCategory.isLocation()) {
+                                          locationLayout.setVisibility(View.VISIBLE);
+                                          if (!isMapInitialized) {
+                                              isMapInitialized = true;
+                                          }
+                                          initMaps();
+                                      } else {
+                                          locationLayout.setVisibility(View.GONE);
+                                      }
+                                  }
+                              }
+                          }
+                      }, REFRESH_ADAPTER_TIMER);
+
+
+
+            }
+
+            if (rsAddItem.getDescription() != null){
+                descriptionET.setText(rsAddItem.getDescription());
+            }
+            if (rsAddItem.getAddress() != null && rsAddItem.getLongitude() != null && rsAddItem.getLatitude() != null){
+
+
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        LatLng latLng = new LatLng(Double.parseDouble(rsAddItem.getLatitude()) , Double.parseDouble(rsAddItem.getLongitude()));
+                        mMap.clear();
+                        mMap.addMarker(new MarkerOptions().position(latLng));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM ));
+                        onMapReady(mMap);
+                        addressET.setText(rsAddItem.getAddress());
+
+                        rsAddItem.setCity(getCity(latLng));
+                        rsAddItem.setCountry(getCountry(latLng));
+                        rsAddItem.setGovernorate(getGovernorate(latLng));
+
+                    }
+                } , 500);
+
+            }
+
+            if(rsAddItem.getPhone() != null){
+                phoneET.setText(rsAddItem.getPhone());
+            }
+
+
+
+
+
+
+
+
     }
 
     @Override
@@ -357,31 +494,15 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                     mMap.clear();
                     marker = mMap.addMarker(new MarkerOptions()
                             .position(latLng));
-
+                    if (rsAddItem == null){
+                        rsAddItem = new RSAddReview();
+                    }
                     rsAddItem.setCity(getCity(marker.getPosition()));
                     rsAddItem.setCountry(getCountry(marker.getPosition()));
                     rsAddItem.setGovernorate(getGovernorate(marker.getPosition()));
                     currentLatitude = latLng.latitude;
                     currentLongitude = latLng.longitude;
-                    mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-                        @Override
-                        public void onMarkerDragStart(Marker marker) {
 
-                        }
-
-                        @Override
-                        public void onMarkerDrag(Marker marker) {
-
-                        }
-
-                        @Override
-                        public void onMarkerDragEnd(Marker marker) {
-                            addressET.setText(getAddress(marker.getPosition()));
-                            rsAddItem.setCity(getCity(marker.getPosition()));
-                            rsAddItem.setCountry(getCountry(marker.getPosition()));
-                            rsAddItem.setGovernorate(getGovernorate(marker.getPosition()));
-                        }
-                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -390,25 +511,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             }
         });
 
-        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-            @Override
-            public void onMarkerDragStart(Marker marker) {
 
-            }
-
-            @Override
-            public void onMarkerDrag(Marker marker) {
-
-            }
-
-            @Override
-            public void onMarkerDragEnd(Marker marker) {
-                addressET.setText(getAddress(marker.getPosition()));
-                rsAddItem.setCity(getCity(marker.getPosition()));
-                rsAddItem.setCountry(getCountry(marker.getPosition()));
-                rsAddItem.setGovernorate(getGovernorate(marker.getPosition()));
-            }
-        });
     }
 
     @Override
@@ -504,9 +607,15 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         mMap.addMarker(currentUserLocation);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentUserLatLang, 12));
         addressET.setText(getAddress(currentUserLatLang));
-        rsAddItem.setCity(getCity(currentUserLatLang));
-        rsAddItem.setCountry(getCountry(currentUserLatLang));
-        rsAddItem.setGovernorate(getGovernorate(currentUserLatLang));
+            if(rsAddItem == null){
+            rsAddItem = new RSAddReview();
+            }
+            rsAddItem.setCity(getCity(currentUserLatLang));
+            rsAddItem.setCountry(getCountry(currentUserLatLang));
+            rsAddItem.setGovernorate(getGovernorate(currentUserLatLang));
+
+
+
         currentLatitude = latitude;
         currentLongitude = longitude;
     }
@@ -540,6 +649,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
             case R.id.notifications:
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
+            case R.id.profil:
+                if(RSSession.isLoggedIn())
+                    fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
+                else
+                    fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -555,6 +670,18 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         if (instance == null) {
             instance = new AddItemFragment();
         }
+
+        return instance;
+    }
+
+
+    public static AddItemFragment getInstance(RSNavigationData data) {
+        Bundle args = new Bundle();
+        args.putSerializable(RSConstants.NAVIGATION_DATA, data);
+        if (instance == null)
+            instance = new AddItemFragment();
+        instance.setArguments(args);
+        barcode = data.getMessage();
         return instance;
     }
 
@@ -608,8 +735,20 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     @Override
     public void onDestroyView() {
+
         instance = null;
         rootView = null;
+        if (rsAddItem != null){
+            rsAddItem = null;
+        }
+
+        if (RSSession.isLoggedIn()) {
+            barcode = null;
+        }
+
+
+
+
         fragmentActionListener = null;
         if (unbinder != null)
             unbinder.unbind();
@@ -626,7 +765,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                 Category[] categories = new Gson().fromJson(new Gson().toJson(data), Category[].class);
                 List<Category> categoryList = Arrays.asList(categories);
 
-                SpinnerCategoryAdapter spinnerCategoryAdapter = new SpinnerCategoryAdapter(getContext(), categoryList);
+                 spinnerCategoryAdapter = new SpinnerCategoryAdapter(getContext(), categoryList);
                 categorySpinner.setAdapter(spinnerCategoryAdapter);
                 break;
         }
@@ -665,6 +804,13 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
     @Override
     public void onOffLine() {
         //Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
@@ -675,4 +821,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     private void navigateToSignUp(RSNavigationData rsNavigationData) {
         fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
     }
+
+
+
 }

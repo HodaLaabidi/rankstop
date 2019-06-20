@@ -40,12 +40,14 @@ public class PresenterFilterSearchImpl implements RSPresenter.SearchFilterPresen
                             RSSession.Reconnecter();
                             loadCategories(lang, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                Log.e(TAG , response.body().getStatus()+"");
-                                searchView.onSuccess(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                Log.e(TAG , response.body().getStatus()+"");
-                                searchView.onError(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
+                            if(response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    Log.e(TAG, response.body().getStatus() + "");
+                                    searchView.onSuccess(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    Log.e(TAG, response.body().getStatus() + "");
+                                    searchView.onError(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
+                                }
                             }
                             searchView.hideProgressBar(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
                         }

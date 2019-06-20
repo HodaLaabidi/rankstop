@@ -438,10 +438,9 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.item_details_menu, menu);
         menuItem = menu.findItem(R.id.action_favorite);
-        if (!RSSession.isLoggedIn()) {
+
             MenuItem item = menu.findItem(R.id.logout);
             item.setVisible(false);
-        }
         initToolbarStyle();
     }
 
@@ -470,6 +469,12 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 break;
             case R.id.notifications:
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
+                break;
+            case R.id.profil:
+                if(RSSession.isLoggedIn())
+                    fragmentActionListener.startFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
+                else
+                    fragmentActionListener.startFragment(SignupFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_SIGN_UP);
                 break;
         }
 
@@ -616,9 +621,11 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             unbinder.unbind();
         if (itemPresenter != null)
             itemPresenter.onDestroyItem(getContext());
-        for (int i = 0; i < listMenuItem.size(); i++) {
-            tintMenuIcon(listMenuItem.get(i), android.R.color.white);
+        if (listMenuItem != null) {
+            for (int i = 0; i < listMenuItem.size(); i++) {
+                tintMenuIcon(listMenuItem.get(i), android.R.color.white);
 
+            }
         }
         super.onDestroyView();
     }
@@ -653,6 +660,8 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     private void bindData(Item item) {
 
+
+        Log.e("item barcode " , item.getItemDetails().getBarcode()+"!");
         // manage btn report abuse
         if (!item.getReportAbuse()) {
             reportAbuseBTN.setVisibility(View.VISIBLE);

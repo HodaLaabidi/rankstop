@@ -37,10 +37,12 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
                             RSSession.Reconnecter();
                             loadListNotif(rsRequestListItem, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                notifView.onSuccess(RSConstants.LIST_NOTIFS, response.body().getData(), null);
-                            } else if (response.body().getStatus() == 0) {
-                                notifView.onError(RSConstants.LIST_NOTIFS);
+                            if(response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    notifView.onSuccess(RSConstants.LIST_NOTIFS, response.body().getData(), null);
+                                } else if (response.body().getStatus() == 0) {
+                                    notifView.onError(RSConstants.LIST_NOTIFS);
+                                }
                             }
                         }
                     }
@@ -77,10 +79,12 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
                             RSSession.Reconnecter();
                             editNotifVisibility(notifId, itemId, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                notifView.onSuccess(RSConstants.EDIT_NOTIF_VISIBILITY, response.body().getData(), itemId);
-                            } else if (response.body().getStatus() == 0) {
-                                notifView.onError(RSConstants.EDIT_NOTIF_VISIBILITY);
+                            if(response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    notifView.onSuccess(RSConstants.EDIT_NOTIF_VISIBILITY, response.body().getData(), itemId);
+                                } else if (response.body().getStatus() == 0) {
+                                    notifView.onError(RSConstants.EDIT_NOTIF_VISIBILITY);
+                                }
                             }
                             notifView.hideProgressBar(RSConstants.EDIT_NOTIF_VISIBILITY);
                         }

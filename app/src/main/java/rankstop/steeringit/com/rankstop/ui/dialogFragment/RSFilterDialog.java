@@ -166,13 +166,15 @@ public class RSFilterDialog extends BottomSheetDialogFragment implements RSView.
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedLocation = (LocationFilter) parent.getItemAtPosition(position);
-                if (selectedLocation.getCountry().getCountryName().equals(allCountry)) {
-                    cityTV.setVisibility(View.GONE);
-                    citiesContainer.setVisibility(View.GONE);
-                } else {
-                    initCitiesList(selectedLocation.getCities());
-                    cityTV.setVisibility(View.VISIBLE);
-                    citiesContainer.setVisibility(View.VISIBLE);
+                if (selectedLocation.getCountry() != null) {
+                    if (selectedLocation.getCountry().getCountryName().equals(allCountry)) {
+                        cityTV.setVisibility(View.GONE);
+                        citiesContainer.setVisibility(View.GONE);
+                    } else {
+                        initCitiesList(selectedLocation.getCities());
+                        cityTV.setVisibility(View.VISIBLE);
+                        citiesContainer.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 

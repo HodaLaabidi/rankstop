@@ -37,10 +37,12 @@ public class PresenterUserImpl implements RSPresenter.UserPresenter {
                             RSSession.Reconnecter();
                             loadUserInfo(id, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.USER_INFO, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onFailure(RSConstants.USER_INFO);
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(RSConstants.USER_INFO, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onFailure(RSConstants.USER_INFO);
+                                }
                             }
                             standardView.hideProgressBar(RSConstants.USER_INFO);
                         }

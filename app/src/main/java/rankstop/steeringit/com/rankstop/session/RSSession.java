@@ -84,7 +84,6 @@ public class RSSession {
         callLogin.enqueue(new Callback<RSResponse>() {
             @Override
             public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                Log.e("success reconnect" , response.body().getStatus()+" !");
                 if (response.body().getStatus() == 1) {
                     RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(response.body().getData()), RSResponseLogin.class);
                     String token = loginResponse.getToken();

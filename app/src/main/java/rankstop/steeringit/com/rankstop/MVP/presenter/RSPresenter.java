@@ -129,4 +129,8 @@ public interface RSPresenter {
         void loadCategories(String lang, Context context);
         void onDestroy( Context context);
     }
+
+    interface BarcodePresenter {
+        void getItemByBarcode (String barcode , Context context);
+    }
 }

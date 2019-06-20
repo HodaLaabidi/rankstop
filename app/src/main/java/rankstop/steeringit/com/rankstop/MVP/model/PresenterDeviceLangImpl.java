@@ -40,10 +40,12 @@ public class PresenterDeviceLangImpl implements RSPresenter.EditDeviceLangPresen
                             editLang(userId, lang, context);
 
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(lang, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onError();
+                            if(response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(lang, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onError();
+                                }
                             }
                             standardView.hideProgressBar();
                         }

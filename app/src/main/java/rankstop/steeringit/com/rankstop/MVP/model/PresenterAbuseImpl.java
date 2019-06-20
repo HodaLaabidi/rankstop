@@ -39,10 +39,12 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
                             abuseView.hideProgressBar(RSConstants.LOAD_ABUSES_LIST);
                             loadAbusesList(langue, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                abuseView.onSuccess(RSConstants.LOAD_ABUSES_LIST, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                abuseView.onFailure(RSConstants.LOAD_ABUSES_LIST);
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    abuseView.onSuccess(RSConstants.LOAD_ABUSES_LIST, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    abuseView.onFailure(RSConstants.LOAD_ABUSES_LIST);
+                                }
                             }
                             abuseView.hideProgressBar(RSConstants.LOAD_ABUSES_LIST);
                         }
@@ -76,10 +78,12 @@ public class PresenterAbuseImpl implements RSPresenter.abusePresenter {
                             abuseView.hideProgressBar(RSConstants.REPORT_ABUSES);
                             reportAbuse(rsRequestReportAbuse, context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                abuseView.onSuccess(RSConstants.REPORT_ABUSES, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                abuseView.onFailure(RSConstants.REPORT_ABUSES);
+                            if( response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    abuseView.onSuccess(RSConstants.REPORT_ABUSES, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    abuseView.onFailure(RSConstants.REPORT_ABUSES);
+                                }
                             }
                             abuseView.hideProgressBar(RSConstants.REPORT_ABUSES);
                         }

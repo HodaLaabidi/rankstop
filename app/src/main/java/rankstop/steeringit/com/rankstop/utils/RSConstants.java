@@ -89,6 +89,8 @@ public class RSConstants {
     public static final String FORGOT_PWD = "forgot password";
     public static final String LOAD_CATEGORIES_USED_BY_LOCATION = "load categories used by location";
     public static final String SEARCH_ITEMS_FILTERED = "search items filtered";
+    public static final String SEARCH_BARCODE = "search barcode" ;
+    public static final String EXISTING_BARCODE = "existing barcode" ;
     public static String _ID = "id";
 
     // parameters
@@ -103,6 +105,7 @@ public class RSConstants {
     public static final String EMAIL_FAKE_USER = "rankStop-android@steeringit.com";
     public static final int CODE_TOKEN_EXPIRED = 401;
     public static final int CODE_NO_TOKEN = 403;
+
 
     // colors
     public static final int PIE_GREEN = R.color.colorGreenPie;
@@ -124,6 +127,7 @@ public class RSConstants {
     public static final String FRAGMENT_UPDATE_ITEM = "update item";
     public static final String FRAGMENT_ADD_REVIEW = "add review fragment";
     public static final String FRAGMENT_PROFILE = "profile fragment";
+    public static final String FRAGMENT_SCANNER = "scanner fragment";
     public static final String FRAGMENT_MY_EVALS = "my evals fragment";
     public static final String FRAGMENT_SIGN_UP = "signup fragment";
     public static final String FRAGMENT_HOME = "home fragment";

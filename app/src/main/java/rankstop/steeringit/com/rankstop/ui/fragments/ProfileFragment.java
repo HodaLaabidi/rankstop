@@ -216,6 +216,15 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         }
     }
 
+    public static ProfileFragment getInstance(RSNavigationData data) {
+        Bundle args = new Bundle();
+        args.putSerializable(RSConstants.NAVIGATION_DATA, data);
+        if (instance == null)
+            instance = new ProfileFragment();
+        instance.setArguments(args);
+        return instance;
+    }
+
     private void bindViews() {
         toolbar.setTitle("Profile");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -449,7 +458,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 break;
             case R.id.logout:
                 RSSession.cancelSession();
-                ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.FRAGMENT_SIGN_UP, ""));
+                ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.FRAGMENT_PROFILE, ""));
                 break;
             case R.id.history:
                 fragmentActionListener.startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
@@ -460,6 +469,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
             case R.id.notifications:
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
+
+
         }
 
         return super.onOptionsItemSelected(item);

@@ -38,10 +38,12 @@ public class PresenterUserHistoryImpl implements RSPresenter.UserHistoryPresente
                             RSSession.Reconnecter();
                            loadHistory(rsRequestListItem , context);
                         } else {
-                            if (response.body().getStatus() == 1) {
-                                standardView.onSuccess(RSConstants.USER_HISTORY, response.body().getData());
-                            } else if (response.body().getStatus() == 0) {
-                                standardView.onError(RSConstants.USER_HISTORY);
+                            if (response.body() != null) {
+                                if (response.body().getStatus() == 1) {
+                                    standardView.onSuccess(RSConstants.USER_HISTORY, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    standardView.onError(RSConstants.USER_HISTORY);
+                                }
                             }
                             standardView.hideProgressBar(RSConstants.USER_HISTORY);
                         }
