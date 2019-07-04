@@ -80,8 +80,8 @@ public class SlidePhotoFragment extends Fragment {
             noteColorView.setBackgroundColor(getResources().getColor(picture.getColor()));
             Picasso.get()
                     .load(picture.getPictureEval())
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.placeholder)
+                    .placeholder(R.drawable.no_image_available)
+                    .error(R.drawable.no_image_available)
                     .into(imageView);
         } catch (Exception e) {
         }

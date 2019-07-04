@@ -256,6 +256,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
                             RSRequestSocialLogin user = getData(object);
                             if (user != null) {
+                                Log.e("performLogin " , user.getProvider() + " " + user.getEmail());
                                 performSocialLogin(user);
                             } else {
                             }
@@ -424,6 +425,9 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             user.setId(account.getId());
             if (account.getPhotoUrl() != null){
                 user.setPhotoUrl(account.getPhotoUrl().toString());
+                Log.e("profil picture" , account.getPhotoUrl().toString()+"!");
+            }  else {
+
             }
 
 
@@ -476,7 +480,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Override
     public void onAddressFetched(GeoPluginResponse response) {
         RSAddress address = new RSAddress();
-        address.setCountry(new Country(response.getGeoplugin_countryCode(), response.getGeoplugin_countryName()));
+        address.setCountry(new Country(response.getGeoplugin_countryCode().toLowerCase(), response.getGeoplugin_countryName()));
         user.setLocation(address);
         signupPresenter.performSocialLogin(user, getContext());
     }

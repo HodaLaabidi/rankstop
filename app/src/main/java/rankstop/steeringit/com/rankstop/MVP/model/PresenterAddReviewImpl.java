@@ -202,7 +202,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                     parts.add(prepareFilePart("files", rsAddItem.getFiles().get(i)));
                 }
 
-                Log.e("barcode from presenter " , rsAddItem.getBarcode());
+                Log.e("rsAddItem from presenter " , (rsAddItem.getTitle()+rsAddItem.getBarcode()+rsAddItem.getAddress()+rsAddItem.getPhone()+rsAddItem.getDescription()+rsAddItem.getLatitude() +rsAddItem.getLongitude()+rsAddItem.getCategoryId()+rsAddItem.getComment() +rsAddItem.getCity() + rsAddItem.getCountry() + rsAddItem.getGovernorate()));
                 callAddItem = WebService.getInstance().getApi().addItem(
                         RSSessionToken.getUsergestToken(),
                         parts,

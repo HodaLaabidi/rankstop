@@ -67,11 +67,18 @@ public class SlideGalleryFragment extends Fragment {
 
         try {
             postDateTV.setText(RSDateParser.convertToDateTimeFormat(picture.getDate(), dateTimeFormat));
-            Picasso.get()
-                    .load(picture.getUrlPicture())
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.placeholder)
-                    .into(imageView);
+            if (picture != null){
+                if (picture.getUrlPicture() != null){
+                    if (picture.getUrlPicture() != ""){
+                        Picasso.get()
+                                .load(picture.getUrlPicture())
+                                .placeholder(R.drawable.no_image_available)
+                                .error(R.drawable.no_image_available)
+                                .into(imageView);
+                    }
+                }
+            }
+
         } catch (Exception e) {
         }
 

@@ -50,7 +50,8 @@ public class PresenterUpdateItemImpl implements RSPresenter.UpdateItemPresenter 
                         Helpers.createPartFormString(rsUpdateItem.getUrlTwitter()),
                         Helpers.createPartFormString(rsUpdateItem.getUrlLinkedIn()),
                         Helpers.createPartFormString(rsUpdateItem.getUrlGooglePlus()),
-                        rsUpdateItem.getPicDelete()
+                        rsUpdateItem.getPicDelete(),
+                        Helpers.createPartFormString(rsUpdateItem.getBarcode())
                 );
                 callUpdateItem.enqueue(new Callback<RSResponse>() {
                     @Override

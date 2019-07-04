@@ -28,7 +28,7 @@ public class ReviewPixAdapter extends RecyclerView.Adapter<ReviewPixAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_pix_review, viewGroup, false), listener); // TODO
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_pix_review, viewGroup, false), listener);
     }
 
     @Override
@@ -38,7 +38,10 @@ public class ReviewPixAdapter extends RecyclerView.Adapter<ReviewPixAdapter.View
 
     @Override
     public int getItemCount() {
+        if (pixList != null)
         return pixList.size();
+        else
+            return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -63,7 +66,6 @@ public class ReviewPixAdapter extends RecyclerView.Adapter<ReviewPixAdapter.View
 
         public void setData(Uri uri) {
             this.uri = uri;
-            // TODO set data to view
             imageView.setImageURI(uri);
         }
 

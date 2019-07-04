@@ -44,6 +44,7 @@ import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
 import rankstop.steeringit.com.rankstop.data.model.db.ItemSearchedByBarcode;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
@@ -84,6 +85,7 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
     @BindString(R.string.off_line)
     String offlineMsg;
     RSAddReview rsAddItem ;
+    ItemDetails itemDetails ;
 
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
         this.fragmentActionListener = fragmentActionListener;
@@ -110,16 +112,30 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
         return instance;
     }
 
+    public static ScannerFragment getInstance(ItemDetails itemDetails) {
 
+        Bundle args = new Bundle();
+        args.putSerializable(RSConstants.RS_UPDATE_ITEM, itemDetails);
+        if (instance == null)
+            instance = new ScannerFragment();
+        instance.setArguments(args);
+        return instance;
+    }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(this.getArguments() != null) {
+        if (this.getArguments() != null) {
 
-            rsAddItem = (RSAddReview) this.getArguments().get(RSConstants.RS_ADD_REVIEW);
+            if (this.getArguments().get(RSConstants.RS_ADD_REVIEW) != null) {
+                rsAddItem = (RSAddReview) this.getArguments().get(RSConstants.RS_ADD_REVIEW);
+            }
+
+            if (this.getArguments().get(RSConstants.RS_UPDATE_ITEM) != null) {
+                itemDetails = (ItemDetails) this.getArguments().get(RSConstants.RS_UPDATE_ITEM);
+            }
         }
 
 
@@ -136,31 +152,29 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
         unbinder = ButterKnife.bind(this, rootView);
 
 
-                if (currentVersion >= Build.VERSION_CODES.M){
-                    if (!checkPermission()){
-                        requestPermission();
-                    }  else {
-                        openScanCamera();
-                    }
-                }  else {
-                    openScanCamera();
-                }
-
-
+        if (currentVersion >= Build.VERSION_CODES.M) {
+            if (!checkPermission()) {
+                requestPermission();
+            } else {
+                openScanCamera();
+            }
+        } else {
+            openScanCamera();
+        }
 
 
         return rootView;
 
     }
 
-    private void openScanCamera(){
+    private void openScanCamera() {
 
-        if (scannerView == null){
+        if (scannerView == null) {
             scannerView = rootView.findViewById(R.id.scanner_view);
         }
 
 
-        if (mCodeScanner == null){
+        if (mCodeScanner == null) {
             mCodeScanner = new CodeScanner(getContext(), scannerView);
         }
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
@@ -169,7 +183,7 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        barcodePresenter.getItemByBarcode(result.getText() , getContext());
+                        barcodePresenter.getItemByBarcode(result.getText(), getContext());
                         //Toast.makeText(activity, result.getText(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -198,13 +212,13 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode , String permissions[] , int[] grantResults){
-        super.onRequestPermissionsResult(requestCode , permissions , grantResults );
-        if (requestCode == REQUEST_CAMERA){
-            if ( grantResults.length > 0 ){
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CAMERA) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openScanCamera();
-                    isOpen = true ;
+                    isOpen = true;
                     this.onResume();
 
                 } else {
@@ -280,8 +294,8 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
     public void onDestroyView() {
         instance = null;
         fragmentActionListener = null;
-        scannerView = null ;
-        mCodeScanner = null ;
+        scannerView = null;
+        mCodeScanner = null;
         if (unbinder != null)
             unbinder.unbind();
         super.onDestroyView();
@@ -324,22 +338,41 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
     public void onSuccess(String target, Object data) {
 
 
-
-        switch (target){
+        switch (target) {
             case RSConstants.SEARCH_BARCODE:
                 if (RSNetwork.isConnected(getContext())) {
-                    ItemSearchedByBarcode itemSearchedByBarcode = new Gson().fromJson(new Gson().toJson(data), ItemSearchedByBarcode.class);
-                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance( new RSNavigationData(RSConstants.EXISTING_BARCODE, "" , itemSearchedByBarcode.get_id())), RSConstants.FRAGMENT_SCANNER);
-                    //((ContainerActivity) getActivity()).manageSession(true, new RSNavigationData(RSConstants.EXISTING_BARCODE, ""));
+                    if (rsAddItem != null) {
+                        Toast.makeText(getContext(), "hjghjhj", Toast.LENGTH_LONG).show();
+                        if (rsAddItem.getTitle() == null && rsAddItem.getPhone() == null && rsAddItem.getDescription() == null && rsAddItem.getCategoryId() == null) {
+                            fragmentActionListener.startFragment(AddItemFragment.getInstance(), RSConstants.FRAGMENT_SCANNER);
+                        } else {
 
-                }else {
+                            fragmentActionListener.startFragment(AddItemFragment.getInstance(rsAddItem), RSConstants.FRAGMENT_SCANNER);
+                        }
+                        ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.SEARCH_BARCODE, "", "", ""));
+
+
+                    } else if (itemDetails != null) {
+                        Toast.makeText(getContext(), "hgjghjhjhj", Toast.LENGTH_LONG).show();
+                        ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.UPDATE_BARCODE, "", "", ""));
+
+                        itemDetails.setBarcode("");
+
+                        fragmentActionListener.startFragment(UpdateItemFragment.getInstance(itemDetails), RSConstants.FRAGMENT_SCANNER);
+                    } else {
+                        ItemSearchedByBarcode itemSearchedByBarcode = new Gson().fromJson(new Gson().toJson(data), ItemSearchedByBarcode.class);
+                        fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(new RSNavigationData(RSConstants.EXISTING_BARCODE, "", itemSearchedByBarcode.get_id())), RSConstants.FRAGMENT_SCANNER);
+                        //((ContainerActivity) getActivity()).manageSession(true, new RSNavigationData(RSConstants.EXISTING_BARCODE, ""));
+                    }
+
+
+                } else {
                     onOffLine();
 
                 }
 
                 break;
         }
-
 
 
     }
@@ -348,18 +381,28 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
     public void onFailure(String target, String barcode) {
 
 
-        switch (target){
+        switch (target) {
             case RSConstants.SEARCH_BARCODE:
                 if (RSNetwork.isConnected(getContext())) {
-                   if (rsAddItem != null){
-                       if (rsAddItem.getTitle() == null && rsAddItem.getPhone() == null && rsAddItem.getDescription() == null && rsAddItem.getCategoryId() == null) {
-                           fragmentActionListener.startFragment(AddItemFragment.getInstance(), RSConstants.FRAGMENT_SCANNER);
-                       } else {
-                           fragmentActionListener.startFragment(AddItemFragment.getInstance(rsAddItem), RSConstants.FRAGMENT_SCANNER);
-                       }
-                   }
-                    ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.SEARCH_BARCODE, "","",barcode));
-                }else {
+                    if (rsAddItem != null) {
+                        if (rsAddItem.getTitle() == null && rsAddItem.getPhone() == null && rsAddItem.getDescription() == null && rsAddItem.getCategoryId() == null) {
+                            fragmentActionListener.startFragment(AddItemFragment.getInstance(), RSConstants.FRAGMENT_SCANNER);
+                        } else {
+
+                            fragmentActionListener.startFragment(AddItemFragment.getInstance(rsAddItem), RSConstants.FRAGMENT_SCANNER);
+                        }
+                        ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.SEARCH_BARCODE, "", "", barcode));
+
+                    } else if (itemDetails != null) {
+                        ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.UPDATE_BARCODE, "", "", barcode));
+                        if (barcode != null) {
+                            itemDetails.setBarcode(barcode);
+                        }
+                        fragmentActionListener.startFragment(UpdateItemFragment.getInstance(itemDetails), RSConstants.FRAGMENT_SCANNER);
+                    } else {
+                        ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.SEARCH_BARCODE, "", "", barcode));
+                    }
+                } else {
                     onOffLine();
 
                 }
@@ -368,7 +411,6 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
                 break;
         }
     }
-
 
 
     @Override

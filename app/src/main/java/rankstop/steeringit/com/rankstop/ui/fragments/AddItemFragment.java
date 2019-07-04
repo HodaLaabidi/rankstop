@@ -102,6 +102,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     @BindView(R.id.input_barcode)
     RSETMedium inputBarcode ;
 
+    @BindView(R.id.action_delete_barcode)
+    RSTVMedium actionDeleteBarcode ;
+
     @BindView(R.id.layout_login)
     LinearLayout loginLayout;
 
@@ -198,6 +201,10 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         rsAddItem.setPhone(phoneET.getText().toString().trim());
         rsAddItem.setLatitude("" + currentLatitude);
         rsAddItem.setLongitude("" + currentLongitude);
+        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+        rsAddItem.setCity(getCity(latLng));
+        rsAddItem.setGovernorate(getGovernorate(latLng));
+        rsAddItem.setCountry(getCountry(latLng));
     }
 
     private boolean validForm() {
@@ -297,9 +304,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                 loadCategoriesList(getContext());
                 locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
-                if(rsAddItem != null){
+                if (rsAddItem != null) {
 
-                  ;
+                    ;
                     refreshAddItemData(rsAddItem);
                 }
                 addressET.setOnClickListener(new View.OnClickListener() {
@@ -328,8 +335,18 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                     }
                 });
 
-                if (barcode != null){
+                if (barcode != null && barcode != "") {
                     inputBarcode.setText(barcode);
+                    actionDeleteBarcode.setVisibility(View.VISIBLE);
+                    actionDeleteBarcode.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            barcode = "";
+                            inputBarcode.setText(barcode);
+                            rsAddItem.setBarcode(barcode);
+                            actionDeleteBarcode.setVisibility(View.GONE);
+                        }
+                    });
                 }
 
                 actionScanner.setOnClickListener(new View.OnClickListener() {
@@ -337,7 +354,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                     public void onClick(View v) {
                         setRsAddItem();
                         fragmentActionListener.startFragment(ScannerFragment.getInstance(rsAddItem), RSConstants.FRAGMENT_SCANNER);
-                        ((ContainerActivity) getActivity()).manageSession(true, new RSNavigationData(RSConstants.FRAGMENT_SCANNER, ""));
+                        ((ContainerActivity) getActivity()).manageSession(true, new RSNavigationData(RSConstants.FRAGMENT_SCANNER, RSConstants.ACTION_ADD_ITEM));
 
                     }
                 });
@@ -355,74 +372,66 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     private void refreshAddItemData(RSAddReview rsAddItem) {
 
 
+        if (rsAddItem.getTitle() != null) {
+            nameET.setText(rsAddItem.getTitle());
+        }
+        if (rsAddItem.getCategoryId() != null) {
 
 
-            if (rsAddItem.getTitle() != null){
-                nameET.setText(rsAddItem.getTitle());
-            }
-            if (rsAddItem.getCategoryId() != null){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-
-                      new Handler().postDelayed(new Runnable() {
-                          @Override
-                          public void run() {
-
-                              if (spinnerCategoryAdapter != null) {
-                                  selectedCategory = spinnerCategoryAdapter.refreshSpinner(rsAddItem.getCategoryId());
-                                  if (selectedCategory.get_id() != null){
-                                      if (selectedCategory.isLocation()) {
-                                          locationLayout.setVisibility(View.VISIBLE);
-                                          if (!isMapInitialized) {
-                                              isMapInitialized = true;
-                                          }
-                                          initMaps();
-                                      } else {
-                                          locationLayout.setVisibility(View.GONE);
-                                      }
-                                  }
-                              }
-                          }
-                      }, REFRESH_ADAPTER_TIMER);
-
-
-
-            }
-
-            if (rsAddItem.getDescription() != null){
-                descriptionET.setText(rsAddItem.getDescription());
-            }
-            if (rsAddItem.getAddress() != null && rsAddItem.getLongitude() != null && rsAddItem.getLatitude() != null){
-
-
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        LatLng latLng = new LatLng(Double.parseDouble(rsAddItem.getLatitude()) , Double.parseDouble(rsAddItem.getLongitude()));
-                        mMap.clear();
-                        mMap.addMarker(new MarkerOptions().position(latLng));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM ));
-                        onMapReady(mMap);
-                        addressET.setText(rsAddItem.getAddress());
-
-                        rsAddItem.setCity(getCity(latLng));
-                        rsAddItem.setCountry(getCountry(latLng));
-                        rsAddItem.setGovernorate(getGovernorate(latLng));
-
+                    if (spinnerCategoryAdapter != null) {
+                        selectedCategory = spinnerCategoryAdapter.refreshSpinner(rsAddItem.getCategoryId());
+                        if (selectedCategory.get_id() != null) {
+                            if (selectedCategory.isLocation()) {
+                                locationLayout.setVisibility(View.VISIBLE);
+                                if (mMap != null) {
+                                    mMap.clear();
+                                }
+                                if (!isMapInitialized) {
+                                    isMapInitialized = true;
+                                }
+                                initMaps();
+                            } else {
+                                locationLayout.setVisibility(View.GONE);
+                            }
+                        }
                     }
-                } , 500);
-
-            }
-
-            if(rsAddItem.getPhone() != null){
-                phoneET.setText(rsAddItem.getPhone());
-            }
+                }
+            }, REFRESH_ADAPTER_TIMER);
 
 
+        }
+
+        if (rsAddItem.getDescription() != null) {
+            descriptionET.setText(rsAddItem.getDescription());
+        }
+        if (rsAddItem.getAddress() != null && rsAddItem.getLongitude() != null && rsAddItem.getLatitude() != null) {
 
 
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    LatLng latLng = new LatLng(Double.parseDouble(rsAddItem.getLatitude()), Double.parseDouble(rsAddItem.getLongitude()));
+                    mMap.clear();
+                    mMap.addMarker(new MarkerOptions().position(latLng));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+                    onMapReady(mMap);
+                    addressET.setText(rsAddItem.getAddress());
+                    rsAddItem.setCity(getCity(latLng));
+                    rsAddItem.setCountry(getCountry(latLng));
+                    rsAddItem.setGovernorate(getGovernorate(latLng));
 
+                }
+            }, 500);
 
+        }
+
+        if (rsAddItem.getPhone() != null) {
+            phoneET.setText(rsAddItem.getPhone());
+        }
 
 
     }
@@ -494,7 +503,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                     mMap.clear();
                     marker = mMap.addMarker(new MarkerOptions()
                             .position(latLng));
-                    if (rsAddItem == null){
+                    if (rsAddItem == null) {
                         rsAddItem = new RSAddReview();
                     }
                     rsAddItem.setCity(getCity(marker.getPosition()));
@@ -607,13 +616,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         mMap.addMarker(currentUserLocation);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentUserLatLang, 12));
         addressET.setText(getAddress(currentUserLatLang));
-            if(rsAddItem == null){
+        if (rsAddItem == null) {
             rsAddItem = new RSAddReview();
-            }
-            rsAddItem.setCity(getCity(currentUserLatLang));
-            rsAddItem.setCountry(getCountry(currentUserLatLang));
-            rsAddItem.setGovernorate(getGovernorate(currentUserLatLang));
-
+        }
+        rsAddItem.setCity(getCity(currentUserLatLang));
+        rsAddItem.setCountry(getCountry(currentUserLatLang));
+        rsAddItem.setGovernorate(getGovernorate(currentUserLatLang));
 
 
         currentLatitude = latitude;
@@ -744,6 +752,8 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
 
         if (RSSession.isLoggedIn()) {
             barcode = null;
+
+            actionDeleteBarcode.setVisibility(View.GONE);
         }
 
 

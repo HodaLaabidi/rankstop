@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,8 +21,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -330,8 +337,47 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     }
 
     private void setUserPic(String picture) {
-        Uri imageUri = Uri.parse(picture);
-        avatar.setImageURI(imageUri);
+        if ( picture != null){
+            Log.e("picture profil" , "setUserPic"+ " picture != null "+ picture );
+            if (picture != ""){
+                Log.e("picture profil" , "setUserPic"+ " picture != \"\"" );
+                Uri imageUri = Uri.parse(picture);
+                avatar.setImageURI(imageUri);
+                /*Picasso.get()
+                        .load(picture)
+                        .placeholder(R.drawable.ava_256)
+                        .error(R.drawable.ava_256)
+                        .into(avatar);*/
+
+               /* Glide
+                        .with(getContext())
+                        .load(imageUri)
+                        .centerCrop()
+                        .placeholder(R.drawable.ava_256)
+                        .into(avatar);*/
+            }  else {
+                Log.e("picture profil" , "setUserPic"+ " picture == \"\"" );
+                ImageRequest request =
+                        ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                                .build();
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setImageRequest(request)
+                        .setOldController(avatar.getController())
+                        .build();
+                avatar.setController(controller);
+            }
+        } else {
+            Log.e("picture profil" , "setUserPic"+ " picture == null" );
+            ImageRequest request =
+                    ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                            .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setOldController(avatar.getController())
+                    .build();
+            avatar.setController(controller);
+        }
+
     }
 
     private void loadData() {
@@ -586,6 +632,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     if (!this.userInfo.getUser().getPictureProfile().equals(userInfo.getUser().getPictureProfile())) {
                         setUserPic(userInfo.getUser().getPictureProfile());
                     }
+                }  else {
+                       setUserPic(userInfo.getUser().getPictureProfile());
                 }
 
                 if (this.userInfo.getUser().getUsername() != null) {

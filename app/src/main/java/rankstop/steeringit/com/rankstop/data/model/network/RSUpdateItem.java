@@ -8,12 +8,20 @@ import java.util.List;
 
 public class RSUpdateItem implements Serializable {
 
-    private String itemId, urlFacebook, urlTwitter, urlGooglePlus, urlInstagram, urlLinkedIn;
+    private String itemId, urlFacebook, urlTwitter, urlGooglePlus, urlInstagram, urlLinkedIn , barcode;
     private List<Uri> gallery;
     private ArrayList<String> picDelete;
 
     public String getItemId() {
         return itemId;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 
     public void setItemId(String itemId) {

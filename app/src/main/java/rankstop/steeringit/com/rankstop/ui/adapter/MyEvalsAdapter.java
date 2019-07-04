@@ -184,7 +184,6 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
 
         public void setData(Item item) {
             this.item = item;
-            // TODO set data to view
             itemName.setText(item.getItemDetails().getTitle());
             if (item.getNumberEval() > 1)
                 countReviewsTV.setText(String.valueOf(item.getNumberEval()) + " "+multipleReview);

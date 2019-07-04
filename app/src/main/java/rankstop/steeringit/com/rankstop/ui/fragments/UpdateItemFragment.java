@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,8 +46,10 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterUpdateItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSUpdateItem;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.ReviewPixAdapter;
@@ -80,6 +84,14 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     @BindView(R.id.tv_add_pix)
     RSTVRegular addPixTV;
 
+    @BindView(R.id.action_delete_barcode)
+    RSTVMedium actionDeleteBarcode ;
+    @BindView(R.id.action_scanner)
+    RSTVMedium actionScanner ;
+
+    @BindView(R.id.input_barcode_scanner)
+    TextInputEditText inputBarcodeScanner ;
+
     @BindString(R.string.update_item_title)
     String updateItemTitle;
     @BindString(R.string.item_updated_successfully_msg)
@@ -111,6 +123,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         rsUpdateItem.setUrlLinkedIn(inputLinkedIn.getText().toString());
         rsUpdateItem.setUrlGooglePlus(inputGoogle.getText().toString());
         rsUpdateItem.setGallery(listNewPics);
+        rsUpdateItem.setBarcode(inputBarcodeScanner.getText()+"");
         rsUpdateItem.setPicDelete(listDeletedPics);
         presenterUpdateItem.updateItem(rsUpdateItem, getContext());
     }
@@ -131,7 +144,8 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     private View rootView;
     private Unbinder unbinder;
 
-    private ItemDetails itemDetails;
+
+    private static  ItemDetails itemDetails;
 
     private static UpdateItemFragment instance;
     private ReviewPixAdapter reviewPixAdapter;
@@ -144,19 +158,24 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     private FileCompressor mCompressor;
     private File mPhotoFile;
 
-    public static UpdateItemFragment getInstance(ItemDetails itemDetails) {
+    public static UpdateItemFragment getInstance(ItemDetails itemD) {
         Bundle args = new Bundle();
-        args.putSerializable(RSConstants.RS_ITEM_DETAILS, itemDetails);
+        args.putSerializable(RSConstants.RS_ITEM_DETAILS, itemD);
         if (instance == null) {
             instance = new UpdateItemFragment();
         }
         instance.setArguments(args);
+        if (instance.getArguments() != null){
+            itemDetails = (ItemDetails) instance.getArguments().getSerializable(RSConstants.RS_ITEM_DETAILS);
+
+        }
         return instance;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
     }
 
@@ -182,19 +201,59 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         toolbar.setTitle(updateItemTitle);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        itemDetails = (ItemDetails) getArguments().getSerializable(RSConstants.RS_ITEM_DETAILS);
+        //itemDetails = (ItemDetails) getArguments().getSerializable(RSConstants.RS_ITEM_DETAILS);
+
         inputFacebook.setText(itemDetails.getUrlFacebook());
         inputInstagram.setText(itemDetails.getUrlInstagram());
+        inputBarcodeScanner.setText(itemDetails.getBarcode());
         inputTwitter.setText(itemDetails.getUrlTwitter());
         inputGoogle.setText(itemDetails.getUrlGooglePlus());
         inputLinkedIn.setText(itemDetails.getUrlLinkedIn());
-        setFragmentActionListener((ContainerActivity) getActivity());
 
+            if (itemDetails.getBarcode()!= null ) {
+                if (itemDetails.getBarcode() != ""){
+                    actionDeleteBarcode.setVisibility(View.VISIBLE);
+                    actionDeleteBarcode.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            inputBarcodeScanner.setText("");
+                            //rsAddItem.setBarcode(barcode);
+                            actionDeleteBarcode.setVisibility(View.GONE);
+                        }
+                    });
+                } else{
+                    actionDeleteBarcode.setVisibility(View.GONE);
+                }
+            } else {
+                actionDeleteBarcode.setVisibility(View.GONE);
+            }
+
+        setFragmentActionListener((ContainerActivity) getActivity());
+        actionScanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemDetails.setBarcode(inputBarcodeScanner.getText() + "");
+                itemDetails.setUrlFacebook(inputFacebook.getText() + "");
+                itemDetails.setUrlInstagram(inputInstagram.getText() + "");
+                itemDetails.setUrlTwitter(inputTwitter.getText() + "");
+                itemDetails.setUrlGooglePlus(inputGoogle.getText() + "");
+                itemDetails.setUrlLinkedIn(inputLinkedIn.getText() + "");
+
+                ((ContainerActivity) getActivity()).manageSession(true, new RSNavigationData(RSConstants.FRAGMENT_SCANNER, RSConstants.ACTION_UPDATE));
+                fragmentActionListener.startFragment(ScannerFragment.getInstance(itemDetails), RSConstants.FRAGMENT_SCANNER);
+
+
+            }
+        });
     }
+
+
 
     private void initPixList() {
         recyclerViewPix.setVisibility(View.VISIBLE);
         for (int cpt = 0; cpt < itemDetails.getGallery().size(); cpt++) {
+            if (listPics != null)
             listPics.add(Uri.parse(itemDetails.getGallery().get(cpt).getUrlPicture()));
         }
         RecyclerViewClickListener listener = (view, position) -> {

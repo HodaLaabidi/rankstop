@@ -1,5 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -13,7 +14,12 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +41,15 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
     private ReviewCardForItemPicsListener listener;
     private List<Picture> pictures;
     private String target;
+    private Context context ;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemPixAdapter(ReviewCardForItemPicsListener listener, String target) {
+    public ItemPixAdapter(ReviewCardForItemPicsListener listener, String target, Context context) {
         this.listener = listener;
+        this.context = context ;
         this.pictures = new ArrayList<>();
         this.target = target;
     }
@@ -94,7 +102,8 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
     }
 
     public void refreshData(List<Picture> pictures) {
-        this.pictures = pictures;
+        this.pictures.clear();
+        this.pictures.addAll(pictures);
         notifyDataSetChanged();
     }
 
@@ -177,10 +186,71 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
             usernameTV.setText(picture.getUser().getNameToUse().getValue());
             try {
                 dateTV.setText(RSDateParser.convertToDateTimeFormat(picture.getDate(), dateTimeFormat));
-            }catch (Exception e){}
-            avatar.setImageURI(Uri.parse(picture.getUser().getPictureProfile()));
+            } catch (Exception e) {
+            }
+            if (picture != null) {
+                if (picture.getUser() != null) {
+                    if (picture.getUser().getPictureProfile() != null) {
+                        avatar.setImageURI(Uri.parse(picture.getUser().getPictureProfile()));
+                    } else {
+                        ImageRequest request =
+                                ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                                        .build();
+                        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                                .setImageRequest(request)
+                                .setOldController(avatar.getController())
+                                .build();
+                        avatar.setController(controller);
+                    }
+                } else {
+                    ImageRequest request =
+                            ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                                    .build();
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(request)
+                            .setOldController(avatar.getController())
+                            .build();
+                    avatar.setController(controller);
+                }
+
+            } else {
+                ImageRequest request =
+                        ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                                .build();
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setImageRequest(request)
+                        .setOldController(avatar.getController())
+                        .build();
+                avatar.setController(controller);
+            }
+
             try {
-                imageView.setImageURI(Uri.parse(picture.getPictureEval()));
+                if (picture != null) {
+                    if (picture.getPictureEval() != null) {
+                        if (picture.getPictureEval() != "") {
+                            imageView.setImageURI(Uri.parse(picture.getPictureEval()));
+                        }
+                    } else {
+                        ImageRequest request =
+                                ImageRequestBuilder.newBuilderWithResourceId(R.drawable.no_image_available)
+                                        .build();
+                        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                                .setImageRequest(request)
+                                .setOldController(imageView.getController())
+                                .build();
+                        imageView.setController(controller);
+                    }
+                } else {
+                    ImageRequest request =
+                            ImageRequestBuilder.newBuilderWithResourceId(R.drawable.no_image_available)
+                                    .build();
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(request)
+                            .setOldController(imageView.getController())
+                            .build();
+                    imageView.setController(controller);
+                }
+
             } catch (Exception e) {
             }
         }

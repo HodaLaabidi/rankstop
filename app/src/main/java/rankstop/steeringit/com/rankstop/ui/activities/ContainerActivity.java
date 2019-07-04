@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.ui.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
+import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -26,9 +28,11 @@ import rankstop.steeringit.com.rankstop.ui.fragments.ProfileFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.MyEvaluationsFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ScannerFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.SearchFragment;
+import rankstop.steeringit.com.rankstop.ui.fragments.SettingsFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.fragments.UpdateItemFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class ContainerActivity extends BaseActivity implements FragmentActionListener {
@@ -36,6 +40,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
     private BottomNavigationView navigation;
     private FragmentManager fragmentManager;
     private boolean isLoggedIn = false;
+    private RSNavigationData rsNavigationD = new RSNavigationData();
 
     private WeakReference<ContainerActivity> activity;
 
@@ -103,8 +108,6 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        Log.e("navigation max items = " , navigation.getMaxItemCount()+"!");
-
         fragmentManager = getSupportFragmentManager();
 
         replaceFragment(HomeFragment.getInstance(), RSConstants.FRAGMENT_HOME);
@@ -120,9 +123,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
         if (isLoggedIn) {
             rsNavigationData.setUserId(RSSession.getCurrentUser().get_id());
         }
-
-        Log.e("rsNavigationData get from = " , rsNavigationData.getFrom()+"!");
-
+        rsNavigationD = rsNavigationData ;
         switch (rsNavigationData.getFrom()) {
             case RSConstants.FRAGMENT_MY_EVALS:
                 navigation.setSelectedItemId(R.id.navigation_my_evals);
@@ -147,8 +148,12 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                 startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
             case RSConstants.FRAGMENT_SCANNER:
-                //startFragment(ScannerFragment.getInstance(), RSConstants.FRAGMENT_SCANNER);
+
                 navigation.setSelectedItemId(R.id.navigation_scanner);
+                break;
+            case RSConstants.UPDATE_BARCODE:
+                navigation.setSelectedItemId(R.id.navigation_home);
+
                 break;
 
             case RSConstants.SEARCH_BARCODE:
@@ -196,23 +201,41 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
             fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             finish();
         } else {
-            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof ScannerFragment || fragment instanceof SearchFragment ) {
+            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof SearchFragment || fragment instanceof ProfileFragment) {
                 fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
                 navigation.setSelectedItemId(R.id.navigation_home);
-
-            } else {
-                // test if last
-                int count = fragmentManager.getBackStackEntryCount();
-                if (count > 2) {
-                    FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(count - 2);
-                    if (entry.getName().equals(RSConstants.FRAGMENT_SIGN_UP) || entry.getName().equals(RSConstants.FRAGMENT_ADD_REVIEW))
-                        fragmentManager.popBackStack();
-                }
+            } else if (fragment instanceof ItemDetailsFragment) {
                 fragmentManager.popBackStack();
+            } else if (fragment instanceof ScannerFragment) {
+                if (rsNavigationD != null) {
+                    if (rsNavigationD.getAction() == RSConstants.ACTION_ADD_ITEM) {
+                        fragmentManager.popBackStack();
+                        navigation.setSelectedItemId(R.id.navigation_add_item);
+                    } else if (rsNavigationD.getAction() == RSConstants.ACTION_UPDATE) {
+                        fragmentManager.popBackStack();
+                    } else {
+                        fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        navigation.setSelectedItemId(R.id.navigation_home);
+
+                    }
+                } else {
+                    fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    navigation.setSelectedItemId(R.id.navigation_home);
+
+                }
+            }  else {
+                    // test if last
+                    int count = fragmentManager.getBackStackEntryCount();
+                    if (count > 2) {
+                        FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(count - 2);
+                        if (entry.getName().equals(RSConstants.FRAGMENT_SIGN_UP) || entry.getName().equals(RSConstants.FRAGMENT_ADD_REVIEW))
+                            fragmentManager.popBackStack();
+                    }
+                    fragmentManager.popBackStack();
+                }
             }
         }
-    }
+
 
     @Override
     public void navigateTo(int fragmentID, String tag) {

@@ -8,7 +8,7 @@
         android:id="@+id/image_view"
         android:layout_width="@dimen/width_add_review_pic"
         android:layout_height="@dimen/width_add_review_pic"
-        fresco:placeholderImage="@drawable/placeholder"
+        fresco:placeholderImage="@drawable/no_image_available"
         fresco:roundedCornerRadius="@dimen/radius_galery_pic" />
 
     <ImageButton

@@ -26,7 +26,7 @@
                 android:layout_height="@dimen/with_card_avatar"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/margin_end_avatar"
-                fresco:placeholderImage="@drawable/placeholder"
+                fresco:placeholderImage="@drawable/ava_256"
                 fresco:roundAsCircle="true" />
 
             <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
@@ -61,6 +61,7 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/pic_review"
+            app:placeholderImage="@drawable/no_image_available"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

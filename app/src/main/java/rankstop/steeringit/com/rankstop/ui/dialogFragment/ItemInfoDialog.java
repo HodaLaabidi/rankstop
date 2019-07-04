@@ -87,6 +87,11 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
 
      AlertDialog alertDialog ;
 
+     @BindView(R.id.ll_barcode_scanner)
+     LinearLayout llBarocdeScanner ;
+     @BindView(R.id.tv_label_barcode)
+     RSTVMedium labelBarcode ;
+
     @BindView(R.id.ic_instagram)
     ImageButton icInstagramBTN;
 
@@ -238,9 +243,13 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
 
         if(itemDetails.getBarcode() != null){
             barcodeTV.setVisibility(View.VISIBLE);
+            labelBarcode.setVisibility(View.VISIBLE);
+            llBarocdeScanner.setVisibility(View.VISIBLE);
             barcodeTV.setText(itemDetails.getBarcode());
         } else {
             barcodeTV.setVisibility(View.GONE);
+            labelBarcode.setVisibility(View.GONE);
+            llBarocdeScanner.setVisibility(View.GONE);
         }
 
         if (itemDetails.getUrlFacebook() != null)

@@ -43,7 +43,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/app_bar"
-       android:visibility="gone">
+       android:visibility="gone"
+     >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,15 +90,32 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_item_barcode"
                     android:inputType="text" />
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                    android:id="@+id/action_scanner"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                    android:layout_margin="5dp"
-                    android:textColor="@color/colorAccent"
-                    android:text="@string/title_scanner"
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                        android:visibility="gone"
+                        android:id="@+id/action_delete_barcode"
+                        android:layout_gravity="left"
+                        android:gravity="left"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:textColor="@color/colorGray"
+                        android:text="@string/delete_scanner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                        android:id="@+id/action_scanner"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorAccent"
+                        android:text="@string/title_scanner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout

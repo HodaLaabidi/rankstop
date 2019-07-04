@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -194,12 +195,15 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
         RSSession.startSession(token);
-        if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-            loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN, getContext());
-        } else {
-            rsLoader.dismiss();
-            dismiss();
-            ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+        if (rsNavigationData.getAction() != null) {
+            if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
+                loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN, getContext());
+            } else {
+                rsLoader.dismiss();
+                dismiss();
+                ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+            }
         }
     }
 

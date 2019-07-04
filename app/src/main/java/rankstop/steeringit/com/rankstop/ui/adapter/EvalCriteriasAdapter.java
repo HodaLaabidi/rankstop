@@ -37,7 +37,7 @@ public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_criteria_eval, parent, false), noteListener); // TODO
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_criteria_eval, parent, false), noteListener);
     }
 
     @Override

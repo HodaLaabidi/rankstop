@@ -91,6 +91,11 @@ public class RSConstants {
     public static final String SEARCH_ITEMS_FILTERED = "search items filtered";
     public static final String SEARCH_BARCODE = "search barcode" ;
     public static final String EXISTING_BARCODE = "existing barcode" ;
+    public static final String RS_UPDATE_ITEM =  "rs update item" ;
+    public static final String UPDATE_BARCODE = "update barcode";
+    public static final String RS_ITEM_DETAILS_FROM_SCANNER_FRAGMENT = "rs item details from fragment scanner" ;
+    public static final String ACTION_ADD_ITEM = "action add item";
+    public static final String ACTION_UPDATE = "action update";
     public static String _ID = "id";
 
     // parameters

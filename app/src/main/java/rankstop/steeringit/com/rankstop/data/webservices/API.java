@@ -239,7 +239,8 @@ public interface API {
             @Part("urlTwitter") RequestBody urlTwitter,
             @Part("urlLinkedIn") RequestBody urlLinkedIn,
             @Part("urlGooglePlus") RequestBody urlGooglePlus,
-            @Part("picDelete") ArrayList<String> picDelete
+            @Part("picDelete") ArrayList<String> picDelete,
+            @Part("barcode")   RequestBody barcode
     );
 
     // search items

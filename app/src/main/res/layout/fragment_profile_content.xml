@@ -205,7 +205,7 @@
                 app:roundingBorderColor="@android:color/white"
                 app:roundingBorderWidth="2dp"
                 android:elevation="10dp"
-                fresco:placeholderImage="@drawable/placeholder"
+                fresco:placeholderImage="@drawable/ava_256"
                 fresco:roundAsCircle="true" />
         </RelativeLayout>
 

@@ -57,6 +57,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                         Helpers.createPartFormString(user.getCountryCode()),
                         Helpers.createPartFormString(user.getUserId())
                 );
+                standardView.showProgressBar(RSConstants.UPDATE_PROFILE);
                 callEditProfile.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
@@ -79,7 +80,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                                     standardView.showMessage(RSConstants.UPDATE_PROFILE, response.body().getMessage());
                                 }
                             }
-                            //standardView.hideProgressBar(RSConstants.ADD_ITEM);
+                            standardView.hideProgressBar(RSConstants.UPDATE_PROFILE);
                         }
                     }
 
@@ -87,6 +88,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                     public void onFailure(Call<RSResponse> call, Throwable t) {
                         if (!call.isCanceled()) {
                             standardView.showMessage(RSConstants.UPDATE_PROFILE, "erreur");
+                            standardView.hideProgressBar(RSConstants.UPDATE_PROFILE);
                         }
                     }
                 });

@@ -91,6 +91,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                 callSocialLogin.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        Log.e("performlogin " , user.toString());
                         if (response.body() != null) {
                             if (response.body().getStatus() == 1) {
                                 signupView.socialLoginSuccess(response.body().getData());

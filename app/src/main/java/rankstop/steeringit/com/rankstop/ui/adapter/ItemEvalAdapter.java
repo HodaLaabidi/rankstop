@@ -41,7 +41,7 @@ public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_bar_chart, parent, false), listener); // TODO
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_bar_chart, parent, false), listener);
     }
 
     @Override
@@ -56,7 +56,6 @@ public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        // TODO - Your view members
         public CriteriaNote criteria;
         private RecyclerViewClickListener mListener;
 
@@ -77,12 +76,11 @@ public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHo
             ButterKnife.bind(this, itemView);
             this.mListener = listener;
             itemView.setOnClickListener(this);
-            // TODO instantiate/assign view members
         }
 
         public void setData(CriteriaNote criteria) {
             this.criteria = criteria;
-            // TODO set data to view
+
             barChartTitleView.setText(criteria.getNameCritere());
             //configure bar chart
             barChart.getDescription().setEnabled(false);

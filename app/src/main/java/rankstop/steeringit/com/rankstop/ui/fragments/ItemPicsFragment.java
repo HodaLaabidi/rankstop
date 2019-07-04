@@ -266,7 +266,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
 
     private void initPixList() {
         GridLayoutManager layoutManager = new GridLayoutManager(pixRV.getContext(), countItemPerRow);
-        itemPicsAdapter = new ItemPixAdapter(listener, RSConstants.OTHER);
+        itemPicsAdapter = new ItemPixAdapter(listener, RSConstants.OTHER , getContext());
         pixRV.setLayoutManager(layoutManager);
         pixRV.setAdapter(itemPicsAdapter);
         pixRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
@@ -298,7 +298,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     }
 
     private void initMyPixList() {
-        myItemPixAdapter = new ItemPixAdapter(myListener, RSConstants.MINE);
+        myItemPixAdapter = new ItemPixAdapter(myListener, RSConstants.MINE, getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(myPixRV.getContext(), LinearLayoutManager.HORIZONTAL, false);
         myPixRV.setLayoutManager(layoutManager);
         myPixRV.addItemDecoration(new HorizontalSpace(marginCardView));

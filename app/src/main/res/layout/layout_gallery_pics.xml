@@ -5,4 +5,4 @@
     android:layout_width="@dimen/width_galery_pic"
     android:layout_height="@dimen/width_galery_pic"
     fresco:roundedCornerRadius="@dimen/radius_galery_pic"
-    fresco:placeholderImage="@drawable/placeholder" />
+    fresco:placeholderImage="@drawable/no_image_available" />

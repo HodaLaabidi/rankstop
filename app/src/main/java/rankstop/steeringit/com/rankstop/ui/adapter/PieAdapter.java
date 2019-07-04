@@ -44,7 +44,7 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_pie_chart, parent, false), pieListener); // TODO
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_pie_chart, parent, false), pieListener);
     }
 
     @Override
@@ -68,7 +68,6 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        // TODO - Your view members
         public Item item;
         private ItemPieListener pieListener;
         private PieChart pieChart;
@@ -99,12 +98,10 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             countFollowersTV = itemView.findViewById(R.id.tv_count_followers);
             likeIcon = itemView.findViewById(R.id.icon_like);
             itemView.setOnClickListener(this);
-            // TODO instantiate/assign view members
         }
 
         public void setData(Item item) {
             this.item = item;
-            // TODO set data to view
             itemName.setText(item.getItemDetails().getTitle());
 
             if (item.getNumberEval() > 1)

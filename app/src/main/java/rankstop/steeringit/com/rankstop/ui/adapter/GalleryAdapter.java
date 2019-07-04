@@ -29,7 +29,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_gallery_pics, parent, false), listener); // TODO
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_gallery_pics, parent, false), listener);
     }
 
     @Override
@@ -44,7 +44,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        // TODO - Your view members
         private RecyclerViewClickListener mListener;
         private SimpleDraweeView imageView;
 
@@ -54,7 +53,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
             imageView = itemView.findViewById(R.id.image_view);
             itemView.setOnClickListener(this);
-            // TODO instantiate/assign view members
         }
 
         private void setData(Gallery picsGallery) {

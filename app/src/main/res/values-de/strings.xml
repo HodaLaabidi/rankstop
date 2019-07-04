@@ -231,4 +231,7 @@
     <string name="itinerary">See itinerary</string>
     <string name="title_scanner">Scanner</string>
     <string name="profil">Profil</string>
+    <string name="delete_scanner">Annuler</string>
+    <string name="barcode_scanner">Barcode</string>
+    <string name="hint_item_barcode">Barcode</string>
 </resources>

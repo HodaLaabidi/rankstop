@@ -10,6 +10,7 @@
         android:orientation="vertical"
         android:layout_centerInParent="true">
         <ImageView
+            android:src="@drawable/no_image_available"
             android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

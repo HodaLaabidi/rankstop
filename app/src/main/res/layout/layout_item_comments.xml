@@ -26,7 +26,7 @@
                 android:layout_height="@dimen/with_card_avatar"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/margin_end_avatar"
-                fresco:placeholderImage="@drawable/placeholder"
+                fresco:placeholderImage="@drawable/ava_256"
                 fresco:roundAsCircle="true" />
 
             <rankstop.steeringit.com.rankstop.customviews.RSTVMedium

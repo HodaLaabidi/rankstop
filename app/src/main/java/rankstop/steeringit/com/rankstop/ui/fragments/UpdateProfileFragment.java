@@ -39,7 +39,11 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -213,6 +217,9 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     @BindString(R.string.loading_msg)
     String loadingMsg;
     private RSLoader rsLoader;
+
+    @BindView(R.id.btn_save_changes)
+    RSBTNBold btnSaveChanges ;
 
     private void createLoader() {
         rsLoader = RSLoader.newInstance(loadingMsg);
@@ -397,6 +404,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 inputLayoutOldPwd.setError("");
                 presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext());
             } else {
+                btnSaveChanges.setEnabled(true);
                 onOffLine();
             }
         }
@@ -723,7 +731,31 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
     }
 
     private void setUserPic(String picture) {
-        avatar.setImageURI(Uri.parse(picture));
+        if (picture != null){
+            if (picture != ""){
+                avatar.setImageURI(Uri.parse(picture));
+            } else {
+                ImageRequest request =
+                        ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                                .build();
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setImageRequest(request)
+                        .setOldController(avatar.getController())
+                        .build();
+                avatar.setController(controller);
+            }
+
+        }else {
+            ImageRequest request =
+                    ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                            .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setOldController(avatar.getController())
+                    .build();
+            avatar.setController(controller);
+        }
+
     }
 
     @Override
@@ -784,6 +816,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 break;
             case RSConstants.UPDATE_PROFILE:
                 rsLoader.show(getFragmentManager(), RSLoader.TAG);
+                btnSaveChanges.setEnabled(false);
                 break;
         }
     }
@@ -796,6 +829,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 break;
             case RSConstants.UPDATE_PROFILE:
                 rsLoader.dismiss();
+                btnSaveChanges.setEnabled(true);
                 break;
         }
     }

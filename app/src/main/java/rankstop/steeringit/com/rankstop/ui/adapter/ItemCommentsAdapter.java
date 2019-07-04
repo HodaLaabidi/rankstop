@@ -13,7 +13,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +97,8 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
     }
 
     public void refreshData(List<Comment> comments) {
-        this.comments = comments;
+        this.comments.clear();
+        this.comments.addAll(comments);
         notifyDataSetChanged();
     }
 
@@ -177,7 +182,33 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
                 commentTV.setText(comment.getText().trim());
                 usernameTV.setText(comment.getUserId().getNameToUse().getValue());
                 dateTV.setText(RSDateParser.convertToDateTimeFormat(comment.getDate(), dateTimeFormat));
-                avatar.setImageURI(Uri.parse(comment.getUserId().getPictureProfile()));
+                String pictureProfile = comment.getUserId().getPictureProfile();
+                if (pictureProfile != null) {
+
+                    if (pictureProfile != "") {
+                        avatar.setImageURI(Uri.parse(pictureProfile));
+                    } else {
+                        ImageRequest request =
+                                ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                                        .build();
+                        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                                .setImageRequest(request)
+                                .setOldController(avatar.getController())
+                                .build();
+                        avatar.setController(controller);
+                    }
+
+                } else {
+                    ImageRequest request =
+                            ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                                    .build();
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(request)
+                            .setOldController(avatar.getController())
+                            .build();
+                    avatar.setController(controller);
+                }
+
             } catch (Exception e) {
             }
         }
