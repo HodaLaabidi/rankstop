@@ -22,6 +22,7 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import retrofit2.Call;
 import retrofit2.Response;

@@ -91,7 +91,6 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                 callSocialLogin.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                        Log.e("performlogin " , user.toString());
                         if (response.body() != null) {
                             if (response.body().getStatus() == 1) {
                                 signupView.socialLoginSuccess(response.body().getData());
@@ -326,7 +325,6 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
             callAddress.enqueue(new Callback<GeoPluginResponse>() {
                 @Override
                 public void onResponse(Call<GeoPluginResponse> call, Response<GeoPluginResponse> response) {
-
                     if (target.equals(RSConstants.REGISTER)) {
                         if (response.body() != null) {
                             registerView.onAddressFetched(response.body());
@@ -345,7 +343,13 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                 @Override
                 public void onFailure(Call<GeoPluginResponse> call, Throwable t) {
                     if (!call.isCanceled()) {
-                        //registerView.hideProgressBar();
+                        if (target.equals(RSConstants.REGISTER)) {
+                            registerView.hideProgressBar(RSConstants.REGISTER);
+                        } else if (target.equals(RSConstants.SOCIAL_LOGIN) ){
+                            registerView.hideProgressBar("");
+                        } else {
+                            registerView.hideProgressBar("");
+                        }
                     }
                 }
             });
@@ -369,10 +373,10 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
             }
 
             callDeviceIP = WebService.getInstance(Urls.IP_FINDER).getApi().getPublicIP(format);
+
             callDeviceIP.enqueue(new Callback<RSDeviceIP>() {
                 @Override
                 public void onResponse(Call<RSDeviceIP> call, Response<RSDeviceIP> response) {
-
                     if (target.equals(RSConstants.REGISTER)) {
                         if (response.body() != null) {
                             registerView.onPublicIPFetched(response.body());

@@ -2,14 +2,16 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.button.MaterialButton;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,14 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -66,7 +66,7 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
-public class ProfileFragment extends Fragment implements RSView.StandardView {
+public class ProfileFragment extends Fragment implements RSView.StandardView , RSView.StandardView2 {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -233,9 +233,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     }
 
     private void bindViews() {
-        toolbar.setTitle("Profile");
+        toolbar.setTitle(getResources().getString(R.string.profil));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        itemPresenter = new PresenterItemImpl(ProfileFragment.this);
+        itemPresenter = new PresenterItemImpl(ProfileFragment.this , ProfileFragment.this);
         userPresenter = new PresenterUserImpl(ProfileFragment.this);
         setFragmentActionListener((ContainerActivity) getActivity());
         // init data
@@ -257,7 +257,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
             setGender(userInfo.getUser().getGender());
             if (userInfo.getUser().getBirthDate() != null) {
                 setBirthDay(RSDateParser.convertToDateFormat(userInfo.getUser().getBirthDate(), dateFormat));
-            }else {
+            } else {
                 setBirthDay(userInfo.getUser().getBirthDate());
             }
             setCountry(userInfo.getUser().getLocation().getCountry().getCountryName());
@@ -266,14 +266,24 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
             setEvalsNumber(userInfo.getCountEval());
             setCommentsNumber(userInfo.getCountComments());
             setPixNumber(userInfo.getCountPictures());
-        }catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     private void setUserName(String value) {
-        if (value != null)
-            userNameTV.setText(value);
-        else
+        if (value != null) {
+            if (value.trim() == "" || value.trim().toLowerCase() == "null") {
+                userNameTV.setText(undefined);
+            } else {
+                userNameTV.setText(value);
+            }
+
+        } else {
             userNameTV.setText(undefined);
+
+        }
+
+
     }
 
     private void setFullName(String nom, String prenom) {
@@ -337,26 +347,11 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     }
 
     private void setUserPic(String picture) {
-        if ( picture != null){
-            Log.e("picture profil" , "setUserPic"+ " picture != null "+ picture );
-            if (picture != ""){
-                Log.e("picture profil" , "setUserPic"+ " picture != \"\"" );
+        if (picture != null) {
+            if (picture != "") {
                 Uri imageUri = Uri.parse(picture);
                 avatar.setImageURI(imageUri);
-                /*Picasso.get()
-                        .load(picture)
-                        .placeholder(R.drawable.ava_256)
-                        .error(R.drawable.ava_256)
-                        .into(avatar);*/
-
-               /* Glide
-                        .with(getContext())
-                        .load(imageUri)
-                        .centerCrop()
-                        .placeholder(R.drawable.ava_256)
-                        .into(avatar);*/
-            }  else {
-                Log.e("picture profil" , "setUserPic"+ " picture == \"\"" );
+            } else {
                 ImageRequest request =
                         ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
                                 .build();
@@ -367,7 +362,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 avatar.setController(controller);
             }
         } else {
-            Log.e("picture profil" , "setUserPic"+ " picture == null" );
             ImageRequest request =
                     ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
                             .build();
@@ -381,7 +375,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
     }
 
     private void loadData() {
-        //set avatar and cover
         loadProfileData();
         loadOwnedItem();
         loadCreatedItem();
@@ -420,7 +413,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     onOffLine();
             }
         };
-        adapterOwnedItem = new PieAdapter(listOwnedItem, listener);
+        adapterOwnedItem = new PieAdapter(listOwnedItem, listener , getContext());
         recyclerViewOwnedItem.setLayoutManager(new LinearLayoutManager(recyclerViewOwnedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewOwnedItem.setAdapter(adapterOwnedItem);
         recyclerViewOwnedItem.addItemDecoration(new HorizontalSpace(marginCardView));
@@ -443,7 +436,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     onOffLine();
             }
         };
-        adapterCreatedItem = new PieAdapter(listCreatedItem, listener);
+        adapterCreatedItem = new PieAdapter(listCreatedItem, listener , getContext());
         recyclerViewCreatedItem.setLayoutManager(new LinearLayoutManager(recyclerViewCreatedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewCreatedItem.setAdapter(adapterCreatedItem);
         recyclerViewCreatedItem.addItemDecoration(new HorizontalSpace(marginCardView));
@@ -466,10 +459,10 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     onOffLine();
             }
         };
-        adapterFollowedItem = new PieAdapter(listFollowedItem, listener);
+        adapterFollowedItem = new PieAdapter(listFollowedItem, listener , getContext());
         recyclerViewFollowedItem.setLayoutManager(new LinearLayoutManager(recyclerViewFollowedItem.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewFollowedItem.setAdapter(adapterFollowedItem);
-        if (recyclerViewFollowedItem.getItemDecorationCount() == 0){
+        if (recyclerViewFollowedItem.getItemDecorationCount() == 0) {
             recyclerViewFollowedItem.addItemDecoration(new HorizontalSpace(getResources().getInteger(R.integer.m_card_view)));
         }
 
@@ -599,8 +592,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 break;
             case RSConstants.ITEM_FOLLOWED:
                 listingItemResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseListingItem.class);
-                if (listFollowedItem != null){
-                listFollowedItem.clear();
+                if (listFollowedItem != null) {
+                    listFollowedItem.clear();
                 }
                 listFollowedItem = listingItemResponse.getItems();
                 if (listFollowedItem.size() == 0) {
@@ -632,8 +625,8 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                     if (!this.userInfo.getUser().getPictureProfile().equals(userInfo.getUser().getPictureProfile())) {
                         setUserPic(userInfo.getUser().getPictureProfile());
                     }
-                }  else {
-                       setUserPic(userInfo.getUser().getPictureProfile());
+                } else {
+                    setUserPic(userInfo.getUser().getPictureProfile());
                 }
 
                 if (this.userInfo.getUser().getUsername() != null) {
@@ -686,7 +679,10 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
                 }
 
                 this.userInfo = userInfo;
-                RSSession.refreshLocalStorage(userInfo);
+                if (userInfo != null){
+                    RSSession.refreshLocalStorage(userInfo);
+                }
+
                 break;
             case RSConstants.FOLLOW_ITEM:
                 if (data.equals("1")) {
@@ -707,21 +703,21 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         int indexIntoOwnedList = findItemIndex(listOwnedItem, itemId);
         if (indexIntoOwnedList != -1) {
             listOwnedItem.get(indexIntoOwnedList).setFollow(follow);
-            adapterOwnedItem.notifyItemChanged(indexIntoOwnedList, "icon");
+            itemPresenter.refreshItems(this.getContext(),userInfo.getUser().get_id(), itemId, "icon", RankStop.getDeviceLanguage());
             loadFollowedItem();
         }
 
         int indexIntoCreatedList = findItemIndex(listCreatedItem, itemId);
         if (indexIntoCreatedList != -1) {
             listCreatedItem.get(indexIntoCreatedList).setFollow(follow);
-            adapterCreatedItem.notifyItemChanged(indexIntoCreatedList, "icon");
+            itemPresenter.refreshItems(this.getContext(),userInfo.getUser().get_id(), itemId, "icon", RankStop.getDeviceLanguage());
             loadFollowedItem();
         }
 
         int indexIntoFollowedList = findItemIndex(listFollowedItem, itemId);
         if (indexIntoFollowedList != -1) {
             listFollowedItem.get(indexIntoFollowedList).setFollow(follow);
-            adapterFollowedItem.notifyItemChanged(indexIntoFollowedList, "icon");
+            itemPresenter.refreshItems(this.getContext(),userInfo.getUser().get_id(), itemId, "icon", RankStop.getDeviceLanguage());
             loadFollowedItem();
         }
     }
@@ -844,4 +840,53 @@ public class ProfileFragment extends Fragment implements RSView.StandardView {
         super.onDetach();
     }
 
+    @Override
+    public void onSuccessRefreshItem(String target, String itemId, String message, Object data) {
+
+        Item item = null;
+        if (!(data instanceof String)) {
+            Log.e("onSuccessRefreshItem", "ok");
+            item = new Gson().fromJson(new Gson().toJson(data), Item.class);
+
+            for (int i = 0; i < listOwnedItem.size(); i++) {
+                if (listOwnedItem.get(i).getItemDetails().get_id().equalsIgnoreCase(itemId)) {
+
+                    adapterOwnedItem.refreshOneItem(i, item, message);
+                    break;
+
+
+                }
+
+            }
+            for (int i = 0; i < listCreatedItem.size(); i++) {
+                if (listCreatedItem.get(i).getItemDetails().get_id().equalsIgnoreCase(itemId)) {
+
+                    adapterCreatedItem.refreshOneItem(i, item, message);
+                    break;
+
+
+                }
+
+            }
+            for (int i = 0; i < listFollowedItem.size(); i++) {
+                if (listFollowedItem.get(i).getItemDetails().get_id().equalsIgnoreCase(itemId)) {
+
+
+
+                           adapterFollowedItem.refreshOneItem(i, item, message);
+
+                    break;
+
+
+                }
+
+            }
+
+
+
+
+        }
+
+
+    }
 }

@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +63,17 @@ public class PresenterUpdateItemImpl implements RSPresenter.UpdateItemPresenter 
                             updateItem(rsUpdateItem, context);
                         } else {
                             if (response.body() != null) {
+
                                 if (response.body().getStatus() == 1) {
+
                                     updateItemView.onSuccess(RSConstants.UPDATE_ITEM, response.body().getData());
                                     //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
                                 } else if (response.body().getStatus() == 0) {
+
                                     updateItemView.onError(RSConstants.UPDATE_ITEM);
                                     //updateItemView.showMessage(RSConstants.UPDATE_ITEM, response.body().getMessage());
+                                } else  if (response.body().getStatus() == 3){
+                                    updateItemView.onExistItem(response.body().getMessage() , response.body().getData());
                                 }
                             }
                             updateItemView.hideProgressBar();

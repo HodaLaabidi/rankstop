@@ -2,17 +2,18 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
-public class ItemCommentsFragment extends Fragment implements RSView.StandardView, DialogConfirmationListener {
+public class ItemCommentsFragment extends Fragment implements RSView.StandardView,RSView.StandardView2, DialogConfirmationListener {
 
     private View rootView;
     private Unbinder unbinder;
@@ -211,6 +212,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(RSConstants.COMMENT, listComments.get(position));
                 bundle.putString(RSConstants.USER_ID, userId);
+
                 showFullComment(bundle);
             }
         };
@@ -330,7 +332,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
     }
 
     private void bindViews() {
-        itemPresenter = new PresenterItemImpl(ItemCommentsFragment.this);
+        itemPresenter = new PresenterItemImpl(ItemCommentsFragment.this , ItemCommentsFragment.this);
     }
 
     private void setFilterListener() {
@@ -655,5 +657,10 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
     @Override
     public void onConfirmClicked(String targetId) {
         itemPresenter.deleteComment(targetId, itemId, getContext());
+    }
+
+    @Override
+    public void onSuccessRefreshItem(String target, String itemId, String message, Object data) {
+
     }
 }

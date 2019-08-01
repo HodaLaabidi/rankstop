@@ -1,0 +1,79 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_dialog_header"
+        android:background="@color/colorInfo"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_info_outline" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+       <LinearLayout
+           android:orientation="vertical"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+           <LinearLayout
+               android:orientation="horizontal"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+               <com.facebook.drawee.view.SimpleDraweeView
+                   android:layout_margin="20dp"
+                   android:id="@+id/avatar"
+                   android:layout_width="@dimen/image_width"
+                   android:layout_height="@dimen/image_width"
+                   android:layout_centerInParent="true"
+                   app:roundingBorderColor="@android:color/white"
+                   app:roundingBorderWidth="2dp"
+                   fresco:placeholderImage="@drawable/ava_256"
+                   fresco:roundAsCircle="true" />
+               <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                   android:id="@+id/tv_user_name"
+                   android:textSize="14sp"
+                   android:textColor="@android:color/background_dark"
+                   android:layout_gravity="center"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content" />
+
+           </LinearLayout>
+           <LinearLayout
+               android:orientation="vertical"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+
+           </LinearLayout>
+           <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
+               android:layout_alignParentBottom="true"
+               android:layout_alignParentEnd="true"
+               android:layout_below="@id/scroll_view"
+               android:id="@+id/negative_btn"
+               style="@style/Widget.MaterialComponents.Button.TextButton"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="end"
+               android:layout_margin="@dimen/m_btn_dialog"
+               android:text="@string/close"
+               android:textAllCaps="false"
+               android:textColor="@color/colorInfo"
+               android:textSize="@dimen/text_size_dialog"
+               app:cornerRadius="@dimen/radius_btn_dialog" />
+       </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+
+
+
+</LinearLayout>

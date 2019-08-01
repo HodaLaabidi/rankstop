@@ -2,12 +2,12 @@ package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
@@ -195,14 +196,35 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
         RSSession.startSession(token);
-        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
-        if (rsNavigationData.getAction() != null) {
-            if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-                loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN, getContext());
-            } else {
+        Log.e("login token" , token);
+
+        if (rsNavigationData == null){
+
+            rsNavigationData = new RSNavigationData();
+            rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+            rsLoader.dismiss();
+            dismiss();
+            ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+        } else {
+            if (rsNavigationData.getFrom() == null || rsNavigationData.getFrom() == "") {
+                rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+
                 rsLoader.dismiss();
                 dismiss();
                 ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+            } else if (rsNavigationData.getAction() != null) {
+                if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
+                    loginPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.LOGIN, getContext());
+                } else {
+
+                    if (rsNavigationData.getFrom().equalsIgnoreCase(RSConstants.FRAGMENT_PROFILE)) {
+                        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+                    }
+
+                    rsLoader.dismiss();
+                    dismiss();
+                    ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+                }
             }
         }
     }
@@ -269,7 +291,9 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offLineMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), offLineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offLineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     @Override

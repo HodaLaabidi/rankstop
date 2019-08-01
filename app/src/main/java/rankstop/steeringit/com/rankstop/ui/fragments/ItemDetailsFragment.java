@@ -1,7 +1,6 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -9,21 +8,21 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
@@ -36,7 +35,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -93,7 +91,7 @@ import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
-public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener, RSView.StandardView {
+public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener, RSView.StandardView ,  RSView.StandardView2{
 
     private View rootView;
     @BindView(R.id.pie_chart)
@@ -299,7 +297,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        itemPresenter = new PresenterItemImpl(ItemDetailsFragment.this);
+        itemPresenter = new PresenterItemImpl(ItemDetailsFragment.this , ItemDetailsFragment.this);
         bindViews();
         if (isLoggedIn)
             currentUser = RSSession.getCurrentUser();
@@ -439,8 +437,8 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         inflater.inflate(R.menu.item_details_menu, menu);
         menuItem = menu.findItem(R.id.action_favorite);
 
-            MenuItem item = menu.findItem(R.id.logout);
-            item.setVisible(false);
+        MenuItem item = menu.findItem(R.id.logout);
+        item.setVisible(false);
         initToolbarStyle();
     }
 
@@ -564,10 +562,8 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 wrapDrawable.setColorFilter(couleur, PorterDuff.Mode.DARKEN);
                 item.setIcon(wrapDrawable);
             }*/
-            if (item.getIcon() == null){
-                Toast.makeText(getContext(), "null", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(getContext(), ",not null", Toast.LENGTH_SHORT).show();
+            if (item.getIcon() != null){
+                DrawableCompat.setTint(item.getIcon(), couleur);
             }
         }
     }
@@ -660,13 +656,10 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     private void bindData(Item item) {
 
-
-        Log.e("item barcode " , item.getItemDetails().getBarcode()+"!");
         // manage btn report abuse
         if (!item.getReportAbuse()) {
             reportAbuseBTN.setVisibility(View.VISIBLE);
         }
-
         // manage color and state of btn like
         manageBtnLike(item.isFollow(), R.color.colorPrimary);
         try {
@@ -708,7 +701,6 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         initPieChart(item);
         List<Gallery> listGalleryPics = new ArrayList<>();
         listGalleryPics = item.getItemDetails().getGallery();
-
         String ownershipStatus = ownershipOpen;
         if (item.getItemDetails().getOwner() != null) {
             ownershipStatus = ownershipOfficial;
@@ -741,7 +733,6 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             }
         }
         ownerShipTV.setText(ownershipStatus);
-
         ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         mViewPagerAdapter.addFragment(ItemEvalsFragment.getInstance(item.getTabCritereDetails()), evalsTitleMsg);
         mViewPagerAdapter.addFragment(ItemCommentsFragment.getInstance(item), commentsTitleMsg);
@@ -810,7 +801,6 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
     public void onOffLine() {
        // Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
         new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
-
     }
 
     private void openOwnershipDialog(Bundle bundle) {
@@ -818,5 +808,10 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         dialog.setArguments(bundle);
         dialog.show(ft, RequestOwnerShipDialog.TAG);
+    }
+
+    @Override
+    public void onSuccessRefreshItem(String target, String itemId, String message, Object data) {
+
     }
 }

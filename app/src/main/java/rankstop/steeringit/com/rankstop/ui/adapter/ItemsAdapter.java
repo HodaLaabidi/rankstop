@@ -2,8 +2,9 @@ package rankstop.steeringit.com.rankstop.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
@@ -98,6 +99,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
             case LOADING:
                 break;
         }
+    }
+
+    @UiThread
+    public void refreshOneItem(int i , Item item , String message ){
+        this.items.set(i, item);
+        this.notifyItemChanged(i);
+
+
     }
 
     @Override

@@ -9,18 +9,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -46,6 +49,7 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterUpdateItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
@@ -83,14 +87,24 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     RecyclerView recyclerViewPix;
     @BindView(R.id.tv_add_pix)
     RSTVRegular addPixTV;
+    @BindView(R.id.input_layout_facebook)
+    TextInputLayout inputLayoutFacebook ;
+    @BindView(R.id.input_layout_instagram)
+    TextInputLayout inputLayoutInstagram ;
+    @BindView(R.id.input_layout_twitter)
+    TextInputLayout inputLayoutTwitter ;
+    @BindView(R.id.input_layout_google)
+    TextInputLayout inputLayoutGoogle ;
+    @BindView(R.id.input_layout_linkedin)
+    TextInputLayout inputLayoutLinkedin ;
 
     @BindView(R.id.action_delete_barcode)
-    RSTVMedium actionDeleteBarcode ;
+    RSTVMedium actionDeleteBarcode;
     @BindView(R.id.action_scanner)
-    RSTVMedium actionScanner ;
+    RSTVMedium actionScanner;
 
     @BindView(R.id.input_barcode_scanner)
-    TextInputEditText inputBarcodeScanner ;
+    TextInputEditText inputBarcodeScanner;
 
     @BindString(R.string.update_item_title)
     String updateItemTitle;
@@ -123,9 +137,68 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         rsUpdateItem.setUrlLinkedIn(inputLinkedIn.getText().toString());
         rsUpdateItem.setUrlGooglePlus(inputGoogle.getText().toString());
         rsUpdateItem.setGallery(listNewPics);
-        rsUpdateItem.setBarcode(inputBarcodeScanner.getText()+"");
         rsUpdateItem.setPicDelete(listDeletedPics);
-        presenterUpdateItem.updateItem(rsUpdateItem, getContext());
+        if( inputBarcodeScanner.getText().toString().equalsIgnoreCase("") || TextUtils.isEmpty(inputBarcodeScanner.getText())){
+            rsUpdateItem.setBarcode("");
+        } else {
+            rsUpdateItem.setBarcode(inputBarcodeScanner.getText().toString() + "");
+        }
+            if( isValidSocialNetworks()){
+
+                presenterUpdateItem.updateItem(rsUpdateItem, getContext());
+            }
+
+        }
+
+
+
+
+
+    private boolean isValidSocialNetworks() {
+
+        int x = 0 ;
+        if (!inputFacebook.getText().toString().equalsIgnoreCase("")){
+            if (!inputFacebook.getText().toString().matches(RSConstants.FACEBOOK_URL_SCHEMA)){
+               // Toast.makeText(getContext(), R.string.invalid_facebook_url, Toast.LENGTH_LONG).show();
+                inputLayoutFacebook.setErrorEnabled(true);
+                inputLayoutFacebook.setError(getContext().getString(R.string.invalid_facebook_url));
+                x++ ;
+            }
+        }
+        if (!inputInstagram.getText().toString().equalsIgnoreCase("")){
+            if (!inputInstagram.getText().toString().matches(RSConstants.INSTAGRAM_URL_SCHEMA)){
+                //Toast.makeText(getContext(), R.string.invalid_instagram_url, Toast.LENGTH_LONG).show();
+                inputLayoutInstagram.setErrorEnabled(true);
+                inputLayoutInstagram.setError(getContext().getString(R.string.invalid_instagram_url));
+                x++ ;
+            }
+        }
+        if (!inputTwitter.getText().toString().equalsIgnoreCase("")){
+            if (!inputTwitter.getText().toString().matches(RSConstants.TWITTER_URL_SCHEMA)){
+                //Toast.makeText(getContext(), R.string.invalid_twitter_url, Toast.LENGTH_LONG).show();
+                inputLayoutTwitter.setErrorEnabled(true);
+                inputLayoutTwitter.setError(getContext().getString(R.string.invalid_twitter_url));
+                x++ ;
+            }
+        }
+        if (!inputLinkedIn.getText().toString().equalsIgnoreCase("")){
+            if (!inputLinkedIn.getText().toString().matches(RSConstants.LINKEDIN_URL_SCHEMA)){
+                //Toast.makeText(getContext(), R.string.invalid_linkedin_url, Toast.LENGTH_LONG).show();
+                inputLayoutLinkedin.setErrorEnabled(true);
+                inputLayoutLinkedin.setError(getContext().getString(R.string.invalid_linkedin_url));
+                x++ ;
+            }
+        }
+
+        if (!inputGoogle.getText().toString().equalsIgnoreCase("")){
+            if (!inputGoogle.getText().toString().matches(RSConstants.GOOGLE_URL_SCHEMA)){
+                //Toast.makeText(getContext(), R.string.invalid_linkedin_url, Toast.LENGTH_LONG).show();
+                inputLayoutGoogle.setErrorEnabled(true);
+                inputLayoutGoogle.setError(getContext().getString(R.string.invalid_google_url));
+                x++ ;
+            }
+        }
+       return x == 0 ;
     }
 
     @OnClick(R.id.btn_take_pic)
@@ -145,7 +218,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     private Unbinder unbinder;
 
 
-    private static  ItemDetails itemDetails;
+    private static ItemDetails itemDetails;
 
     private static UpdateItemFragment instance;
     private ReviewPixAdapter reviewPixAdapter;
@@ -165,7 +238,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
             instance = new UpdateItemFragment();
         }
         instance.setArguments(args);
-        if (instance.getArguments() != null){
+        if (instance.getArguments() != null) {
             itemDetails = (ItemDetails) instance.getArguments().getSerializable(RSConstants.RS_ITEM_DETAILS);
 
         }
@@ -209,25 +282,140 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         inputTwitter.setText(itemDetails.getUrlTwitter());
         inputGoogle.setText(itemDetails.getUrlGooglePlus());
         inputLinkedIn.setText(itemDetails.getUrlLinkedIn());
+        inputFacebook.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            if (itemDetails.getBarcode()!= null ) {
-                if (itemDetails.getBarcode() != ""){
-                    actionDeleteBarcode.setVisibility(View.VISIBLE);
-                    actionDeleteBarcode.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+            }
 
-                            inputBarcodeScanner.setText("");
-                            //rsAddItem.setBarcode(barcode);
-                            actionDeleteBarcode.setVisibility(View.GONE);
-                        }
-                    });
-                } else{
-                    actionDeleteBarcode.setVisibility(View.GONE);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().matches(RSConstants.FACEBOOK_URL_SCHEMA) || s.toString().equalsIgnoreCase("")){
+                    inputLayoutFacebook.setErrorEnabled(false);
+                    inputLayoutFacebook.setError("");
+                } else {
+                    inputLayoutFacebook.setErrorEnabled(true);
+                    inputLayoutFacebook.setError(getContext().getString(R.string.invalid_facebook_url));
                 }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        inputInstagram.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().matches(RSConstants.INSTAGRAM_URL_SCHEMA )|| s.toString().equalsIgnoreCase("")){
+                    inputLayoutInstagram.setErrorEnabled(false);
+                    inputLayoutInstagram.setError("");
+                } else {
+                    inputLayoutInstagram.setErrorEnabled(true);
+                    inputLayoutInstagram.setError(getContext().getString(R.string.invalid_instagram_url));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        inputTwitter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().matches(RSConstants.TWITTER_URL_SCHEMA) || s.toString().equalsIgnoreCase("")){
+                    inputLayoutTwitter.setErrorEnabled(false);
+                    inputLayoutTwitter.setError("");
+                } else {
+                    inputLayoutTwitter.setErrorEnabled(true);
+                    inputLayoutTwitter.setError(getContext().getString(R.string.invalid_twitter_url));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        inputGoogle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().matches(RSConstants.GOOGLE_URL_SCHEMA) || s.toString().equalsIgnoreCase("")){
+                    inputLayoutGoogle.setErrorEnabled(false);
+                    inputLayoutGoogle.setError("");
+                } else {
+                    inputLayoutGoogle.setErrorEnabled(true);
+                    inputLayoutGoogle.setError(getContext().getString(R.string.invalid_google_url));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        inputLinkedIn.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().matches(RSConstants.LINKEDIN_URL_SCHEMA)|| s.toString().equalsIgnoreCase("")){
+                    inputLayoutLinkedin.setErrorEnabled(false);
+                    inputLayoutLinkedin.setError("");
+                } else {
+                    inputLayoutLinkedin.setErrorEnabled(true);
+                    inputLayoutLinkedin.setError(getContext().getString(R.string.invalid_linkedin_url));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        if (itemDetails.getBarcode() != null) {
+            if (!itemDetails.getBarcode().equalsIgnoreCase("")) {
+                actionDeleteBarcode.setVisibility(View.VISIBLE);
+                actionDeleteBarcode.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        inputBarcodeScanner.setText("");
+                        //rsAddItem.setBarcode(barcode);
+                        actionDeleteBarcode.setVisibility(View.GONE);
+                    }
+                });
             } else {
                 actionDeleteBarcode.setVisibility(View.GONE);
             }
+        } else {
+            actionDeleteBarcode.setVisibility(View.GONE);
+        }
 
         setFragmentActionListener((ContainerActivity) getActivity());
         actionScanner.setOnClickListener(new View.OnClickListener() {
@@ -249,12 +437,11 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     }
 
 
-
     private void initPixList() {
         recyclerViewPix.setVisibility(View.VISIBLE);
         for (int cpt = 0; cpt < itemDetails.getGallery().size(); cpt++) {
             if (listPics != null)
-            listPics.add(Uri.parse(itemDetails.getGallery().get(cpt).getUrlPicture()));
+                listPics.add(Uri.parse(itemDetails.getGallery().get(cpt).getUrlPicture()));
         }
         RecyclerViewClickListener listener = (view, position) -> {
 
@@ -327,6 +514,12 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     }
 
     @Override
+    public void onExistItem(String message , Object data) {
+        Toast.makeText(getContext() , message , Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
     public void onFailure(String target) {
 
     }
@@ -348,7 +541,9 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     @Override

@@ -6,7 +6,7 @@
 
     <include layout="@layout/rs_toolbar"/>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,9 +36,9 @@
                 android:layout_centerInParent="true"
                 android:visibility="gone"/>
         </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <android.support.design.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/positive_btn"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="match_parent"

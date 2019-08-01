@@ -123,7 +123,7 @@
     <string name="remove_comment">Supprimer le commentaire</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
-    <string name="message_delete_comment">Voulez-vous vraiment supprimer ce commentaire</string>
+    <string name="message_delete_comment">Voulez-vous vraiment supprimer ce commentaire ?</string>
     <string name="message_delete_picture">Voulez-vous vraiment supprimer cette photo ?</string>
     <string name="edit_pwd">Modifier le mot de passe</string>
     <string name="hint_old_pwd">Ancien mot de passe</string>
@@ -235,5 +235,15 @@
     <string name="delete_scanner">Cancel</string>
     <string name="barcode_scanner">Code à barre</string>
     <string name="hint_item_barcode">Code à barre</string>
+    <string name="edit_profile">Veuillez saisir tous les champs, SVP</string>
+    <string name="existing_barcode">Ce code à barre existe déja</string>
+    <string name="invalid_facebook_url">Url Facebook invalide</string>
+    <string name="invalid_instagram_url">Url Instagram invalide</string>
+    <string name="invalid_twitter_url">Url Twitter invalide</string>
+    <string name="invalid_linkedin_url">Url LinkedIn invalide</string>
+    <string name="invalid_google_url">Url Google invalide</string>
+    <string name="logout_app_request">Appuyez une autre fois pour quitter</string>
+    <string name="technical_error">Une erreur technique est survenue</string>
+    <string name="invalid_barcode">Code à barre invalide</string>
 
 </resources>

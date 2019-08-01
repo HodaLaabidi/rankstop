@@ -1,14 +1,14 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +33,7 @@ import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
@@ -52,7 +53,7 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
-public class ListingItemsFragment extends Fragment implements RSView.StandardView {
+public class ListingItemsFragment extends Fragment implements RSView.StandardView ,RSView.StandardView2 {
 
     private View rootView;
     private Unbinder unbinder;
@@ -112,7 +113,7 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         RSNavigationData navigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         from = navigationData.getSection();
         bindViews();
-        itemPresenter = new PresenterItemImpl(ListingItemsFragment.this);
+        itemPresenter = new PresenterItemImpl(ListingItemsFragment.this, ListingItemsFragment.this);
         isLoggedIn = RSSession.isLoggedIn();
         if (isLoggedIn) {
             currentUser = RSSession.getCurrentUser();
@@ -227,7 +228,8 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
         int index = findItemIndex(itemsList, itemId);
         if (index != -1) {
             itemsList.get(index).setFollow(follow);
-            itemsAdapter.notifyItemChanged(index, "icon");
+            //itemsAdapter.notifyItemChanged(index, "icon");
+            itemPresenter.refreshItems(this.getContext(),currentUser.get_id(), itemId, "icon", RankStop.getDeviceLanguage());
         }
     }
 
@@ -441,6 +443,28 @@ public class ListingItemsFragment extends Fragment implements RSView.StandardVie
     public void onOffLine() {
         //Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
         new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
+    }
+
+    @Override
+    public void onSuccessRefreshItem(String target, String itemId, String message, Object data) {
+
+        Item item = null;
+        if (!(data instanceof String)) {
+            item = new Gson().fromJson(new Gson().toJson(data), Item.class);
+
+            for (int i = 0; i < itemsList.size(); i++) {
+                if (itemsList.get(i).getItemDetails().get_id().equalsIgnoreCase(itemId)) {
+
+                    itemsAdapter.refreshOneItem(i, item, message);
+                    break;
+
+
+                }
+
+            }
+
+        }
 
     }
 }

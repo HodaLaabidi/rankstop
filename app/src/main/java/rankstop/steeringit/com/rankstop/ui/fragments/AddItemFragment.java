@@ -11,22 +11,21 @@ import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.widget.NestedScrollView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,7 +35,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -82,11 +80,9 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.Context.LOCATION_SERVICE;
-import static rankstop.steeringit.com.rankstop.utils.RSConstants.PLACE_PICKER_REQUEST_CODE;
 
-public class AddItemFragment extends Fragment implements RSView.StandardView, AdapterView.OnItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class AddItemFragment extends Fragment implements RSView.StandardView, RSView.StandardView2 ,AdapterView.OnItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
 
     private static final long REFRESH_ADAPTER_TIMER = 200;
@@ -299,7 +295,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
         if (RSNetwork.isConnected(getContext())) {
             if (RSSession.isLoggedIn()) {
                 scrollView.setVisibility(View.VISIBLE);
-                itemPresenter = new PresenterItemImpl(AddItemFragment.this);
+                itemPresenter = new PresenterItemImpl(AddItemFragment.this, AddItemFragment.this);
                 categorySpinner.setOnItemSelectedListener(this);
                 loadCategoriesList(getContext());
                 locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
@@ -356,6 +352,15 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
                         fragmentActionListener.startFragment(ScannerFragment.getInstance(rsAddItem), RSConstants.FRAGMENT_SCANNER);
                         ((ContainerActivity) getActivity()).manageSession(true, new RSNavigationData(RSConstants.FRAGMENT_SCANNER, RSConstants.ACTION_ADD_ITEM));
 
+                    }
+                });
+
+                inputBarcode.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setRsAddItem();
+                        fragmentActionListener.startFragment(ScannerFragment.getInstance(rsAddItem), RSConstants.FRAGMENT_SCANNER);
+                        ((ContainerActivity) getActivity()).manageSession(true, new RSNavigationData(RSConstants.FRAGMENT_SCANNER, RSConstants.ACTION_ADD_ITEM));
                     }
                 });
 
@@ -833,5 +838,8 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, Ad
     }
 
 
+    @Override
+    public void onSuccessRefreshItem(String target, String itemId, String message, Object data) {
 
+    }
 }

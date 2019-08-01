@@ -2,23 +2,19 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,8 +28,6 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.gson.Gson;
 import com.google.zxing.Result;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -183,7 +177,12 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        barcodePresenter.getItemByBarcode(result.getText(), getContext());
+                        if (!result.getText().matches("^[0-9]+$")){
+                            Toast.makeText(getContext() , R.string.invalid_barcode, Toast.LENGTH_LONG).show();
+                        } else {
+                            barcodePresenter.getItemByBarcode(result.getText().trim(), getContext());
+                        }
+
                         //Toast.makeText(activity, result.getText(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -342,7 +341,7 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
             case RSConstants.SEARCH_BARCODE:
                 if (RSNetwork.isConnected(getContext())) {
                     if (rsAddItem != null) {
-                        Toast.makeText(getContext(), "hjghjhj", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.existing_barcode, Toast.LENGTH_LONG).show();
                         if (rsAddItem.getTitle() == null && rsAddItem.getPhone() == null && rsAddItem.getDescription() == null && rsAddItem.getCategoryId() == null) {
                             fragmentActionListener.startFragment(AddItemFragment.getInstance(), RSConstants.FRAGMENT_SCANNER);
                         } else {
@@ -353,10 +352,8 @@ public class ScannerFragment extends Fragment implements  RSView.SearchByBarcode
 
 
                     } else if (itemDetails != null) {
-                        Toast.makeText(getContext(), "hgjghjhjhj", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.existing_barcode, Toast.LENGTH_LONG).show();
                         ((ContainerActivity) getActivity()).manageSession(false, new RSNavigationData(RSConstants.UPDATE_BARCODE, "", "", ""));
-
-                        itemDetails.setBarcode("");
 
                         fragmentActionListener.startFragment(UpdateItemFragment.getInstance(itemDetails), RSConstants.FRAGMENT_SCANNER);
                     } else {

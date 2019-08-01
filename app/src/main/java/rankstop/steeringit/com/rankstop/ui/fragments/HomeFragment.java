@@ -1,14 +1,15 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -64,7 +65,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class HomeFragment extends Fragment implements RSView.StandardView {
+public class HomeFragment extends Fragment implements RSView.StandardView  , RSView.StandardView2{
 
     private static HomeFragment instance;
 
@@ -222,7 +223,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         super.onActivityCreated(savedInstanceState);
         bindViews();
 
-        itemPresenter = new PresenterItemImpl(HomeFragment.this);
+        itemPresenter = new PresenterItemImpl(HomeFragment.this, HomeFragment.this);
         rsRequestListItem.setLang(RankStop.getDeviceLanguage());
         getCurrentUser();
 
@@ -329,7 +330,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
                     onOffLine();
             }
         };
-        topRankedAdapter = new PieAdapter(listTopRankedItem, listener);
+        topRankedAdapter = new PieAdapter(listTopRankedItem, listener, getContext());
         recyclerViewTopRanked.setLayoutManager(new LinearLayoutManager(recyclerViewTopRanked.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewTopRanked.setAdapter(topRankedAdapter);
         recyclerViewTopRanked.addItemDecoration(new HorizontalSpace(marginCardView));
@@ -352,7 +353,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
                     onOffLine();
             }
         };
-        topViewedAdapter = new PieAdapter(listTopViewedItem, listener);
+        topViewedAdapter = new PieAdapter(listTopViewedItem, listener , getContext());
         recyclerViewTopViewed.setLayoutManager(new LinearLayoutManager(recyclerViewTopViewed.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewTopViewed.setAdapter(topViewedAdapter);
         recyclerViewTopViewed.addItemDecoration(new HorizontalSpace(marginCardView));
@@ -375,7 +376,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
                     onOffLine();
             }
         };
-        topFollowedAdapter = new PieAdapter(listTopFollowedItem, listener);
+        topFollowedAdapter = new PieAdapter(listTopFollowedItem, listener , getContext());
         recyclerViewTopFollowed.setLayoutManager(new LinearLayoutManager(recyclerViewTopFollowed.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewTopFollowed.setAdapter(topFollowedAdapter);
         recyclerViewTopFollowed.addItemDecoration(new HorizontalSpace(marginCardView));
@@ -398,7 +399,7 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
                     onOffLine();
             }
         };
-        topCommentedAdapter = new PieAdapter(listTopCommentedItem, listener);
+        topCommentedAdapter = new PieAdapter(listTopCommentedItem, listener , getContext());
         recyclerViewTopCommented.setLayoutManager(new LinearLayoutManager(recyclerViewTopCommented.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewTopCommented.setAdapter(topCommentedAdapter);
         recyclerViewTopCommented.addItemDecoration(new HorizontalSpace(marginCardView));
@@ -506,6 +507,9 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         }
 
         switch (target) {
+            case RSConstants.REFRESH_ITEM:
+                //topRankedAdapter.notifyItemChanged(indexIntoRankedList, "icon");
+            break;
             case RSConstants.TOP_RANKED_ITEMS:
                 listTopRankedItem = listingItemResponse.getItems();
                 if (listTopRankedItem.size() == 0) {
@@ -573,25 +577,25 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         int indexIntoRankedList = findItemIndex(listTopRankedItem, itemId);
         if (indexIntoRankedList != -1) {
             listTopRankedItem.get(indexIntoRankedList).setFollow(follow);
-            topRankedAdapter.notifyItemChanged(indexIntoRankedList, "icon");
+            itemPresenter.refreshItems(this.getContext(),user.get_id(), itemId, "icon", RankStop.getDeviceLanguage());
         }
 
         int indexIntoViewedList = findItemIndex(listTopViewedItem, itemId);
         if (indexIntoViewedList != -1) {
             listTopViewedItem.get(indexIntoViewedList).setFollow(follow);
-            topViewedAdapter.notifyItemChanged(indexIntoViewedList, "icon");
+            itemPresenter.refreshItems(this.getContext(),user.get_id(), itemId, "icon", RankStop.getDeviceLanguage());
         }
 
         int indexIntoCommentedList = findItemIndex(listTopCommentedItem, itemId);
         if (indexIntoCommentedList != -1) {
             listTopCommentedItem.get(indexIntoCommentedList).setFollow(follow);
-            topCommentedAdapter.notifyItemChanged(indexIntoCommentedList, "icon");
+            itemPresenter.refreshItems(this.getContext(),user.get_id(), itemId, "icon", RankStop.getDeviceLanguage());
         }
 
         int indexIntoFollowedList = findItemIndex(listTopFollowedItem, itemId);
         if (indexIntoFollowedList != -1) {
             listTopFollowedItem.get(indexIntoFollowedList).setFollow(follow);
-            topFollowedAdapter.notifyItemChanged(indexIntoFollowedList, "icon");
+            itemPresenter.refreshItems(this.getContext(),user.get_id(), itemId, "icon", RankStop.getDeviceLanguage());
         }
     }
 
@@ -692,5 +696,57 @@ public class HomeFragment extends Fragment implements RSView.StandardView {
         AskToLoginDialog dialog = AskToLoginDialog.newInstance(data);
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), "");
+    }
+
+    @Override
+    public void onSuccessRefreshItem(String target, String itemId, String message, Object data) {
+
+
+        Item item = null;
+        if (!(data instanceof String)) {
+            Log.e("onSuccessRefreshItem", "ok");
+            item = new Gson().fromJson(new Gson().toJson(data), Item.class);
+
+            for (int i = 0; i < listTopViewedItem.size(); i++) {
+                if (listTopViewedItem.get(i).getItemDetails().get_id().equalsIgnoreCase(itemId)) {
+
+                    topViewedAdapter.refreshOneItem(i, item, message);
+                    break;
+
+
+                }
+
+            }
+            for (int i = 0; i < listTopRankedItem.size(); i++) {
+                if (listTopRankedItem.get(i).getItemDetails().get_id().equalsIgnoreCase(itemId)) {
+
+                    topRankedAdapter.refreshOneItem(i, item, message);
+                    break;
+                }
+
+            }
+            for (int i = 0; i < listTopCommentedItem.size(); i++) {
+                if (listTopCommentedItem.get(i).getItemDetails().get_id().equalsIgnoreCase(itemId)) {
+
+
+                    topCommentedAdapter.refreshOneItem(i, item, message);
+                    break;
+
+                }
+
+            }
+            for (int i = 0; i < listTopFollowedItem.size(); i++) {
+                if (listTopFollowedItem.get(i).getItemDetails().get_id().equalsIgnoreCase(itemId)) {
+
+
+                    topFollowedAdapter.refreshOneItem(i, item, message);
+                    break;
+
+
+                }
+
+            }
+        }
+
     }
 }

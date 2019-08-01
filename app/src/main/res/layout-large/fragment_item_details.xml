@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:toolbarId="@id/toolbar">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
@@ -101,27 +101,31 @@
                             android:drawableStart="@drawable/ic_info_outline_gray"/>
 
                         <LinearLayout
+                            android:weightSum="2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="end"
                             android:orientation="horizontal">
 
                             <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
-                                android:id="@+id/btn_report_abuse"
-                                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/btn_add_pix"
+                                android:visibility="gone"
+                                style="@style/Widget.MaterialComponents.Button"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/mt_btn_item_details"
-                                android:text="@string/report_abuse"
+                                android:text="@string/update_item"
                                 android:textAllCaps="false"
-                                android:visibility="gone"
+                                android:layout_marginRight="5dp"
                                 android:textSize="@dimen/size_btn_edit"
-                                app:icon="@drawable/ic_flag" />
+                                />
 
                             <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
                                 android:id="@+id/btn_add_review"
                                 style="@style/Widget.MaterialComponents.Button"
-                                android:layout_width="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="5dp"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/mt_btn_item_details"
                                 android:textSize="@dimen/size_btn_edit"
@@ -129,20 +133,20 @@
                                 android:visibility="visible"
                                 android:textAllCaps="false" />
                         </LinearLayout>
-
                         <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
-                            android:id="@+id/btn_add_pix"
-                            style="@style/Widget.MaterialComponents.Button"
+                            android:id="@+id/btn_report_abuse"
+                            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/mt_btn_item_details"
-                            android:text="@string/update_item"
+                            android:text="@string/report_abuse"
                             android:textAllCaps="false"
                             android:textSize="@dimen/size_btn_edit"
-                            android:visibility="gone"
-                            android:layout_gravity="end"/>
+                            app:icon="@drawable/ic_flag" />
+
+
                     </LinearLayout>
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_gallery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -152,7 +156,7 @@
                 </RelativeLayout>
             </RelativeLayout>
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -161,9 +165,9 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:title="sa" />
 
-        </android.support.design.widget.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             style="@style/Widget.MaterialComponents.TabLayout.Colored"
             android:layout_width="match_parent"
@@ -173,11 +177,11 @@
             app:tabBackground="@color/colorPrimary"
             app:tabGravity="fill" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

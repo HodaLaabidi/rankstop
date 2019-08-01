@@ -2,6 +2,9 @@ package rankstop.steeringit.com.rankstop.MVP.presenter;
 
 import android.content.Context;
 
+import java.util.List;
+
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
 import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
 import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
@@ -49,6 +52,7 @@ public interface RSPresenter {
 
     interface ItemPresenter {
         void loadItem(String itemId, String userId, String lang, Context context);
+        void refreshItems( Context context, String userId,String  itemId, String message , String lang);
         void loadTopRankedItems(RSRequestListItem rsRequestListItem, Context context);
         void loadTopViewedItems(RSRequestListItem rsRequestListItem, Context context);
         void loadTopCommentedItems(RSRequestListItem rsRequestListItem, Context context);

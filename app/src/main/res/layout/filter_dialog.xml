@@ -6,64 +6,73 @@
     android:orientation="vertical"
     android:padding="@dimen/m_activity">
 
-    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/category_text"
-        android:textColor="@color/colorPrimary" />
+   <androidx.core.widget.NestedScrollView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+       <LinearLayout
+           android:orientation="vertical"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+           <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/category_text"
+               android:textColor="@color/colorPrimary" />
 
-    <android.support.v7.widget.AppCompatSpinner
-        android:id="@+id/category_spinner"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:spinnerMode="dialog" />
+           <androidx.appcompat.widget.AppCompatSpinner
+               android:id="@+id/category_spinner"
+               style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+               android:layout_width="match_parent"
+               android:layout_height="50dp"
+               android:spinnerMode="dialog" />
 
-    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
-        android:id="@+id/tv_country"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/hint_country"
-        android:textColor="@color/colorPrimary"
-        android:visibility="gone" />
+           <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+               android:id="@+id/tv_country"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="10dp"
+               android:text="@string/hint_country"
+               android:textColor="@color/colorPrimary"
+               android:visibility="gone" />
 
-    <android.support.v7.widget.AppCompatSpinner
-        android:id="@+id/country_spinner"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:spinnerMode="dialog"
-        android:visibility="gone" />
+           <androidx.appcompat.widget.AppCompatSpinner
+               android:id="@+id/country_spinner"
+               style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+               android:layout_width="match_parent"
+               android:layout_height="50dp"
+               android:spinnerMode="dialog"
+               android:visibility="gone" />
 
-    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
-        android:id="@+id/tv_city"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/hint_cities"
-        android:textColor="@color/colorPrimary"
-        android:visibility="gone" />
+           <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+               android:id="@+id/tv_city"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="10dp"
+               android:text="@string/hint_cities"
+               android:textColor="@color/colorPrimary"
+               android:visibility="gone" />
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+           <androidx.core.widget.NestedScrollView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/cities_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </android.support.v4.widget.NestedScrollView>
+               <LinearLayout
+                   android:id="@+id/cities_container"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical" />
+           </androidx.core.widget.NestedScrollView>
 
 
-    <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
-        android:id="@+id/btn_filter"
-        style="@style/RSButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="10dp"
-        android:text="@string/filter_text" />
+           <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
+               android:id="@+id/btn_filter"
+               style="@style/RSButton"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="end"
+               android:layout_marginTop="10dp"
+               android:text="@string/filter_text" />
+       </LinearLayout>
+   </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

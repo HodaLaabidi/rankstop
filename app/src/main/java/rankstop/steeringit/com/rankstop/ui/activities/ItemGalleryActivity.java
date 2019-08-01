@@ -1,10 +1,10 @@
 package rankstop.steeringit.com.rankstop.ui.activities;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 
 import java.util.List;
@@ -33,9 +33,7 @@ public class ItemGalleryActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_gallery);
         unbinder = ButterKnife.bind(this);
-
         pictures = (List<Gallery>) getIntent().getSerializableExtra(RSConstants.PICTURES);
-
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), pictures);
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setCurrentItem(getIntent().getIntExtra(RSConstants.POSITION, 0));

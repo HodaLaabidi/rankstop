@@ -82,7 +82,7 @@ public class RSRequestSocialLogin implements Serializable {
     }
 
     public String toString() {
-        return "id = "+ this.id +"photoUrl = "+ this.photoUrl +"email = "+ this.email +"provider = "+ this.provider +"lastName = "+ this.lastName +"firstName = "+ this.firstName +"gender = "+ this.gender +"birthday = "+ this.birthday+
-        "getCity = "+ this.location.getCity() +"getCountry().getCountryCode()= "+ this.location.getCountry().getCountryCode() +"getLocation().getCountry().getCountryName() = "+ this.getLocation().getCountry().getCountryName()+"getLocation().getCountry().get_id() = "+ this.getLocation().getCountry().get_id() ;
+        return "id = " + this.id + "photoUrl = " + this.photoUrl + "email = " + this.email + "provider = " + this.provider + "lastName = " + this.lastName + "firstName = " + this.firstName + "gender = " + this.gender + "birthday = " + this.birthday +
+               "getCity = " + this.location.getCity() + "getCountry().getCountryCode()= " + this.location.getCountry().getCountryCode() + "getLocation().getCountry().getCountryName() = " + this.getLocation().getCountry().getCountryName() + "getLocation().getCountry().get_id() = " + this.getLocation().getCountry().get_id();
     }
 }

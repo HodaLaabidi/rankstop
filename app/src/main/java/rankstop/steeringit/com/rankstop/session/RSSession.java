@@ -28,6 +28,7 @@ public class RSSession {
         // RSJWTParser.getPayload(token);
         User user = new Gson().fromJson(RSJWTParser.getPayload(token).toString(), User.class);
         UserInfo userInfo = new UserInfo(user);
+        Log.e("userid from SP" , user.get_id());
         RSLocalStorage rsLocalStorage = new RSLocalStorage(token, userInfo);
 
         saveIntoSharedPreferences(rsLocalStorage);
@@ -35,8 +36,11 @@ public class RSSession {
 
     public static void refreshLocalStorage(UserInfo userInfo) {
         RSLocalStorage rsLocalStorage = getLocalStorage();
-        rsLocalStorage.setUserInfo(userInfo);
-        saveIntoSharedPreferences(rsLocalStorage);
+        if (rsLocalStorage != null){
+            rsLocalStorage.setUserInfo(userInfo);
+            saveIntoSharedPreferences(rsLocalStorage);
+        }
+
     }
 
     private static void saveIntoSharedPreferences(RSLocalStorage rsLocalStorage) {
@@ -47,7 +51,15 @@ public class RSSession {
     }
 
     public static User getCurrentUser() {
+        // -------------- Old Code -------------------------
+
+       // return getLocalStorage().getUserInfo().getUser();
+
+        // -------------- New Code -------------------------
+        if (getLocalStorage() != null)
         return getLocalStorage().getUserInfo().getUser();
+        else
+            return new User();
     }
 
     public static UserInfo getCurrentUserInfo() {
@@ -93,7 +105,6 @@ public class RSSession {
 
             @Override
             public void onFailure(Call<RSResponse> call, Throwable t) {
-                Log.e("reconnect failure" , t.getMessage()+" !");
 
                 if (call.isCanceled())
                     Log.i("err", t.getMessage() + "");

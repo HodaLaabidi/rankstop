@@ -2,9 +2,12 @@ package rankstop.steeringit.com.rankstop.ui.adapter;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +17,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -29,10 +31,11 @@ import butterknife.ButterKnife;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.data.model.db.Comment;
+import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardForItemPicsListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ItemInfoDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.UserInfoDialog;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
@@ -42,16 +45,20 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
     private List<Picture> pictures;
     private String target;
     private Context context ;
+    private FragmentManager fm ;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
+    private String itemPixResource ;
 
-    public ItemPixAdapter(ReviewCardForItemPicsListener listener, String target, Context context) {
+    public ItemPixAdapter(ReviewCardForItemPicsListener listener, String target, Context context, String itemPixResource , FragmentManager fm) {
         this.listener = listener;
         this.context = context ;
         this.pictures = new ArrayList<>();
         this.target = target;
+        this.fm = fm ;
+        this.itemPixResource = itemPixResource ;
     }
 
     @NonNull
@@ -224,6 +231,25 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                 avatar.setController(controller);
             }
 
+            if (itemPixResource == RSConstants.ITEM_PIX){
+                avatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e("ITEM_PIX" , "on click listener avatar ");
+                        // showUserInfo()
+
+                    }
+                });
+
+                usernameTV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e("ITEM_PIX" , "on click listener usernameTV ");
+                    }
+                });
+            }
+
+
             try {
                 if (picture != null) {
                     if (picture.getPictureEval() != null) {
@@ -254,6 +280,12 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
             } catch (Exception e) {
             }
         }
+    }
+
+    private void showUserInfo(String userId) {
+        UserInfoDialog dialog = UserInfoDialog.newInstance(userId);
+        dialog.setCancelable(false);
+        dialog.show(fm, "");
     }
 
     /*

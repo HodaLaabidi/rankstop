@@ -3,10 +3,10 @@ package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +26,6 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class AskToLoginDialog extends DialogFragment {
 
-    private View rootView;
-    private Unbinder unbinder;
 
     @BindView(R.id.negative_btn)
     RSBTNBold cancelBtn;
@@ -35,14 +33,13 @@ public class AskToLoginDialog extends DialogFragment {
     RSBTNBold loginBtn;
     @BindView(R.id.tv_message)
     RSTVMedium messageTV;
-
-
     private ColorStateList colorStateList;
     private LinearLayout.LayoutParams layoutParams;
     private FragmentActionListener fragmentActionListener;
-
-
+    private View rootView;
+    private Unbinder unbinder;
     private static AskToLoginDialog instance;
+
 
     public static AskToLoginDialog newInstance(RSNavigationData rsNavigationData) {
         if (instance == null) {
@@ -60,7 +57,6 @@ public class AskToLoginDialog extends DialogFragment {
         rootView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_ask_for_login, null, false);
         unbinder = ButterKnife.bind(this, rootView);
         setFragmentActionListener((ContainerActivity) getActivity());
-
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setView(rootView).setCancelable(false).create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setOnShowListener(dialog -> onDialogShow(alertDialog));
@@ -73,7 +69,6 @@ public class AskToLoginDialog extends DialogFragment {
         dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
         colorStateList = new ColorStateList(new int[][]{{0}}, new int[]{getResources().getColor(R.color.colorGray)}); // 0xAARRGGBB
         cancelBtn.setBackgroundTintList(colorStateList);
-
         if (loginBtn.getWidth() > cancelBtn.getWidth()) {
             layoutParams = new LinearLayout.LayoutParams(loginBtn.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMarginEnd((int) getResources().getDimension(R.dimen.margin_end_btn_dialog));
@@ -83,11 +78,8 @@ public class AskToLoginDialog extends DialogFragment {
             layoutParams.setMarginStart((int) getResources().getDimension(R.dimen.margin_end_btn_dialog));
             loginBtn.setLayoutParams(layoutParams);
         }
-
         RSNavigationData rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
-
         messageTV.setText(rsNavigationData.getMessage());
-
         cancelBtn.setOnClickListener(v -> dismiss());
         loginBtn.setOnClickListener(v -> {
             navigateToSignUp((RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA));
@@ -103,7 +95,6 @@ public class AskToLoginDialog extends DialogFragment {
         colorStateList = null;
         layoutParams = null;
         instance = null;
-
         super.onDestroyView();
     }
 

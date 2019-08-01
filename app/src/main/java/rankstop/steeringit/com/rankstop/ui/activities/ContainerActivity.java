@@ -1,19 +1,19 @@
 package rankstop.steeringit.com.rankstop.ui.activities;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -28,11 +28,9 @@ import rankstop.steeringit.com.rankstop.ui.fragments.ProfileFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.MyEvaluationsFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.ScannerFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.SearchFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.SettingsFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.fragments.UpdateItemFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class ContainerActivity extends BaseActivity implements FragmentActionListener {
@@ -40,6 +38,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
     private BottomNavigationView navigation;
     private FragmentManager fragmentManager;
     private boolean isLoggedIn = false;
+    private boolean isFirstAskForLogoutApp = false ;
     private RSNavigationData rsNavigationD = new RSNavigationData();
 
     private WeakReference<ContainerActivity> activity;
@@ -124,6 +123,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
             rsNavigationData.setUserId(RSSession.getCurrentUser().get_id());
         }
         rsNavigationD = rsNavigationData ;
+
         switch (rsNavigationData.getFrom()) {
             case RSConstants.FRAGMENT_MY_EVALS:
                 navigation.setSelectedItemId(R.id.navigation_my_evals);
@@ -140,6 +140,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
             case RSConstants.FRAGMENT_HOME:
                 //follow mel home
                 startFragment(HomeFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_HOME);
+                navigation.setSelectedItemId(R.id.navigation_home);
                 break;
             case RSConstants.FRAGMENT_HISTORY:
                 startFragment(HistoryFragment.getInstance(), RSConstants.FRAGMENT_HISTORY);
@@ -197,16 +198,51 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
     @Override
     public void onBackPressed() {
         Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-        if (fragment instanceof HomeFragment) {
-            fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            finish();
+        if (fragment instanceof HomeFragment){
+
+                if (!isFirstAskForLogoutApp) {
+                    isFirstAskForLogoutApp = true ;
+                    Toast.makeText(getBaseContext(), R.string.logout_app_request, Toast.LENGTH_LONG).show();
+                } else {
+                    fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    finish();
+                }
+
+
         } else {
-            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof SearchFragment || fragment instanceof ProfileFragment) {
+            isFirstAskForLogoutApp = false;
+            if (fragment instanceof AddItemFragment || fragment instanceof MyEvaluationsFragment || fragment instanceof SearchFragment) {
+
                 fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 navigation.setSelectedItemId(R.id.navigation_home);
-            } else if (fragment instanceof ItemDetailsFragment) {
-                fragmentManager.popBackStack();
+            } else if (fragment instanceof ItemDetailsFragment || fragment instanceof ProfileFragment || fragment instanceof  AddReviewFragment) {
+                int count = fragmentManager.getBackStackEntryCount();
+                if (count > 2) {
+                    FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(count - 2);
+                    if (entry.getName().equals(RSConstants.FRAGMENT_SIGN_UP ) /*|| entry.getName().equals(RSConstants.FRAGMENT_PROFILE ) */ || entry.getName().equals(RSConstants.FRAGMENT_ADD_REVIEW)){
+                        fragmentManager.popBackStack();
+                    if (entry.getName().equals(RSConstants.FRAGMENT_ADD_REVIEW)){
+                                fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                navigation.setSelectedItemId(R.id.navigation_home);
+
+                        } else if (entry.getName().equals(RSConstants.FRAGMENT_HOME)){
+                            fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            navigation.setSelectedItemId(R.id.navigation_home);
+                        } else {
+                        fragmentManager.popBackStack();
+                    }
+                    } else {
+                        fragmentManager.popBackStack();
+                    }
+
+                } else {
+                    fragmentManager.popBackStack();
+                }
+
+
+
             } else if (fragment instanceof ScannerFragment) {
+
                 if (rsNavigationD != null) {
                     if (rsNavigationD.getAction() == RSConstants.ACTION_ADD_ITEM) {
                         fragmentManager.popBackStack();
@@ -223,18 +259,26 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                     navigation.setSelectedItemId(R.id.navigation_home);
 
                 }
-            }  else {
-                    // test if last
-                    int count = fragmentManager.getBackStackEntryCount();
-                    if (count > 2) {
-                        FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(count - 2);
-                        if (entry.getName().equals(RSConstants.FRAGMENT_SIGN_UP) || entry.getName().equals(RSConstants.FRAGMENT_ADD_REVIEW))
-                            fragmentManager.popBackStack();
-                    }
-                    fragmentManager.popBackStack();
+            } else {
+                int count = fragmentManager.getBackStackEntryCount();
+
+
+                if (count > 2) {
+                    FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(count - 2);
+                    if (entry.getName().equals(RSConstants.FRAGMENT_SIGN_UP ) || entry.getName().equals(RSConstants.FRAGMENT_ADD_REVIEW) || entry.getName().equals(RSConstants.FRAGMENT_PROFILE))
+
+                        fragmentManager.popBackStack();
                 }
+                         fragmentManager.popBackStack();
+
+
+
+
+
+
             }
         }
+    }
 
 
     @Override
@@ -256,6 +300,7 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
     protected void onDestroy() {
         if (activity != null)
             activity.clear();
+        isFirstAskForLogoutApp = false ;
         super.onDestroy();
     }
 }

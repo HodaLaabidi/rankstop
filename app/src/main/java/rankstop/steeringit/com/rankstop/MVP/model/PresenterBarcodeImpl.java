@@ -37,15 +37,12 @@ public class PresenterBarcodeImpl implements RSPresenter.BarcodePresenter {
                     callSearchBarcode.enqueue(new Callback<RSResponse>() {
                         @Override
                         public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
-                            Log.e("code " , response.code() +"!");
                             if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
-                                Log.e("reconnect" , "ok");
                                 RSSession.Reconnecter();
                                 searchByBarcodeView.hideProgressBar(RSConstants.SEARCH_BARCODE);
                                 getItemByBarcode(barcode, context);
                             } else {
                                 if (response.body() != null) {
-                                    Log.e("search barcode" , "ok");
                                     if (response.body().getStatus() == 1) {
                                         searchByBarcodeView.onSuccess(RSConstants.SEARCH_BARCODE, response.body().getData());
                                     } else if (response.body().getStatus() == 2) {
@@ -60,7 +57,7 @@ public class PresenterBarcodeImpl implements RSPresenter.BarcodePresenter {
 
                         @Override
                         public void onFailure(Call<RSResponse> call, Throwable t) {
-                            Log.e("onFailure" , "ok");
+
 
                         }
                     });

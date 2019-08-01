@@ -1,19 +1,20 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -32,6 +33,7 @@ import rankstop.steeringit.com.rankstop.MVP.view.RSView;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.RSNotif;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
@@ -125,6 +127,7 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         listNotifPresenter = new PresenterNotifImpl(ListNotifFragment.this);
 
         if (RSSession.isLoggedIn()) {
+            Log.e("user id" ,RSSession.getCurrentUser().get_id() );
             rsRequestListItem.setUserId(RSSession.getCurrentUser().get_id());
             rsRequestListItem.setLang(RankStop.getDeviceLanguage());
             rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
@@ -247,6 +250,7 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
 
     @Override
     public void onSuccess(String target, Object data, String itemId) {
+        Log.e("list notif" , " onSuccess");
         RSResponseNotif notifResponse = null;
         if (!(data instanceof String)) {
             notifResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseNotif.class);
@@ -282,10 +286,14 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
 
     @Override
     public void onFailure(String target) {
+        Log.e("list notif" , " onFailure");
     }
 
     @Override
     public void onError(String target) {
+        Log.e("list notif" , "  onError");
+
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -308,7 +316,9 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
 
     @Override
     public void onOffLine() {
-        Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
+
     }
 
     private void navigateToSignUp(RSNavigationData rsNavigationData) {

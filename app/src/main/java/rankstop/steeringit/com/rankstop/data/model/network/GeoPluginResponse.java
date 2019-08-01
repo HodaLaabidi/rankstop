@@ -1,6 +1,6 @@
 package rankstop.steeringit.com.rankstop.data.model.network;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 

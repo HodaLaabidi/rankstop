@@ -79,17 +79,14 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            Log.e(TAG , "reconnect");
                             searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);
                             searchItems(rsRequestSearch, context);
                         } else {
                             if (response.body() != null) {
                                 if (response.body().getStatus() == 1) {
-                                    Log.e(TAG, " status code = " + response.body().getStatus() + "");
                                     searchView.onSuccess(RSConstants.SEARCH_ITEMS, response.body().getData());
                                 } else if (response.body().getStatus() == 0) {
                                     searchView.onError(RSConstants.SEARCH_ITEMS);
-                                    Log.e(TAG, " status code = " + response.body().getStatus() + "");
                                 }
                             }
                             searchView.hideProgressBar(RSConstants.SEARCH_ITEMS);

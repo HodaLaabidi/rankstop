@@ -4,8 +4,11 @@ package rankstop.steeringit.com.rankstop.MVP.model;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.List;
+
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
@@ -22,12 +25,14 @@ import retrofit2.Response;
 public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
     private RSView.StandardView standardView;
+    private RSView.StandardView2 standardView2;
     private Call<RSResponse> callLoadItem, callTopRankedItems, callTopCommentedItems, callTopViewedItems, callTopFollowedItems,
             callItemCreated, callItemOwned, callItemFollowed, callMyEvals, callCategoriesList, callFollowItem, callUnfollowItem,
             callItemComments, callItemPix, callItemPixByUser, callItemCommentsByUser, callDeletePic, callDeleteComment;
 
-    public PresenterItemImpl(RSView.StandardView standardView){
+    public PresenterItemImpl(RSView.StandardView standardView, RSView.StandardView2 standardView2){
         this.standardView = standardView;
+        this.standardView2 = standardView2;
     }
 
     @Override
@@ -56,7 +61,6 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
-                        Log.e("test" ,call +"!" );
                         if (!call.isCanceled())
                             standardView.hideProgressBar(RSConstants.ONE_ITEM);
                     }
@@ -68,8 +72,50 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
     }
 
     @Override
+    public void refreshItems( Context context, String userId, String itemId, String message,  String lang) {
+
+        if (RSNetwork.isConnected(context)) {
+            if (standardView2 != null) {
+                //standardView.showProgressBar(RSConstants.ONE_ITEM);
+                callLoadItem = WebService.getInstance().getApi().loadItem(RSSessionToken.getUsergestToken(), itemId, userId, lang);
+                callLoadItem.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body() != null) {
+                            Log.e("itemId"  , itemId  + "     "+ userId + "    "+ RSSessionToken.getUsergestToken());
+                            if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
+                                RSSession.Reconnecter();
+                                refreshItems(context ,userId, itemId,message, lang);
+                            } else {
+                                if (response.body().getStatus() == 1) {
+                                    Log.e("onSuccessRefreshItem", "ok"+ response.body().getData());
+                                    standardView2.onSuccessRefreshItem(RSConstants.REFRESH_ITEM, itemId, message,response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    //standardView2.onFailure(RSConstants.REFRESH_ITEM);
+                                }
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!call.isCanceled()){
+
+                        }
+
+                    }
+                });
+            }
+        } else {
+            //standardView2.onOffLine();
+        }
+
+    }
+
+    @Override
     public void loadTopRankedItems(RSRequestListItem rsRequestListItem, Context context) {
-        Log.e("test", "loadTopRankedItems");
+
         if (standardView != null) {
             callTopRankedItems = WebService.getInstance().getApi().loadTopRankedItems(RSSessionToken.getUsergestToken(), rsRequestListItem);
             standardView.showProgressBar(RSConstants.TOP_RANKED_ITEMS);
@@ -93,6 +139,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 }
 
+
+
                 @Override
                 public void onFailure(Call<RSResponse> call, Throwable t) {
 
@@ -108,7 +156,6 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
         if (standardView != null) {
             standardView.showProgressBar(RSConstants.TOP_VIEWED_ITEMS);
             callTopViewedItems = WebService.getInstance().getApi().loadTopViewedItems(RSSessionToken.getUsergestToken(), rsRequestListItem);
-            Log.e("test" , RSSessionToken.getUsergestToken() + " !");
             if ( RSSessionToken.getUsergestToken() != null){
                 callTopViewedItems.enqueue(new Callback<RSResponse>() {
                     @Override
@@ -137,7 +184,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     }
                 });
             } else {
-                Log.e("test" , "token is  null");
+
             }
 
         }
@@ -563,6 +610,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                                 standardView.hideProgressBar(RSConstants.ITEM_PIX);
                                 loadItemPix(rsRequestItemData, context);
                             } else {
+                                Log.e("loadItemPix", response.body().getData().toString()+" ");
                                 if (response.body().getStatus() == 1) {
                                     standardView.onSuccess(RSConstants.ITEM_PIX, response.body().getData());
                                 } else if (response.body().getStatus() == 0) {

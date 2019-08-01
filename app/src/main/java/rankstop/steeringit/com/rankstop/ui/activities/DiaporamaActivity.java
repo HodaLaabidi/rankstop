@@ -1,12 +1,11 @@
 package rankstop.steeringit.com.rankstop.ui.activities;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -28,7 +27,7 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
 import rankstop.steeringit.com.rankstop.ui.fragments.SlidePhotoFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
-public class DiaporamaActivity extends BaseActivity implements RSView.StandardView {
+public class DiaporamaActivity extends BaseActivity implements RSView.StandardView , RSView.StandardView2{
 
     private Unbinder unbinder;
 
@@ -75,7 +74,7 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
             isLastPage = true;
         }
 
-        itemPresenter = new PresenterItemImpl(this);
+        itemPresenter = new PresenterItemImpl(this, this);
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), filteredPictures);
         viewPager.setAdapter(mPagerAdapter);
@@ -157,7 +156,7 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
 
     @Override
     public void onOffLine() {
-       // Toast.makeText(getApplicationContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        // Toast.makeText(getApplicationContext(), offlineMsg, Toast.LENGTH_LONG).show();
         new RSCustomToast(DiaporamaActivity.this, getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
 
     }
@@ -191,6 +190,11 @@ public class DiaporamaActivity extends BaseActivity implements RSView.StandardVi
             }
         }
         return result;
+    }
+
+    @Override
+    public void onSuccessRefreshItem(String target, String itemId, String message, Object data) {
+
     }
 
 

@@ -6,10 +6,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -82,24 +82,17 @@ import org.json.JSONObject;
 public class SignupFragment extends Fragment implements RSView.SignupView {
 
     private final String TAG = "SIGNUP FRAGMENT";
-
     private View rootView;
-
     private Unbinder unbinder;
-
     private RSPresenter.SignupPresenter signupPresenter;
-
     private WeakReference<SignupFragment> fragmentContext;
     private RSNavigationData rsNavigationData;
-
     // facebook
     private CallbackManager callbackManager;
     // google
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInOptions gso;
-
     private RSRequestSocialLogin user;
-
     @BindString(R.string.use_fb_login_msg)
     String useFBLoginMsg;
 
@@ -138,9 +131,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @OnClick(R.id.fb_login_btn)
     void fbLogin() {
         if (RSNetwork.isConnected(getContext())) {
-
             LoginManager.getInstance().logOut();
-
             LoginManager.getInstance().logInWithReadPermissions(fragmentContext.get(), Arrays.asList("public_profile", "email", "user_birthday", "user_gender", "user_location"));
         } else {
             onOffLine();
@@ -219,14 +210,11 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         createLoader();
         inputEmail.addTextChangedListener(emailTextWatcher);
-
         rsNavigationData = (RSNavigationData) getArguments().getSerializable(RSConstants.NAVIGATION_DATA);
         signupPresenter = new PresenterAuthImpl(fragmentContext.get());
         callbackManager = CallbackManager.Factory.create();
-
         String value = privacyPolicyMsg + " " + privacyPolicyText;
         Spannable wordtoSpan = new SpannableString(value);
         wordtoSpan.setSpan(new ClickableSpan() {
@@ -248,15 +236,11 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-
                         AccessToken accessToken = AccessToken.getCurrentAccessToken();
                         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-
                         GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
-
                             RSRequestSocialLogin user = getData(object);
                             if (user != null) {
-                                Log.e("performLogin " , user.getProvider() + " " + user.getEmail());
                                 performSocialLogin(user);
                             } else {
                             }
@@ -293,7 +277,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Override
     public void onResume() {
         super.onResume();
-
         //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(fragmentContext.get().getContext());
         //updateUI(account);
     }
@@ -347,7 +330,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     @Override
     public void findEmailSuccess(boolean isEmailExist, Object data) {
         if (isEmailExist) {
-
             RSResponseFindEmail findEmailResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseFindEmail.class);
             if (findEmailResponse.isConnectSocialMedia()) {
                 Toast.makeText(getContext(), useFBLoginMsg, Toast.LENGTH_LONG).show();
@@ -365,23 +347,31 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
         RSSession.startSession(token);
-
+        if (rsNavigationData == null) {
+            rsNavigationData = new RSNavigationData();
+            rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+            rsLoader.dismiss();
+            ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+        } else
             if (rsNavigationData.getAction()== RSConstants.ACTION_FOLLOW) {
                 signupPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.SOCIAL_LOGIN, getContext());
             } else {
                 rsLoader.dismiss();
-                if ( rsNavigationData.getFrom() == RSConstants.FRAGMENT_PROFILE ||rsNavigationData.getFrom() == RSConstants.FRAGMENT_SIGN_UP )
-                rsNavigationData.setFrom(RSConstants.FRAGMENT_SIGN_UP);
-                if (rsNavigationData == null)
-                    rsNavigationData = new RSNavigationData();
+
+                        if ( rsNavigationData.getFrom() == RSConstants.FRAGMENT_PROFILE ||rsNavigationData.getFrom() == RSConstants.FRAGMENT_SIGN_UP ){
+
+                            rsNavigationData.setFrom(RSConstants.FRAGMENT_SIGN_UP);
+
+                        } else  if (rsNavigationData.getFrom() == null || rsNavigationData.getFrom() == ""){
+                            rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+                        }
                 ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
             }
-
     }
 
     @Override
     public void socialLoginError(String message) {
-        Toast.makeText(getContext(), "" + message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), R.string.technical_error + message, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -423,14 +413,9 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             user.setFirstName(account.getGivenName());
             user.setLastName(account.getFamilyName());
             user.setId(account.getId());
-            if (account.getPhotoUrl() != null){
+            if (account.getPhotoUrl() != null) {
                 user.setPhotoUrl(account.getPhotoUrl().toString());
-                Log.e("profil picture" , account.getPhotoUrl().toString()+"!");
-            }  else {
-
             }
-
-
             performSocialLogin(user);
 
         } catch (ApiException e) {
@@ -503,18 +488,15 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     @Override
     public void onOffLine() {
-       // Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
+        // Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
         new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
-
     }
 
     private RSRequestSocialLogin getData(JSONObject object) {
         try {
             URL profile_picture = new URL("https://graph.facebook.com/" + object.getString("id") + "/picture?width=250&height=250");
-
             RSAddress rsAddress = new RSAddress();
             rsAddress.setCity(object.getJSONObject("location").getString("name"));
-
             RSRequestSocialLogin user = new RSRequestSocialLogin();
             user.setEmail(object.getString("email").toLowerCase());
             user.setBirthday(object.getString("birthday"));
@@ -524,7 +506,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             user.setPhotoUrl(profile_picture.toString());
             user.setLocation(rsAddress);
             user.setProvider(RSConstants.PROVIDER_FB);
-
             return user;
         } catch (MalformedURLException e) {
             e.printStackTrace();

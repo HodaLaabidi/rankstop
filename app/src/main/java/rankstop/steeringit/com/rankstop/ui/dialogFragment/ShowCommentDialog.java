@@ -2,10 +2,10 @@ package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,27 +26,21 @@ import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 public class ShowCommentDialog extends DialogFragment implements DialogConfirmationListener {
 
     public static String TAG = "SHOW_COMMENT_DIALOG";
-
     private DialogConfirmationListener callback;
-
     private View rootView;
     private Unbinder unbinder;
     private Comment comment;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     @BindView(R.id.btn_remove_comment)
     RSBTNMedium removeCommentBTN;
-
     @BindView(R.id.tv_comment)
     RSTVMedium commentTV;
-
     @BindString(R.string.message_delete_comment)
     String messageDeleteComment;
     @BindString(R.string.date_time_format)
     String dateTimeFormat;
-
     @OnClick(R.id.btn_remove_comment)
     void openDialogConfirmation() {
         Bundle bundle = new Bundle();

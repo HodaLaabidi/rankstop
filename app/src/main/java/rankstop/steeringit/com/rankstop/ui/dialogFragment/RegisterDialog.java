@@ -2,11 +2,11 @@ package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -234,13 +234,50 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
         String token = loginResponse.getToken();
         RSSession.startSession(token);
 
-        if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
-            registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER, getContext());
-        } else {
-            dismiss();
+        if (rsNavigationData == null){
+
+            rsNavigationData = new RSNavigationData();
+            rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
             rsLoader.dismiss();
+            dismiss();
             ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+        } else {
+
+
+            if (rsNavigationData.getAction() != null) {
+                if (rsNavigationData.getAction().equals(RSConstants.ACTION_FOLLOW)) {
+                    registerPresenter.followItem(new RSFollow(RSSession.getCurrentUser().get_id(), rsNavigationData.getItemId()), RSConstants.REGISTER, getContext());
+                } else {
+                    if (rsNavigationData.getFrom() == null || rsNavigationData.getFrom() == "") {
+                        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+                        rsLoader.dismiss();
+                        dismiss();
+                        ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+                    } else
+                    if (rsNavigationData.getFrom().equalsIgnoreCase(RSConstants.FRAGMENT_PROFILE)) {
+                        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+                        dismiss();
+                        rsLoader.dismiss();
+                        ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+                    } else {
+                        dismiss();
+                        rsLoader.dismiss();
+                        ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+                    }
+
+
+                }
+            } else {
+                if (rsNavigationData.getFrom() == null || rsNavigationData.getFrom() == "") {
+                    rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+                }
+                dismiss();
+                rsLoader.dismiss();
+                ((ContainerActivity) getActivity()).manageSession(true, rsNavigationData);
+            }
         }
+
+
     }
 
     @Override
@@ -281,6 +318,9 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
                 rsLoader.dismiss();
                 break;
             case RSConstants.FOLLOW_ITEM:
+                rsLoader.dismiss();
+                break;
+            case "":
                 rsLoader.dismiss();
                 break;
         }

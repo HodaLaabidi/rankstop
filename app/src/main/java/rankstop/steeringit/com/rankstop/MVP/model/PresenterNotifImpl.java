@@ -1,6 +1,7 @@
 package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
 import rankstop.steeringit.com.rankstop.MVP.view.RSView;
@@ -29,15 +30,20 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
     public void loadListNotif(RSRequestListItem rsRequestListItem, Context context) {
         if (RSNetwork.isConnected(context)) {
             if (notifView != null) {
+                Log.e("list notif" , "lang = " + rsRequestListItem.getLang() +  "getUserId  = " + rsRequestListItem.getUserId() +"getPage  = " + rsRequestListItem.getPage() +"getPerPage  = " + rsRequestListItem.getPerPage() + " " );
                 callLoadListNotif = WebService.getInstance().getApi().loadListNotif(RSSessionToken.getUsergestToken(), rsRequestListItem);
+                Log.e("list notif RSSessionToken.getUsergestToken" , RSSessionToken.getUsergestToken()+"      !");
                 callLoadListNotif.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        Log.e("list notif response code" , response.code() + " !");
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
+                            Log.e("list notif" , "  not login");
                             loadListNotif(rsRequestListItem, context);
                         } else {
                             if(response.body() != null) {
+                                Log.e("list notif response code if response.body() != null" , response.body().getStatus()+ " " +  response.body().getData() + " !");
                                 if (response.body().getStatus() == 1) {
                                     notifView.onSuccess(RSConstants.LIST_NOTIFS, response.body().getData(), null);
                                 } else if (response.body().getStatus() == 0) {
@@ -49,6 +55,7 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
+                        Log.e("list notif onFailure" , "  "+ t.getMessage());
                         if (!call.isCanceled()) {
                             notifView.onFailure(RSConstants.LIST_NOTIFS);
                         }
@@ -76,15 +83,19 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
+                            Log.e("list notif editNotifVisibility" , " not login"+"!");
                             RSSession.Reconnecter();
                             editNotifVisibility(notifId, itemId, context);
                         } else {
+                            Log.e("list notif editNotifVisibility" , response.code() + " "+ response.body().getData()+"!");
                             if(response.body() != null) {
                                 if (response.body().getStatus() == 1) {
                                     notifView.onSuccess(RSConstants.EDIT_NOTIF_VISIBILITY, response.body().getData(), itemId);
                                 } else if (response.body().getStatus() == 0) {
                                     notifView.onError(RSConstants.EDIT_NOTIF_VISIBILITY);
                                 }
+                            } else {
+                                Log.e("list notif " , " response.body == null");
                             }
                             notifView.hideProgressBar(RSConstants.EDIT_NOTIF_VISIBILITY);
                         }
@@ -92,6 +103,7 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
+                        Log.e("list notif  editNotifVisibility onFailure" , t.getMessage()+"!");
                         if (!call.isCanceled()) {
                             notifView.hideProgressBar(RSConstants.EDIT_NOTIF_VISIBILITY);
                             notifView.onFailure(RSConstants.EDIT_NOTIF_VISIBILITY);

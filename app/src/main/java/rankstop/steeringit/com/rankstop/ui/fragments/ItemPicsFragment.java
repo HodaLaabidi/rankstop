@@ -3,14 +3,14 @@ package rankstop.steeringit.com.rankstop.ui.fragments;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -46,10 +46,8 @@ import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
 import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.customviews.RSTVSemiBold;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
-import rankstop.steeringit.com.rankstop.data.model.db.Comment;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.Picture;
-import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
@@ -70,7 +68,7 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
-public class ItemPicsFragment extends Fragment implements RSView.StandardView, DialogConfirmationListener {
+public class ItemPicsFragment extends Fragment implements RSView.StandardView, RSView.StandardView2 , DialogConfirmationListener {
 
     private View rootView;
     private Unbinder unbinder;
@@ -266,7 +264,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
 
     private void initPixList() {
         GridLayoutManager layoutManager = new GridLayoutManager(pixRV.getContext(), countItemPerRow);
-        itemPicsAdapter = new ItemPixAdapter(listener, RSConstants.OTHER , getContext());
+        itemPicsAdapter = new ItemPixAdapter(listener, RSConstants.OTHER , getContext(), RSConstants.ITEM_PIX , getFragmentManager());
         pixRV.setLayoutManager(layoutManager);
         pixRV.setAdapter(itemPicsAdapter);
         pixRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
@@ -298,7 +296,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     }
 
     private void initMyPixList() {
-        myItemPixAdapter = new ItemPixAdapter(myListener, RSConstants.MINE, getContext());
+        myItemPixAdapter = new ItemPixAdapter(myListener, RSConstants.MINE, getContext(), RSConstants.ITEM_PIX_BY_USER , getFragmentManager());
         LinearLayoutManager layoutManager = new LinearLayoutManager(myPixRV.getContext(), LinearLayoutManager.HORIZONTAL, false);
         myPixRV.setLayoutManager(layoutManager);
         myPixRV.addItemDecoration(new HorizontalSpace(marginCardView));
@@ -330,7 +328,7 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     }
 
     private void bindViews() {
-        itemPresenter = new PresenterItemImpl(ItemPicsFragment.this);
+        itemPresenter = new PresenterItemImpl(ItemPicsFragment.this , ItemPicsFragment.this);
     }
 
     private void loadItemPix(int pageNumber) {
@@ -673,5 +671,10 @@ public class ItemPicsFragment extends Fragment implements RSView.StandardView, D
     @Override
     public void onConfirmClicked(String targetId) {
         itemPresenter.deletePicture(targetId, itemId, getContext());
+    }
+
+    @Override
+    public void onSuccessRefreshItem(String target, String itemId, String message, Object data) {
+
     }
 }

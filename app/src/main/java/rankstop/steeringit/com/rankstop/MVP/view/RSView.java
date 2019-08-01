@@ -99,6 +99,13 @@ public interface RSView {
         void onOffLine();
     }
 
+
+    interface StandardView2 {
+
+        void onSuccessRefreshItem(String target,String itemId,String message, Object data);
+
+    }
+
     interface SearchByBarcodeView {
 
         void onSuccess(String target, Object data);
@@ -149,6 +156,8 @@ public interface RSView {
     interface UpdateItemView {
 
         void onSuccess(String target, Object data);
+
+        void onExistItem(String message ,Object data);
 
         void onFailure(String target);
 

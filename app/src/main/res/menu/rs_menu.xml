@@ -3,21 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:orderInCategory="1"
+        android:id="@+id/profil"
+        android:icon="@drawable/ic_person_white_24dp"
+        android:title="@string/profil"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:orderInCategory="2"
         android:id="@+id/history"
         android:title="@string/text_history"
         app:showAsAction="never" />
 
     <item
+        android:orderInCategory="3"
         android:id="@+id/setting"
         android:title="@string/text_settings"
         app:showAsAction="never" />
 
     <item
+        android:orderInCategory="4"
         android:id="@+id/contact"
         android:title="@string/text_contact"
         app:showAsAction="never" />
 
     <item
+        android:orderInCategory="5"
         android:id="@+id/logout"
         android:title="@string/text_logout"
         app:showAsAction="never" />
@@ -30,11 +41,5 @@
         android:title="@string/notifications"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/profil"
-        android:icon="@drawable/ic_person_white_24dp"
-        android:title="@string/profil"
-        app:showAsAction="ifRoom" />
 
-    <!--android:orderInCategory-->
 </menu>

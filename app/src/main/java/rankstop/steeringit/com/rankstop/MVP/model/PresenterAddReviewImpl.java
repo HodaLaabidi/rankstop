@@ -91,6 +91,10 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 for (int i = 0; i < rsAddReview.getFiles().size(); i++) {
                     parts.add(prepareFilePart("files", rsAddReview.getFiles().get(i)));
                 }
+                Log.e(" addReview ItemId" , rsAddReview.getUserId() + rsAddReview.getItemId() );
+                for(int i = 0 ; i < rsAddReview.getEvalCri().size() ; i++){
+                    Log.e(" addReview  Note" , rsAddReview.getEvalCri().get(i).getNote() + " Coefficient  " + rsAddReview.getEvalCri().get(i).getCoefficient()+"   Criteria   " + rsAddReview.getEvalCri().get(i).getCriteria().toString() +"  !");
+                }
 
                 callAddReview = WebService.getInstance().getApi().addReview(
                         RSSessionToken.getUsergestToken(),
@@ -146,6 +150,8 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 for (int i = 0; i < rsAddReview.getFiles().size(); i++) {
                     parts.add(prepareFilePart("files", rsAddReview.getFiles().get(i)));
                 }
+                Log.e("update review token" , RSSessionToken.getUsergestToken()+ "   !");
+                Log.e("user id update review" , rsAddReview.getUserId());
 
                 callUpdateReview = WebService.getInstance().getApi().updateReview(
                         RSSessionToken.getUsergestToken(),
@@ -166,9 +172,11 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                         } else {
                             if (response.body() != null) {
                                 if (response.body().getStatus() == 1) {
+                                    Log.e("updateItem" ,response.body().getStatus() + " !" );
                                     standardView.onSuccess(RSConstants.UPDATE_REVIEW, response.body().getData());
                                     standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
                                 } else if (response.body().getStatus() == 0) {
+                                    Log.e("updateItem" ,response.body().getStatus() + " !" );
                                     standardView.onError(RSConstants.UPDATE_REVIEW);
                                     standardView.showMessage(RSConstants.UPDATE_REVIEW, response.body().getMessage());
                                 }
@@ -179,6 +187,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
+                        Log.e("updateItem" , "onFailure");
                         if (!call.isCanceled()) {
                             standardView.onFailure(RSConstants.UPDATE_REVIEW);
                             //standardView.showMessage(RSConstants.UPDATE_REVIEW, "erreur");
@@ -201,8 +210,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 for (int i = 0; i < rsAddItem.getFiles().size(); i++) {
                     parts.add(prepareFilePart("files", rsAddItem.getFiles().get(i)));
                 }
-
-                Log.e("rsAddItem from presenter " , (rsAddItem.getTitle()+rsAddItem.getBarcode()+rsAddItem.getAddress()+rsAddItem.getPhone()+rsAddItem.getDescription()+rsAddItem.getLatitude() +rsAddItem.getLongitude()+rsAddItem.getCategoryId()+rsAddItem.getComment() +rsAddItem.getCity() + rsAddItem.getCountry() + rsAddItem.getGovernorate()));
+                Log.e("user id addItem" , rsAddItem.getUserId());
                 callAddItem = WebService.getInstance().getApi().addItem(
                         RSSessionToken.getUsergestToken(),
                         parts,
@@ -230,14 +238,21 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                             standardView.hideProgressBar(RSConstants.ADD_ITEM);
                             addItem(rsAddItem, context);
                         } else {
+                            Log.e("addItem" , response.body() + " "+ response.code()+" !");
                             if (response.body() != null) {
                                 if (response.body().getStatus() == 1) {
+                                    Log.e("addItem" , response.body().getStatus() + " !");
                                     standardView.onSuccess(RSConstants.ADD_ITEM, response.body().getData());
                                     standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
                                 } else if (response.body().getStatus() == 0) {
+                                    Log.e("addItem" , response.body().getStatus() + " !");
                                     standardView.onError(RSConstants.ADD_ITEM);
                                     standardView.showMessage(RSConstants.ADD_ITEM, response.body().getMessage());
+                                } else {
+                                    Log.e("addItem  " , response.code() + " "+ response.body().getData() + response.body().getStatus() + response.body().getMessage());
                                 }
+                            } else {
+                                Log.e("addItem" , "body = null");
                             }
                             standardView.hideProgressBar(RSConstants.ADD_ITEM);
                         }
@@ -245,8 +260,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
 
                     @Override
                     public void onFailure(Call<RSResponse> call, Throwable t) {
-
-                        Log.e("barcode" , "from on failure");
+                        Log.e("addItem onFailure" , t.getMessage()+ " !");
                         if (!call.isCanceled()) {
                             standardView.onFailure(RSConstants.ADD_ITEM);
                             standardView.showMessage(RSConstants.ADD_ITEM, "erreur");

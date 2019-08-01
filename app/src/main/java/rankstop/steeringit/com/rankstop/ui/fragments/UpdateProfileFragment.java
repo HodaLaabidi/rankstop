@@ -16,18 +16,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -135,6 +135,9 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
 
     @BindView(R.id.input_layout_first_name)
     TextInputLayout firstNameInputLayout;
+
+    @BindView(R.id.input_layout_phone)
+    TextInputLayout inputLayoutPhone;
     @BindView(R.id.input_first_name)
     RSETMedium inputFirstNameET;
 
@@ -377,7 +380,28 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 public void afterTextChanged(Editable s) {
 
                 }
-            };
+            },
+            inputPhoneTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.toString().trim().length() > 0) {
+                        inputLayoutPhone.setErrorEnabled(false);
+                    } else {
+                        inputLayoutPhone.setError(requiredField);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            }
+             ;
 
     // save changes
     @OnClick(R.id.btn_save_changes)
@@ -402,7 +426,34 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                     rsRequestEditProfile.setOldPassword(inputOldPasswordET.getText().toString().trim());
                 }
                 inputLayoutOldPwd.setError("");
-                presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext());
+
+                if (rsRequestEditProfile.getFile() != null) {
+                    if (!rsRequestEditProfile.getPhone().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getBirthDate().trim().equalsIgnoreCase("") &&
+                            !rsRequestEditProfile.getCountryName().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getCity().trim().equalsIgnoreCase("") &&
+                            !rsRequestEditProfile.getCountryCode().trim().equalsIgnoreCase("") &&
+                            !rsRequestEditProfile.getFile().toString().equalsIgnoreCase("")) {
+                        presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext());
+                    } else {
+                        Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    if (currentUser.getPictureProfile() == null) {
+                        Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
+                    } else if (currentUser.getPictureProfile() == "") {
+                        Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
+                    } else {
+                        if (!rsRequestEditProfile.getPhone().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getBirthDate().trim().equalsIgnoreCase("") &&
+                                !rsRequestEditProfile.getCountryName().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getCity().trim().equalsIgnoreCase("") &&
+                                !rsRequestEditProfile.getCountryCode().trim().equalsIgnoreCase("")
+                        ) {
+                            presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext());
+                        } else {
+                            Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+
             } else {
                 btnSaveChanges.setEnabled(true);
                 onOffLine();
@@ -468,7 +519,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         inputFirstNameET.addTextChangedListener(firstNameTextWatcher);
         inputLastNameET.addTextChangedListener(lastNameTextWatcher);
         inputCityET.addTextChangedListener(cityTextWatcher);
-
+        inputPhoneET.addTextChangedListener(inputPhoneTextWatcher);
         inputOldPasswordET.addTextChangedListener(oldPwdTextWatcher);
         inputNewPasswordET.addTextChangedListener(newPwdTextWatcher);
         inputConfirmPasswordET.addTextChangedListener(confPwdTextWatcher);
@@ -763,6 +814,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         inputUserNameET.removeTextChangedListener(userNameTextWatcher);
         inputFirstNameET.removeTextChangedListener(firstNameTextWatcher);
         inputLastNameET.removeTextChangedListener(lastNameTextWatcher);
+        inputPhoneET.removeTextChangedListener(inputPhoneTextWatcher);
         inputCityET.removeTextChangedListener(cityTextWatcher);
         inputOldPasswordET.removeTextChangedListener(oldPwdTextWatcher);
         inputNewPasswordET.removeTextChangedListener(newPwdTextWatcher);

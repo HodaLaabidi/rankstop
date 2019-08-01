@@ -1,18 +1,23 @@
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -43,13 +48,15 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
 
     private List<Item> items = new ArrayList<>();
     private ItemPieListener pieListener;
+    private Context context ;
 
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public MyEvalsAdapter(ItemPieListener pieListener) {
+    public MyEvalsAdapter(ItemPieListener pieListener, Context context) {
         this.pieListener = pieListener;
+        this.context = context ;
         items = new ArrayList<>();
     }
 
@@ -92,6 +99,16 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
             case LOADING:
                 break;
         }
+    }
+
+
+    @UiThread
+    public void refreshOneItem(int i , Item item , String message ){
+        this.items.set(i, item);
+        this.notifyItemChanged(i);
+
+
+
     }
 
     @Override
@@ -183,6 +200,10 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
         }
 
         public void setData(Item item) {
+
+            for (int i = 0 ; i < item.getMyEval().getEvalCriterias().size() ; i++){
+                Log.e(" item eval evalCriterias  "+i , item.getMyEval().getEvalCriterias().get(i).getNote() +  "  "+item.getMyEval().getEvalCriterias().get(i).getCriteriaName() + item.getMyEval().getEvalCriterias().get(i).getCoefficient() + item.getMyEval().getEvalCriterias().get(i).getCriteria().toString() );
+            }
             this.item = item;
             itemName.setText(item.getItemDetails().getTitle());
             if (item.getNumberEval() > 1)
@@ -196,15 +217,39 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
                 countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " "+singleFollower);
             likeIcon.setChecked(item.isFollow());
 
+            if ( item.getMyEval() != null){
+                noteEvalTV.setText(String.valueOf(item.getMyEval().getNoteEval()));
+                dateEvalTV.setText(RSDateParser.convertToDateTimeFormat(item.getMyEval().getDate(), dateTimeFormat));
+            }
 
-            noteEvalTV.setText(String.valueOf(item.getMyEval().getNoteEval()));
-            dateEvalTV.setText(RSDateParser.convertToDateTimeFormat(item.getMyEval().getDate(), dateTimeFormat));
+
             // add listener to like icon
-            likeIcon.setOnClickListener(v -> pieListener.onFollowChanged(getAdapterPosition()));
+            likeIcon.setOnClickListener(v -> {
+                if(likeIcon.isChecked()){
+
+                    item.setNumberFollows(item.getNumberFollows() + 1);
+                } else {
+                    item.setNumberFollows(item.getNumberFollows() - 1);
+
+                }
+                if (item.getNumberFollows() > 1) {
+
+                    countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " " + multipleFollower);
+                } else {
+                    countFollowersTV.setText(String.valueOf(item.getNumberFollows()) + " " + singleFollower);
+
+                }
+                initCriteriasList(item.getMyEval());
+                initPieChart(item);
+                pieListener.onFollowChanged(getAdapterPosition());
+
+
+            });
             // add listener to like icon
             likeIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (!RSSession.isLoggedIn()) {
                     likeIcon.setChecked(!isChecked);
+
                 }
             });
             initCriteriasList(item.getMyEval());

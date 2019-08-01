@@ -4,14 +4,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.core.widget.NestedScrollView;
+import androidx.appcompat.app.AlertDialog;
+
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,13 +20,11 @@ import android.widget.LinearLayout;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +42,8 @@ import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
 public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback {
 
 
-    public static  float latitude = 36.81897f;
-    public static  float longitude = 10.16579f;
+    public static float latitude = 36.81897f;
+    public static float longitude = 10.16579f;
 
     private View rootView;
     Marker marker;
@@ -59,7 +56,7 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
     @BindView(R.id.tv_address)
     RSTVMedium addressTV;
 
-    GoogleMap map ;
+    GoogleMap map;
 
 
     @BindView(R.id.tv_phone)
@@ -69,7 +66,7 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
     RSTVBold titleTV;
 
     @BindView(R.id.tv_barcode)
-    RSTVMedium barcodeTV ;
+    RSTVMedium barcodeTV;
     @BindView(R.id.tv_goode)
     RSTVMedium goodeTV;
     @BindView(R.id.tv_bade)
@@ -83,14 +80,14 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
     ImageButton icFacebookBTN;
 
     @BindView(R.id.ll_map_fragment)
-    LinearLayout llMapFragment ;
+    LinearLayout llMapFragment;
 
-     AlertDialog alertDialog ;
+    AlertDialog alertDialog;
 
-     @BindView(R.id.ll_barcode_scanner)
-     LinearLayout llBarocdeScanner ;
-     @BindView(R.id.tv_label_barcode)
-     RSTVMedium labelBarcode ;
+    @BindView(R.id.ll_barcode_scanner)
+    LinearLayout llBarocdeScanner;
+    @BindView(R.id.tv_label_barcode)
+    RSTVMedium labelBarcode;
 
     @BindView(R.id.ic_instagram)
     ImageButton icInstagramBTN;
@@ -102,7 +99,7 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
     ImageButton icTwitterBTN;
 
     @BindView(R.id.scroll_view)
-    NestedScrollView scrollView ;
+    NestedScrollView scrollView;
 
     @BindView(R.id.ic_google_plus)
     ImageButton icGooglePlusBTN;
@@ -241,11 +238,18 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
         descriptionTV.setText(itemDetails.getDescription());
         titleTV.setText(itemDetails.getTitle());
 
-        if(itemDetails.getBarcode() != null){
-            barcodeTV.setVisibility(View.VISIBLE);
-            labelBarcode.setVisibility(View.VISIBLE);
-            llBarocdeScanner.setVisibility(View.VISIBLE);
-            barcodeTV.setText(itemDetails.getBarcode());
+        if (itemDetails.getBarcode() != null) {
+            if (!itemDetails.getBarcode().trim().equalsIgnoreCase("")) {
+                barcodeTV.setVisibility(View.VISIBLE);
+                labelBarcode.setVisibility(View.VISIBLE);
+                llBarocdeScanner.setVisibility(View.VISIBLE);
+                barcodeTV.setText(itemDetails.getBarcode());
+            } else {
+                barcodeTV.setVisibility(View.GONE);
+                labelBarcode.setVisibility(View.GONE);
+                llBarocdeScanner.setVisibility(View.GONE);
+            }
+
         } else {
             barcodeTV.setVisibility(View.GONE);
             labelBarcode.setVisibility(View.GONE);
@@ -288,12 +292,12 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
                     @Override
                     public void onClick(View v) {
                         latitude = itemDetails.getLocation().getLatitude();
-                        longitude =  itemDetails.getLocation().getLongitude();
-                        LatLng latlong = new LatLng(latitude,longitude);
+                        longitude = itemDetails.getLocation().getLongitude();
+                        LatLng latlong = new LatLng(latitude, longitude);
                         map.addMarker(new MarkerOptions().position(latlong));
                         map.moveCamera(CameraUpdateFactory.newLatLng(latlong));
                         onMapReady(map);
-                        if (llMapFragment.getVisibility() ==  View.VISIBLE){
+                        if (llMapFragment.getVisibility() == View.VISIBLE) {
                             llMapFragment.setVisibility(View.GONE);
                         } else {
                             llMapFragment.setVisibility(View.VISIBLE);

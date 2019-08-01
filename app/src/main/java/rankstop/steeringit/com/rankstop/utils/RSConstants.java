@@ -5,7 +5,7 @@ import rankstop.steeringit.com.rankstop.R;
 public class RSConstants {
 
 
-    public static final String PRIVACY_POLICY_LINK = "http://rs.steeringit.lc/PrivacyPolicy";
+    public static final String PRIVACY_POLICY_LINK = "https://angular-stag.dev.steeringit.com/PrivacyPolicy";
 
     public static final String ITEM_CREATED = "created";
     public static final String ITEM_FOLLOWED = "followed";
@@ -96,6 +96,13 @@ public class RSConstants {
     public static final String RS_ITEM_DETAILS_FROM_SCANNER_FRAGMENT = "rs item details from fragment scanner" ;
     public static final String ACTION_ADD_ITEM = "action add item";
     public static final String ACTION_UPDATE = "action update";
+    public static final String FACEBOOK_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?facebook\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String INSTAGRAM_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String TWITTER_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?twitter\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String LINKEDIN_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?linkedin\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String GOOGLE_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?google\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String REFRESH_ITEM = "refresh item";
+
     public static String _ID = "id";
 
     // parameters
@@ -142,4 +149,6 @@ public class RSConstants {
 
     // PlacePicker Request Code
     public static final int PLACE_PICKER_REQUEST_CODE = 1 ;
+
+    public static String RS_USER_Details = "user details";
 }

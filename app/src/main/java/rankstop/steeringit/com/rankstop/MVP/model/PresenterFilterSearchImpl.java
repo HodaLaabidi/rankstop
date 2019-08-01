@@ -36,16 +36,13 @@ public class PresenterFilterSearchImpl implements RSPresenter.SearchFilterPresen
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
-                            Log.e(TAG , "reconnect");
                             RSSession.Reconnecter();
                             loadCategories(lang, context);
                         } else {
                             if(response.body() != null) {
                                 if (response.body().getStatus() == 1) {
-                                    Log.e(TAG, response.body().getStatus() + "");
                                     searchView.onSuccess(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION, response.body().getData());
                                 } else if (response.body().getStatus() == 0) {
-                                    Log.e(TAG, response.body().getStatus() + "");
                                     searchView.onError(RSConstants.LOAD_CATEGORIES_USED_BY_LOCATION);
                                 }
                             }

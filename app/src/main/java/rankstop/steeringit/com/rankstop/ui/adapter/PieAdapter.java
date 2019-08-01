@@ -1,11 +1,18 @@
 
 package rankstop.steeringit.com.rankstop.ui.adapter;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +43,12 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
 
     private List<Item> items = new ArrayList<>();
     private ItemPieListener pieListener;
+    private Context context ;
 
-    public PieAdapter(List<Item> items, ItemPieListener pieListener) {
+    public PieAdapter(List<Item> items, ItemPieListener pieListener , Context context) {
         this.items = items;
         this.pieListener = pieListener;
+        this.context = context;
     }
 
     @Override
@@ -51,6 +60,7 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
     public int getItemCount() {
         return items.size();
     }
+
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position, List<Object> payload) {
@@ -66,7 +76,20 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
         holder.setData(items.get(position));
     }
 
+
+
+   @UiThread
+    public void refreshOneItem(int i , Item item , String message ){
+        this.items.set(i, item);
+       this.notifyItemChanged(i);
+
+
+    }
+
+
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
 
         public Item item;
         private ItemPieListener pieListener;
@@ -100,7 +123,11 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             itemView.setOnClickListener(this);
         }
 
-        public void setData(Item item) {
+
+
+
+
+        public  void setData(Item item) {
             this.item = item;
             itemName.setText(item.getItemDetails().getTitle());
 
@@ -117,11 +144,18 @@ public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {
             likeIcon.setVisibility(View.VISIBLE);
             likeIcon.setChecked(item.isFollow());
 
-            likeIcon.setOnClickListener(v -> pieListener.onFollowChanged(getAdapterPosition()));
+            likeIcon.setOnClickListener(v -> {
+                pieListener.onFollowChanged(getAdapterPosition());
+
+                    }
+
+
+            );
             // add listener to like icon
             likeIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (!RSSession.isLoggedIn()) {
                     likeIcon.setChecked(!isChecked);
+
                 }
             });
             initPieChart(item);
