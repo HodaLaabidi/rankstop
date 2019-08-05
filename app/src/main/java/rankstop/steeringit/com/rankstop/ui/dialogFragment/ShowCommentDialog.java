@@ -79,8 +79,11 @@ public class ShowCommentDialog extends DialogFragment implements DialogConfirmat
         comment = (Comment) b.getSerializable(RSConstants.COMMENT);
 
         if (b.getString(RSConstants.USER_ID) != null) {
-            if (b.getString(RSConstants.USER_ID).equals(comment.getUserId().get_id()))
-                removeCommentBTN.setVisibility(View.VISIBLE);
+            if (comment.getUserId() != null){
+                if (b.getString(RSConstants.USER_ID).equals(comment.getUserId().get_id()))
+                    removeCommentBTN.setVisibility(View.VISIBLE);
+            }
+
         }
 
         return rootView;

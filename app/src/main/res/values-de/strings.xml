@@ -144,9 +144,9 @@
     <string name="my_pix">My pictures:</string>
     <string name="other_pix">Other pictures:</string>
     <string name="text_all">All</string>
-    <string name="text_good">Good</string>
-    <string name="text_neutral">Neutral</string>
-    <string name="text_bad">Bad</string>
+    <string name="text_good">Gut</string>
+    <string name="text_neutral">Ok</string>
+    <string name="text_bad">Nicht Gut</string>
     <string name="other_comments">Other comments:</string>
     <string name="my_comments">My comments:</string>
     <string name="email_format_incorrect">Email format incorrect</string>
@@ -244,4 +244,9 @@
     <string name="logout_app_request">Press one more time to exit</string>
     <string name="technical_error">A technical error has occurred</string>
     <string name="invalid_barcode">Invalid barcode</string>
+    <string name="age_label">Age</string>
+    <string name="gender_label">Gender</string>
+    <string name="city_label">City</string>
+    <string name="country_label">Country</string>
+    <string name="nbr_eval">Number of evaluations</string>
 </resources>

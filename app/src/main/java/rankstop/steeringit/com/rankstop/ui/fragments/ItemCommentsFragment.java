@@ -257,7 +257,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
     }
 
     private void initCommentsList() {
-        itemCommentsAdapter = new ItemCommentsAdapter(listener, RSConstants.OTHER);
+        itemCommentsAdapter = new ItemCommentsAdapter(listener, RSConstants.OTHER, RSConstants.ITEM_COMMENTS , getFragmentManager());
         GridLayoutManager layoutManager = new GridLayoutManager(commentsRV.getContext(), countItemPerRow);
         commentsRV.setLayoutManager(layoutManager);
         commentsRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
@@ -290,7 +290,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
     }
 
     private void initMyCommentsList() {
-        myItemCommentsAdapter = new ItemCommentsAdapter(myListener, RSConstants.MINE);
+        myItemCommentsAdapter = new ItemCommentsAdapter(myListener, RSConstants.MINE, RSConstants.ITEM_COMMENTS_BY_USER , getFragmentManager());
         LinearLayoutManager layoutManager = new LinearLayoutManager(myCommentsRV.getContext(), LinearLayoutManager.HORIZONTAL, false);
         myCommentsRV.setLayoutManager(layoutManager);
         myCommentsRV.addItemDecoration(new HorizontalSpace(marginCardView));

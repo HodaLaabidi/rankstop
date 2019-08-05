@@ -209,6 +209,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
                 List<MultipartBody.Part> parts = new ArrayList<>();
                 for (int i = 0; i < rsAddItem.getFiles().size(); i++) {
                     parts.add(prepareFilePart("files", rsAddItem.getFiles().get(i)));
+                    Log.e("addItem pic files", rsAddItem.getFiles().get(i).getPath());
                 }
                 Log.e("user id addItem" , rsAddItem.getUserId());
                 callAddItem = WebService.getInstance().getApi().addItem(
@@ -316,6 +317,7 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
     private MultipartBody.Part prepareFilePart(String partName, Uri fileUri) {
         File file = FileUtils.getFile(context, fileUri);
         RequestBody requestFile = RequestBody.create(MediaType.parse(context.getContentResolver().getType(fileUri)), file);
+        Log.e("file" , file.getName());
         return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
 
         /*/storage/emulated/0/Android/data/com.steeringit.rankstop/files/Pictures/Screenshot_20190206-104436.png

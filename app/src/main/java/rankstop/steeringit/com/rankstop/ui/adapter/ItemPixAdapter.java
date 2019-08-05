@@ -50,15 +50,15 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
-    private String itemPixResource ;
+    private String itemPixResources ;
 
-    public ItemPixAdapter(ReviewCardForItemPicsListener listener, String target, Context context, String itemPixResource , FragmentManager fm) {
+    public ItemPixAdapter(ReviewCardForItemPicsListener listener, String target, Context context, String itemPixResources , FragmentManager fm) {
         this.listener = listener;
         this.context = context ;
         this.pictures = new ArrayList<>();
         this.target = target;
         this.fm = fm ;
-        this.itemPixResource = itemPixResource ;
+        this.itemPixResources = itemPixResources ;
     }
 
     @NonNull
@@ -231,20 +231,24 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                 avatar.setController(controller);
             }
 
-            if (itemPixResource == RSConstants.ITEM_PIX){
+            if (itemPixResources == RSConstants.ITEM_PIX){
                 avatar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.e("ITEM_PIX" , "on click listener avatar ");
-                        // showUserInfo()
-
+                        if (picture.getUser() != null) {
+                            if (picture.getUser().get_id() != null && picture.getUser().get_id() != "")
+                                showUserInfo(picture.getUser().get_id());
+                        }
                     }
                 });
 
                 usernameTV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.e("ITEM_PIX" , "on click listener usernameTV ");
+                        if (picture.getUser() != null) {
+                            if (picture.getUser().get_id() != null && picture.getUser().get_id() != "")
+                                showUserInfo(picture.getUser().get_id());
+                        }
                     }
                 });
             }

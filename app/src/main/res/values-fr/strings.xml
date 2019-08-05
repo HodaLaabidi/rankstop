@@ -145,9 +145,9 @@
     <string name="my_pix">Mes photos:</string>
     <string name="other_pix">Autres photos:</string>
     <string name="text_all">Tout</string>
-    <string name="text_good">Excellent</string>
-    <string name="text_neutral">Neutre</string>
-    <string name="text_bad">Mauvais</string>
+    <string name="text_good">Bien</string>
+    <string name="text_neutral">Ok</string>
+    <string name="text_bad">Pas Bien</string>
     <string name="other_comments">Autres commentaires:</string>
     <string name="my_comments">Mes commentaires:</string>
     <string name="email_format_incorrect">Format email incorrect</string>
@@ -245,5 +245,10 @@
     <string name="logout_app_request">Appuyez une autre fois pour quitter</string>
     <string name="technical_error">Une erreur technique est survenue</string>
     <string name="invalid_barcode">Code à barre invalide</string>
+    <string name="age_label">Age</string>
+    <string name="gender_label">Sexe</string>
+    <string name="city_label">Ville</string>
+    <string name="country_label">Pays</string>
+    <string name="nbr_eval">Nombre d \'evaluations</string>
 
 </resources>

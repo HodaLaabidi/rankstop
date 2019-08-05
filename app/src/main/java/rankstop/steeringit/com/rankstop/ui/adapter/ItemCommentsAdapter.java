@@ -3,6 +3,7 @@ package rankstop.steeringit.com.rankstop.ui.adapter;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import rankstop.steeringit.com.rankstop.RankStop;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 import rankstop.steeringit.com.rankstop.data.model.db.Comment;
 import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.UserInfoDialog;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
@@ -37,15 +39,18 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
     private ReviewCardListener listener;
     private List<Comment> comments;
     private String target;
-
+    private FragmentManager fm ;
+    private String itemCommentResources ;
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private boolean isLoadingAdded = false;
 
-    public ItemCommentsAdapter(ReviewCardListener listener, String target) {
+    public ItemCommentsAdapter(ReviewCardListener listener, String target, String itemCommentResources , FragmentManager fm) {
         this.listener = listener;
         this.comments = new ArrayList<>();
         this.target = target;
+        this.itemCommentResources = itemCommentResources ;
+        this.fm = fm ;
     }
 
     @NonNull
@@ -206,11 +211,40 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
                             .setOldController(avatar.getController())
                             .build();
                     avatar.setController(controller);
+
+
                 }
 
             } catch (Exception e) {
             }
+
+            if ( itemCommentResources == RSConstants.ITEM_COMMENTS){
+                avatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (comment.getUserId() != null) {
+                            if (comment.getUserId().get_id() != null && comment.getUserId().get_id() != "")
+                                showUserInfo(comment.getUserId().get_id());
+                        }
+                    }
+                });
+                usernameTV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (comment.getUserId() != null) {
+                            if (comment.getUserId().get_id() != null && comment.getUserId().get_id() != "")
+                                showUserInfo(comment.getUserId().get_id());
+                        }
+                    }
+                });
+            }
         }
+    }
+
+    private void showUserInfo(String userId) {
+        UserInfoDialog dialog = UserInfoDialog.newInstance(userId);
+        dialog.setCancelable(false);
+        dialog.show(fm, "");
     }
 
     /*

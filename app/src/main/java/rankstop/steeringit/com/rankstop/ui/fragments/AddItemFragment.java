@@ -89,7 +89,6 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
     private static final float DEFAULT_ZOOM = 12f;
     private static AddItemFragment instance;
     private String itemName, itemDescription;
-    private  static final String TAG = "AddItemFragment";
 
     private Unbinder unbinder;
     @BindView(R.id.progress_bar)

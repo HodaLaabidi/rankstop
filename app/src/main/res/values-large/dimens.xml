@@ -111,7 +111,7 @@
     <dimen name="width_comment_card">180dp</dimen>
     <dimen name="size_active_nav_title">13sp</dimen>
     <dimen name="size_nav_title">12sp</dimen>
-    <dimen name="width_filter_section">220dp</dimen>
+    <dimen name="width_filter_section">250dp</dimen>
     <dimen name="text_size_filter">11sp</dimen>
     <dimen name="margin_card_notif">2dp</dimen>
     <dimen name="with_card_avatar">35dp</dimen>
@@ -142,4 +142,5 @@
     <dimen name="btn_edit_pwd_size">14sp</dimen>
     <dimen name="with_logo_text">300dp</dimen>
     <dimen name="splash_screen_text_size">14sp</dimen>
+    <dimen name="margin_pop_up_info_user" >40dp</dimen>
 </resources>

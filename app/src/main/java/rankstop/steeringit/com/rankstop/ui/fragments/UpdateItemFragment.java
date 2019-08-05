@@ -158,7 +158,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
         int x = 0 ;
         if (!inputFacebook.getText().toString().equalsIgnoreCase("")){
-            if (!inputFacebook.getText().toString().matches(RSConstants.FACEBOOK_URL_SCHEMA)){
+            if (!inputFacebook.getText().toString().matches(RSConstants.FACEBOOK_URL_REGEX )){
                // Toast.makeText(getContext(), R.string.invalid_facebook_url, Toast.LENGTH_LONG).show();
                 inputLayoutFacebook.setErrorEnabled(true);
                 inputLayoutFacebook.setError(getContext().getString(R.string.invalid_facebook_url));
@@ -166,7 +166,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
             }
         }
         if (!inputInstagram.getText().toString().equalsIgnoreCase("")){
-            if (!inputInstagram.getText().toString().matches(RSConstants.INSTAGRAM_URL_SCHEMA)){
+            if (!inputInstagram.getText().toString().matches(RSConstants.INSTAGRAM_URL_REGEX )){
                 //Toast.makeText(getContext(), R.string.invalid_instagram_url, Toast.LENGTH_LONG).show();
                 inputLayoutInstagram.setErrorEnabled(true);
                 inputLayoutInstagram.setError(getContext().getString(R.string.invalid_instagram_url));
@@ -174,7 +174,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
             }
         }
         if (!inputTwitter.getText().toString().equalsIgnoreCase("")){
-            if (!inputTwitter.getText().toString().matches(RSConstants.TWITTER_URL_SCHEMA)){
+            if (!inputTwitter.getText().toString().matches(RSConstants.TWITTER_URL_REGEX )){
                 //Toast.makeText(getContext(), R.string.invalid_twitter_url, Toast.LENGTH_LONG).show();
                 inputLayoutTwitter.setErrorEnabled(true);
                 inputLayoutTwitter.setError(getContext().getString(R.string.invalid_twitter_url));
@@ -182,7 +182,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
             }
         }
         if (!inputLinkedIn.getText().toString().equalsIgnoreCase("")){
-            if (!inputLinkedIn.getText().toString().matches(RSConstants.LINKEDIN_URL_SCHEMA)){
+            if (!inputLinkedIn.getText().toString().matches(RSConstants.LINKEDIN_URL_REGEX )){
                 //Toast.makeText(getContext(), R.string.invalid_linkedin_url, Toast.LENGTH_LONG).show();
                 inputLayoutLinkedin.setErrorEnabled(true);
                 inputLayoutLinkedin.setError(getContext().getString(R.string.invalid_linkedin_url));
@@ -191,7 +191,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         }
 
         if (!inputGoogle.getText().toString().equalsIgnoreCase("")){
-            if (!inputGoogle.getText().toString().matches(RSConstants.GOOGLE_URL_SCHEMA)){
+            if (!inputGoogle.getText().toString().matches(RSConstants.GOOGLE_URL_REGEX )){
                 //Toast.makeText(getContext(), R.string.invalid_linkedin_url, Toast.LENGTH_LONG).show();
                 inputLayoutGoogle.setErrorEnabled(true);
                 inputLayoutGoogle.setError(getContext().getString(R.string.invalid_google_url));
@@ -290,7 +290,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().matches(RSConstants.FACEBOOK_URL_SCHEMA) || s.toString().equalsIgnoreCase("")){
+                if (s.toString().trim().matches(RSConstants.FACEBOOK_URL_REGEX ) || s.toString().equalsIgnoreCase("")){
                     inputLayoutFacebook.setErrorEnabled(false);
                     inputLayoutFacebook.setError("");
                 } else {
@@ -313,7 +313,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().matches(RSConstants.INSTAGRAM_URL_SCHEMA )|| s.toString().equalsIgnoreCase("")){
+                if (s.toString().trim().matches(RSConstants.INSTAGRAM_URL_REGEX  )|| s.toString().equalsIgnoreCase("")){
                     inputLayoutInstagram.setErrorEnabled(false);
                     inputLayoutInstagram.setError("");
                 } else {
@@ -337,7 +337,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().matches(RSConstants.TWITTER_URL_SCHEMA) || s.toString().equalsIgnoreCase("")){
+                if (s.toString().trim().matches(RSConstants.TWITTER_URL_REGEX ) || s.toString().equalsIgnoreCase("")){
                     inputLayoutTwitter.setErrorEnabled(false);
                     inputLayoutTwitter.setError("");
                 } else {
@@ -360,7 +360,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().matches(RSConstants.GOOGLE_URL_SCHEMA) || s.toString().equalsIgnoreCase("")){
+                if (s.toString().trim().matches(RSConstants.GOOGLE_URL_REGEX ) || s.toString().equalsIgnoreCase("")){
                     inputLayoutGoogle.setErrorEnabled(false);
                     inputLayoutGoogle.setError("");
                 } else {
@@ -383,7 +383,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().matches(RSConstants.LINKEDIN_URL_SCHEMA)|| s.toString().equalsIgnoreCase("")){
+                if (s.toString().trim().matches(RSConstants.LINKEDIN_URL_REGEX )|| s.toString().equalsIgnoreCase("")){
                     inputLayoutLinkedin.setErrorEnabled(false);
                     inputLayoutLinkedin.setError("");
                 } else {

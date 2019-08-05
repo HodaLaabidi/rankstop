@@ -96,12 +96,13 @@ public class RSConstants {
     public static final String RS_ITEM_DETAILS_FROM_SCANNER_FRAGMENT = "rs item details from fragment scanner" ;
     public static final String ACTION_ADD_ITEM = "action add item";
     public static final String ACTION_UPDATE = "action update";
-    public static final String FACEBOOK_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?facebook\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
-    public static final String INSTAGRAM_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
-    public static final String TWITTER_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?twitter\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
-    public static final String LINKEDIN_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?linkedin\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
-    public static final String GOOGLE_URL_SCHEMA = "(?:https?:\\/\\/)?(?:www\\.)?google\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String FACEBOOK_URL_REGEX = "(?:https?:\\/\\/)?(?:www\\.)?facebook\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String INSTAGRAM_URL_REGEX = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String TWITTER_URL_REGEX  = "(?:https?:\\/\\/)?(?:www\\.)?twitter\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String LINKEDIN_URL_REGEX  = "(?:https?:\\/\\/)?(?:www\\.)?linkedin\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String GOOGLE_URL_REGEX  = "(?:https?:\\/\\/)?(?:www\\.)?google\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
     public static final String REFRESH_ITEM = "refresh item";
+    public static final String REGEX_YEAR ="\\d{4}" ;
 
     public static String _ID = "id";
 

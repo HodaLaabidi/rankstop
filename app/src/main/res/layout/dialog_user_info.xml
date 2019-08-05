@@ -29,17 +29,15 @@
                android:orientation="horizontal"
                android:layout_width="match_parent"
                android:layout_height="wrap_content">
-               <com.facebook.drawee.view.SimpleDraweeView
-                   android:layout_margin="20dp"
+               <ImageView
+                   android:layout_margin="@dimen/margin_pop_up_info_user"
                    android:id="@+id/avatar"
+                   android:scaleType="centerCrop"
                    android:layout_width="@dimen/image_width"
                    android:layout_height="@dimen/image_width"
-                   android:layout_centerInParent="true"
-                   app:roundingBorderColor="@android:color/white"
-                   app:roundingBorderWidth="2dp"
-                   fresco:placeholderImage="@drawable/ava_256"
-                   fresco:roundAsCircle="true" />
-               <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                   android:layout_centerHorizontal="true"
+                   android:elevation="10dp" />
+               <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                    android:id="@+id/tv_user_name"
                    android:textSize="14sp"
                    android:textColor="@android:color/background_dark"
@@ -49,11 +47,117 @@
 
            </LinearLayout>
            <LinearLayout
+               android:layout_marginTop="5dp"
+               android:layout_marginLeft="@dimen/margin_pop_up_info_user"
+               android:layout_marginBottom="5dp"
                android:orientation="vertical"
                android:layout_width="match_parent"
                android:layout_height="wrap_content">
+               <LinearLayout
+                   android:visibility="gone"
+                   android:id="@+id/ll_user_age"
+                   android:layout_marginBottom="10dp"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                   android:text="@string/age_label"
+                   android:textColor="@android:color/background_dark"
+                   android:textSize="14sp"
+                       android:layout_marginRight="20dp"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content" />
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:id="@+id/user_age"
+                       android:textSize="13sp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+               </LinearLayout>
+               <LinearLayout
+                   android:visibility="gone"
+                   android:id="@+id/ll_user_gender"
+                   android:layout_marginBottom="10dp"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:text="@string/gender_label"
+                       android:textColor="@android:color/background_dark"
+                       android:textSize="14sp"
+                       android:layout_marginRight="20dp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:id="@+id/user_gender"
+                       android:textSize="13sp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+               </LinearLayout>
+               <LinearLayout
+                   android:visibility="gone"
+                   android:id="@+id/ll_user_city"
+                   android:layout_marginBottom="10dp"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:text="@string/city_label"
+                       android:textColor="@android:color/background_dark"
+                       android:textSize="14sp"
+                       android:layout_marginRight="20dp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:id="@+id/user_city"
+                       android:textSize="13sp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+               </LinearLayout>
+               <LinearLayout
+                   android:visibility="gone"
+                   android:id="@+id/ll_user_country"
+                   android:layout_marginBottom="10dp"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:text="@string/country_label"
+                       android:textColor="@android:color/background_dark"
+                       android:textSize="14sp"
+                       android:layout_marginRight="20dp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:id="@+id/user_country"
+                       android:textSize="13sp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+               </LinearLayout>
+               <LinearLayout
+                   android:visibility="gone"
+                   android:id="@+id/ll_user_nbr_eval"
+                   android:layout_marginBottom="10dp"
+                   android:orientation="horizontal"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:text="@string/nbr_eval"
+                       android:textColor="@android:color/background_dark"
+                       android:textSize="14sp"
+                       android:layout_marginRight="20dp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+                   <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                       android:id="@+id/user_nbr_eval"
+                       android:textSize="13sp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" />
+               </LinearLayout>
+
 
            </LinearLayout>
+
+
            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
                android:layout_alignParentBottom="true"
                android:layout_alignParentEnd="true"

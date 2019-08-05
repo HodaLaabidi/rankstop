@@ -55,6 +55,7 @@ import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
 import rankstop.steeringit.com.rankstop.data.model.db.Category;
 import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
@@ -74,6 +75,8 @@ import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import rankstop.steeringit.com.rankstop.utils.RxSearchObservable;
 import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
+
+import static rankstop.steeringit.com.rankstop.utils.RSConstants.FRAGMENT_ADD_ITEM;
 
 public class SearchFragment extends Fragment implements RSView.SearchView, FilterDialogListener {
     //views
@@ -202,7 +205,8 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
 
     @OnClick(R.id.btn_add_item_shearch)
     public void AddItem() {
-        replaceFragment(AddItemFragment.getInstance(), RSConstants.FRAGMENT_ADD_ITEM);
+        //replaceFragment(AddItemFragment.getInstance(), RSConstants.FRAGMENT_ADD_ITEM);
+        fragmentActionListener.navigateTo(R.id.navigation_add_item, RSConstants.FRAGMENT_ADD_ITEM);
     }
 
     private void replaceFragment(Fragment fragment, String tag) {

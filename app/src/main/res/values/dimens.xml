@@ -112,7 +112,7 @@
     <dimen name="bottom_sheet_top_padding">8dp</dimen>
     <dimen name="size_date_add_eval">14sp</dimen>
     <dimen name="width_comment_card">240dp</dimen>
-    <dimen name="width_filter_section">220dp</dimen>
+    <dimen name="width_filter_section">250dp</dimen>
     <dimen name="text_size_filter">11sp</dimen>
     <dimen name="margin_card_notif">2dp</dimen>
     <dimen name="with_card_avatar">35dp</dimen>
@@ -143,4 +143,5 @@
     <dimen name="btn_edit_pwd_size">14sp</dimen>
     <dimen name="with_logo_text">200dp</dimen>
     <dimen name="splash_screen_text_size">14sp</dimen>
+    <dimen name="margin_pop_up_info_user" >20dp</dimen>
 </resources>

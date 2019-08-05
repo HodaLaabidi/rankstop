@@ -175,8 +175,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
 
     @OnClick(R.id.btn_add_item)
     void addItem() {
-        fragmentActionListener.navigateTo(R.id.navigation_add_item, RSConstants.FRAGMENT_ADD_ITEM);
-    }
+        fragmentActionListener.navigateTo(R.id.navigation_add_item, RSConstants.FRAGMENT_ADD_ITEM);    }
 
     private Unbinder unbinder;
 
