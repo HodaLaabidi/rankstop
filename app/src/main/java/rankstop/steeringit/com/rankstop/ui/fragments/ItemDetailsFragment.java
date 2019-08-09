@@ -198,7 +198,7 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     @OnClick(R.id.tv_about_item)
     void aboutItem() {
-        showItemInfo(item.getItemDetails());
+        showItemInfo(item);
     }
 
     @OnClick(R.id.btn_report_abuse)
@@ -534,8 +534,8 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
         dialog.show(getFragmentManager(), "");
     }
 
-    private void showItemInfo(ItemDetails itemDetails) {
-        ItemInfoDialog dialog = ItemInfoDialog.newInstance(itemDetails);
+    private void showItemInfo(Item item) {
+        ItemInfoDialog dialog = ItemInfoDialog.newInstance(item);
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), "");
     }

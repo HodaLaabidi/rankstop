@@ -19,6 +19,7 @@ import androidx.fragment.app.DialogFragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -65,7 +66,7 @@ public class UserInfoDialog extends DialogFragment implements RSView.StandardVie
     String offlineMsg;
 
     @BindView(R.id.avatar)
-    ImageView avatar ;
+    SimpleDraweeView avatar ;
 
     @BindView(R.id.tv_user_name)
     RSTVMedium userName ;
@@ -200,14 +201,52 @@ public class UserInfoDialog extends DialogFragment implements RSView.StandardVie
                         }
                      }
 
-                    Glide
+                   /* Glide
                             .with(this)
                             .load(user.getPictureProfile())
                             .centerCrop()
                             .placeholder(R.drawable.ava_256)
                             .error(R.drawable.ava_256)
                             .apply(RequestOptions.circleCropTransform())
-                            .into(avatar);
+                            .into(avatar);*/
+                    if (user.getPictureProfile() != null) {
+
+                    if (user.getPictureProfile() != "") {
+                        avatar.setImageURI(Uri.parse(user.getPictureProfile()));
+                        avatar.getHierarchy().setFailureImage(R.drawable.ava_256);
+                        avatar.getHierarchy().setPlaceholderImage(R.drawable.ava_256 , ScalingUtils.ScaleType.CENTER_CROP);
+                    } else {
+
+
+
+                        ImageRequest request =
+                                ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                                        .build();
+                        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                                .setImageRequest(request)
+                                .setOldController(avatar.getController())
+                                .build();
+                        avatar.setController(controller);
+                        avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    }
+
+                } else {
+
+
+
+
+                    ImageRequest request =
+                            ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
+                                    .build();
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(request)
+                            .setOldController(avatar.getController())
+                            .build();
+                    avatar.setController(controller);
+                    avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+
+                }
                     if (  user.getGender() != null){
                         if (!user.getGender().equalsIgnoreCase("")) {
                             llUserGender.setVisibility(View.VISIBLE);

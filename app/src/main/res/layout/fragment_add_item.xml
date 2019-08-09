@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
@@ -43,8 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/app_bar"
-       android:visibility="gone"
-     >
+        android:visibility="gone"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,28 +53,30 @@
             android:orientation="vertical"
             android:padding="@dimen/p_activity">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/input_layout_title"
 
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/mb_input"
-                app:counterEnabled="true"
-                app:counterMaxLength="@integer/max_length_50"
-                app:counterOverflowTextAppearance="@style/counterOverride"
-                app:counterTextAppearance="@style/counterText">
-
-
-                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
-                    android:id="@+id/input_title"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/input_layout_title"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_item_name"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="@dimen/mb_input"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@integer/max_length_50"
+                    app:counterOverflowTextAppearance="@style/counterOverride"
+                    app:counterTextAppearance="@style/counterText">
+
+
+                    <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                        android:id="@+id/input_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_item_name"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/input_layout_barcode"
+
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +85,6 @@
                 app:counterMaxLength="@integer/max_length_13"
                 app:counterOverflowTextAppearance="@style/counterOverride"
                 app:counterTextAppearance="@style/counterText">
-
 
                 <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_barcode"
@@ -178,6 +180,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/input_layout_phone"
+                    android:focusableInTouchMode="true"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -203,7 +206,6 @@
                         android:id="@+id/input_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
                         android:hint="@string/hint_item_address"
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>

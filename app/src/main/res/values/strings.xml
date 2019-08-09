@@ -274,4 +274,5 @@
     <string name="city_label">City</string>
     <string name="country_label">Country</string>
     <string name="nbr_eval">Number of evaluations</string>
+    <string name="text_link">Website link</string>
 </resources>

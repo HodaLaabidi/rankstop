@@ -33,6 +33,7 @@ import butterknife.Unbinder;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
 import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
 import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -74,7 +75,13 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
     @BindView(R.id.tv_nutre)
     RSTVMedium nutreTV;
 
+    @BindView(R.id.nbr_eval)
+    RSTVMedium nbrEval ;
+    @BindView(R.id.nbr_followers)
+    RSTVMedium nbrFollowers ;
+
     private static final float DEFAULT_ZOOM = 15f;
+    Item item ;
 
     @BindView(R.id.ic_facebook)
     ImageButton icFacebookBTN;
@@ -175,12 +182,12 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
 
     private static ItemInfoDialog instance;
 
-    public static ItemInfoDialog newInstance(ItemDetails itemDetails) {
+    public static ItemInfoDialog newInstance(Item item) {
         if (instance == null) {
             instance = new ItemInfoDialog();
         }
         Bundle args = new Bundle();
-        args.putSerializable(RSConstants.RS_ITEM_DETAILS, itemDetails);
+        args.putSerializable(RSConstants.RS_ITEM, item);
         instance.setArguments(args);
         return instance;
     }
@@ -214,101 +221,113 @@ public class ItemInfoDialog extends DialogFragment implements OnMapReadyCallback
 
     private void onDialogShow(AlertDialog dialog) {
         dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_dialog_ask_login));
+        item = (Item) getArguments().getSerializable(RSConstants.ITEM);
+        if ( item != null){
+            itemDetails = item.getItemDetails();
+            //Add item
+            if (itemDetails != null) {
+                DecimalFormat df = new DecimalFormat();
+                df.setMaximumFractionDigits(2); //arrondi à 2 chiffres apres la virgules
+                df.setMinimumFractionDigits(0);
 
-        itemDetails = (ItemDetails) getArguments().getSerializable(RSConstants.RS_ITEM_DETAILS);
-        //Add item
-        if (itemDetails != null) {
-            DecimalFormat df = new DecimalFormat();
-            df.setMaximumFractionDigits(2); //arrondi à 2 chiffres apres la virgules
-            df.setMinimumFractionDigits(0);
+                int Totale = itemDetails.getGood() + itemDetails.getBad() + itemDetails.getNeutral();
 
-            int Totale = itemDetails.getGood() + itemDetails.getBad() + itemDetails.getNeutral();
+                double pourcentageGoode = ((double) itemDetails.getGood() / Totale) * 100;
+                double pourcentageBade = ((double) itemDetails.getBad() / Totale) * 100;
+                double pourcentageNutre = ((double) itemDetails.getNeutral() / Totale) * 100;
 
-            double pourcentageGoode = ((double) itemDetails.getGood() / Totale) * 100;
-            double pourcentageBade = ((double) itemDetails.getBad() / Totale) * 100;
-            double pourcentageNutre = ((double) itemDetails.getNeutral() / Totale) * 100;
+                //  Log.i("totale",  Double.parseDouble(df.format(pourcentageGoode))+ "//" + Double.parseDouble(df.format(pourcentageBade)) + "//" + Double.parseDouble(df.format(pourcentageNutre)));
+                goodeTV.setText(String.format("%s %%", String.valueOf(df.format(pourcentageGoode))));
+                badeTV.setText(String.format("%s %%", String.valueOf(df.format(pourcentageBade))));
+                nutreTV.setText(String.format("%s %%", String.valueOf(df.format(pourcentageNutre))));
 
-          //  Log.i("totale",  Double.parseDouble(df.format(pourcentageGoode))+ "//" + Double.parseDouble(df.format(pourcentageBade)) + "//" + Double.parseDouble(df.format(pourcentageNutre)));
-            goodeTV.setText(String.format("%s %%", String.valueOf(df.format(pourcentageGoode))));
-            badeTV.setText(String.format("%s %%", String.valueOf(df.format(pourcentageBade))));
-            nutreTV.setText(String.format("%s %%", String.valueOf(df.format(pourcentageNutre))));
-        }
+                descriptionTV.setText(itemDetails.getDescription());
+                titleTV.setText(itemDetails.getTitle());
+
+                if (itemDetails.getBarcode() != null) {
+                    if (!itemDetails.getBarcode().trim().equalsIgnoreCase("")) {
+                        barcodeTV.setVisibility(View.VISIBLE);
+                        labelBarcode.setVisibility(View.VISIBLE);
+                        llBarocdeScanner.setVisibility(View.VISIBLE);
+                        barcodeTV.setText(itemDetails.getBarcode());
+                    } else {
+                        barcodeTV.setVisibility(View.GONE);
+                        labelBarcode.setVisibility(View.GONE);
+                        llBarocdeScanner.setVisibility(View.GONE);
+                    }
+
+                } else {
+                    barcodeTV.setVisibility(View.GONE);
+                    labelBarcode.setVisibility(View.GONE);
+                    llBarocdeScanner.setVisibility(View.GONE);
+                }
+
+                nbrEval.setText(item.getNumberEval()+"");
+                nbrFollowers.setText(item.getNumberFollows()+"");
 
 
-        descriptionTV.setText(itemDetails.getDescription());
-        titleTV.setText(itemDetails.getTitle());
 
-        if (itemDetails.getBarcode() != null) {
-            if (!itemDetails.getBarcode().trim().equalsIgnoreCase("")) {
-                barcodeTV.setVisibility(View.VISIBLE);
-                labelBarcode.setVisibility(View.VISIBLE);
-                llBarocdeScanner.setVisibility(View.VISIBLE);
-                barcodeTV.setText(itemDetails.getBarcode());
-            } else {
-                barcodeTV.setVisibility(View.GONE);
-                labelBarcode.setVisibility(View.GONE);
-                llBarocdeScanner.setVisibility(View.GONE);
-            }
+                if (itemDetails.getUrlFacebook() != null)
+                    if (!itemDetails.getUrlFacebook().equals(""))
+                        icFacebookBTN.setVisibility(View.VISIBLE);
 
-        } else {
-            barcodeTV.setVisibility(View.GONE);
-            labelBarcode.setVisibility(View.GONE);
-            llBarocdeScanner.setVisibility(View.GONE);
-        }
+                if (itemDetails.getUrlInstagram() != null)
+                    if (!itemDetails.getUrlInstagram().equals(""))
+                        icInstagramBTN.setVisibility(View.VISIBLE);
 
-        if (itemDetails.getUrlFacebook() != null)
-            if (!itemDetails.getUrlFacebook().equals(""))
-                icFacebookBTN.setVisibility(View.VISIBLE);
+                if (itemDetails.getUrlTwitter() != null)
+                    if (!itemDetails.getUrlTwitter().equals(""))
+                        icTwitterBTN.setVisibility(View.VISIBLE);
 
-        if (itemDetails.getUrlInstagram() != null)
-            if (!itemDetails.getUrlInstagram().equals(""))
-                icInstagramBTN.setVisibility(View.VISIBLE);
+                if (itemDetails.getUrlGooglePlus() != null)
+                    if (!itemDetails.getUrlGooglePlus().equals(""))
+                        icGooglePlusBTN.setVisibility(View.VISIBLE);
 
-        if (itemDetails.getUrlTwitter() != null)
-            if (!itemDetails.getUrlTwitter().equals(""))
-                icTwitterBTN.setVisibility(View.VISIBLE);
+                if (itemDetails.getUrlLinkedIn() != null)
+                    if (!itemDetails.getUrlLinkedIn().equals(""))
+                        icLinkedInBTN.setVisibility(View.VISIBLE);
 
-        if (itemDetails.getUrlGooglePlus() != null)
-            if (!itemDetails.getUrlGooglePlus().equals(""))
-                icGooglePlusBTN.setVisibility(View.VISIBLE);
+                try {
+                    if (!itemDetails.getPhone().equals("")) {
+                        phoneTV.setVisibility(View.VISIBLE);
+                        phoneTV.setText(itemDetails.getPhone());
+                    }
+                } catch (Exception e) {
+                }
 
-        if (itemDetails.getUrlLinkedIn() != null)
-            if (!itemDetails.getUrlLinkedIn().equals(""))
-                icLinkedInBTN.setVisibility(View.VISIBLE);
+                try {
+                    if (!itemDetails.getLocation().getAddress().equals("")) {
+                        addressTV.setVisibility(View.VISIBLE);
+                        addressTV.setText(itemDetails.getLocation().getAddress());
+                        addressTV.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                latitude = itemDetails.getLocation().getLatitude();
+                                longitude = itemDetails.getLocation().getLongitude();
+                                LatLng latlong = new LatLng(latitude, longitude);
+                                map.addMarker(new MarkerOptions().position(latlong));
+                                map.moveCamera(CameraUpdateFactory.newLatLng(latlong));
+                                onMapReady(map);
+                                if (llMapFragment.getVisibility() == View.VISIBLE) {
+                                    llMapFragment.setVisibility(View.GONE);
+                                } else {
+                                    llMapFragment.setVisibility(View.VISIBLE);
+                                }
 
-        try {
-            if (!itemDetails.getPhone().equals("")) {
-                phoneTV.setVisibility(View.VISIBLE);
-                phoneTV.setText(itemDetails.getPhone());
-            }
-        } catch (Exception e) {
-        }
-
-        try {
-            if (!itemDetails.getLocation().getAddress().equals("")) {
-                addressTV.setVisibility(View.VISIBLE);
-                addressTV.setText(itemDetails.getLocation().getAddress());
-                addressTV.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        latitude = itemDetails.getLocation().getLatitude();
-                        longitude = itemDetails.getLocation().getLongitude();
-                        LatLng latlong = new LatLng(latitude, longitude);
-                        map.addMarker(new MarkerOptions().position(latlong));
-                        map.moveCamera(CameraUpdateFactory.newLatLng(latlong));
-                        onMapReady(map);
-                        if (llMapFragment.getVisibility() == View.VISIBLE) {
-                            llMapFragment.setVisibility(View.GONE);
-                        } else {
-                            llMapFragment.setVisibility(View.VISIBLE);
-                        }
+                            }
+                        });
 
                     }
-                });
-
+                } catch (Exception e) {
+                }
             }
-        } catch (Exception e) {
         }
+
+
+
+
+
+
     }
 
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {

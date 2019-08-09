@@ -14,10 +14,12 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -199,6 +201,8 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                 if (picture.getUser() != null) {
                     if (picture.getUser().getPictureProfile() != null) {
                         avatar.setImageURI(Uri.parse(picture.getUser().getPictureProfile()));
+                        avatar.getHierarchy().setFailureImage(R.drawable.ava_256);
+                        avatar.getHierarchy().setPlaceholderImage(R.drawable.ava_256 , ScalingUtils.ScaleType.CENTER_CROP);
                     } else {
                         ImageRequest request =
                                 ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
@@ -218,6 +222,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                             .setOldController(avatar.getController())
                             .build();
                     avatar.setController(controller);
+                    avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 }
 
             } else {
@@ -229,6 +234,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                         .setOldController(avatar.getController())
                         .build();
                 avatar.setController(controller);
+                avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
 
             if (itemPixResources == RSConstants.ITEM_PIX){

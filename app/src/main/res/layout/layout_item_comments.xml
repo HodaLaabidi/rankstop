@@ -21,13 +21,18 @@
             android:padding="@dimen/padding_header_card">
 
             <com.facebook.drawee.view.SimpleDraweeView
+                android:scaleType="centerCrop"
                 android:id="@+id/avatar"
                 android:layout_width="@dimen/with_card_avatar"
                 android:layout_height="@dimen/with_card_avatar"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/margin_end_avatar"
-                fresco:placeholderImage="@drawable/ava_256"
-                fresco:roundAsCircle="true" />
+                fresco:roundAsCircle="true"
+                app:failureImage="@drawable/ava_256"
+                app:placeholderImage="@drawable/ava_256"
+                app:failureImageScaleType="centerCrop"
+                app:actualImageScaleType="centerCrop"
+                app:placeholderImageScaleType="centerCrop"/>
 
             <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_username"

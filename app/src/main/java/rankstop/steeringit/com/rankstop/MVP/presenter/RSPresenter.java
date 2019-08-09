@@ -102,7 +102,7 @@ public interface RSPresenter {
     }
 
     interface UpdateProfilePresenter{
-        void editProfile(RSRequestEditProfile user, Context context);
+        void editProfile(RSRequestEditProfile user, Context context, boolean isPWHidden);
         void loadCountriesList(String lang, Context context);
         void onDestroy( Context context);
     }

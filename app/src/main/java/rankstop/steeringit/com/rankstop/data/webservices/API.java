@@ -77,7 +77,9 @@ public interface API {
             @Part("city") RequestBody city,
             @Part("countryName") RequestBody countryName,
             @Part("countryCode") RequestBody countryCode,
-            @Part("userId") RequestBody userId
+            @Part("userId") RequestBody userId,
+            @Part("oldPassword") RequestBody oldPassword,
+            @Part("newPassword") RequestBody newPassword
     );
 
     // load user info

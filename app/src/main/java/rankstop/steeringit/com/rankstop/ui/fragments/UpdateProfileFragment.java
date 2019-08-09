@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -81,6 +82,7 @@ import rankstop.steeringit.com.rankstop.data.model.db.Country;
 import rankstop.steeringit.com.rankstop.data.model.db.RSPublicUserName;
 import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
 import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCountryAdapter;
 import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerGenderAdapter;
@@ -432,7 +434,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                             !rsRequestEditProfile.getCountryName().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getCity().trim().equalsIgnoreCase("") &&
                             !rsRequestEditProfile.getCountryCode().trim().equalsIgnoreCase("") &&
                             !rsRequestEditProfile.getFile().toString().equalsIgnoreCase("")) {
-                        presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext());
+                        presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext(), isPwdHidden);
                     } else {
                         Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
                     }
@@ -446,7 +448,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                                 !rsRequestEditProfile.getCountryName().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getCity().trim().equalsIgnoreCase("") &&
                                 !rsRequestEditProfile.getCountryCode().trim().equalsIgnoreCase("")
                         ) {
-                            presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext());
+                            presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext(), isPwdHidden);
                         } else {
                             Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
                         }
@@ -838,6 +840,11 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 break;
             case RSConstants.UPDATE_PROFILE:
                 fragmentActionListener.pop();
+
+                //RSNavigationData rsNavigationData= new RSNavigationData();
+                //rsNavigationData.setFrom(RSConstants.UPDATE_PROFILE);
+                //fragmentActionListener.startFragment(ProfileFragment.getInstance(rsNavigationData) , RSConstants.UPDATE_PROFILE);
+
                 break;
         }
     }

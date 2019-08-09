@@ -51,6 +51,7 @@ import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
 import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
 import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
 import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -211,6 +212,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        Log.e("onActivityCreated" , "ok");
         super.onActivityCreated(savedInstanceState);
 
         bindViews();
@@ -221,6 +223,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
             onOffLine();
         }
     }
+
 
     public static ProfileFragment getInstance(RSNavigationData data) {
         Bundle args = new Bundle();
@@ -271,7 +274,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
 
     private void setUserName(String value) {
         if (value != null) {
-            if (value.trim() == "" || value.trim().toLowerCase() == "null") {
+            if (value.trim().equalsIgnoreCase("") || value.trim().toLowerCase().equalsIgnoreCase("null")) {
                 userNameTV.setText(undefined);
             } else {
                 userNameTV.setText(value);
@@ -292,7 +295,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
         if (prenom != null)
             fullname += " " + prenom;
 
-        if (!fullname.equals(""))
+        if (!fullname.equalsIgnoreCase(""))
             fullNameTV.setText(fullname);
         else
             fullNameTV.setText(undefinedName);
@@ -314,9 +317,9 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
 
     private void setGender(String value) {
         if (value != null) {
-            if (value.equals("male")) {
+            if (value.equalsIgnoreCase("male")) {
                 genderTV.setText(male);
-            } else if (value.equals("female")) {
+            } else if (value.equalsIgnoreCase("female")) {
                 genderTV.setText(female);
             }
         } else {
@@ -347,7 +350,7 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
 
     private void setUserPic(String picture) {
         if (picture != null) {
-            if (picture != "") {
+            if (!picture.equalsIgnoreCase("")) {
                 Uri imageUri = Uri.parse(picture);
                 avatar.setImageURI(imageUri);
             } else {
@@ -610,71 +613,67 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
                 break;
             case RSConstants.USER_INFO:
                 UserInfo userInfo = new Gson().fromJson(new Gson().toJson(data), UserInfo.class);
-                if (this.userInfo.getCountEval() != userInfo.getCountEval()) {
+
+
                     setEvalsNumber(userInfo.getCountEval());
-                }
-                if (this.userInfo.getCountComments() != userInfo.getCountComments()) {
+                    Log.e("userInfo getCountEval" ,userInfo.getCountEval()+"");
+
+
                     setCommentsNumber(userInfo.getCountComments());
-                }
-                if (this.userInfo.getCountPictures() != userInfo.getCountPictures()) {
-                    setPixNumber(userInfo.getCountPictures());
-                }
+                Log.e("userInfo getCountComments" ,userInfo.getCountComments()+"");
+
+
+                setPixNumber(userInfo.getCountPictures());
+                Log.e("userInfo getCountPictures" ,userInfo.getCountPictures()+"");
+
 
                 if (this.userInfo.getUser().getPictureProfile() != null) {
-                    if (!this.userInfo.getUser().getPictureProfile().equals(userInfo.getUser().getPictureProfile())) {
+                    if (!this.userInfo.getUser().getPictureProfile().equalsIgnoreCase(userInfo.getUser().getPictureProfile())) {
                         setUserPic(userInfo.getUser().getPictureProfile());
                     }
                 } else {
                     setUserPic(userInfo.getUser().getPictureProfile());
                 }
 
-                if (this.userInfo.getUser().getUsername() != null) {
-                    if (!this.userInfo.getUser().getUsername().equals(userInfo.getUser().getUsername())) {
+                if (userInfo.getUser().getUsername() != null) {
+
                         setUserName(userInfo.getUser().getUsername());
-                    }
+
                 }
 
-                if (this.userInfo.getUser().getFirstName() != null) {
-                    if (!this.userInfo.getUser().getFirstName().equals(userInfo.getUser().getFirstName()) || !this.userInfo.getUser().getLastName().equals(userInfo.getUser().getLastName())) {
+                if (userInfo.getUser().getFirstName() != null) {
                         setFullName(userInfo.getUser().getFirstName(), userInfo.getUser().getLastName());
-                    }
+
                 }
 
-                if (this.userInfo.getUser().getEmail() != null) {
-                    if (!this.userInfo.getUser().getEmail().equals(userInfo.getUser().getEmail())) {
+                if (userInfo.getUser().getEmail() != null) {
+                    if (!this.userInfo.getUser().getEmail().equalsIgnoreCase(userInfo.getUser().getEmail())) {
                         setEmail(userInfo.getUser().getEmail());
                     }
                 }
 
-                if (this.userInfo.getUser().getPhone() != null) {
-                    if (!this.userInfo.getUser().getPhone().equals(userInfo.getUser().getPhone())) {
+                if (userInfo.getUser().getPhone() != null) {
                         setPhone(userInfo.getUser().getPhone());
-                    }
                 }
 
 
-                if (this.userInfo.getUser().getGender() != null) {
-                    if (!this.userInfo.getUser().getGender().equals(userInfo.getUser().getGender())) {
+                if (userInfo.getUser().getGender() != null) {
                         setGender(userInfo.getUser().getGender());
-                    }
                 }
 
-                if (this.userInfo.getUser().getBirthDate() != null) {
-                    if (!this.userInfo.getUser().getBirthDate().equals(userInfo.getUser().getBirthDate())) {
+                if (userInfo.getUser().getBirthDate() != null) {
                         setBirthDay(RSDateParser.convertToDateFormat(userInfo.getUser().getBirthDate(), dateFormat));
-                    }
+
                 }
 
-                if (this.userInfo.getUser().getLocation().getCountry().getCountryName() != null) {
-                    if (!this.userInfo.getUser().getLocation().getCountry().getCountryName().equals(userInfo.getUser().getLocation().getCountry().getCountryName())) {
+                if (userInfo.getUser().getLocation().getCountry().getCountryName() != null) {
                         setCountry(userInfo.getUser().getLocation().getCountry().getCountryName());
-                    }
+
                 }
 
-                if (this.userInfo.getUser().getLocation().getCity() != null) {
-                    if (!this.userInfo.getUser().getLocation().getCity().equals(userInfo.getUser().getLocation().getCity())) {
+                if (userInfo.getUser().getLocation().getCity() != null) {
                         setCity(userInfo.getUser().getLocation().getCity());
-                    }
+
                 }
 
                 this.userInfo = userInfo;

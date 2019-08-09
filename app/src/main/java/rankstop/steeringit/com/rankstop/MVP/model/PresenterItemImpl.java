@@ -518,6 +518,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_COMMENTS);
                 callItemComments = WebService.getInstance().getApi().loadItemComments(RSSessionToken.getUsergestToken(), rsRequestItemData);
+
+                Log.e("itemComments" , "token "+RSSessionToken.getUsergestToken() +  "  ItemId "+ rsRequestItemData.getItemId() +  "  userid = "+ rsRequestItemData.getUserId() +" !" );
                 callItemComments.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
@@ -528,8 +530,10 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                                 standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
                                 loadItemComments(rsRequestItemData, context);
                             } else {
+                                Log.e("itemComments",  response.body().getStatus()+ " !");
                                 if (response.body().getStatus() == 1) {
                                     standardView.onSuccess(RSConstants.ITEM_COMMENTS, response.body().getData());
+                                    Log.e("itemComments getData = " , response.body().getData().toString() +" ");
                                 } else if (response.body().getStatus() == 0) {
                                     standardView.onFailure(RSConstants.ITEM_COMMENTS);
                                 }
@@ -601,6 +605,8 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_PIX);
                 callItemPix = WebService.getInstance().getApi().loadItemPix(RSSessionToken.getUsergestToken(), rsRequestItemData);
+                Log.e("itemPics" , "token "+RSSessionToken.getUsergestToken() +  "  ItemId "+ rsRequestItemData.getItemId() +  "  userid = "+ rsRequestItemData.getUserId() + "  !!" );
+
                 callItemPix.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {

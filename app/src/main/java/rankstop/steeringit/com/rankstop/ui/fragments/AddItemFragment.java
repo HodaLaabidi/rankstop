@@ -142,6 +142,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
     RSTVMedium actionScanner ;
 
 
+
     @BindString(R.string.field_required)
     String fieldRequired;
     @BindString(R.string.add_item)
@@ -354,14 +355,6 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
                     }
                 });
 
-                inputBarcode.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        setRsAddItem();
-                        fragmentActionListener.startFragment(ScannerFragment.getInstance(rsAddItem), RSConstants.FRAGMENT_SCANNER);
-                        ((ContainerActivity) getActivity()).manageSession(true, new RSNavigationData(RSConstants.FRAGMENT_SCANNER, RSConstants.ACTION_ADD_ITEM));
-                    }
-                });
 
             } else {
                 loginLayout.setVisibility(View.VISIBLE);

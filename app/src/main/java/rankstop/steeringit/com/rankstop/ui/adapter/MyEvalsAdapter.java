@@ -201,8 +201,8 @@ public class MyEvalsAdapter extends RecyclerView.Adapter<MyEvalsAdapter.ViewHold
 
         public void setData(Item item) {
 
-            for (int i = 0 ; i < item.getMyEval().getEvalCriterias().size() ; i++){
-                Log.e(" item eval evalCriterias  "+i , item.getMyEval().getEvalCriterias().get(i).getNote() +  "  "+item.getMyEval().getEvalCriterias().get(i).getCriteriaName() + item.getMyEval().getEvalCriterias().get(i).getCoefficient() + item.getMyEval().getEvalCriterias().get(i).getCriteria().toString() );
+            for (int i = 0 ; i < items.size() ; i++){
+                Log.e(" itemeval evalCriterias  "+i , item.getScoreItem()+"");
             }
             this.item = item;
             itemName.setText(item.getItemDetails().getTitle());

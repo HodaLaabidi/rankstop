@@ -250,5 +250,6 @@
     <string name="city_label">Ville</string>
     <string name="country_label">Pays</string>
     <string name="nbr_eval">Nombre d \'evaluations</string>
+    <string name="text_link">Lien de site web</string>
 
 </resources>

@@ -122,7 +122,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
     private Category currentCategory;
 
     private int lastCheckedId = R.id.all_comment;
-    private String itemId, userId;
+    private String itemId, userId = "";
     private Item currentItem;
     private RSPresenter.ItemPresenter itemPresenter;
     private RSRequestItemData rsRequestItemData;
@@ -456,6 +456,7 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
         switch (target) {
             case RSConstants.ITEM_COMMENTS:
                 RSResponseItemData rsResponseItemData = new Gson().fromJson(new Gson().toJson(data), RSResponseItemData.class);
+                Log.e(" itemCommentsgetData from on success" , rsResponseItemData.getComments().size() +"   !!!");
                 try {
                     if (rsResponseItemData.getComments().size() == 0) {
                         progressBar.setVisibility(View.GONE);

@@ -31,6 +31,7 @@ import rankstop.steeringit.com.rankstop.ui.fragments.SearchFragment;
 import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
 import rankstop.steeringit.com.rankstop.R;
 import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.fragments.UpdateProfileFragment;
 import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class ContainerActivity extends BaseActivity implements FragmentActionListener {
@@ -185,6 +186,8 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                     startFragment(ItemDetailsFragment.getInstance(rsNavigationData), RSConstants.FRAGMENT_ITEM_DETAILS);
                 }
                 break;
+            case RSConstants.UPDATE_PROFILE:
+                startFragment(ProfileFragment.getInstance(rsNavigationData), RSConstants.UPDATE_PROFILE);
         }
     }
 
@@ -254,12 +257,16 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                         navigation.setSelectedItemId(R.id.navigation_home);
 
                     }
-                } else {
+                }
+                else {
                     fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     navigation.setSelectedItemId(R.id.navigation_home);
 
                 }
-            } else {
+            }else if (fragment instanceof UpdateProfileFragment || fragment instanceof ListingItemsFragment){
+                fragmentManager.popBackStack();
+            }
+            else {
                 int count = fragmentManager.getBackStackEntryCount();
 
 

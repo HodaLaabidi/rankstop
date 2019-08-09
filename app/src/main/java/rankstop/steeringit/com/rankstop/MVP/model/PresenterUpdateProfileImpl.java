@@ -35,35 +35,58 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
     }
 
     @Override
-    public void editProfile(RSRequestEditProfile user, Context context) {
+    public void editProfile(RSRequestEditProfile user, Context context , boolean isPWHidden) {
         if (RSNetwork.isConnected(context)) {
             if (standardView != null) {
                 MultipartBody.Part part = null;
                 if (user.getFile() != null) {
                     part = prepareFilePart("file", user.getFile());
                 }
-                callEditProfile = WebService.getInstance().getApi().updateUser(
-                        RSSessionToken.getUsergestToken(),
-                        part,
-                        Helpers.createPartFormString(user.getFirstName()),
-                        Helpers.createPartFormString(user.getLastName()),
-                        Helpers.createPartFormString(user.getPhone()),
-                        Helpers.createPartFormString(user.getGender()),
-                        Helpers.createPartFormString(user.getBirthDate()),
-                        Helpers.createPartFormString(user.getUsername()),
-                        Helpers.createPartFormString(user.getNameToUse()),
-                        Helpers.createPartFormString(user.getCity()),
-                        Helpers.createPartFormString(user.getCountryName()),
-                        Helpers.createPartFormString(user.getCountryCode()),
-                        Helpers.createPartFormString(user.getUserId())
-                );
+                if (isPWHidden){
+                    callEditProfile = WebService.getInstance().getApi().updateUser(
+                            RSSessionToken.getUsergestToken(),
+                            part,
+                            Helpers.createPartFormString(user.getFirstName()),
+                            Helpers.createPartFormString(user.getLastName()),
+                            Helpers.createPartFormString(user.getPhone()),
+                            Helpers.createPartFormString(user.getGender()),
+                            Helpers.createPartFormString(user.getBirthDate()),
+                            Helpers.createPartFormString(user.getUsername()),
+                            Helpers.createPartFormString(user.getNameToUse()),
+                            Helpers.createPartFormString(user.getCity()),
+                            Helpers.createPartFormString(user.getCountryName()),
+                            Helpers.createPartFormString(user.getCountryCode()),
+                            Helpers.createPartFormString(user.getUserId()),
+                            Helpers.createPartFormString(""),
+                            Helpers.createPartFormString("")
+                    );
+                } else {
+                    callEditProfile = WebService.getInstance().getApi().updateUser(
+                            RSSessionToken.getUsergestToken(),
+                            part,
+                            Helpers.createPartFormString(user.getFirstName()),
+                            Helpers.createPartFormString(user.getLastName()),
+                            Helpers.createPartFormString(user.getPhone()),
+                            Helpers.createPartFormString(user.getGender()),
+                            Helpers.createPartFormString(user.getBirthDate()),
+                            Helpers.createPartFormString(user.getUsername()),
+                            Helpers.createPartFormString(user.getNameToUse()),
+                            Helpers.createPartFormString(user.getCity()),
+                            Helpers.createPartFormString(user.getCountryName()),
+                            Helpers.createPartFormString(user.getCountryCode()),
+                            Helpers.createPartFormString(user.getUserId()),
+                            Helpers.createPartFormString(user.getOldPassword()),
+                            Helpers.createPartFormString(user.getNewPassword())
+                    );
+                }
+
                 standardView.showProgressBar(RSConstants.UPDATE_PROFILE);
                 callEditProfile.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.code() == RSConstants.CODE_TOKEN_EXPIRED) {
                             RSSession.Reconnecter();
-                            editProfile(user, context);
+                            editProfile(user, context, isPWHidden);
                         } else {
                             if (response.body() != null) {
                                 if (response.body().getStatus() == 1) {

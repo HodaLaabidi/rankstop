@@ -60,6 +60,51 @@
                            android:textColor="@color/colorPrimary"
                            android:textSize="12dp" />
                    </LinearLayout>
+                   <LinearLayout
+                       android:id="@+id/ll_nbr_eval"
+                       android:orientation="horizontal"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content">
+
+                       <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                           android:layout_marginTop="2dp"
+                           android:id="@+id/nbr_eval"
+                           android:layout_marginRight="5dp"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:textColor="@color/colorGray"
+                           android:textSize="12dp" />
+                       <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                           android:layout_marginTop="2dp"
+                           android:text="@string/evals_title"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:textColor="@color/colorGray"
+                           android:textSize="12dp" />
+                   </LinearLayout>
+                   <LinearLayout
+                       android:layout_marginBottom="10dp"
+                       android:id="@+id/ll_nbr_followers"
+                       android:orientation="horizontal"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content">
+
+                       <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                           android:layout_marginTop="2dp"
+                           android:layout_marginRight="5dp"
+                           android:id="@+id/nbr_followers"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:textColor="@color/colorGray"
+                           android:textSize="12dp" />
+                       <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                           android:layout_marginTop="2dp"
+                           android:text="@string/multiple_follower"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:textColor="@color/colorGray"
+                           android:textSize="12dp" />
+                   </LinearLayout>
 
                    <LinearLayout
                        android:layout_width="match_parent"

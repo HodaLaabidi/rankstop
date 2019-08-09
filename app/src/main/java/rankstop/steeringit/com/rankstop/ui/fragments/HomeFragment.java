@@ -1,5 +1,7 @@
 package rankstop.steeringit.com.rankstop.ui.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -445,6 +447,9 @@ public class HomeFragment extends Fragment implements RSView.StandardView  , RSV
             case R.id.contact:
                 openContactDialog();
                 break;
+            case R.id.link:
+                openWebSite();
+                break;
             case R.id.notifications:
                 fragmentActionListener.startFragment(ListNotifFragment.getInstance(), RSConstants.FRAGMENT_NOTIF);
                 break;
@@ -457,6 +462,11 @@ public class HomeFragment extends Fragment implements RSView.StandardView  , RSV
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openWebSite() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(RSConstants.WEBSITE_URL));
+        startActivity(browserIntent);
     }
 
     public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {

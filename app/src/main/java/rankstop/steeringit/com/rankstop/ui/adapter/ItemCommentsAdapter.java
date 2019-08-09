@@ -5,16 +5,20 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -191,7 +195,12 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
 
                     if (pictureProfile != "") {
                         avatar.setImageURI(Uri.parse(pictureProfile));
+                        avatar.getHierarchy().setFailureImage(R.drawable.ava_256);
+                        avatar.getHierarchy().setPlaceholderImage(R.drawable.ava_256 , ScalingUtils.ScaleType.CENTER_CROP);
                     } else {
+
+
+
                         ImageRequest request =
                                 ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
                                         .build();
@@ -200,9 +209,14 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
                                 .setOldController(avatar.getController())
                                 .build();
                         avatar.setController(controller);
+                        avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     }
 
                 } else {
+
+
+
+
                     ImageRequest request =
                             ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
                                     .build();
@@ -211,6 +225,7 @@ public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapte
                             .setOldController(avatar.getController())
                             .build();
                     avatar.setController(controller);
+                    avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
 
                 }

@@ -6,6 +6,7 @@ public class RSConstants {
 
 
     public static final String PRIVACY_POLICY_LINK = "https://angular-stag.dev.steeringit.com/PrivacyPolicy";
+    public static final String WEBSITE_URL = "https://angular-stag.dev.steeringit.com";
 
     public static final String ITEM_CREATED = "created";
     public static final String ITEM_FOLLOWED = "followed";
@@ -103,6 +104,8 @@ public class RSConstants {
     public static final String GOOGLE_URL_REGEX  = "(?:https?:\\/\\/)?(?:www\\.)?google\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
     public static final String REFRESH_ITEM = "refresh item";
     public static final String REGEX_YEAR ="\\d{4}" ;
+    public static final String RS_ITEM = "item";
+
 
     public static String _ID = "id";
 
