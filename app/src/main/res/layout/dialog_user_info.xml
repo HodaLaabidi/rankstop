@@ -44,6 +44,7 @@
                    android:layout_centerHorizontal="true"
                    fresco:roundAsCircle="true"/>
                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                   android:layout_marginRight="30dp"
                    android:id="@+id/tv_user_name"
                    android:textSize="14sp"
                    android:textColor="@android:color/background_dark"

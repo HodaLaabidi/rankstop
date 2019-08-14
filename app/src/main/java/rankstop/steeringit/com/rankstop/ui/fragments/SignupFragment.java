@@ -46,6 +46,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Set;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -132,7 +133,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     void fbLogin() {
         if (RSNetwork.isConnected(getContext())) {
             LoginManager.getInstance().logOut();
-            LoginManager.getInstance().logInWithReadPermissions(fragmentContext.get(), Arrays.asList("public_profile", "email", "user_birthday", "user_gender", "user_location"));
+            LoginManager.getInstance().logInWithReadPermissions(fragmentContext.get(), Arrays.asList("public_profile", "email"));
         } else {
             onOffLine();
         }
@@ -236,18 +237,26 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+                        Log.e("facebooklogin" , "onsuccess facebook callback");
                         AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                        Set<String> listPermissions = accessToken.getPermissions();
+                        for(int i = 0 ; i < listPermissions.size() ; i++){
+                            Log.e("facebooklogin listPermissions("+i+")" ,listPermissions.toArray()[i]+"" );
+                        }
+
                         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
                         GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
                             RSRequestSocialLogin user = getData(object);
                             if (user != null) {
+                                Log.e("facebooklogin" , "user != null");
                                 performSocialLogin(user);
                             } else {
+                                Log.e("facebooklogin" , "user == null");
                             }
                         });
 
                         Bundle parametrs = new Bundle();
-                        parametrs.putString("fields", "id,email,birthday,first_name,last_name,gender,location");
+                        parametrs.putString("fields", "id,email,first_name,last_name");
                         request.setParameters(parametrs);
                         request.executeAsync();
                     }
@@ -493,24 +502,42 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     }
 
     private RSRequestSocialLogin getData(JSONObject object) {
-        try {
-            URL profile_picture = new URL("https://graph.facebook.com/" + object.getString("id") + "/picture?width=250&height=250");
-            RSAddress rsAddress = new RSAddress();
-            rsAddress.setCity(object.getJSONObject("location").getString("name"));
-            RSRequestSocialLogin user = new RSRequestSocialLogin();
-            user.setEmail(object.getString("email").toLowerCase());
-            user.setBirthday(object.getString("birthday"));
-            user.setGender(object.getString("gender"));
-            user.setFirstName(object.getString("first_name"));
-            user.setLastName(object.getString("last_name"));
-            user.setPhotoUrl(profile_picture.toString());
-            user.setLocation(rsAddress);
-            user.setProvider(RSConstants.PROVIDER_FB);
-            return user;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (object != null) {
+            Log.e("facebooklogin object.toString", object.toString());
+            try {
+                URL profile_picture = new URL("https://graph.facebook.com/" + object.getString("id") + "/picture?width=250&height=250");
+                RSAddress rsAddress = new RSAddress();
+                /*if (object.getJSONObject("location") != null) {
+                    if (!object.getJSONObject("location").getString("name").equalsIgnoreCase("") && object.getJSONObject("location").getString("name") != null)
+                        rsAddress.setCity(object.getJSONObject("location").getString("name"));
+                }
+*/
+                RSRequestSocialLogin user = new RSRequestSocialLogin();
+                if (!object.getString("email").equalsIgnoreCase("") && object.getString("email") != null)
+                user.setEmail(object.getString("email").toLowerCase());
+                /*if (!object.getString("birthday").equalsIgnoreCase("") && object.getString("birthday") != null)
+                user.setBirthday(object.getString("birthday"));
+                if (!object.getString("gender").equalsIgnoreCase("") && object.getString("gender") != null)
+                user.setGender(object.getString("gender"));*/
+                if (!object.getString("first_name").equalsIgnoreCase("") && object.getString("first_name") != null)
+                user.setFirstName(object.getString("first_name"));
+                if (!object.getString("last_name").equalsIgnoreCase("") && object.getString("last_name") != null)
+                user.setLastName(object.getString("last_name"));
+                if (profile_picture != null)
+                user.setPhotoUrl(profile_picture.toString());
+                user.setLocation(rsAddress);
+                user.setProvider(RSConstants.PROVIDER_FB);
+                return user;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                Log.e("facebooklogin", "MalformedURLException");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("facebooklogin", "JSONException");
+            }
+
+        } else {
+            Log.e("facebooklogin", "object == null");
         }
         return null;
     }
