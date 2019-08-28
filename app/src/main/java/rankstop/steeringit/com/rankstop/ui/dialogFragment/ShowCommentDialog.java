@@ -92,8 +92,10 @@ public class ShowCommentDialog extends DialogFragment implements DialogConfirmat
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (comment.getUserId() != null){
+            toolbar.setTitle(comment.getUserId().getNameToUse().getValue());
+        }
 
-        toolbar.setTitle(comment.getUserId().getNameToUse().getValue());
         toolbar.setSubtitle(RSDateParser.convertToDateTimeFormat(comment.getDate(), dateTimeFormat));
         commentTV.setText(comment.getText());
     }

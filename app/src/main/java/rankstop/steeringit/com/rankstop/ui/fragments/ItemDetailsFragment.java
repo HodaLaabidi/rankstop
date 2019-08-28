@@ -712,9 +712,17 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                 addItemPixBtn.setText(updateItemPicsMsg);
             }
             if (item.getItemDetails().getOwner() == null) {
-                if (((User) item.getItemDetails().getCreator()).get_id().equals(currentUser.get_id())) {
-                    addItemPixBtn.setVisibility(View.VISIBLE);
+                if (item.getItemDetails() != null){
+                   if (item.getItemDetails().getCreator() != null){
+                       if (((User) item.getItemDetails().getCreator()).get_id() != null){
+                           if (((User) item.getItemDetails().getCreator()).get_id().equals(currentUser.get_id())) {
+                               addItemPixBtn.setVisibility(View.VISIBLE);
+                           }
+                       }
+                   }
                 }
+
+
                 // isUserSendRequestOwnership
                 /*if (item.isUserSendReqOwnership)
                     ownershipStatus= ownershipPending;*/

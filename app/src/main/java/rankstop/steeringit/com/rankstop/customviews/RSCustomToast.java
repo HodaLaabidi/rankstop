@@ -66,7 +66,7 @@ public class RSCustomToast {
                 (ViewGroup) ((AppCompatActivity) context).findViewById(R.id.custom_toast_layout));
 
         toast = new Toast(context.getApplicationContext());
-        toast.setGravity(Gravity.TOP, 0, 400);
+        toast.setGravity(Gravity.CENTER | Gravity.BOTTOM, 0, 120);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
 

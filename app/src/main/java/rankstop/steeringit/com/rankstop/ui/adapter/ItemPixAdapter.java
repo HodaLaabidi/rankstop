@@ -191,8 +191,15 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
         }
 
         public void setData(Picture picture) {
+            if (picture != null) {
             layout.setBackgroundColor(RankStop.getInstance().getResources().getColor(picture.getColor()));
-            usernameTV.setText(picture.getUser().getNameToUse().getValue());
+            if (picture.getUser() != null) {
+                if (picture.getUser().getNameToUse() != null) {
+                    usernameTV.setText(picture.getUser().getNameToUse().getValue());
+                }
+
+            }
+
             try {
                 dateTV.setText(RSDateParser.convertToDateTimeFormat(picture.getDate(), dateTimeFormat));
             } catch (Exception e) {
@@ -202,7 +209,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                     if (picture.getUser().getPictureProfile() != null) {
                         avatar.setImageURI(Uri.parse(picture.getUser().getPictureProfile()));
                         avatar.getHierarchy().setFailureImage(R.drawable.ava_256);
-                        avatar.getHierarchy().setPlaceholderImage(R.drawable.ava_256 , ScalingUtils.ScaleType.CENTER_CROP);
+                        avatar.getHierarchy().setPlaceholderImage(R.drawable.ava_256, ScalingUtils.ScaleType.CENTER_CROP);
                     } else {
                         ImageRequest request =
                                 ImageRequestBuilder.newBuilderWithResourceId(R.drawable.ava_256)
@@ -237,7 +244,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
                 avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
 
-            if (itemPixResources == RSConstants.ITEM_PIX){
+            if (itemPixResources == RSConstants.ITEM_PIX) {
                 avatar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -289,6 +296,7 @@ public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHold
 
             } catch (Exception e) {
             }
+        }
         }
     }
 

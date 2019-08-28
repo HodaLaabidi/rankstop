@@ -99,6 +99,7 @@ public interface RSPresenter {
         void searchItems(RSRequestItemByCategory rsRequestSearch, Context context);
         void searchItemsFiltered(RSRequestFilter data, Context context);
         void onDestroy( Context context);
+        void loadCategoriesList(String lang, Context context);
     }
 
     interface UpdateProfilePresenter{

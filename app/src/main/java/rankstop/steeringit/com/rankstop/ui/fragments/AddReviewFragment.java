@@ -183,9 +183,23 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
                     } else {
                         //update review
                         if (rsAddReview.getComment().equals("") && listPics.size() == 0) {
+                            Log.e("test"  , " updatereview");
                             Toast.makeText(getContext(), noValueChanged, Toast.LENGTH_LONG).show();
-                            fragmentActionListener.pop();
+                            //fragmentActionListener.pop();
+                            if (rsAddReview != null) {
+                                if (rsAddReview.getItemId() != null && !rsAddReview.getItemId().equalsIgnoreCase("")) {
+                                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(rsAddReview.getItemId()), RSConstants.FRAGMENT_ITEM_DETAILS);
+
+                                } else {
+                                    fragmentActionListener.pop();
+                                }
+                            } else {
+                                fragmentActionListener.pop();
+                            }
+
+
                         } else {
+                            Log.e("test"  , " updatereview2");
                             // Modification de l'item lors de l'ajout d'un commentaire ou de photos sans modifier l'évaluation des critères
                             rsAddReview.setEvalId(myEval.get_id());
                             addReviewPresenter.updateReview(rsAddReview, getContext());
@@ -318,7 +332,9 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     }
 
     private void loadCategoriesList(String id) {
+
         if (RSNetwork.isConnected(getContext()))
+
             addReviewPresenter.loadCategory(id, RankStop.getDeviceLanguage(), getContext());
         else
             onOffLine();

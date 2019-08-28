@@ -110,7 +110,7 @@
                     android:layout_centerVertical="true"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Note Eval:"
+                    android:text="@string/note_eval"
                     android:layout_marginEnd="@dimen/pt_layout_my_eval"
                     android:textColor="@color/colorTitleText"
                     android:textSize="@dimen/text_size_title_item_rv" />

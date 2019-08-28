@@ -212,8 +212,9 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(RSConstants.COMMENT, listComments.get(position));
                 bundle.putString(RSConstants.USER_ID, userId);
-
-                showFullComment(bundle);
+                if(userId != null && !userId.equalsIgnoreCase("")) {
+                    showFullComment(bundle);
+                }
             }
         };
         myListener = new ReviewCardListener() {
@@ -227,7 +228,10 @@ public class ItemCommentsFragment extends Fragment implements RSView.StandardVie
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(RSConstants.COMMENT, listComments.get(position));
                 bundle.putString(RSConstants.USER_ID, userId);
-                showFullComment(bundle);
+                if(userId != null && !userId.equalsIgnoreCase("")){
+                    showFullComment(bundle);
+                }
+
             }
         };
         initCommentsList();

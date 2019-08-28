@@ -185,13 +185,16 @@ public class RSFilterDialog extends BottomSheetDialogFragment implements RSView.
     private void initCitiesList(String[] cities) {
         citiesContainer.removeAllViews();
         for (int i = 0; i < cities.length; i++) {
-            CheckBox checkBox = new CheckBox(getContext());
-            checkBox.setText(cities[i]);
-            checkBox.setId(i);
+            if (!cities[i].equalsIgnoreCase("")){
+                CheckBox checkBox = new CheckBox(getContext());
+                checkBox.setText(cities[i]);
+                checkBox.setId(i);
 
-            if (i == 0 && cities[0].equals(""))
-                checkBox.setText(otherCity);
-            citiesContainer.addView(checkBox);
+                if (i == 0 && cities[0].equals(""))
+                    checkBox.setText(otherCity);
+                citiesContainer.addView(checkBox);
+            }
+
         }
     }
 

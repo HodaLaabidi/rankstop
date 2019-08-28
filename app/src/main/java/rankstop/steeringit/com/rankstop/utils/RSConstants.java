@@ -5,8 +5,8 @@ import rankstop.steeringit.com.rankstop.R;
 public class RSConstants {
 
 
-    public static final String PRIVACY_POLICY_LINK = "https://angular-stag.dev.steeringit.com/PrivacyPolicy";
-    public static final String WEBSITE_URL = "https://angular-stag.dev.steeringit.com";
+    public static final String PRIVACY_POLICY_LINK = "https://rankstop.com/PrivacyPolicy";
+    public static final String WEBSITE_URL = "https://rankstop.com";
 
     public static final String ITEM_CREATED = "created";
     public static final String ITEM_FOLLOWED = "followed";
@@ -155,4 +155,5 @@ public class RSConstants {
     public static final int PLACE_PICKER_REQUEST_CODE = 1 ;
 
     public static String RS_USER_Details = "user details";
+    public static String GermanLanguage = "de";
 }

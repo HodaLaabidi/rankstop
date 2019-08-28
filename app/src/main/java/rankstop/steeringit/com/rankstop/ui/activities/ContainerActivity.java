@@ -7,13 +7,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.text.Layout;
+import android.text.SpannableString;
+import android.text.style.AlignmentSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
 import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
 import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
 import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
@@ -50,6 +57,15 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+            if(item.getTitle().length() > 13 && RankStop.getDeviceLanguage().equalsIgnoreCase(RSConstants.GermanLanguage)){
+                item.setTitle(item.getTitle().subSequence(0,14)+"...");
+            } else {
+                item.setTitle(item.getTitle());
+            }
+            SpannableString itemTitle = new SpannableString(item.getTitle());
+            itemTitle.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, itemTitle.length(), 0);
+
+
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     if (!(fragment instanceof HomeFragment))
@@ -205,7 +221,8 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
 
                 if (!isFirstAskForLogoutApp) {
                     isFirstAskForLogoutApp = true ;
-                    Toast.makeText(getBaseContext(), R.string.logout_app_request, Toast.LENGTH_LONG).show();
+                     //Toast.makeText(getBaseContext(), R.string.logout_app_request, Toast.LENGTH_LONG).show();
+                    new RSCustomToast(ContainerActivity.this, getResources().getString(R.string.warning), getResources().getString(R.string.logout_app_request), R.drawable.ic_warning2, RSCustomToast.WARNING).show();
                 } else {
                     fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     finish();

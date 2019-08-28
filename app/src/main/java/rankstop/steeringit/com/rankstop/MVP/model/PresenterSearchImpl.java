@@ -20,7 +20,7 @@ import retrofit2.Response;
 public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
 
     private RSView.SearchView searchView;
-    private Call<RSResponse> callSearch, callSearchItems, callSearchItemsFiltered;
+    private Call<RSResponse> callSearch, callSearchItems, callSearchItemsFiltered, callCategoriesList;
     private static final String TAG = "PresenterSearchImpl";
 
     public PresenterSearchImpl(RSView.SearchView searchView) {
@@ -59,6 +59,46 @@ public class PresenterSearchImpl implements RSPresenter.SearchPresenter {
                         if (!callSearch.isCanceled()) {
                             searchView.hideProgressBar(RSConstants.SEARCH);
                             searchView.onFailure(RSConstants.SEARCH);
+                        }
+                    }
+                });
+            }
+        } else {
+            searchView.onOffLine();
+        }
+    }
+
+    @Override
+    public void loadCategoriesList(String lang, Context context) {
+        if (RSNetwork.isConnected(context)) {
+            if (searchView != null) {
+                searchView.showProgressBar(RSConstants.LOAD_CATEGORIES);
+                callCategoriesList = WebService.getInstance().getApi().loadCategoriesList(RSSessionToken.getUsergestToken(), lang);
+                callCategoriesList.enqueue(new Callback<RSResponse>() {
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
+                                RSSession.Reconnecter();
+                                searchView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
+                                loadCategoriesList(lang, context);
+                            } else {
+                                if (response.body().getStatus() == 1) {
+                                    searchView.onSuccess(RSConstants.LOAD_CATEGORIES, response.body().getData());
+                                } else if (response.body().getStatus() == 0) {
+                                    searchView.onFailure(RSConstants.LOAD_CATEGORIES);
+                                }
+                                searchView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
+                            }
+                        } else {
+                            searchView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!callCategoriesList.isCanceled()) {
+                            searchView.hideProgressBar(RSConstants.LOAD_CATEGORIES);
                         }
                     }
                 });

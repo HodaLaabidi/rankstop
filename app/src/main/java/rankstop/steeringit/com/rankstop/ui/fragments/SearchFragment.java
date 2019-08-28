@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -433,6 +434,44 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
     @Override
     public void onSuccess(String target, Object data) {
         switch (target) {
+            case RSConstants.LOAD_CATEGORIES:
+                Category[] categories = new Gson().fromJson(new Gson().toJson(data), Category[].class);
+                List<Category> categoryList = Arrays.asList(categories);
+                for (int i = 0 ; i < categoriesFetched.size() ; i++){
+                    for (int j = 0 ; j < categoryList.size() ; j++){
+                        if (categoriesFetched.get(i).get_id().equalsIgnoreCase(categoryList.get(j).get_id())){
+                            categoriesFetched.get(i).setName(categoryList.get(j).getName());
+                        }
+                    }
+                }
+
+                if (categoriesFetched.size() > 0) {
+
+                    categoriesRV.setVisibility(View.VISIBLE);
+                    categoryTitleTV.setVisibility(View.VISIBLE);
+                    msgNoshearch.setVisibility(View.GONE);
+                    btnAdditem.setVisibility(View.GONE);
+                    dataFetchedAdapter.refreshData(categoriesFetched);
+                } else {
+                    msgNoshearch.setVisibility(View.VISIBLE);
+                    btnAdditem.setVisibility(View.VISIBLE);
+                    categoriesRV.setVisibility(View.GONE);
+                    categoryTitleTV.setVisibility(View.GONE);
+                }
+
+                if (itemsFetched.size() > 0) {
+
+                    itemsRV.setVisibility(View.VISIBLE);
+                    itemsTitleTV.setVisibility(View.VISIBLE);
+
+                    itemsFetchedAdapter.refreshData(itemsFetched);
+                } else {
+                    itemsRV.setVisibility(View.GONE);
+                    itemsTitleTV.setVisibility(View.GONE);
+                }
+
+
+                break ;
             case RSConstants.SEARCH:
                 RSResponseSearch rsResponseSearch = new Gson().fromJson(new Gson().toJson(data), RSResponseSearch.class);
                 bindDataFetched(rsResponseSearch);
@@ -469,31 +508,9 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
 
         itemsFetched = rsResponseSearch.getItem();
         categoriesFetched = rsResponseSearch.getCategory();
+        searchPresenter.loadCategoriesList(RankStop.getDeviceLanguage(),getContext());
 
-        if (categoriesFetched.size() > 0) {
 
-            categoriesRV.setVisibility(View.VISIBLE);
-            categoryTitleTV.setVisibility(View.VISIBLE);
-            msgNoshearch.setVisibility(View.GONE);
-            btnAdditem.setVisibility(View.GONE);
-            dataFetchedAdapter.refreshData(categoriesFetched);
-        } else {
-            msgNoshearch.setVisibility(View.VISIBLE);
-            btnAdditem.setVisibility(View.VISIBLE);
-            categoriesRV.setVisibility(View.GONE);
-            categoryTitleTV.setVisibility(View.GONE);
-        }
-
-        if (itemsFetched.size() > 0) {
-
-            itemsRV.setVisibility(View.VISIBLE);
-            itemsTitleTV.setVisibility(View.VISIBLE);
-
-            itemsFetchedAdapter.refreshData(itemsFetched);
-        } else {
-            itemsRV.setVisibility(View.GONE);
-            itemsTitleTV.setVisibility(View.GONE);
-        }
     }
 
     @Override
