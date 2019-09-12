@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.fragments;
+package com.steeringit.rankstop.ui.fragments;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -53,29 +53,29 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
-import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
-import rankstop.steeringit.com.rankstop.data.model.db.Country;
-import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
-import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
-import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
-import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseFindEmail;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.LoginDialog;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.RegisterDialog;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.MVP.model.PresenterAuthImpl;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.customviews.RSETRegular;
+import com.steeringit.rankstop.customviews.RSTVRegular;
+import com.steeringit.rankstop.data.model.db.Country;
+import com.steeringit.rankstop.data.model.db.RSAddress;
+import com.steeringit.rankstop.data.model.network.GeoPluginResponse;
+import com.steeringit.rankstop.data.model.network.RSDeviceIP;
+import com.steeringit.rankstop.data.model.network.RSFollow;
+import com.steeringit.rankstop.data.model.network.RSNavigationData;
+import com.steeringit.rankstop.data.model.network.RSRequestSocialLogin;
+import com.steeringit.rankstop.data.model.network.RSResponseFindEmail;
+import com.steeringit.rankstop.data.model.network.RSResponseLogin;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.dialogFragment.LoginDialog;
+import com.steeringit.rankstop.ui.dialogFragment.RSLoader;
+import com.steeringit.rankstop.ui.dialogFragment.RegisterDialog;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,6 +118,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     @BindString(R.string.privacy_policy_msg)
     String privacyPolicyMsg;
+
 
     @OnClick(R.id.rs_login_btn)
     void rsLogin() {
@@ -205,6 +206,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         fragmentContext = new WeakReference<>(this);
         rootView = inflater.inflate(R.layout.fragment_signup, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+
         return rootView;
     }
 
@@ -228,7 +230,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 } catch (Exception e) {
                 }
             }
-        }, privacyPolicyMsg.length()+1, value.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, privacyPolicyMsg.length() + 1, value.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         privacyPolicyTV.setText(wordtoSpan);
         privacyPolicyTV.setMovementMethod(LinkMovementMethod.getInstance());
@@ -237,21 +239,14 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Log.e("facebooklogin" , "onsuccess facebook callback");
                         AccessToken accessToken = AccessToken.getCurrentAccessToken();
                         Set<String> listPermissions = accessToken.getPermissions();
-                        for(int i = 0 ; i < listPermissions.size() ; i++){
-                            Log.e("facebooklogin listPermissions("+i+")" ,listPermissions.toArray()[i]+"" );
-                        }
 
                         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
                         GraphRequest request = GraphRequest.newMeRequest(accessToken, (object, response) -> {
                             RSRequestSocialLogin user = getData(object);
                             if (user != null) {
-                                Log.e("facebooklogin" , "user != null");
                                 performSocialLogin(user);
-                            } else {
-                                Log.e("facebooklogin" , "user == null");
                             }
                         });
 
@@ -263,14 +258,16 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
                     @Override
                     public void onCancel() {
-                        rsLoader.dismiss();
+
+                        rsLoader.onDestroy();
+
 
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
-                        rsLoader.dismiss();
+                        rsLoader.dismissDialog();
                     }
                 });
 
@@ -281,6 +278,23 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 .requestProfile()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
+
+        // show register popup
+        if (rsNavigationData != null){
+            if (rsNavigationData.getFrom() != null){
+            if (rsNavigationData.getFrom().equalsIgnoreCase(RSConstants.ACTIVITY_CONTAINER)) {
+                // get the mail before showing
+                Log.e("dialogRegister" , rsNavigationData.getAction());
+                if (RegisterDialog.getInstance() != null){
+                    getFragmentManager().popBackStack();
+                    RegisterDialog.getInstance().onDestroyView();
+
+                }
+                dialogRegister(rsNavigationData.getAction());
+            }
+            }
+        }
+
     }
 
     @Override
@@ -298,7 +312,11 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     }
 
     public void dialogRegister(String email) {
-        RegisterDialog dialog = RegisterDialog.newInstance(inputEmail.getText().toString().trim().toLowerCase(), rsNavigationData);
+        Log.e("email" , email+"!");
+        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+        rsNavigationData.setAction("");
+        RegisterDialog dialog = RegisterDialog.newInstance(email, rsNavigationData);
+        inputEmail.setText(email);
         dialog.setCancelable(false);
         String REGISTER_DIALOG_TAG = "REGISTER_DIALOG";
         dialog.show(getFragmentManager(), REGISTER_DIALOG_TAG);
@@ -308,11 +326,19 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     private static SignupFragment instance;
 
     public static SignupFragment getInstance(RSNavigationData data) {
-        Bundle args = new Bundle();
+         Bundle args = new Bundle();
         args.putSerializable(RSConstants.NAVIGATION_DATA, data);
-        if (instance == null)
+        if (instance == null  ) {
             instance = new SignupFragment();
-        instance.setArguments(args);
+        } else
+            if (data.getFrom().equalsIgnoreCase(RSConstants.ACTIVITY_CONTAINER)){
+                instance = new SignupFragment();
+        }
+
+                instance.setArguments(args);
+
+
+
         return instance;
     }
 
@@ -346,7 +372,8 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 dialogLogin(inputEmail.getText().toString().trim().toLowerCase());
             }
         } else {
-            dialogRegister(inputEmail.getText().toString().trim().toLowerCase());
+            //dialogRegister(inputEmail.getText().toString().trim().toLowerCase());
+            Toast.makeText(getContext() , R.string.email_confirmation_sent,Toast.LENGTH_LONG).show();
         }
     }
 
@@ -503,7 +530,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     private RSRequestSocialLogin getData(JSONObject object) {
         if (object != null) {
-            Log.e("facebooklogin object.toString", object.toString());
             try {
                 URL profile_picture = new URL("https://graph.facebook.com/" + object.getString("id") + "/picture?width=250&height=250");
                 RSAddress rsAddress = new RSAddress();
@@ -530,14 +556,10 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 return user;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-                Log.e("facebooklogin", "MalformedURLException");
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.e("facebooklogin", "JSONException");
             }
 
-        } else {
-            Log.e("facebooklogin", "object == null");
         }
         return null;
     }

@@ -19,12 +19,16 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.steeringit.rankstop",
-            "certificate_hash": "ca8753037e59e5a30b9c1792cef13dcacef98a2d"
+            "certificate_hash": "716a67473ca4e9e1199ff1bef152badfe4f46d8c"
           }
         },
         {
           "client_id": "919911753860-cdl4iriust9prbu3q4s6rf3jt4ut9nru.apps.googleusercontent.com",
           "client_type": 3
+        },
+        {
+          "client_id": "919911753860-356jiac0g3pks8irccak705t6h44v36q.apps.googleusercontent.com",
+          "client_type": 4
         }
       ],
       "api_key": [

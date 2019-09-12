@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+        <com.steeringit.rankstop.customviews.RSTVBold
             android:id="@+id/bar_chart_title_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

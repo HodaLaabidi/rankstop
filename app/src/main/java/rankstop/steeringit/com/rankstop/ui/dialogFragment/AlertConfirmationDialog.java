@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.dialogFragment;
+package com.steeringit.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.content.res.ColorStateList;
@@ -16,11 +16,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.ui.callbacks.DialogConfirmationListener;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.customviews.RSBTNBold;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.ui.callbacks.DialogConfirmationListener;
+import com.steeringit.rankstop.utils.RSConstants;
 
 public class AlertConfirmationDialog extends DialogFragment {
 

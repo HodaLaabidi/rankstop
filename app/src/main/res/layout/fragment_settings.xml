@@ -15,7 +15,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+            <com.steeringit.rankstop.customviews.RSTVBold
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
+                <com.steeringit.rankstop.customviews.RSRBMedium
                     android:id="@+id/rb_en"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                     android:padding="16dp"
                     android:text="@string/english" />
 
-                <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
+                <com.steeringit.rankstop.customviews.RSRBMedium
                     android:id="@+id/rb_fr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                     android:padding="16dp"
                     android:text="@string/french" />
 
-                <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
+                <com.steeringit.rankstop.customviews.RSRBMedium
                     android:id="@+id/rb_de"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -69,5 +69,22 @@
             </RadioGroup>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+    <LinearLayout
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.steeringit.rankstop.customviews.RSTVMedium
+            android:visibility="gone"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:id="@+id/app_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/quantum_grey"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

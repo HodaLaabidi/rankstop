@@ -12,7 +12,7 @@
         android:gravity="center_vertical"
         android:layout_margin="8dp">
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+        <com.steeringit.rankstop.customviews.RSTVBold
             android:id="@+id/tv_criteria_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             android:layout_alignParentEnd="true"
             android:gravity="center_vertical"
             android:layout_marginBottom="5dp">
-            <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
+            <com.steeringit.rankstop.customviews.RSTVRegular
                 android:id="@+id/importance_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

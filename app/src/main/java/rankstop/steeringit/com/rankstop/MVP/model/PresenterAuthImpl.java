@@ -1,24 +1,24 @@
-package rankstop.steeringit.com.rankstop.MVP.model;
+package com.steeringit.rankstop.MVP.model;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import rankstop.steeringit.com.rankstop.data.model.db.User;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
-import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
-import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
-import rankstop.steeringit.com.rankstop.data.webservices.Urls;
-import rankstop.steeringit.com.rankstop.data.webservices.WebService;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.session.RSSessionToken;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.data.model.db.User;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.data.model.network.GeoPluginResponse;
+import com.steeringit.rankstop.data.model.network.RSDeviceIP;
+import com.steeringit.rankstop.data.model.network.RSFollow;
+import com.steeringit.rankstop.data.model.network.RSRequestSocialLogin;
+import com.steeringit.rankstop.data.model.network.RSResponse;
+import com.steeringit.rankstop.data.webservices.Urls;
+import com.steeringit.rankstop.data.webservices.WebService;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.session.RSSessionToken;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,6 +28,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
     private RSView.LoginView loginView;
     private RSView.SignupView signupView;
     private RSView.RegisterView registerView;
+    private static final String TAG = "PresenterAuthImpl";
 
     public PresenterAuthImpl(RSView.LoginView loginView) {
         this.loginView = loginView;
@@ -328,14 +329,18 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                     if (target.equals(RSConstants.REGISTER)) {
                         if (response.body() != null) {
                             registerView.onAddressFetched(response.body());
+                            Log.e(TAG , "success REGISTER");
                         } else {
                             registerView.onAddressFailed();
+                            Log.e(TAG , "failed REGISTER");
                         }
                     } else if (target.equals(RSConstants.SOCIAL_LOGIN)) {
                         if (response.body() != null) {
+                            Log.e(TAG , "success SOCIAL_LOGIN");
                             signupView.onAddressFetched(response.body());
                         } else {
                             signupView.onAddressFailed();
+                            Log.e(TAG , "failed SOCIAL_LOGIN");
                         }
                     }
                 }

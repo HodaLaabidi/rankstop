@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.dialogFragment;
+package com.steeringit.rankstop.ui.dialogFragment;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.ui.callbacks.BottomSheetDialogListener;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.ui.callbacks.BottomSheetDialogListener;
 
 public class RSBottomSheetDialog extends BottomSheetDialogFragment {
 

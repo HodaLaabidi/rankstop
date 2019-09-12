@@ -1,7 +1,6 @@
-package rankstop.steeringit.com.rankstop.ui.fragments;
+package com.steeringit.rankstop.ui.fragments;
 
 import android.Manifest;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -51,6 +50,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.tsongkha.spinnerdatepicker.DatePickerDialog;
+import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,41 +69,41 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterUpdateProfileImpl;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
-import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.data.model.db.Country;
-import rankstop.steeringit.com.rankstop.data.model.db.RSPublicUserName;
-import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
-import rankstop.steeringit.com.rankstop.data.model.db.User;
-import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCountryAdapter;
-import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerGenderAdapter;
-import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerPublicNameAdapter;
-import rankstop.steeringit.com.rankstop.ui.callbacks.BottomSheetDialogListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.DateListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSBottomSheetDialog;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
-import rankstop.steeringit.com.rankstop.utils.FileCompressor;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSDateParser;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.MVP.model.PresenterUpdateProfileImpl;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSBTNBold;
+import com.steeringit.rankstop.customviews.RSBTNMedium;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.customviews.RSETMedium;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.data.model.db.Country;
+import com.steeringit.rankstop.data.model.db.RSPublicUserName;
+import com.steeringit.rankstop.data.model.db.RSRequestEditProfile;
+import com.steeringit.rankstop.data.model.db.User;
+import com.steeringit.rankstop.data.model.network.RSNavigationData;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.adapter.SpinnerCountryAdapter;
+import com.steeringit.rankstop.ui.adapter.SpinnerGenderAdapter;
+import com.steeringit.rankstop.ui.adapter.SpinnerPublicNameAdapter;
+import com.steeringit.rankstop.ui.callbacks.BottomSheetDialogListener;
+import com.steeringit.rankstop.ui.callbacks.DateListener;
+import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
+import com.steeringit.rankstop.ui.dialogFragment.RSBottomSheetDialog;
+import com.steeringit.rankstop.ui.dialogFragment.RSLoader;
+import com.steeringit.rankstop.utils.FileCompressor;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSDateParser;
+import com.steeringit.rankstop.utils.RSNetwork;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.LOCATION_SERVICE;
 
 public class UpdateProfileFragment extends Fragment implements RSView.UpdateProfileView, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, BottomSheetDialogListener, DateListener {
+        GoogleApiClient.OnConnectionFailedListener, BottomSheetDialogListener, DateListener{
 
     private View rootView;
     private Unbinder unbinder;
@@ -393,8 +394,6 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (s.toString().trim().length() > 0) {
                         inputLayoutPhone.setErrorEnabled(false);
-                    } else {
-                        inputLayoutPhone.setError(requiredField);
                     }
                 }
 
@@ -414,14 +413,13 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 rsRequestEditProfile.setUsername(inputUserNameET.getText().toString().trim());
                 rsRequestEditProfile.setLastName(inputLastNameET.getText().toString().trim());
                 rsRequestEditProfile.setFirstName(inputFirstNameET.getText().toString().trim());
-                rsRequestEditProfile.setPhone(inputPhoneET.getText().toString().trim());
                 rsRequestEditProfile.setBirthDate(RSDateParser.convertToDateFormat(birthDateET.getText().toString().trim(), dateFormat, serverDateFormat));
                 rsRequestEditProfile.setCountryName(selectedCountry.getCountryName());
                 rsRequestEditProfile.setCity(inputCityET.getText().toString().trim());
                 rsRequestEditProfile.setCountryCode(selectedCountry.getCountryCode());
                 rsRequestEditProfile.setGender(selectedGender);
+                rsRequestEditProfile.setPhone(inputPhoneET.getText().toString().trim());
                 rsRequestEditProfile.setNameToUse(selectedPublicName);
-                rsRequestEditProfile.setFile(imageUri);
                 rsRequestEditProfile.setUserId(currentUser.get_id());
                 if (!isPwdHidden) {
                     rsRequestEditProfile.setNewPassword(inputNewPasswordET.getText().toString().trim());
@@ -429,22 +427,21 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                 }
                 inputLayoutOldPwd.setError("");
 
-                if (rsRequestEditProfile.getFile() != null) {
-                    if (!rsRequestEditProfile.getPhone().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getBirthDate().trim().equalsIgnoreCase("") &&
+                //if (rsRequestEditProfile.getFile() != null) {
+                    if ( !rsRequestEditProfile.getBirthDate().trim().equalsIgnoreCase("") &&
                             !rsRequestEditProfile.getCountryName().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getCity().trim().equalsIgnoreCase("") &&
-                            !rsRequestEditProfile.getCountryCode().trim().equalsIgnoreCase("") &&
-                            !rsRequestEditProfile.getFile().toString().equalsIgnoreCase("")) {
+                            !rsRequestEditProfile.getCountryCode().trim().equalsIgnoreCase("")) {
                         presenterUpdateProfile.editProfile(rsRequestEditProfile, getContext(), isPwdHidden);
                     } else {
                         Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
                     }
-                } else {
+               /* } else {
                     if (currentUser.getPictureProfile() == null) {
                         Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
                     } else if (currentUser.getPictureProfile() == "") {
                         Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
                     } else {
-                        if (!rsRequestEditProfile.getPhone().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getBirthDate().trim().equalsIgnoreCase("") &&
+                        if ( !rsRequestEditProfile.getBirthDate().trim().equalsIgnoreCase("") &&
                                 !rsRequestEditProfile.getCountryName().trim().equalsIgnoreCase("") && !rsRequestEditProfile.getCity().trim().equalsIgnoreCase("") &&
                                 !rsRequestEditProfile.getCountryCode().trim().equalsIgnoreCase("")
                         ) {
@@ -453,7 +450,7 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
                             Toast.makeText(getContext(), R.string.edit_profile, Toast.LENGTH_LONG).show();
                         }
                     }
-                }
+                }*/
 
 
             } else {
@@ -533,6 +530,18 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         DialogFragment newFragment = DatePickerFragment.newInstance(currentDate, dateFormat);
         newFragment.setTargetFragment(this, 0);
         newFragment.show(getFragmentManager(), "datePicker");
+
+
+       /*SpinnerDatePickerDialogBuilder datePicker =   new SpinnerDatePickerDialogBuilder()
+                .context(getContext()).callback(UpdateProfileFragment.this)
+                .spinnerTheme(R.style.NumberPickerStyle)
+                .showTitle(true)
+                .showDaySpinner(true)
+                .defaultDate(2019, 0, 1)
+                .maxDate(2020, 0, 1)
+                .minDate(1960, 0, 1);
+        datePicker.build().show();*/
+
     }
 
     // current location
@@ -671,7 +680,15 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         inputFirstNameET.setText(user.getFirstName());
         inputLastNameET.setText(user.getLastName());
         inputUserNameET.setText(user.getUsername());
-        inputPhoneET.setText(user.getPhone());
+        if (user.getPhone() != null && !user.getPhone().equalsIgnoreCase("")){
+            if (!user.getPhone().toLowerCase().equalsIgnoreCase("null"))
+            inputPhoneET.setText(user.getPhone());
+            else
+                inputPhoneET.setText("");
+        } else {
+            inputPhoneET.setText("");
+        }
+
         if (user.getBirthDate() != null) {
             birthDateET.setText(RSDateParser.convertToDateFormat(user.getBirthDate(), dateFormat));
             currentDate = RSDateParser.convertToDateFormat(user.getBirthDate(), dateFormat);
@@ -1007,7 +1024,9 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
         birthDateET.setText(currentDate);
     }
 
-    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+
+    /*public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
         DatePickerDialog dialog;
         public static DatePickerFragment fragment;
@@ -1067,6 +1086,82 @@ public class UpdateProfileFragment extends Fragment implements RSView.UpdateProf
             // Do something with the date chosen by the user
             //EventBus.getDefault().post(new DateListener("" + day + "/" + (month + 1) + "/" + year));
             callback.onDateChanged("" + day + "/" + (month + 1) + "/" + year);
+        }
+    }*/
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
+
+      /*  SpinnerDatePickerDialogBuilder datePicker =   new SpinnerDatePickerDialogBuilder()
+                .context(getContext()).callback(UpdateProfileFragment.this)
+                .spinnerTheme(R.style.NumberPickerStyle)
+                .showTitle(true)
+                .showDaySpinner(true)
+                .defaultDate(2019, 0, 1)
+                .maxDate(2020, 0, 1)
+                .minDate(1960, 0, 1);
+        datePicker.build().show();*/
+
+        SpinnerDatePickerDialogBuilder dialog;
+        public static DatePickerFragment fragment;
+        private DateListener callback;
+
+        private String currentDate, dateFormat;
+
+        public static DatePickerFragment newInstance(String currentDate, String format) {
+
+            Bundle args = new Bundle();
+
+            args.putString(RSConstants.CURRENT_DATE, currentDate);
+            args.putString(RSConstants.FORMAT_DATE, format);
+            if (fragment == null) {
+                fragment = new DatePickerFragment();
+            }
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+
+            try {
+                callback = (DateListener) getTargetFragment();
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Calling Fragment must implement OnAddFriendListener");
+            }
+
+            currentDate = getArguments().getString(RSConstants.CURRENT_DATE);
+            dateFormat = getArguments().getString(RSConstants.FORMAT_DATE);
+            Calendar calendar;
+            if (currentDate != null) {
+                calendar = RSDateParser.convertToDate(currentDate, dateFormat);
+            } else {
+                calendar = Calendar.getInstance();
+            }
+            final Calendar curCalendar = Calendar.getInstance();
+
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            int curYear = curCalendar.get(Calendar.YEAR);
+            int curMonth = curCalendar.get(Calendar.MONTH);
+            int curDay = curCalendar.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            dialog = new SpinnerDatePickerDialogBuilder();
+            curCalendar.set(curYear - RSConstants.MIN_AGE_USER, curMonth, curDay);
+            dialog.context(getContext())
+                    .spinnerTheme(R.style.NumberPickerStyle)
+                    .defaultDate(curYear,curMonth,curDay)
+            .callback( this);
+            return dialog.build();
+        }
+
+
+
+        @Override
+        public void onDateSet(com.tsongkha.spinnerdatepicker.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            callback.onDateChanged("" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
         }
     }
 

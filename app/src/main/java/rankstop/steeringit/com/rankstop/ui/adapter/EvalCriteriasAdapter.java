@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.adapter;
+package com.steeringit.rankstop.ui.adapter;
 
 import android.graphics.Color;
 import androidx.annotation.NonNull;
@@ -18,10 +18,10 @@ import butterknife.BindColor;
 import butterknife.BindDimen;
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
-import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
-import rankstop.steeringit.com.rankstop.ui.callbacks.CriteriaEvalListener;
-import rankstop.steeringit.com.rankstop.R;
+import com.steeringit.rankstop.customviews.RSTVBold;
+import com.steeringit.rankstop.data.model.db.CriteriaEval;
+import com.steeringit.rankstop.ui.callbacks.CriteriaEvalListener;
+import com.steeringit.rankstop.R;
 
 public class EvalCriteriasAdapter extends RecyclerView.Adapter<EvalCriteriasAdapter.ViewHolder> {
 

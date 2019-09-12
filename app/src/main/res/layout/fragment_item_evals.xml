@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
-        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+        <com.steeringit.rankstop.customviews.RSTVMedium
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

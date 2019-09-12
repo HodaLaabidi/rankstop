@@ -1,6 +1,8 @@
-package rankstop.steeringit.com.rankstop.ui.fragments;
+package com.steeringit.rankstop.ui.fragments;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,15 +19,16 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterDeviceLangImpl;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
+import com.steeringit.rankstop.MVP.model.PresenterDeviceLangImpl;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSRBMedium;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.dialogFragment.RSLoader;
 
 public class SettingsFragment extends Fragment implements RSView.EditLangView {
 
@@ -45,6 +48,9 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
     RSRBMedium frenshRB;
     @BindView(R.id.rb_de)
     RSRBMedium germanRB;
+
+    @BindView(R.id.app_version)
+    RSTVMedium appVersion ;
 
     @BindString(R.string.text_settings)
     String settingsTitle;
@@ -108,6 +114,20 @@ public class SettingsFragment extends Fragment implements RSView.EditLangView {
             else if (checkedId == R.id.rb_de)
                 manageLanguage("de");
         });
+
+        // Binding  app version
+
+         PackageManager manager = getContext().getPackageManager();
+        try {
+            PackageInfo info = manager.getPackageInfo(getContext().getPackageName(), PackageManager.GET_ACTIVITIES);
+            appVersion.setVisibility(View.VISIBLE);
+            appVersion.setText(getResources().getString(R.string.version_name)+" "+info.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            appVersion.setVisibility(View.GONE);
+        }
+
+
     }
 
     private void manageLanguage(String lang) {

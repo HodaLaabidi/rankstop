@@ -1,5 +1,5 @@
 
-package rankstop.steeringit.com.rankstop.ui.adapter;
+package com.steeringit.rankstop.ui.adapter;
 
 import android.graphics.Color;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,11 +21,11 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
-import rankstop.steeringit.com.rankstop.data.model.db.CriteriaNote;
-import rankstop.steeringit.com.rankstop.R;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSTVBold;
+import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
+import com.steeringit.rankstop.data.model.db.CriteriaNote;
+import com.steeringit.rankstop.R;
 
 
 public class ItemEvalAdapter extends RecyclerView.Adapter<ItemEvalAdapter.ViewHolder> {

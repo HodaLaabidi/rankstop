@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.adapter;
+package com.steeringit.rankstop.ui.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,12 +15,12 @@ import java.util.List;
 
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
-import rankstop.steeringit.com.rankstop.data.model.db.RSNotif;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
-import rankstop.steeringit.com.rankstop.utils.RSDateParser;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.customviews.RSTVRegular;
+import com.steeringit.rankstop.data.model.db.RSNotif;
+import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
+import com.steeringit.rankstop.utils.RSDateParser;
 
 public class NotifAdapter extends RecyclerView.Adapter<NotifAdapter.ViewHolder> {
     private List<RSNotif> notifications;

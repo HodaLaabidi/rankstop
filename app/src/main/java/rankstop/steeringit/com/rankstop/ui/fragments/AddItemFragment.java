@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.fragments;
+package com.steeringit.rankstop.ui.fragments;
 
 
 
@@ -60,25 +60,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.data.model.db.Category;
-import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCategoryAdapter;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
-import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
+import com.steeringit.rankstop.MVP.model.PresenterItemImpl;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.customviews.RSETMedium;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.data.model.db.Category;
+import com.steeringit.rankstop.data.model.network.RSAddReview;
+import com.steeringit.rankstop.data.model.network.RSNavigationData;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.adapter.SpinnerCategoryAdapter;
+import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
+import com.steeringit.rankstop.ui.dialogFragment.ContactDialog;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.utils.WorkaroundMapFragment;
 
 import static android.content.Context.LOCATION_SERVICE;
 

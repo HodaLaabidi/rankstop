@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.utils;
+package com.steeringit.rankstop.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -67,6 +67,8 @@ public class RSDateParser {
         }
         return output.format(d);
     }
+
+
 
     public static Calendar convertToDate(String date, String format){
         Calendar calendar = Calendar.getInstance();

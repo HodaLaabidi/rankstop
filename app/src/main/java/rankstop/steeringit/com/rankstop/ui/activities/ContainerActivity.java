@@ -1,9 +1,22 @@
-package rankstop.steeringit.com.rankstop.ui.activities;
+package com.steeringit.rankstop.ui.activities;
 
+import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,46 +24,50 @@ import androidx.fragment.app.FragmentTransaction;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.style.AlignmentSpan;
+import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.fragments.AddItemFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.AddReviewFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.HistoryFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.HomeFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ItemDetailsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ListNotifFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ListingItemsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ProfileFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.MyEvaluationsFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.ScannerFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.SearchFragment;
-import rankstop.steeringit.com.rankstop.ui.fragments.SignupFragment;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.fragments.UpdateProfileFragment;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.data.model.network.RSAddReview;
+import com.steeringit.rankstop.data.model.network.RSNavigationData;
+import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
+import com.steeringit.rankstop.ui.fragments.AddItemFragment;
+import com.steeringit.rankstop.ui.fragments.AddReviewFragment;
+import com.steeringit.rankstop.ui.fragments.HistoryFragment;
+import com.steeringit.rankstop.ui.fragments.HomeFragment;
+import com.steeringit.rankstop.ui.fragments.ItemDetailsFragment;
+import com.steeringit.rankstop.ui.fragments.ListNotifFragment;
+import com.steeringit.rankstop.ui.fragments.ListingItemsFragment;
+import com.steeringit.rankstop.ui.fragments.ProfileFragment;
+import com.steeringit.rankstop.ui.fragments.MyEvaluationsFragment;
+import com.steeringit.rankstop.ui.fragments.ScannerFragment;
+import com.steeringit.rankstop.ui.fragments.SearchFragment;
+import com.steeringit.rankstop.ui.fragments.SignupFragment;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.ui.fragments.UpdateProfileFragment;
+import com.steeringit.rankstop.utils.RSConstants;
 
-public class ContainerActivity extends BaseActivity implements FragmentActionListener {
+import static com.crashlytics.android.Crashlytics.log;
 
+public class ContainerActivity extends BaseActivity implements FragmentActionListener  {
+
+    private static final int MY_REQUEST_CODE = 123 ;
     private BottomNavigationView navigation;
     private FragmentManager fragmentManager;
     private boolean isLoggedIn = false;
     private boolean isFirstAskForLogoutApp = false ;
+    AppUpdateManager appUpdateManager;
+    Task<AppUpdateInfo> appUpdateInfoTask;
     private RSNavigationData rsNavigationD = new RSNavigationData();
-
     private WeakReference<ContainerActivity> activity;
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -89,30 +106,38 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
                     if (!(fragment instanceof ScannerFragment))
                         replaceFragment(ScannerFragment.getInstance(), RSConstants.FRAGMENT_SCANNER);
                     return true;
-                /*case R.id.navigation_profile:
-                    if (isLoggedIn) {
-                        if (!(fragment instanceof ProfileFragment)) {
-                            replaceFragment(ProfileFragment.getInstance(), RSConstants.FRAGMENT_PROFILE);
-                            item.setTitle(getResources().getString(R.string.title_profile));
-                        }
-                    } else {
-                        if (!(fragment instanceof SignupFragment)) {
-                            replaceFragment(SignupFragment.getInstance(new RSNavigationData(RSConstants.FRAGMENT_PROFILE, "")), RSConstants.FRAGMENT_SIGN_UP);
-                            item.setTitle(getResources().getString(R.string.title_login));
-                        }
-                    }
-                    return true;*/
             }
             return false;
         }
     };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_container);
         ButterKnife.bind(this);
+        checkingApplicationUpdates();
+
+
+        // ***************** print out hash key *************************************
+
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.steeringit.rankstop",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }
+
+
+        // ***************** end print out hash key **********************************
 
 
 
@@ -127,12 +152,13 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
         fragmentManager = getSupportFragmentManager();
 
         replaceFragment(HomeFragment.getInstance(), RSConstants.FRAGMENT_HOME);
+
+
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
+
+
+
 
     public void manageSession(boolean isLoggedIn, RSNavigationData rsNavigationData) {
         this.isLoggedIn = isLoggedIn;
@@ -327,4 +353,96 @@ public class ContainerActivity extends BaseActivity implements FragmentActionLis
         isFirstAskForLogoutApp = false ;
         super.onDestroy();
     }
+
+
+    private void checkingApplicationUpdates() {
+        // Creates instance of the manager.
+        appUpdateManager = AppUpdateManagerFactory.create(getBaseContext());
+        // Returns an intent object that you use to check for an update.
+        appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+
+        // Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    // For a flexible update, use AppUpdateType.FLEXIBLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                // Request the update.
+                Log.e("InAppUpdates" ,  "available");
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                            // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                            appUpdateInfo,
+                            // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                            AppUpdateType.IMMEDIATE,
+                            // The current activity making the update request.
+                            this,
+                            // Include a request code to later monitor this update request.
+                            MY_REQUEST_CODE);
+                } catch (IntentSender.SendIntentException e) {
+
+                    Log.e("InAppUpdates" ,  "not working");
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e("InAppUpdates" ,  " not available");
+            }
+
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MY_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                log("Update flow failed! Result code: " + resultCode);
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
+            }
+        }
+    }
+
+    // Checks that the update is not stalled during 'onResume()'.
+// However, you should execute this check at all entry points into the app.
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //   deep linking
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        if (appLinkIntent != null) {
+            String param = null;
+            Uri appLinkData = appLinkIntent.getData();
+            if (appLinkData != null) {
+                param = appLinkData.getQueryParameter(RSConstants.DEEP_LINKING_KEY_PARAM);
+                if (param != null) {
+                    String email = param ;
+                    param = null ;
+                    replaceFragment(SignupFragment.getInstance(new RSNavigationData(RSConstants.ACTIVITY_CONTAINER, email)), RSConstants.FRAGMENT_SIGN_UP);
+
+
+                }
+            }
+        }
+
+        appUpdateManager
+                .getAppUpdateInfo()
+                .addOnSuccessListener(
+                        appUpdateInfo -> {
+                            if (appUpdateInfo.updateAvailability()
+                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                                // If an in-app update is already running, resume the update.
+                                try {
+                                    appUpdateManager.startUpdateFlowForResult(
+                                            appUpdateInfo,
+                                            AppUpdateType.IMMEDIATE,
+                                            this,
+                                            MY_REQUEST_CODE);
+                                } catch (IntentSender.SendIntentException e) {
+                                    Log.e("InAppUpdates" ,  " in progress not working");
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+    }
+
 }

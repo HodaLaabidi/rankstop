@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+            <com.steeringit.rankstop.customviews.RSTVBold
                 android:id="@+id/item_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
             android:layout_below="@id/item_info"
             android:weightSum="2">
 
-            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+            <com.steeringit.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_count_reviews"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                 android:textColor="@color/colorGray"
                 android:textSize="@dimen/text_size_number" />
 
-            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+            <com.steeringit.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_count_followers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                <com.steeringit.rankstop.customviews.RSTVBold
                     android:id="@+id/tv_note_eval_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                     android:textColor="@color/colorTitleText"
                     android:textSize="@dimen/text_size_title_item_rv" />
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                <com.steeringit.rankstop.customviews.RSTVBold
                     android:id="@+id/tv_note_eval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                     android:textColor="@color/colorTitleText"
                     android:textSize="@dimen/text_size_title_item_rv" />
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                <com.steeringit.rankstop.customviews.RSTVMedium
                     android:id="@+id/tv_date_eval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                     android:layout_margin="@dimen/p_card_rv_item"/>
 
             </RelativeLayout>
-            <rankstop.steeringit.com.rankstop.utils.DisabledRecyclerView
+            <com.steeringit.rankstop.utils.DisabledRecyclerView
                 android:id="@+id/recycler_view_criteria_evaluated"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

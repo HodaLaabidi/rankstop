@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rankstop.steeringit.com.rankstop.customviews.RSTVMedium xmlns:android="http://schemas.android.com/apk/res/android"
+<com.steeringit.rankstop.customviews.RSTVMedium xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/text_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

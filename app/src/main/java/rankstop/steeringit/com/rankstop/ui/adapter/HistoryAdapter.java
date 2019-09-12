@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.adapter;
+package com.steeringit.rankstop.ui.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,12 +15,12 @@ import java.util.List;
 
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
-import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
-import rankstop.steeringit.com.rankstop.data.model.db.History;
-import rankstop.steeringit.com.rankstop.ui.callbacks.ItemHistoryListener;
-import rankstop.steeringit.com.rankstop.utils.RSDateParser;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.customviews.RSTVBold;
+import com.steeringit.rankstop.customviews.RSTVRegular;
+import com.steeringit.rankstop.data.model.db.History;
+import com.steeringit.rankstop.ui.callbacks.ItemHistoryListener;
+import com.steeringit.rankstop.utils.RSDateParser;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     private List<History> histories;

@@ -1,7 +1,7 @@
-package rankstop.steeringit.com.rankstop.MVP.view;
+package com.steeringit.rankstop.MVP.view;
 
-import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
-import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
+import com.steeringit.rankstop.data.model.network.GeoPluginResponse;
+import com.steeringit.rankstop.data.model.network.RSDeviceIP;
 
 public interface RSView {
 

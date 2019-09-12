@@ -1,19 +1,19 @@
-package rankstop.steeringit.com.rankstop.session;
+package com.steeringit.rankstop.session;
 
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
 
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.data.model.db.FakeUser;
-import rankstop.steeringit.com.rankstop.data.model.db.User;
-import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
-import rankstop.steeringit.com.rankstop.data.model.network.RSLocalStorage;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
-import rankstop.steeringit.com.rankstop.data.webservices.WebService;
-import rankstop.steeringit.com.rankstop.utils.RSJWTParser;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.data.model.db.FakeUser;
+import com.steeringit.rankstop.data.model.db.User;
+import com.steeringit.rankstop.data.model.db.UserInfo;
+import com.steeringit.rankstop.data.model.network.RSLocalStorage;
+import com.steeringit.rankstop.data.model.network.RSResponse;
+import com.steeringit.rankstop.data.model.network.RSResponseLogin;
+import com.steeringit.rankstop.data.webservices.WebService;
+import com.steeringit.rankstop.utils.RSJWTParser;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,7 +28,6 @@ public class RSSession {
         // RSJWTParser.getPayload(token);
         User user = new Gson().fromJson(RSJWTParser.getPayload(token).toString(), User.class);
         UserInfo userInfo = new UserInfo(user);
-        Log.e("userid from SP" , user.get_id());
         RSLocalStorage rsLocalStorage = new RSLocalStorage(token, userInfo);
 
         saveIntoSharedPreferences(rsLocalStorage);

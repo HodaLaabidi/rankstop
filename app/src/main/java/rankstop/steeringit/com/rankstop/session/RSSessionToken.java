@@ -1,16 +1,16 @@
-package rankstop.steeringit.com.rankstop.session;
+package com.steeringit.rankstop.session;
 
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.data.model.db.FakeUser;
-import rankstop.steeringit.com.rankstop.data.model.db.User;
-import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
-import rankstop.steeringit.com.rankstop.data.model.network.RSLocalStorage;
-import rankstop.steeringit.com.rankstop.data.model.network.RSLocalTokenGest;
-import rankstop.steeringit.com.rankstop.utils.RSJWTParser;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.data.model.db.FakeUser;
+import com.steeringit.rankstop.data.model.db.User;
+import com.steeringit.rankstop.data.model.db.UserInfo;
+import com.steeringit.rankstop.data.model.network.RSLocalStorage;
+import com.steeringit.rankstop.data.model.network.RSLocalTokenGest;
+import com.steeringit.rankstop.utils.RSJWTParser;
 
 import static android.content.Context.MODE_PRIVATE;
 

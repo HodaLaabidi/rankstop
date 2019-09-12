@@ -1,5 +1,5 @@
 
-package rankstop.steeringit.com.rankstop.ui.adapter;
+package com.steeringit.rankstop.ui.adapter;
 
 import android.app.Activity;
 import android.app.Application;
@@ -30,13 +30,13 @@ import java.util.List;
 import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.data.model.db.Item;
-import rankstop.steeringit.com.rankstop.R;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.customviews.RSTVRegular;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.ui.callbacks.ItemPieListener;
+import com.steeringit.rankstop.data.model.db.Item;
+import com.steeringit.rankstop.R;
 
 
 public class PieAdapter extends RecyclerView.Adapter<PieAdapter.ViewHolder> {

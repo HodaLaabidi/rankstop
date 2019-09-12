@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.dialogFragment;
+package com.steeringit.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -25,20 +25,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
-import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.data.model.db.User;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.MVP.model.PresenterAuthImpl;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.customviews.RSETRegular;
+import com.steeringit.rankstop.data.model.network.RSFollow;
+import com.steeringit.rankstop.data.model.network.RSNavigationData;
+import com.steeringit.rankstop.data.model.network.RSResponseLogin;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.data.model.db.User;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
 
 public class LoginDialog extends DialogFragment implements RSView.LoginView {
 
@@ -170,6 +170,8 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setCancelable(false);
         alertDialog.setOnShowListener(dialog -> onDialogShow(alertDialog));
+
+
         return alertDialog;
     }
 
@@ -196,7 +198,6 @@ public class LoginDialog extends DialogFragment implements RSView.LoginView {
         RSResponseLogin loginResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseLogin.class);
         String token = loginResponse.getToken();
         RSSession.startSession(token);
-        Log.e("login token" , token);
 
         if (rsNavigationData == null){
 

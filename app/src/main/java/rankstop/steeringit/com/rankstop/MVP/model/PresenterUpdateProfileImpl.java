@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.MVP.model;
+package com.steeringit.rankstop.MVP.model;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,17 +8,17 @@ import java.io.File;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
-import rankstop.steeringit.com.rankstop.data.webservices.WebService;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.session.RSSessionToken;
-import rankstop.steeringit.com.rankstop.utils.FileUtils;
-import rankstop.steeringit.com.rankstop.utils.Helpers;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.data.model.db.RSRequestEditProfile;
+import com.steeringit.rankstop.data.model.network.RSResponse;
+import com.steeringit.rankstop.data.webservices.WebService;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.session.RSSessionToken;
+import com.steeringit.rankstop.utils.FileUtils;
+import com.steeringit.rankstop.utils.Helpers;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,7 +48,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                             part,
                             Helpers.createPartFormString(user.getFirstName()),
                             Helpers.createPartFormString(user.getLastName()),
-                            Helpers.createPartFormString(user.getPhone()),
+                            Helpers.createPartFormString(user.getPhone()+""),
                             Helpers.createPartFormString(user.getGender()),
                             Helpers.createPartFormString(user.getBirthDate()),
                             Helpers.createPartFormString(user.getUsername()),
@@ -66,7 +66,7 @@ public class PresenterUpdateProfileImpl implements RSPresenter.UpdateProfilePres
                             part,
                             Helpers.createPartFormString(user.getFirstName()),
                             Helpers.createPartFormString(user.getLastName()),
-                            Helpers.createPartFormString(user.getPhone()),
+                            Helpers.createPartFormString(user.getPhone()+""),
                             Helpers.createPartFormString(user.getGender()),
                             Helpers.createPartFormString(user.getBirthDate()),
                             Helpers.createPartFormString(user.getUsername()),

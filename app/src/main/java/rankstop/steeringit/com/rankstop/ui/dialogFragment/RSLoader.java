@@ -1,6 +1,7 @@
-package rankstop.steeringit.com.rankstop.ui.dialogFragment;
+package com.steeringit.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,11 +14,14 @@ import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
+import com.steeringit.rankstop.utils.RSConstants;
 
 public class RSLoader extends DialogFragment {
+
 
     public static final String TAG = "RS_LOADER";
     private View rootView;
@@ -68,6 +72,19 @@ public class RSLoader extends DialogFragment {
             unbinder.unbind();
         instance = null;
         super.onDestroyView();
+    }
+
+    public void dismissDialog(){
+        this.dismiss();
+
+
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
     }
 
 }

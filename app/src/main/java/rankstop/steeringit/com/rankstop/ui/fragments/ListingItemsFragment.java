@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.fragments;
+package com.steeringit.rankstop.ui.fragments;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -29,29 +29,29 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.data.model.db.Item;
-import rankstop.steeringit.com.rankstop.data.model.db.User;
-import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.adapter.ItemsAdapter;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.AskToLoginDialog;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
-import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
-import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
+import com.steeringit.rankstop.MVP.model.PresenterItemImpl;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.data.model.db.Item;
+import com.steeringit.rankstop.data.model.db.User;
+import com.steeringit.rankstop.data.model.network.RSFollow;
+import com.steeringit.rankstop.data.model.network.RSNavigationData;
+import com.steeringit.rankstop.data.model.network.RSRequestListItem;
+import com.steeringit.rankstop.data.model.network.RSResponseListingItem;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.adapter.ItemsAdapter;
+import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
+import com.steeringit.rankstop.ui.callbacks.ItemPieListener;
+import com.steeringit.rankstop.ui.dialogFragment.AskToLoginDialog;
+import com.steeringit.rankstop.ui.dialogFragment.ContactDialog;
+import com.steeringit.rankstop.utils.EndlessScrollListener;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.utils.VerticalSpace;
 
 public class ListingItemsFragment extends Fragment implements RSView.StandardView ,RSView.StandardView2 {
 

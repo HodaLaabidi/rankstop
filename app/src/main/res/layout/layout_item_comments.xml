@@ -34,7 +34,7 @@
                 app:actualImageScaleType="centerCrop"
                 app:placeholderImageScaleType="centerCrop"/>
 
-            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+            <com.steeringit.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/size_large_date" />
 
-            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+            <com.steeringit.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                 android:src="@drawable/ic_remove"
                 android:visibility="gone" />
         </RelativeLayout>
-        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+        <com.steeringit.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

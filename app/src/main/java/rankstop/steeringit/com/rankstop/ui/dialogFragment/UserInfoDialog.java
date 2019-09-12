@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.dialogFragment;
+package com.steeringit.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -38,20 +38,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
-import rankstop.steeringit.com.rankstop.data.model.db.User;
-import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
+import com.steeringit.rankstop.MVP.model.PresenterUserImpl;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.customviews.RSTVBold;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.data.model.db.ItemDetails;
+import com.steeringit.rankstop.data.model.db.User;
+import com.steeringit.rankstop.data.model.db.UserInfo;
+import com.steeringit.rankstop.data.model.network.RSResponseItemData;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.WorkaroundMapFragment;
 
 public class UserInfoDialog extends DialogFragment implements RSView.StandardView {
 

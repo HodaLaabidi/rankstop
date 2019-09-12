@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.utils;
+package com.steeringit.rankstop.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,7 +15,7 @@ import java.io.File;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import rankstop.steeringit.com.rankstop.RankStop;
+import com.steeringit.rankstop.RankStop;
 
 import static android.content.Context.WINDOW_SERVICE;
 

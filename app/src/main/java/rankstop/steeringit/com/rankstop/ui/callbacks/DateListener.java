@@ -1,5 +1,6 @@
-package rankstop.steeringit.com.rankstop.ui.callbacks;
+package com.steeringit.rankstop.ui.callbacks;
 
 public interface DateListener {
     void onDateChanged(String date);
 }
+

@@ -1,9 +1,9 @@
-package rankstop.steeringit.com.rankstop.data.model.network;
+package com.steeringit.rankstop.data.model.network;
 
 import java.io.Serializable;
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.data.model.db.RSNotif;
+import com.steeringit.rankstop.data.model.db.RSNotif;
 
 public class RSResponseNotif implements Serializable {
 

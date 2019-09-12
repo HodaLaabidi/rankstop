@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.MVP.model;
+package com.steeringit.rankstop.MVP.model;
 
 
 import android.content.Context;
@@ -6,18 +6,18 @@ import android.util.Log;
 
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.data.model.db.Item;
-import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
-import rankstop.steeringit.com.rankstop.data.webservices.WebService;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.session.RSSessionToken;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.data.model.db.Item;
+import com.steeringit.rankstop.data.model.network.RSFollow;
+import com.steeringit.rankstop.data.model.network.RSRequestItemData;
+import com.steeringit.rankstop.data.model.network.RSRequestListItem;
+import com.steeringit.rankstop.data.model.network.RSResponse;
+import com.steeringit.rankstop.data.webservices.WebService;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.session.RSSessionToken;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -82,13 +82,13 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
                         if (response.body() != null) {
-                            Log.e("itemId"  , itemId  + "     "+ userId + "    "+ RSSessionToken.getUsergestToken());
+
                             if (response.body().getStatus() == RSConstants.CODE_TOKEN_EXPIRED) {
                                 RSSession.Reconnecter();
                                 refreshItems(context ,userId, itemId,message, lang);
                             } else {
                                 if (response.body().getStatus() == 1) {
-                                    Log.e("onSuccessRefreshItem", "ok"+ response.body().getData());
+
                                     standardView2.onSuccessRefreshItem(RSConstants.REFRESH_ITEM, itemId, message,response.body().getData());
                                 } else if (response.body().getStatus() == 0) {
                                     //standardView2.onFailure(RSConstants.REFRESH_ITEM);
@@ -518,8 +518,6 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_COMMENTS);
                 callItemComments = WebService.getInstance().getApi().loadItemComments(RSSessionToken.getUsergestToken(), rsRequestItemData);
-
-                Log.e("itemComments" , "token "+RSSessionToken.getUsergestToken() +  "  ItemId "+ rsRequestItemData.getItemId() +  "  userid = "+ rsRequestItemData.getUserId() +" !" );
                 callItemComments.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
@@ -530,10 +528,10 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                                 standardView.hideProgressBar(RSConstants.ITEM_COMMENTS);
                                 loadItemComments(rsRequestItemData, context);
                             } else {
-                                Log.e("itemComments",  response.body().getStatus()+ " !");
+
                                 if (response.body().getStatus() == 1) {
                                     standardView.onSuccess(RSConstants.ITEM_COMMENTS, response.body().getData());
-                                    Log.e("itemComments getData = " , response.body().getData().toString() +" ");
+
                                 } else if (response.body().getStatus() == 0) {
                                     standardView.onFailure(RSConstants.ITEM_COMMENTS);
                                 }
@@ -605,8 +603,6 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
             if (standardView != null) {
                 standardView.showProgressBar(RSConstants.ITEM_PIX);
                 callItemPix = WebService.getInstance().getApi().loadItemPix(RSSessionToken.getUsergestToken(), rsRequestItemData);
-                Log.e("itemPics" , "token "+RSSessionToken.getUsergestToken() +  "  ItemId "+ rsRequestItemData.getItemId() +  "  userid = "+ rsRequestItemData.getUserId() + "  !!" );
-
                 callItemPix.enqueue(new Callback<RSResponse>() {
                     @Override
                     public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
@@ -616,7 +612,7 @@ public class PresenterItemImpl implements RSPresenter.ItemPresenter {
                                 standardView.hideProgressBar(RSConstants.ITEM_PIX);
                                 loadItemPix(rsRequestItemData, context);
                             } else {
-                                Log.e("loadItemPix", response.body().getData().toString()+" ");
+
                                 if (response.body().getStatus() == 1) {
                                     standardView.onSuccess(RSConstants.ITEM_PIX, response.body().getData());
                                 } else if (response.body().getStatus() == 0) {

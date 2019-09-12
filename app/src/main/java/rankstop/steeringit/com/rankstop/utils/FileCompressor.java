@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.utils;
+package com.steeringit.rankstop.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;

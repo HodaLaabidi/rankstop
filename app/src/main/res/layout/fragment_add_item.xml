@@ -23,14 +23,14 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+        <com.steeringit.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/connectez_vous" />
 
-        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
+        <com.steeringit.rankstop.customviews.RSBTNBold
             android:id="@+id/btn_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,6 +45,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/app_bar"
         android:visibility="gone"
+
         >
 
         <LinearLayout
@@ -66,7 +67,7 @@
                     app:counterTextAppearance="@style/counterText">
 
 
-                    <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                    <com.steeringit.rankstop.customviews.RSETMedium
                         android:id="@+id/input_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -86,7 +87,7 @@
                 app:counterOverflowTextAppearance="@style/counterOverride"
                 app:counterTextAppearance="@style/counterText">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                <com.steeringit.rankstop.customviews.RSETMedium
                     android:id="@+id/input_barcode"
                     android:enabled="false"
                     android:clickable="true"
@@ -98,7 +99,7 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                    <com.steeringit.rankstop.customviews.RSTVMedium
                         android:visibility="gone"
                         android:id="@+id/action_delete_barcode"
                         android:layout_gravity="left"
@@ -109,7 +110,7 @@
                         android:text="@string/delete_scanner"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content" />
-                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                    <com.steeringit.rankstop.customviews.RSTVMedium
                         android:id="@+id/action_scanner"
                         android:layout_gravity="right"
                         android:gravity="right"
@@ -133,7 +134,7 @@
                 app:counterOverflowTextAppearance="@style/counterOverride"
                 app:counterTextAppearance="@style/counterText">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                <com.steeringit.rankstop.customviews.RSETMedium
                     android:id="@+id/input_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -160,7 +161,7 @@
                     android:background="@drawable/category_bg"
                     android:spinnerMode="dialog" />
 
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                <com.steeringit.rankstop.customviews.RSTVMedium
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/ms_spinner_title"
@@ -186,7 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/mb_input">
 
-                    <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                    <com.steeringit.rankstop.customviews.RSETMedium
                         android:id="@+id/input_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -202,7 +203,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/mb_input">
 
-                    <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                    <com.steeringit.rankstop.customviews.RSETMedium
                         android:id="@+id/input_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -213,16 +214,31 @@
                 <fragment
                     android:id="@+id/map"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
-                    class="rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment"
+                    class="com.steeringit.rankstop.utils.WorkaroundMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/height_map_add_item" />
             </LinearLayout>
 
-            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
+            <LinearLayout
+                android:elevation="20dp"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_add_button"
                 android:id="@+id/btn_add_item"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/text_add_item" />
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textFontWeight="7"
+                    android:textAllCaps="true"
+                    android:layout_marginBottom="7dp"
+                    android:layout_marginTop="7dp"
+                    android:textSize="18dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorWhite"
+                    android:text="@string/text_add_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

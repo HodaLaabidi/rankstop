@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.utils;
+package com.steeringit.rankstop.utils;
 
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -20,7 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import rankstop.steeringit.com.rankstop.R;
+import com.steeringit.rankstop.R;
 
 public class LocalStorageProvider extends DocumentsProvider {
 

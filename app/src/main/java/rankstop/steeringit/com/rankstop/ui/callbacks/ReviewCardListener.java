@@ -1,10 +1,10 @@
-package rankstop.steeringit.com.rankstop.ui.callbacks;
+package com.steeringit.rankstop.ui.callbacks;
 
 import android.view.View;
 
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.data.model.db.Comment;
+import com.steeringit.rankstop.data.model.db.Comment;
 
 public interface ReviewCardListener {
     void onRemoveClicked(int position);

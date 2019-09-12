@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.fragments;
+package com.steeringit.rankstop.ui.fragments;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -27,28 +27,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterNotifImpl;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
-import rankstop.steeringit.com.rankstop.data.model.db.RSNotif;
-import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseNotif;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.adapter.NotifAdapter;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
-import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
-import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
+import com.steeringit.rankstop.MVP.model.PresenterNotifImpl;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSBTNBold;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.customviews.RSTVRegular;
+import com.steeringit.rankstop.data.model.db.RSNotif;
+import com.steeringit.rankstop.data.model.network.RSNavigationData;
+import com.steeringit.rankstop.data.model.network.RSRequestListItem;
+import com.steeringit.rankstop.data.model.network.RSResponseNotif;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.adapter.NotifAdapter;
+import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
+import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
+import com.steeringit.rankstop.ui.dialogFragment.RSLoader;
+import com.steeringit.rankstop.utils.EndlessScrollListener;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.utils.VerticalSpace;
 
 public class ListNotifFragment extends Fragment implements RSView.ListNotifView {
 
@@ -127,7 +127,6 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         listNotifPresenter = new PresenterNotifImpl(ListNotifFragment.this);
 
         if (RSSession.isLoggedIn()) {
-            Log.e("user id" ,RSSession.getCurrentUser().get_id() );
             rsRequestListItem.setUserId(RSSession.getCurrentUser().get_id());
             rsRequestListItem.setLang(RankStop.getDeviceLanguage());
             rsRequestListItem.setPerPage(RSConstants.MAX_FIELD_TO_LOAD);
@@ -250,7 +249,6 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
 
     @Override
     public void onSuccess(String target, Object data, String itemId) {
-        Log.e("list notif" , " onSuccess");
         RSResponseNotif notifResponse = null;
         if (!(data instanceof String)) {
             notifResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseNotif.class);
@@ -286,12 +284,10 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
 
     @Override
     public void onFailure(String target) {
-        Log.e("list notif" , " onFailure");
     }
 
     @Override
     public void onError(String target) {
-        Log.e("list notif" , "  onError");
 
         progressBar.setVisibility(View.GONE);
     }

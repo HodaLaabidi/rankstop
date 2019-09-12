@@ -252,4 +252,6 @@
     <string name="text_link">Website link</string>
     <string name="note_eval">Hinweis Bewertungen:</string>
     <string name="warning">Warnung</string>
+    <string name ="version_name">Ausführung</string>
+    <string name="email_confirmation_sent">Eine Bestätigungs-E-Mail wurde gesendet</string>
 </resources>

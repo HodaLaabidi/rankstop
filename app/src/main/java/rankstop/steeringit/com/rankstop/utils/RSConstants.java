@@ -1,6 +1,6 @@
-package rankstop.steeringit.com.rankstop.utils;
+package com.steeringit.rankstop.utils;
 
-import rankstop.steeringit.com.rankstop.R;
+import com.steeringit.rankstop.R;
 
 public class RSConstants {
 
@@ -8,6 +8,7 @@ public class RSConstants {
     public static final String PRIVACY_POLICY_LINK = "https://rankstop.com/PrivacyPolicy";
     public static final String WEBSITE_URL = "https://rankstop.com";
 
+    public static final String ACTIVITY_CONTAINER="container activity";
     public static final String ITEM_CREATED = "created";
     public static final String ITEM_FOLLOWED = "followed";
     public static final String ITEM_OWNED = "owned";
@@ -105,6 +106,7 @@ public class RSConstants {
     public static final String REFRESH_ITEM = "refresh item";
     public static final String REGEX_YEAR ="\\d{4}" ;
     public static final String RS_ITEM = "item";
+    public static final String DEEP_LINKING_KEY_PARAM = "email";
 
 
     public static String _ID = "id";

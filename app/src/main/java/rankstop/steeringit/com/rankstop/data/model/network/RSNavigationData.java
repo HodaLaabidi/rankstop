@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.data.model.network;
+package com.steeringit.rankstop.data.model.network;
 
 import java.io.Serializable;
 
@@ -11,6 +11,7 @@ public class RSNavigationData implements Serializable {
         this.action = action;
     }
 
+
     public RSNavigationData(String from ,String action ,String itemId) {
         this.from = from ;
         this.action = action ;
@@ -22,8 +23,6 @@ public class RSNavigationData implements Serializable {
         this.itemId = itemId ;
         this.message = message;
     }
-
-
     public RSNavigationData(){
 
     }

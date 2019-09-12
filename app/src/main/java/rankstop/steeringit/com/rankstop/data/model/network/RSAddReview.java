@@ -1,11 +1,11 @@
-package rankstop.steeringit.com.rankstop.data.model.network;
+package com.steeringit.rankstop.data.model.network;
 
 import android.net.Uri;
 
 import java.io.Serializable;
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
+import com.steeringit.rankstop.data.model.db.CriteriaEval;
 
 public class RSAddReview implements Serializable {
     private String userId, categoryId, description,barcode, title, address, latitude, longitude, comment, itemId, evalId, country, governorate, city, phone;

@@ -253,5 +253,7 @@
     <string name="text_link">Lien de site web</string>
     <string name="note_eval">Note Evaluation:</string>
     <string name="warning">Alert</string>
+    <string name ="version_name">Version</string>
+    <string name="email_confirmation_sent">Un email de confirmation a été envoyé</string>
 
 </resources>

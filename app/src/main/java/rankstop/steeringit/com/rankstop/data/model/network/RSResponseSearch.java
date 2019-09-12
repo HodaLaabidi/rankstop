@@ -1,10 +1,10 @@
-package rankstop.steeringit.com.rankstop.data.model.network;
+package com.steeringit.rankstop.data.model.network;
 
 import java.io.Serializable;
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.data.model.db.Category;
-import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
+import com.steeringit.rankstop.data.model.db.Category;
+import com.steeringit.rankstop.data.model.db.ItemDetails;
 
 public class RSResponseSearch implements Serializable {
 

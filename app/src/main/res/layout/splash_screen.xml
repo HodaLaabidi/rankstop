@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="rankstop.steeringit.com.rankstop.ui.activities.SplashScreen">
+    tools:context="com.steeringit.rankstop.ui.activities.SplashScreen">
 
     <ImageView
         android:id="@+id/imageView"
@@ -37,7 +37,7 @@
         app:layout_constraintVertical_bias="0.012"
         app:srcCompat="@drawable/rs_logo_ft" />
 
-    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+    <com.steeringit.rankstop.customviews.RSTVBold
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

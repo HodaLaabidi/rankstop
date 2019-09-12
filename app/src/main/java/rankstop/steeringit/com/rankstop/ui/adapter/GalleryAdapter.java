@@ -1,5 +1,5 @@
 
-package rankstop.steeringit.com.rankstop.ui.adapter;
+package com.steeringit.rankstop.ui.adapter;
 
 import android.net.Uri;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,9 +12,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.data.model.db.Gallery;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
-import rankstop.steeringit.com.rankstop.R;
+import com.steeringit.rankstop.data.model.db.Gallery;
+import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
+import com.steeringit.rankstop.R;
 
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {

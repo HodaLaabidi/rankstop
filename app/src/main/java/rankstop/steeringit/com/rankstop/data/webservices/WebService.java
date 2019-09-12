@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.data.webservices;
+package com.steeringit.rankstop.data.webservices;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;

@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.adapter;
+package com.steeringit.rankstop.ui.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,10 +11,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
-import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.customviews.RSTVRegular;
+import com.steeringit.rankstop.data.model.db.ItemDetails;
+import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
 
 public class ItemsFetchedAdapter extends RecyclerView.Adapter<ItemsFetchedAdapter.ViewHolder> {
 
@@ -24,6 +24,10 @@ public class ItemsFetchedAdapter extends RecyclerView.Adapter<ItemsFetchedAdapte
     public ItemsFetchedAdapter(RecyclerViewClickListener listener) {
         this.listener = listener;
         this.itemsList = new ArrayList<>();
+    }
+
+    public void clear(){
+        this.itemsList.clear();
     }
 
     @NonNull

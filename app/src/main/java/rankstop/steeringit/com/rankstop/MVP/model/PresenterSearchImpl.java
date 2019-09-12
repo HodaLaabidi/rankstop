@@ -1,18 +1,18 @@
-package rankstop.steeringit.com.rankstop.MVP.model;
+package com.steeringit.rankstop.MVP.model;
 
 import android.content.Context;
 import android.util.Log;
 
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
-import rankstop.steeringit.com.rankstop.data.webservices.WebService;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.session.RSSessionToken;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.data.model.network.RSRequestFilter;
+import com.steeringit.rankstop.data.model.network.RSRequestItemByCategory;
+import com.steeringit.rankstop.data.model.network.RSResponse;
+import com.steeringit.rankstop.data.webservices.WebService;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.session.RSSessionToken;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

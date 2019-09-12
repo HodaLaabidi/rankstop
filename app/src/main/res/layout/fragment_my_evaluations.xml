@@ -19,7 +19,7 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+            <com.steeringit.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_login_or_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

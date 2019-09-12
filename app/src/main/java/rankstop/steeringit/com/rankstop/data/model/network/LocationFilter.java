@@ -1,8 +1,8 @@
-package rankstop.steeringit.com.rankstop.data.model.network;
+package com.steeringit.rankstop.data.model.network;
 
 import java.io.Serializable;
 
-import rankstop.steeringit.com.rankstop.data.model.db.Country;
+import com.steeringit.rankstop.data.model.db.Country;
 
 public class LocationFilter implements Serializable {
 

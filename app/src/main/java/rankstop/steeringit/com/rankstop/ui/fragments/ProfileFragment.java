@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.fragments;
+package com.steeringit.rankstop.ui.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,33 +39,33 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserImpl;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
-import rankstop.steeringit.com.rankstop.data.model.db.UserInfo;
-import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
-import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
-import rankstop.steeringit.com.rankstop.session.RSSessionToken;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.adapter.PieAdapter;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
-import rankstop.steeringit.com.rankstop.data.model.db.Item;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
-import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.utils.RSDateParser;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.MVP.model.PresenterItemImpl;
+import com.steeringit.rankstop.MVP.model.PresenterUserImpl;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSBTNBold;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.customviews.RSTVRegular;
+import com.steeringit.rankstop.data.model.db.UserInfo;
+import com.steeringit.rankstop.data.model.network.RSFollow;
+import com.steeringit.rankstop.data.model.network.RSNavigationData;
+import com.steeringit.rankstop.data.model.network.RSRequestListItem;
+import com.steeringit.rankstop.data.model.network.RSResponseListingItem;
+import com.steeringit.rankstop.session.RSSessionToken;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.adapter.PieAdapter;
+import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
+import com.steeringit.rankstop.ui.callbacks.ItemPieListener;
+import com.steeringit.rankstop.data.model.db.Item;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.ui.dialogFragment.ContactDialog;
+import com.steeringit.rankstop.utils.HorizontalSpace;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.utils.RSDateParser;
+import com.steeringit.rankstop.utils.RSNetwork;
 
 public class ProfileFragment extends Fragment implements RSView.StandardView , RSView.StandardView2 {
 
@@ -212,7 +212,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        Log.e("onActivityCreated" , "ok");
         super.onActivityCreated(savedInstanceState);
 
         bindViews();
@@ -252,11 +251,11 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
 
     private void bindLocalData() {
         try {
-            setUserPic(userInfo.getUser().getPictureProfile());
-            setUserName(userInfo.getUser().getUsername());
-            setEmail(userInfo.getUser().getEmail());
-            setPhone(userInfo.getUser().getPhone());
-            setGender(userInfo.getUser().getGender());
+            setUserPic(userInfo.getUser().getPictureProfile()+"");
+            setUserName(userInfo.getUser().getUsername()+"");
+            setEmail(userInfo.getUser().getEmail()+"");
+            setPhone(userInfo.getUser().getPhone()+"");
+            setGender(userInfo.getUser().getGender()+"");
             if (userInfo.getUser().getBirthDate() != null) {
                 setBirthDay(RSDateParser.convertToDateFormat(userInfo.getUser().getBirthDate(), dateFormat));
             } else {
@@ -309,14 +308,18 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
     }
 
     private void setPhone(String value) {
-        if (value != null)
+        if (value != null && !value.equalsIgnoreCase("")) {
+            if (!value.equalsIgnoreCase("null"))
             phoneTV.setText(value);
-        else
+            else
             phoneTV.setText(undefined);
+        } else {
+            phoneTV.setText(undefined);
+        }
     }
 
     private void setGender(String value) {
-        if (value != null) {
+        if (value != null ) {
             if (value.equalsIgnoreCase("male")) {
                 genderTV.setText(male);
             } else if (value.equalsIgnoreCase("female")) {
@@ -616,15 +619,12 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
 
 
                     setEvalsNumber(userInfo.getCountEval());
-                    Log.e("userInfo getCountEval" ,userInfo.getCountEval()+"");
 
 
                     setCommentsNumber(userInfo.getCountComments());
-                Log.e("userInfo getCountComments" ,userInfo.getCountComments()+"");
 
 
                 setPixNumber(userInfo.getCountPictures());
-                Log.e("userInfo getCountPictures" ,userInfo.getCountPictures()+"");
 
 
                 if (this.userInfo.getUser().getPictureProfile() != null) {
@@ -843,7 +843,6 @@ public class ProfileFragment extends Fragment implements RSView.StandardView , R
 
         Item item = null;
         if (!(data instanceof String)) {
-            Log.e("onSuccessRefreshItem", "ok");
             item = new Gson().fromJson(new Gson().toJson(data), Item.class);
 
             for (int i = 0; i < listOwnedItem.size(); i++) {

@@ -28,7 +28,7 @@
                 app:counterTextAppearance="@style/counterText"
                 app:counterOverflowTextAppearance="@style/counterOverride">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                <com.steeringit.rankstop.customviews.RSETMedium
                     android:id="@+id/input_full_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/mb_input">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                <com.steeringit.rankstop.customviews.RSETMedium
                     android:id="@+id/input_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                 app:counterTextAppearance="@style/counterText"
                 app:counterOverflowTextAppearance="@style/counterOverride">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                <com.steeringit.rankstop.customviews.RSETMedium
                     android:id="@+id/input_subject"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 app:counterTextAppearance="@style/counterText"
                 app:counterOverflowTextAppearance="@style/counterOverride">
 
-                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
+                <com.steeringit.rankstop.customviews.RSETMedium
                     android:id="@+id/input_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                     android:scrollbars="vertical" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
+            <com.steeringit.rankstop.customviews.RSBTNBold
                 android:id="@+id/btn_send_request"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

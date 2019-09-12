@@ -1,8 +1,8 @@
-package rankstop.steeringit.com.rankstop.data.model.db;
+package com.steeringit.rankstop.data.model.db;
 
 import java.io.Serializable;
 
-import rankstop.steeringit.com.rankstop.utils.RSDateParser;
+import com.steeringit.rankstop.utils.RSDateParser;
 
 public class History implements Serializable {
     private String date, _id, subject, message, user;

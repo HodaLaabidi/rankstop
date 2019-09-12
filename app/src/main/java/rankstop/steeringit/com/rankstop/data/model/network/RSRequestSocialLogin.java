@@ -1,8 +1,8 @@
-package rankstop.steeringit.com.rankstop.data.model.network;
+package com.steeringit.rankstop.data.model.network;
 
 import java.io.Serializable;
 
-import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
+import com.steeringit.rankstop.data.model.db.RSAddress;
 
 public class RSRequestSocialLogin implements Serializable {
 

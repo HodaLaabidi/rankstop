@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.activities;
+package com.steeringit.rankstop.ui.activities;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -12,10 +12,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.data.model.db.Gallery;
-import rankstop.steeringit.com.rankstop.ui.fragments.SlideGalleryFragment;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.data.model.db.Gallery;
+import com.steeringit.rankstop.ui.fragments.SlideGalleryFragment;
+import com.steeringit.rankstop.utils.RSConstants;
 
 public class ItemGalleryActivity extends BaseActivity {
 

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/p_card_rv_item">
 
-    <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+    <com.steeringit.rankstop.customviews.RSTVBold
         android:id="@+id/tv_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -18,21 +18,21 @@
         android:layout_weight="3"
         android:orientation="vertical">
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
+        <com.steeringit.rankstop.customviews.RSTVRegular
             android:id="@+id/tv_subject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/size_date_history" />
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
+        <com.steeringit.rankstop.customviews.RSTVRegular
             android:id="@+id/tv_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/size_date_history" />
 
-        <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
+        <com.steeringit.rankstop.customviews.RSTVRegular
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop;
+package com.steeringit.rankstop;
 
 import org.junit.Test;
 

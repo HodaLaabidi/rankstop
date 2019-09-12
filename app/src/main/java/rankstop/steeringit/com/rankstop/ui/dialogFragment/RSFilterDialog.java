@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.dialogFragment;
+package com.steeringit.rankstop.ui.dialogFragment;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -23,20 +23,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterFilterSearchImpl;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
-import rankstop.steeringit.com.rankstop.data.model.network.CategoryFilter;
-import rankstop.steeringit.com.rankstop.data.model.network.LocationFilter;
-import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
-import rankstop.steeringit.com.rankstop.data.model.network.RSResponseCategoryFilter;
-import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCategoryFilterAdapter;
-import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCountryFilterAdapter;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FilterDialogListener;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.MVP.model.PresenterFilterSearchImpl;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSTVBold;
+import com.steeringit.rankstop.data.model.network.CategoryFilter;
+import com.steeringit.rankstop.data.model.network.LocationFilter;
+import com.steeringit.rankstop.data.model.network.RSRequestFilter;
+import com.steeringit.rankstop.data.model.network.RSResponseCategoryFilter;
+import com.steeringit.rankstop.ui.adapter.SpinnerCategoryFilterAdapter;
+import com.steeringit.rankstop.ui.adapter.SpinnerCountryFilterAdapter;
+import com.steeringit.rankstop.ui.callbacks.FilterDialogListener;
+import com.steeringit.rankstop.utils.RSConstants;
 
 
 public class RSFilterDialog extends BottomSheetDialogFragment implements RSView.SearchView {
@@ -77,33 +77,33 @@ public class RSFilterDialog extends BottomSheetDialogFragment implements RSView.
         RSRequestFilter data = new RSRequestFilter();
         data.setCatId(selectedCategory.getCategory().get_id());
         String[] countryCode = new String[1];
-       if (selectedLocation != null){
-           if (selectedLocation.getCountry().getCountryName().equals(allCountry)) {
-               countryCode[0] = "";
-           } else {
-               List<String> listCityt = new ArrayList<>();
-               countryCode[0] = selectedLocation.getCountry().getCountryCode();
-               for (int i = 0; i < citiesContainer.getChildCount(); i++) {
-                   if (citiesContainer.getChildAt(i) instanceof CheckBox) {
-                       CheckBox checkBox = (CheckBox) citiesContainer.getChildAt(i);
-                       if (checkBox.isChecked()) {
-                           if (checkBox.getText().toString().equals(otherCity)) {
-                               listCityt.add("");
-                           } else {
-                               listCityt.add(checkBox.getText().toString());
-                           }
+        if (selectedLocation != null){
+            if (selectedLocation.getCountry().getCountryName().equals(allCountry)) {
+                countryCode[0] = "";
+            } else {
+                List<String> listCityt = new ArrayList<>();
+                countryCode[0] = selectedLocation.getCountry().getCountryCode();
+                for (int i = 0; i < citiesContainer.getChildCount(); i++) {
+                    if (citiesContainer.getChildAt(i) instanceof CheckBox) {
+                        CheckBox checkBox = (CheckBox) citiesContainer.getChildAt(i);
+                        if (checkBox.isChecked()) {
+                            if (checkBox.getText().toString().equals(otherCity)) {
+                                listCityt.add("");
+                            } else {
+                                listCityt.add(checkBox.getText().toString());
+                            }
 
-                           //Toast.makeText(getContext(), ""+checkBox.getText().toString(), Toast.LENGTH_SHORT).show();
-                       }
-                   }
-               }
-               data.setCity(listCityt);
-           }
-           data.setCodeCountry(countryCode);
-       }
+                            //Toast.makeText(getContext(), ""+checkBox.getText().toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                data.setCity(listCityt);
+            }
+            data.setCodeCountry(countryCode);
+        }
 
 
-        callback.onfilterClicked(data);
+        callback.onfilterClicked(data , getContext());
     }
 
     @Override

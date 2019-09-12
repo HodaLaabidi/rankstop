@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.adapter;
+package com.steeringit.rankstop.ui.adapter;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -10,9 +10,9 @@ import android.widget.ArrayAdapter;
 
 import java.util.List;
 
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.data.model.network.LocationFilter;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.data.model.network.LocationFilter;
 
 public class SpinnerCountryFilterAdapter extends ArrayAdapter<LocationFilter> {
 

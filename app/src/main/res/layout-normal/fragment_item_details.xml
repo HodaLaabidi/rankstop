@@ -59,7 +59,7 @@
                         android:layout_marginStart="@dimen/margin_left_details"
                         android:orientation="vertical">
 
-                        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                        <com.steeringit.rankstop.customviews.RSTVBold
                             android:id="@+id/tv_item_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                             android:textSize="@dimen/text_size_title_item_details"
                             android:transitionName="@string/transition_title" />
 
-                        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                        <com.steeringit.rankstop.customviews.RSTVBold
                             android:id="@+id/tv_ownership"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                             android:textColor="@color/colorGreenPie"
                             android:textSize="@dimen/text_size_category_item_details" />
 
-                        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
+                        <com.steeringit.rankstop.customviews.RSTVBold
                             android:id="@+id/tv_item_category"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                             android:textColor="@color/colorGray"
                             android:textSize="@dimen/text_size_category_item_details" />
 
-                        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                        <com.steeringit.rankstop.customviews.RSTVMedium
                             android:id="@+id/tv_item_description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                             android:ellipsize="end"
                             android:textSize="@dimen/text_size_subtitle_item_details" />
 
-                        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                        <com.steeringit.rankstop.customviews.RSTVMedium
                             android:id="@+id/tv_about_item"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                             android:weightSum="2"
                             android:orientation="horizontal">
 
-                            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
+                            <com.steeringit.rankstop.customviews.RSBTNMedium
                                 android:id="@+id/btn_add_pix"
                                 android:visibility="gone"
                                 style="@style/Widget.MaterialComponents.Button.Icon"
@@ -124,7 +124,7 @@
                                 android:textSize="@dimen/size_btn_edit"
                                 />
 
-                            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
+                            <com.steeringit.rankstop.customviews.RSBTNMedium
                                 android:id="@+id/btn_add_review"
                                 android:layout_marginLeft="5dp"
                                 style="@style/Widget.MaterialComponents.Button.Icon"
@@ -136,7 +136,7 @@
                                 android:textAllCaps="false"
                                 android:textSize="@dimen/size_btn_edit" />
                         </LinearLayout>
-                        <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
+                        <com.steeringit.rankstop.customviews.RSBTNMedium
                             android:visibility="gone"
                             android:id="@+id/btn_report_abuse"
                             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"

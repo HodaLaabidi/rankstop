@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorDarkBlack"
-    tools:context="rankstop.steeringit.com.rankstop.ui.activities.ItemGalleryActivity">
+    tools:context="com.steeringit.rankstop.ui.activities.ItemGalleryActivity">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"

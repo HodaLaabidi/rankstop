@@ -1,8 +1,8 @@
-package rankstop.steeringit.com.rankstop.data.model.db;
+package com.steeringit.rankstop.data.model.db;
 
 import java.io.Serializable;
 
-import rankstop.steeringit.com.rankstop.R;
+import com.steeringit.rankstop.R;
 
 public class Picture implements Serializable {
 

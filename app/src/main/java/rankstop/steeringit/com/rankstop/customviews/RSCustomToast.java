@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.customviews;
+package com.steeringit.rankstop.customviews;
 
 import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import rankstop.steeringit.com.rankstop.R;
+import com.steeringit.rankstop.R;
 
 public class RSCustomToast {
 

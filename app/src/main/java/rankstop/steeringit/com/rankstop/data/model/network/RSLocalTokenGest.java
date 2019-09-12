@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.data.model.network;
+package com.steeringit.rankstop.data.model.network;
 
 public class RSLocalTokenGest {
     private String token_geust;

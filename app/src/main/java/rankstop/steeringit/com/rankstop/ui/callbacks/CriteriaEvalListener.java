@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.callbacks;
+package com.steeringit.rankstop.ui.callbacks;
 
 public interface CriteriaEvalListener {
     void onNoteChanged(int note, int position);

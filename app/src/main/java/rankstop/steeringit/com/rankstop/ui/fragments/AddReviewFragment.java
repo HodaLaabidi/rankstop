@@ -1,4 +1,4 @@
-package rankstop.steeringit.com.rankstop.ui.fragments;
+package com.steeringit.rankstop.ui.fragments;
 
 import android.Manifest;
 import android.content.Context;
@@ -54,37 +54,37 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import rankstop.steeringit.com.rankstop.MVP.model.PresenterAddReviewImpl;
-import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
-import rankstop.steeringit.com.rankstop.MVP.view.RSView;
-import rankstop.steeringit.com.rankstop.R;
-import rankstop.steeringit.com.rankstop.RankStop;
-import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
-import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
-import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
-import rankstop.steeringit.com.rankstop.data.model.db.Category;
-import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
-import rankstop.steeringit.com.rankstop.data.model.db.Evaluation;
-import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
-import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
-import rankstop.steeringit.com.rankstop.data.model.network.ResponseAddItem;
-import rankstop.steeringit.com.rankstop.session.RSSession;
-import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
-import rankstop.steeringit.com.rankstop.ui.adapter.EvalCriteriasAdapter;
-import rankstop.steeringit.com.rankstop.ui.adapter.ReviewPixAdapter;
-import rankstop.steeringit.com.rankstop.ui.callbacks.BottomSheetDialogListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.CriteriaEvalListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
-import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
-import rankstop.steeringit.com.rankstop.data.model.db.Criteria;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSBottomSheetDialog;
-import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
-import rankstop.steeringit.com.rankstop.utils.FileCompressor;
-import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
-import rankstop.steeringit.com.rankstop.utils.RSConstants;
-import rankstop.steeringit.com.rankstop.utils.RSNetwork;
-import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
+import com.steeringit.rankstop.MVP.model.PresenterAddReviewImpl;
+import com.steeringit.rankstop.MVP.presenter.RSPresenter;
+import com.steeringit.rankstop.MVP.view.RSView;
+import com.steeringit.rankstop.R;
+import com.steeringit.rankstop.RankStop;
+import com.steeringit.rankstop.customviews.RSCustomToast;
+import com.steeringit.rankstop.customviews.RSETMedium;
+import com.steeringit.rankstop.customviews.RSTVMedium;
+import com.steeringit.rankstop.data.model.db.Category;
+import com.steeringit.rankstop.data.model.db.CriteriaEval;
+import com.steeringit.rankstop.data.model.db.Evaluation;
+import com.steeringit.rankstop.data.model.network.RSAddReview;
+import com.steeringit.rankstop.data.model.network.RSNavigationData;
+import com.steeringit.rankstop.data.model.network.ResponseAddItem;
+import com.steeringit.rankstop.session.RSSession;
+import com.steeringit.rankstop.ui.activities.ContainerActivity;
+import com.steeringit.rankstop.ui.adapter.EvalCriteriasAdapter;
+import com.steeringit.rankstop.ui.adapter.ReviewPixAdapter;
+import com.steeringit.rankstop.ui.callbacks.BottomSheetDialogListener;
+import com.steeringit.rankstop.ui.callbacks.CriteriaEvalListener;
+import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
+import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
+import com.steeringit.rankstop.data.model.db.Criteria;
+import com.steeringit.rankstop.ui.dialogFragment.ContactDialog;
+import com.steeringit.rankstop.ui.dialogFragment.RSBottomSheetDialog;
+import com.steeringit.rankstop.ui.dialogFragment.RSLoader;
+import com.steeringit.rankstop.utils.FileCompressor;
+import com.steeringit.rankstop.utils.HorizontalSpace;
+import com.steeringit.rankstop.utils.RSConstants;
+import com.steeringit.rankstop.utils.RSNetwork;
+import com.steeringit.rankstop.utils.VerticalSpace;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -183,7 +183,6 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
                     } else {
                         //update review
                         if (rsAddReview.getComment().equals("") && listPics.size() == 0) {
-                            Log.e("test"  , " updatereview");
                             Toast.makeText(getContext(), noValueChanged, Toast.LENGTH_LONG).show();
                             //fragmentActionListener.pop();
                             if (rsAddReview != null) {
@@ -199,7 +198,6 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
 
 
                         } else {
-                            Log.e("test"  , " updatereview2");
                             // Modification de l'item lors de l'ajout d'un commentaire ou de photos sans modifier l'évaluation des critères
                             rsAddReview.setEvalId(myEval.get_id());
                             addReviewPresenter.updateReview(rsAddReview, getContext());
