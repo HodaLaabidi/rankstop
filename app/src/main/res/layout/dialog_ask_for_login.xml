@@ -23,7 +23,7 @@
         android:orientation="vertical"
         android:padding="@dimen/padding_dialog">
 
-        <com.steeringit.rankstop.customviews.RSTVMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:gravity="center">
 
-        <com.steeringit.rankstop.customviews.RSBTNBold
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
             android:id="@+id/negative_btn"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
             android:textColor="@android:color/white"
             app:cornerRadius="@dimen/radius_btn_dialog" />
 
-        <com.steeringit.rankstop.customviews.RSBTNBold
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
             android:id="@+id/positive_btn"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"

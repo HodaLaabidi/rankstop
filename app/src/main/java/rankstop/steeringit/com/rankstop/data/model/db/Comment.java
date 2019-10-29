@@ -1,15 +1,15 @@
-package com.steeringit.rankstop.data.model.db;
+package rankstop.steeringit.com.rankstop.data.model.db;
 
 import java.io.Serializable;
 
-import com.steeringit.rankstop.R;
+import rankstop.steeringit.com.rankstop.R;
 
 public class Comment implements Serializable {
 
     private String date, _id, text, color, evaluations;
-    private User userId;
+    private rankstop.steeringit.com.rankstop.data.model.db.User userId;
 
-    public Comment(String date, String _id, String text, String color, String evaluations, User userId) {
+    public Comment(String date, String _id, String text, String color, String evaluations, rankstop.steeringit.com.rankstop.data.model.db.User userId) {
         this.date = date;
         this._id = _id;
         this.text = text;
@@ -61,11 +61,11 @@ public class Comment implements Serializable {
         this.color = color;
     }
 
-    public User getUserId() {
+    public rankstop.steeringit.com.rankstop.data.model.db.User getUserId() {
         return userId;
     }
 
-    public void setUserId(User userId) {
+    public void setUserId(rankstop.steeringit.com.rankstop.data.model.db.User userId) {
         this.userId = userId;
     }
 

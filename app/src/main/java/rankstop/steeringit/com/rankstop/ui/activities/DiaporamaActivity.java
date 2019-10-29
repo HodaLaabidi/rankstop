@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.activities;
+package rankstop.steeringit.com.rankstop.ui.activities;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -8,6 +8,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 
 import com.google.gson.Gson;
+import rankstop.steeringit.com.rankstop.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +17,15 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterItemImpl;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.data.model.db.Picture;
-import com.steeringit.rankstop.data.model.network.RSRequestItemData;
-import com.steeringit.rankstop.data.model.network.RSResponseItemData;
-import com.steeringit.rankstop.ui.fragments.SlidePhotoFragment;
-import com.steeringit.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.data.model.db.Picture;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseItemData;
+import rankstop.steeringit.com.rankstop.ui.fragments.SlidePhotoFragment;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class DiaporamaActivity extends BaseActivity implements RSView.StandardView , RSView.StandardView2{
 

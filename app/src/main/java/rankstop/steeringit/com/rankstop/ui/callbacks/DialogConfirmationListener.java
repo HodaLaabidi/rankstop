@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.callbacks;
+package rankstop.steeringit.com.rankstop.ui.callbacks;
 
 public interface DialogConfirmationListener {
     void onCancelClicked();

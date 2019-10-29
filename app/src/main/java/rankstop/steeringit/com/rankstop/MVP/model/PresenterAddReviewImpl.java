@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.MVP.model;
+package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
 import android.net.Uri;
@@ -13,16 +13,16 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.data.model.network.RSAddReview;
-import com.steeringit.rankstop.data.model.network.RSResponse;
-import com.steeringit.rankstop.data.webservices.WebService;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.session.RSSessionToken;
-import com.steeringit.rankstop.utils.FileUtils;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSNetwork;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
+import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
+import rankstop.steeringit.com.rankstop.utils.FileUtils;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Converter;
@@ -309,8 +309,8 @@ public class PresenterAddReviewImpl implements RSPresenter.AddReviewPresenter {
         RequestBody requestFile = RequestBody.create(MediaType.parse(context.getContentResolver().getType(fileUri)), file);
         return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
 
-        /*/storage/emulated/0/Android/data/com.steeringit.rankstop/files/Pictures/Screenshot_20190206-104436.png
-            file:///storage/emulated/0/Android/data/com.steeringit.rankstop/files/Pictures/Screenshot_20190206-104436.png*/
+        /*/storage/emulated/0/Android/data/rankstop.steeringit.com.rankstop/files/Pictures/Screenshot_20190206-104436.png
+            file:///storage/emulated/0/Android/data/rankstop.steeringit.com.rankstop/files/Pictures/Screenshot_20190206-104436.png*/
     }
 
     private RequestBody createPartFormString(String value) {

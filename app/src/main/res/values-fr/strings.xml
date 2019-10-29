@@ -255,5 +255,6 @@
     <string name="warning">Alert</string>
     <string name ="version_name">Version</string>
     <string name="email_confirmation_sent">Un email de confirmation a été envoyé</string>
+    <string name="email_confirmation_not_not_found">Essayez une autre fois</string>
 
 </resources>

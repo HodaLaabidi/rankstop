@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.fragments;
+package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -27,28 +27,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterNotifImpl;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSBTNBold;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.customviews.RSTVRegular;
-import com.steeringit.rankstop.data.model.db.RSNotif;
-import com.steeringit.rankstop.data.model.network.RSNavigationData;
-import com.steeringit.rankstop.data.model.network.RSRequestListItem;
-import com.steeringit.rankstop.data.model.network.RSResponseNotif;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.ui.adapter.NotifAdapter;
-import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
-import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
-import com.steeringit.rankstop.ui.dialogFragment.RSLoader;
-import com.steeringit.rankstop.utils.EndlessScrollListener;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSNetwork;
-import com.steeringit.rankstop.utils.VerticalSpace;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterNotifImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.RSNotif;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseNotif;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.adapter.NotifAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
+import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class ListNotifFragment extends Fragment implements RSView.ListNotifView {
 
@@ -147,9 +147,11 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         RecyclerViewClickListener itemListener = (view, position) -> {
             if (RSNetwork.isConnected(getContext())) {
                 if (notifsList.get(position).isVisibility()) {
-                    listNotifPresenter.editNotifVisibility(notifsList.get(position).get_id(), notifsList.get(position).getItem().get_id(), getContext());
+                    listNotifPresenter.editNotifVisibility(notifsList.get(position).get_id(),notifsList.get(position).getItem().get_id(), getContext());
                 } else {
-                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(notifsList.get(position).getItem().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                    if (notifsList.get(position).getItem().get_id() != null) {
+                        fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(notifsList.get(position).getItem().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
+                    }
                 }
             } else {
                 onOffLine();
@@ -159,7 +161,7 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         notifAdapter = new NotifAdapter(itemListener);
         listNotifRV.setLayoutManager(layoutManager);
         listNotifRV.setAdapter(notifAdapter);
-        listNotifRV.addItemDecoration(new VerticalSpace(marginCardView, countItemPerRow));
+        listNotifRV.addItemDecoration(new VerticalSpace(marginCardView,countItemPerRow));
         // scroll listener
         EndlessScrollListener scrollListener = new EndlessScrollListener(layoutManager) {
             @Override
@@ -277,7 +279,9 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
                 }
                 break;
             case RSConstants.EDIT_NOTIF_VISIBILITY:
-                fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemId), RSConstants.FRAGMENT_ITEM_DETAILS);
+                if (itemId != null) {
+                    fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemId), RSConstants.FRAGMENT_ITEM_DETAILS);
+                }
                 break;
         }
     }

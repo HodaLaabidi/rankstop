@@ -1,6 +1,6 @@
-package com.steeringit.rankstop.utils;
+package rankstop.steeringit.com.rankstop.utils;
 
-import com.steeringit.rankstop.R;
+import rankstop.steeringit.com.rankstop.R;
 
 public class RSConstants {
 
@@ -106,7 +106,8 @@ public class RSConstants {
     public static final String REFRESH_ITEM = "refresh item";
     public static final String REGEX_YEAR ="\\d{4}" ;
     public static final String RS_ITEM = "item";
-    public static final String DEEP_LINKING_KEY_PARAM = "email";
+    public static final String DEEP_LINKING_KEY_PARAM = "token";
+    public static final String UPDATE_REGISTRATION_TOKEN = "update fcm registration token";
 
 
     public static String _ID = "id";

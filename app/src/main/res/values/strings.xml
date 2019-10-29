@@ -19,6 +19,7 @@
     <string name="hint_linkedin" translatable="false">LinkedIn</string>
     <string name="hint_facebook" translatable="false">Facebook</string>
     <string name="hint_instagram" translatable="false">Instagram</string>
+    <string name="default_notification_channel_id" translatable="false">my_channel_01</string>
 
 
     <!-- ***************************************************************** -->
@@ -279,4 +280,6 @@
     <string name="warning">Warning</string>
     <string name ="version_name">Version</string>
     <string name="email_confirmation_sent">A confirmation email has been sent</string>
+    <string name="email_confirmation_not_not_found">Try again</string>
+
 </resources>

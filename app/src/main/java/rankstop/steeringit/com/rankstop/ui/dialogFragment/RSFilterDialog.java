@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.dialogFragment;
+package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import androidx.appcompat.widget.AppCompatSpinner;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +24,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterFilterSearchImpl;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSTVBold;
-import com.steeringit.rankstop.data.model.network.CategoryFilter;
-import com.steeringit.rankstop.data.model.network.LocationFilter;
-import com.steeringit.rankstop.data.model.network.RSRequestFilter;
-import com.steeringit.rankstop.data.model.network.RSResponseCategoryFilter;
-import com.steeringit.rankstop.ui.adapter.SpinnerCategoryFilterAdapter;
-import com.steeringit.rankstop.ui.adapter.SpinnerCountryFilterAdapter;
-import com.steeringit.rankstop.ui.callbacks.FilterDialogListener;
-import com.steeringit.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterFilterSearchImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
+import rankstop.steeringit.com.rankstop.data.model.network.CategoryFilter;
+import rankstop.steeringit.com.rankstop.data.model.network.LocationFilter;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseCategoryFilter;
+import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCategoryFilterAdapter;
+import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCountryFilterAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FilterDialogListener;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 
 public class RSFilterDialog extends BottomSheetDialogFragment implements RSView.SearchView {

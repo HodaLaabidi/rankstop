@@ -4,7 +4,7 @@
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=CA:87:53:03:7E:59:E5:A3:0B:9C:17:92:CE:F1:3D:CA:CE:F9:8A:2D%3Bcom.steeringit.rankstop.Activities
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=CA:87:53:03:7E:59:E5:A3:0B:9C:17:92:CE:F1:3D:CA:CE:F9:8A:2D%3Brankstop.steeringit.com.rankstop.Activities
 
     You can also add your credentials to an existing key, using these values:
 

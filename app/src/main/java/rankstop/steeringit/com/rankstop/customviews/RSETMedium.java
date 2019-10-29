@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.customviews;
+package rankstop.steeringit.com.rankstop.customviews;
 
 import android.annotation.TargetApi;
 import android.content.Context;

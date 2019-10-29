@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.adapter;
+package rankstop.steeringit.com.rankstop.ui.adapter;
 
 import android.net.Uri;
 import androidx.annotation.NonNull;
@@ -13,8 +13,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
 
 public class ReviewPixAdapter extends RecyclerView.Adapter<ReviewPixAdapter.ViewHolder> {
     private List<Uri> pixList = new ArrayList<>();

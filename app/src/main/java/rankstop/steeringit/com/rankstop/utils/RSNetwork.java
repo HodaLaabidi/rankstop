@@ -1,10 +1,10 @@
-package com.steeringit.rankstop.utils;
+package rankstop.steeringit.com.rankstop.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.steeringit.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.RankStop;
 
 public class RSNetwork {
 

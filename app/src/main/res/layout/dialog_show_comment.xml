@@ -16,14 +16,14 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <com.steeringit.rankstop.customviews.RSTVMedium
+            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorBlack"
                 android:textSize="14sp"/>
 
-            <com.steeringit.rankstop.customviews.RSBTNMedium
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
                 android:id="@+id/btn_remove_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

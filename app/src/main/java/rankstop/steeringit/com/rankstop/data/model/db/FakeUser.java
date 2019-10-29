@@ -1,8 +1,8 @@
-package com.steeringit.rankstop.data.model.db;
+package rankstop.steeringit.com.rankstop.data.model.db;
 
 import java.io.Serializable;
 
-import com.steeringit.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class FakeUser implements Serializable {
     private String email;

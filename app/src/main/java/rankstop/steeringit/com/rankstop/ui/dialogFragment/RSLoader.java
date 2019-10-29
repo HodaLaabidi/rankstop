@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.dialogFragment;
+package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -14,11 +14,11 @@ import android.widget.LinearLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.customviews.RSTVMedium;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
-import com.steeringit.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class RSLoader extends DialogFragment {
 

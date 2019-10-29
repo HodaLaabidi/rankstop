@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.data.model.db;
+package rankstop.steeringit.com.rankstop.data.model.db;
 
 import java.io.Serializable;
 
@@ -21,6 +21,7 @@ public class User implements Serializable {
     private RSPublicUserName nameToUse;
     private boolean isPasswordExist;
     private RSAddress location;
+    private String fcmRegistrationToken ;
 
     public User() {
     }
@@ -159,5 +160,13 @@ public class User implements Serializable {
 
     public void setLocation(RSAddress location) {
         this.location = location;
+    }
+
+    public String getFcmRegistrationToken() {
+        return fcmRegistrationToken;
+    }
+
+    public void setFcmRegistrationToken(String fcmRegistrationToken) {
+        this.fcmRegistrationToken = fcmRegistrationToken;
     }
 }

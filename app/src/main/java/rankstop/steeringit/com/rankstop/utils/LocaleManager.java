@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.utils;
+package rankstop.steeringit.com.rankstop.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

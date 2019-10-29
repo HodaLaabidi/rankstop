@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.fragments;
+package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -6,10 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -23,11 +19,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -37,8 +40,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
+import rankstop.steeringit.com.rankstop.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
@@ -53,32 +64,31 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterAuthImpl;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.customviews.RSETRegular;
-import com.steeringit.rankstop.customviews.RSTVRegular;
-import com.steeringit.rankstop.data.model.db.Country;
-import com.steeringit.rankstop.data.model.db.RSAddress;
-import com.steeringit.rankstop.data.model.network.GeoPluginResponse;
-import com.steeringit.rankstop.data.model.network.RSDeviceIP;
-import com.steeringit.rankstop.data.model.network.RSFollow;
-import com.steeringit.rankstop.data.model.network.RSNavigationData;
-import com.steeringit.rankstop.data.model.network.RSRequestSocialLogin;
-import com.steeringit.rankstop.data.model.network.RSResponseFindEmail;
-import com.steeringit.rankstop.data.model.network.RSResponseLogin;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.ui.dialogFragment.LoginDialog;
-import com.steeringit.rankstop.ui.dialogFragment.RSLoader;
-import com.steeringit.rankstop.ui.dialogFragment.RegisterDialog;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSNetwork;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseGetEmailByToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.Country;
+import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
+import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseFindEmail;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.LoginDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RegisterDialog;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
 public class SignupFragment extends Fragment implements RSView.SignupView {
 
@@ -134,7 +144,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
     void fbLogin() {
         if (RSNetwork.isConnected(getContext())) {
             LoginManager.getInstance().logOut();
-            LoginManager.getInstance().logInWithReadPermissions(fragmentContext.get(), Arrays.asList("public_profile", "email"));
+            LoginManager.getInstance().logInWithReadPermissions(fragmentContext.get(), Arrays.asList("email", "public_profile"));
         } else {
             onOffLine();
         }
@@ -239,6 +249,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+
                         AccessToken accessToken = AccessToken.getCurrentAccessToken();
                         Set<String> listPermissions = accessToken.getPermissions();
 
@@ -270,6 +281,8 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                         rsLoader.dismissDialog();
                     }
                 });
+
+
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(Scopes.PLUS_ME))
@@ -311,15 +324,9 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         dialog.show(getFragmentManager(), LOGIN_DIALOG_TAG);
     }
 
-    public void dialogRegister(String email) {
-        Log.e("email" , email+"!");
-        rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
-        rsNavigationData.setAction("");
-        RegisterDialog dialog = RegisterDialog.newInstance(email, rsNavigationData);
-        inputEmail.setText(email);
-        dialog.setCancelable(false);
-        String REGISTER_DIALOG_TAG = "REGISTER_DIALOG";
-        dialog.show(getFragmentManager(), REGISTER_DIALOG_TAG);
+    public void dialogRegister(String token) {
+        signupPresenter.findEmailByToken(token , getContext());
+
     }
 
 
@@ -367,7 +374,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         if (isEmailExist) {
             RSResponseFindEmail findEmailResponse = new Gson().fromJson(new Gson().toJson(data), RSResponseFindEmail.class);
             if (findEmailResponse.isConnectSocialMedia()) {
-                Toast.makeText(getContext(), useFBLoginMsg, Toast.LENGTH_LONG).show();
+
             } else {
                 dialogLogin(inputEmail.getText().toString().trim().toLowerCase());
             }
@@ -376,6 +383,26 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             Toast.makeText(getContext() , R.string.email_confirmation_sent,Toast.LENGTH_LONG).show();
         }
     }
+
+    @Override
+    public void findTokenSuccess(boolean TokenExist, Object data) {
+        if (TokenExist) {
+            rsNavigationData.setFrom(RSConstants.FRAGMENT_HOME);
+            rsNavigationData.setAction("");
+            RSResponseGetEmailByToken emailByToken = new Gson().fromJson(new Gson().toJson(data), RSResponseGetEmailByToken.class);
+            RegisterDialog dialog = RegisterDialog.newInstance(emailByToken.getEmailVerif(), rsNavigationData);
+            inputEmail.setText(emailByToken.getEmailVerif());
+            dialog.setCancelable(false);
+            String REGISTER_DIALOG_TAG = "REGISTER_DIALOG";
+            dialog.show(getFragmentManager(), REGISTER_DIALOG_TAG);
+
+        } else {
+            //dialogRegister(inputEmail.getText().toString().trim().toLowerCase());
+            Toast.makeText(getContext() , R.string.email_confirmation_not_not_found,Toast.LENGTH_LONG).show();
+        }
+    }
+
+
 
     @Override
     public void socialLoginSuccess(Object data) {
@@ -427,7 +454,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
         if (requestCode == 1) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
@@ -435,6 +461,8 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
@@ -447,6 +475,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
             user.setProvider(RSConstants.PROVIDER_GOOGLE);
             user.setEmail(account.getEmail().toLowerCase());
             user.setFirstName(account.getGivenName());
+            user.setLanguage(RankStop.getDeviceLanguage());
             user.setLastName(account.getFamilyName());
             user.setId(account.getId());
             if (account.getPhotoUrl() != null) {
@@ -503,7 +532,27 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
         RSAddress address = new RSAddress();
         address.setCountry(new Country(response.getGeoplugin_countryCode().toLowerCase(), response.getGeoplugin_countryName()));
         user.setLocation(address);
-        signupPresenter.performSocialLogin(user, getContext());
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<InstanceIdResult> task) {
+                if (!task.isSuccessful()) {
+                    Log.e(TAG, "getInstanceId failed", task.getException());
+                    return;
+                } else {
+                    // Get new Instance ID token
+                    String token = task.getResult().getToken();
+                    Log.e(TAG , token +" !");
+                    user.setFcmRegistrationToken(token);
+                }
+                signupPresenter.performSocialLogin(user, getContext());
+
+
+
+
+            }
+        });
+
+
     }
 
     @Override
@@ -524,7 +573,6 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     @Override
     public void onOffLine() {
-        // Toast.makeText(getContext(), offlineMsg, Toast.LENGTH_LONG).show();
         new RSCustomToast(getActivity(), getResources().getString(R.string.error), offlineMsg, R.drawable.ic_error, RSCustomToast.ERROR).show();
     }
 
@@ -552,6 +600,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
                 if (profile_picture != null)
                 user.setPhotoUrl(profile_picture.toString());
                 user.setLocation(rsAddress);
+                user.setLanguage(RankStop.getDeviceLanguage());
                 user.setProvider(RSConstants.PROVIDER_FB);
                 return user;
             } catch (MalformedURLException e) {
@@ -566,7 +615,7 @@ public class SignupFragment extends Fragment implements RSView.SignupView {
 
     private void printKeyHash() {
         try {
-            PackageInfo info = getContext().getPackageManager().getPackageInfo("com.steeringit.rankstop", PackageManager.GET_SIGNATURES);
+            PackageInfo info = getContext().getPackageManager().getPackageInfo("rankstop.steeringit.com.rankstop", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());

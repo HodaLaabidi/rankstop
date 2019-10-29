@@ -1,12 +1,12 @@
-package com.steeringit.rankstop.ui.activities;
+package rankstop.steeringit.com.rankstop.ui.activities;
 
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.utils.Utility;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.utils.Utility;
 
 public abstract class BaseActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.data.webservices;
+package rankstop.steeringit.com.rankstop.data.webservices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,24 +6,24 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import com.steeringit.rankstop.data.model.db.CriteriaEval;
-import com.steeringit.rankstop.data.model.db.FakeUser;
-import com.steeringit.rankstop.data.model.db.RSContact;
-import com.steeringit.rankstop.data.model.db.RSRequestEditProfile;
-import com.steeringit.rankstop.data.model.db.RequestOwnership;
-import com.steeringit.rankstop.data.model.db.User;
-import com.steeringit.rankstop.data.model.network.GeoPluginResponse;
-import com.steeringit.rankstop.data.model.network.RSDeviceIP;
-import com.steeringit.rankstop.data.model.network.RSFollow;
-import com.steeringit.rankstop.data.model.network.RSRequestFilter;
-import com.steeringit.rankstop.data.model.network.RSRequestItemByCategory;
-import com.steeringit.rankstop.data.model.network.RSRequestItemData;
-import com.steeringit.rankstop.data.model.network.RSRequestListItem;
-import com.steeringit.rankstop.data.model.network.RSRequestReportAbuse;
-import com.steeringit.rankstop.data.model.network.RSRequestSocialLogin;
-import com.steeringit.rankstop.data.model.network.RSResponse;
-import com.steeringit.rankstop.session.RSSessionToken;
-import com.steeringit.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.data.model.db.CriteriaEval;
+import rankstop.steeringit.com.rankstop.data.model.db.FakeUser;
+import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
+import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
+import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -46,6 +46,10 @@ public interface API {
     // vérifier l'existance d'un email
     @POST("users/signIn/findemail")
     Call<RSResponse> findEmail(@Body User user);
+
+    @FormUrlEncoded
+    @POST("users/signup/email/token")
+    Call<RSResponse> findEmailByToken( @Field("token") String token);
 
     @POST("users/signIn")
     Call<RSResponse> loginUser(@Body User user);
@@ -316,4 +320,7 @@ public interface API {
     @FormUrlEncoded
     @POST("items/getItemByBarCode")
     Call<RSResponse> searchBarcode(@Header(RSConstants.HEADER_TOKEN) String token , @Field("barcode") String barcode);
+
+    @POST("users/updateRegistrationToken")
+    Call<RSResponse> updateRegistrationToken(String id, String token);
 }

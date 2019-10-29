@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.data.model.db;
+package rankstop.steeringit.com.rankstop.data.model.db;
 
 import android.net.Uri;
 

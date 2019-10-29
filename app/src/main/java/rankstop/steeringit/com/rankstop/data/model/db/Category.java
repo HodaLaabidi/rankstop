@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.data.model.db;
+package rankstop.steeringit.com.rankstop.data.model.db;
 
 import com.google.gson.Gson;
 
@@ -9,6 +9,7 @@ public class Category implements Serializable {
 
     private String name, _id;
     private boolean location;
+    private boolean barcode ;
     private Object criterias;
 
 
@@ -33,8 +34,13 @@ public class Category implements Serializable {
         return location;
     }
 
+    public boolean isBarcode() { return barcode; }
+
     public void setLocation(boolean location) {
         this.location = location;
+    }
+    public void setBarcode(boolean barcode) {
+        this.barcode = barcode;
     }
 
     public Object getCriterias() {

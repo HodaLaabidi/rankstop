@@ -27,58 +27,64 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.steeringit.rankstop.customviews.RSTVMedium
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="5dp"
-                        android:text="@string/barcode_scanner"
-                        android:textColor="@color/colorPrimary" />
+                   <LinearLayout
+                       android:orientation="vertical"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/layout_barcode">
+                       <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:drawablePadding="5dp"
+                           android:text="@string/barcode_scanner"
+                           android:textColor="@color/colorPrimary" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_marginBottom="5dp"
-                        android:id="@+id/input_barcode"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                       <com.google.android.material.textfield.TextInputLayout
+                           android:layout_marginBottom="5dp"
+                           android:id="@+id/input_barcode"
+                           style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_marginTop="10dp">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:enabled="false"
-                            android:id="@+id/input_barcode_scanner"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/barcode_scanner"
-                            android:inputType="textMultiLine" />
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <com.steeringit.rankstop.customviews.RSTVMedium
-                                android:visibility="gone"
-                                android:id="@+id/action_delete_barcode"
-                                android:layout_gravity="left"
-                                android:gravity="left"
-                                android:layout_weight="1"
-                                android:layout_margin="5dp"
-                                android:textColor="@color/colorGray"
-                                android:text="@string/delete_scanner"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content" />
-                            <com.steeringit.rankstop.customviews.RSTVMedium
-                                android:id="@+id/action_scanner"
-                                android:layout_gravity="right"
-                                android:gravity="right"
-                                android:layout_margin="5dp"
-                                android:layout_weight="1"
-                                android:textColor="@color/colorAccent"
-                                android:text="@string/title_scanner"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                    </com.google.android.material.textfield.TextInputLayout>
+                           <com.google.android.material.textfield.TextInputEditText
+                               android:enabled="false"
+                               android:id="@+id/input_barcode_scanner"
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:hint="@string/barcode_scanner"
+                               android:inputType="textMultiLine" />
+                           <LinearLayout
+                               android:orientation="horizontal"
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content">
+                               <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                                   android:visibility="gone"
+                                   android:id="@+id/action_delete_barcode"
+                                   android:layout_gravity="left"
+                                   android:gravity="left"
+                                   android:layout_weight="1"
+                                   android:layout_margin="5dp"
+                                   android:textColor="@color/colorGray"
+                                   android:text="@string/delete_scanner"
+                                   android:layout_width="0dp"
+                                   android:layout_height="wrap_content" />
+                               <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                                   android:id="@+id/action_scanner"
+                                   android:layout_gravity="right"
+                                   android:gravity="right"
+                                   android:layout_margin="5dp"
+                                   android:layout_weight="1"
+                                   android:textColor="@color/colorAccent"
+                                   android:text="@string/title_scanner"
+                                   android:layout_width="0dp"
+                                   android:layout_height="wrap_content" />
+                           </LinearLayout>
+                       </com.google.android.material.textfield.TextInputLayout>
+                   </LinearLayout>
 
 
-                    <com.steeringit.rankstop.customviews.RSTVMedium
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawablePadding="5dp"
@@ -177,7 +183,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.steeringit.rankstop.customviews.RSTVMedium
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawablePadding="5dp"
@@ -201,7 +207,7 @@
                         android:layout_marginTop="10dp"
                         android:minHeight="100dp">
 
-                        <com.steeringit.rankstop.customviews.RSTVRegular
+                        <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
                             android:id="@+id/tv_add_pix"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

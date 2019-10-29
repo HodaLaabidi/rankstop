@@ -1,7 +1,7 @@
-package com.steeringit.rankstop.MVP.view;
+package rankstop.steeringit.com.rankstop.MVP.view;
 
-import com.steeringit.rankstop.data.model.network.GeoPluginResponse;
-import com.steeringit.rankstop.data.model.network.RSDeviceIP;
+import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
 
 public interface RSView {
 
@@ -56,6 +56,7 @@ public interface RSView {
         void findEmailValidations();
 
         void findEmailSuccess(boolean isEmailExist, Object data);
+        void findTokenSuccess(boolean isTokenExist, Object data);
 
         void socialLoginSuccess(Object data);
 
@@ -80,6 +81,14 @@ public interface RSView {
         void onPublicIPFailed();
 
         void onOffLine();
+    }
+
+    interface StandardService {
+
+        void onSuccess(Object data);
+
+        void onFailure();
+
     }
 
     interface StandardView {

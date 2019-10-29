@@ -11,7 +11,7 @@
         android:background="@color/colorPrimary"
         android:gravity="center">
 
-        <com.steeringit.rankstop.customviews.RSTVSemiBold
+        <rankstop.steeringit.com.rankstop.customviews.RSTVSemiBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/welcome"
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.steeringit.rankstop.customviews.RSETRegular
+            <rankstop.steeringit.com.rankstop.customviews.RSETRegular
                 android:id="@+id/input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             app:passwordToggleEnabled="true">
 
-            <com.steeringit.rankstop.customviews.RSETRegular
+            <rankstop.steeringit.com.rankstop.customviews.RSETRegular
                 android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.steeringit.rankstop.customviews.RSBTNMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
             android:id="@+id/forget_password_btn"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
         android:paddingEnd="@dimen/padding_dialog"
         android:paddingStart="@dimen/padding_dialog">
 
-        <com.steeringit.rankstop.customviews.RSBTNMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
             android:id="@+id/negative_btn"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
@@ -84,7 +84,7 @@
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary" />
 
-        <com.steeringit.rankstop.customviews.RSBTNMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
             android:id="@+id/positive_btn"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"

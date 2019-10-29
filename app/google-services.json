@@ -15,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "919911753860-h8b2mk25j9rolc6e3mu6quh11o7crbs6.apps.googleusercontent.com",
+          "client_id": "919911753860-2aturkpre6ls1476ktbab7dh8l0d5le7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.steeringit.rankstop",
+            "certificate_hash": "f4bcb808e8e2dddbfb485c174fb023b07577be28"
+          }
+        },
+        {
+          "client_id": "919911753860-5bhr39vpm8fcmql2os58k2utn7dbre50.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.steeringit.rankstop",
@@ -23,12 +31,16 @@
           }
         },
         {
-          "client_id": "919911753860-cdl4iriust9prbu3q4s6rf3jt4ut9nru.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "919911753860-g36j9g0jfdajf44hb0688nrcipidnc75.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.steeringit.rankstop",
+            "certificate_hash": "ca8753037e59e5a30b9c1792cef13dcacef98a2d"
+          }
         },
         {
-          "client_id": "919911753860-356jiac0g3pks8irccak705t6h44v36q.apps.googleusercontent.com",
-          "client_type": 4
+          "client_id": "919911753860-cdl4iriust9prbu3q4s6rf3jt4ut9nru.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -37,20 +49,20 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "919911753860-cdl4iriust9prbu3q4s6rf3jt4ut9nru.apps.googleusercontent.com",
+              "client_id": "919911753860-3goc2pdgskc87cibk9culfn4qlbhupr1.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "919911753860-m35f4uk0maqcmlkjds6s5m4vll6a2301.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.steeringit.RankStop"
+              }
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

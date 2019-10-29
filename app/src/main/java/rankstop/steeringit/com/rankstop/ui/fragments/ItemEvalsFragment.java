@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.fragments;
+package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -18,14 +18,14 @@ import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.ui.adapter.ItemEvalAdapter;
-import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
-import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
-import com.steeringit.rankstop.data.model.db.CriteriaNote;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.VerticalSpace;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.adapter.ItemEvalAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.data.model.db.CriteriaNote;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class ItemEvalsFragment extends Fragment {
 

@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.utils;
+package rankstop.steeringit.com.rankstop.utils;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;

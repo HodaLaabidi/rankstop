@@ -11,7 +11,7 @@
         android:id="@+id/rv_history"
         android:visibility="gone"/>
 
-    <com.steeringit.rankstop.customviews.RSTVMedium
+    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
         android:id="@+id/tv_no_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:visibility="gone"
         android:text="@string/no_history"/>
 
-    <com.steeringit.rankstop.customviews.RSTVRegular
+    <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
         android:id="@+id/tv_msg_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:text="@string/msg_connect_history"
         android:padding="@dimen/m_activity"
         android:visibility="gone"/>
-    <com.steeringit.rankstop.customviews.RSBTNBold
+    <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
         android:id="@+id/btn_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

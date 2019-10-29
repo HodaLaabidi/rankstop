@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.utils;
+package rankstop.steeringit.com.rankstop.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,14 +8,21 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.File;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import com.steeringit.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.RankStop;
 
 import static android.content.Context.WINDOW_SERVICE;
 
@@ -47,4 +54,5 @@ public class Helpers {
         windowManager.getDefaultDisplay().getMetrics(dm);
         return Math.round(dm.widthPixels / dm.density);
     }
+
 }

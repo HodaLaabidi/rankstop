@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.utils;
+package rankstop.steeringit.com.rankstop.utils;
 
 import android.util.Base64;
 

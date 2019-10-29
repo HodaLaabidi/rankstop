@@ -65,7 +65,7 @@
             android:paddingEnd="0dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp">
-            <com.steeringit.rankstop.utils.DisabledRecyclerView
+            <rankstop.steeringit.com.rankstop.utils.DisabledRecyclerView
                 android:id="@+id/recycler_view_criteria_evaluated"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

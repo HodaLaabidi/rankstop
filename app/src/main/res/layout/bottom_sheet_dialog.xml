@@ -23,7 +23,7 @@
             android:src="@drawable/ic_camera"
             android:contentDescription="@string/icon_layout" />
 
-        <com.steeringit.rankstop.customviews.RSTVMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding_layout_b_sheet_d"
@@ -49,7 +49,7 @@
             android:src="@drawable/ic_image_black_24dp"
             android:contentDescription="@string/icon_layout" />
 
-        <com.steeringit.rankstop.customviews.RSTVMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding_layout_b_sheet_d"

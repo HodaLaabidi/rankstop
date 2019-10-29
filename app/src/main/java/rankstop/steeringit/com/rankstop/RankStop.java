@@ -1,4 +1,4 @@
-package com.steeringit.rankstop;
+package rankstop.steeringit.com.rankstop;
 
 import android.app.Application;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.content.res.Configuration;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
-import com.steeringit.rankstop.utils.LocaleManager;
+import rankstop.steeringit.com.rankstop.utils.LocaleManager;
 
 public class RankStop extends Application {
 

@@ -23,14 +23,14 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <com.steeringit.rankstop.customviews.RSTVMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/connectez_vous" />
 
-        <com.steeringit.rankstop.customviews.RSBTNBold
+        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
             android:id="@+id/btn_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                     app:counterTextAppearance="@style/counterText">
 
 
-                    <com.steeringit.rankstop.customviews.RSETMedium
+                    <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                         android:id="@+id/input_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
-
+                android:id="@+id/layout_scanner"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                 app:counterOverflowTextAppearance="@style/counterOverride"
                 app:counterTextAppearance="@style/counterText">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_barcode"
                     android:enabled="false"
                     android:clickable="true"
@@ -99,7 +99,7 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <com.steeringit.rankstop.customviews.RSTVMedium
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                         android:visibility="gone"
                         android:id="@+id/action_delete_barcode"
                         android:layout_gravity="left"
@@ -110,7 +110,7 @@
                         android:text="@string/delete_scanner"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content" />
-                    <com.steeringit.rankstop.customviews.RSTVMedium
+                    <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                         android:id="@+id/action_scanner"
                         android:layout_gravity="right"
                         android:gravity="right"
@@ -134,7 +134,7 @@
                 app:counterOverflowTextAppearance="@style/counterOverride"
                 app:counterTextAppearance="@style/counterText">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
                     android:background="@drawable/category_bg"
                     android:spinnerMode="dialog" />
 
-                <com.steeringit.rankstop.customviews.RSTVMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/ms_spinner_title"
@@ -187,7 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/mb_input">
 
-                    <com.steeringit.rankstop.customviews.RSETMedium
+                    <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                         android:id="@+id/input_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -203,7 +203,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/mb_input">
 
-                    <com.steeringit.rankstop.customviews.RSETMedium
+                    <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                         android:id="@+id/input_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -214,7 +214,7 @@
                 <fragment
                     android:id="@+id/map"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
-                    class="com.steeringit.rankstop.utils.WorkaroundMapFragment"
+                    class="rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/height_map_add_item" />
             </LinearLayout>

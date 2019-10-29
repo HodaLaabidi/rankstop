@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.data.model.network;
+package rankstop.steeringit.com.rankstop.data.model.network;
 
 import com.google.gson.annotations.SerializedName;
 

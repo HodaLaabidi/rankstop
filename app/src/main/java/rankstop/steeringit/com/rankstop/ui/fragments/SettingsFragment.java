@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.fragments;
+package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -19,16 +19,16 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterDeviceLangImpl;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSRBMedium;
-import com.steeringit.rankstop.customviews.RSTVMedium;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.ui.dialogFragment.RSLoader;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterDeviceLangImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
 
 public class SettingsFragment extends Fragment implements RSView.EditLangView {
 

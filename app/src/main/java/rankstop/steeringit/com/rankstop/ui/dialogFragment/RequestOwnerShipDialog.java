@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.dialogFragment;
+package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -20,16 +20,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterContact;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.customviews.RSETMedium;
-import com.steeringit.rankstop.data.model.db.RequestOwnership;
-import com.steeringit.rankstop.data.model.db.User;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterContact;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
+import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class RequestOwnerShipDialog extends DialogFragment implements RSView.StandardView {
 

@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.dialogFragment;
+package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -22,19 +22,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterAbuseImpl;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.customviews.RSRBMedium;
-import com.steeringit.rankstop.customviews.RSTVRegular;
-import com.steeringit.rankstop.data.model.db.Abuse;
-import com.steeringit.rankstop.data.model.network.RSNavigationData;
-import com.steeringit.rankstop.data.model.network.RSRequestReportAbuse;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterAbuseImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.customviews.RSRBMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.Abuse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 public class ReportAbuseDialog extends DialogFragment implements RSView.AbuseView {
 

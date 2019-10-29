@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.adapter;
+package rankstop.steeringit.com.rankstop.ui.adapter;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
 
 public class SpinnerPublicNameAdapter extends ArrayAdapter<String> {
 

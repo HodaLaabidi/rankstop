@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.fragments;
+package rankstop.steeringit.com.rankstop.ui.fragments;
 
 
 
@@ -26,6 +26,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,25 +61,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterItemImpl;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.customviews.RSETMedium;
-import com.steeringit.rankstop.customviews.RSTVMedium;
-import com.steeringit.rankstop.data.model.db.Category;
-import com.steeringit.rankstop.data.model.network.RSAddReview;
-import com.steeringit.rankstop.data.model.network.RSNavigationData;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.ui.adapter.SpinnerCategoryAdapter;
-import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
-import com.steeringit.rankstop.ui.dialogFragment.ContactDialog;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSNetwork;
-import com.steeringit.rankstop.utils.WorkaroundMapFragment;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterItemImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.customviews.RSETMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.data.model.db.Category;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.adapter.SpinnerCategoryAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ContactDialog;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import rankstop.steeringit.com.rankstop.utils.WorkaroundMapFragment;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -113,6 +114,9 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
     TextInputLayout inputLayoutName;
     @BindView(R.id.input_title)
     RSETMedium nameET;
+
+    @BindView(R.id.layout_scanner)
+    TextInputLayout layoutScanner ;
 
     @BindView(R.id.input_layout_description)
     TextInputLayout inputLayoutDescription;
@@ -191,16 +195,31 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
         rsAddItem = new RSAddReview();
         rsAddItem.setCategoryId(selectedCategory.get_id());
         rsAddItem.setTitle(nameET.getText().toString().trim());
-        rsAddItem.setBarcode(inputBarcode.getText().toString().trim());
+        if (selectedCategory.isBarcode()){
+            rsAddItem.setBarcode(inputBarcode.getText().toString().trim());
+        } else {
+            rsAddItem.setBarcode("");
+        }
+
         rsAddItem.setDescription(descriptionET.getText().toString().trim());
-        rsAddItem.setAddress(addressET.getText().toString().trim());
         rsAddItem.setPhone(phoneET.getText().toString().trim());
-        rsAddItem.setLatitude("" + currentLatitude);
-        rsAddItem.setLongitude("" + currentLongitude);
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-        rsAddItem.setCity(getCity(latLng));
-        rsAddItem.setGovernorate(getGovernorate(latLng));
-        rsAddItem.setCountry(getCountry(latLng));
+        if (selectedCategory.isLocation()){
+            rsAddItem.setAddress(addressET.getText().toString().trim());
+            rsAddItem.setLatitude("" + currentLatitude);
+            rsAddItem.setLongitude("" + currentLongitude);
+            LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+            rsAddItem.setCity(getCity(latLng));
+            rsAddItem.setGovernorate(getGovernorate(latLng));
+            rsAddItem.setCountry(getCountry(latLng));
+        } else {
+            rsAddItem.setAddress("");
+            rsAddItem.setLatitude("" );
+            rsAddItem.setLongitude("" );
+            rsAddItem.setCity("");
+            rsAddItem.setGovernorate("");
+            rsAddItem.setCountry("");
+        }
+
     }
 
     private boolean validForm() {
@@ -394,6 +413,11 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
                             } else {
                                 locationLayout.setVisibility(View.GONE);
                             }
+                            if (selectedCategory.isBarcode()){
+                                layoutScanner.setVisibility(View.VISIBLE);
+                            } else {
+                                layoutScanner.setVisibility(View.GONE);
+                            }
                         }
                     }
                 }
@@ -444,6 +468,12 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
             initMaps();
         } else {
             locationLayout.setVisibility(View.GONE);
+        }
+        Log.e("layoutScanner" , selectedCategory.isBarcode()+"");
+        if (selectedCategory.isBarcode()){
+            layoutScanner.setVisibility(View.VISIBLE);
+        } else {
+            layoutScanner.setVisibility(View.GONE);
         }
     }
 
@@ -769,6 +799,7 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
     public void onSuccess(String target, Object data) {
         switch (target) {
             case RSConstants.LOAD_CATEGORIES:
+                Log.e("spinnerCategories", data.toString() );
                 Category[] categories = new Gson().fromJson(new Gson().toJson(data), Category[].class);
                 List<Category> categoryList = Arrays.asList(categories);
 

@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.fragments;
+package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.Manifest;
 import android.content.Intent;
@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -45,26 +46,27 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterUpdateItemImpl;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.customviews.RSTVMedium;
-import com.steeringit.rankstop.customviews.RSTVRegular;
-import com.steeringit.rankstop.data.model.db.ItemDetails;
-import com.steeringit.rankstop.data.model.network.RSNavigationData;
-import com.steeringit.rankstop.data.model.network.RSUpdateItem;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.ui.adapter.ReviewPixAdapter;
-import com.steeringit.rankstop.ui.callbacks.BottomSheetDialogListener;
-import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
-import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
-import com.steeringit.rankstop.ui.dialogFragment.RSBottomSheetDialog;
-import com.steeringit.rankstop.ui.dialogFragment.RSLoader;
-import com.steeringit.rankstop.utils.FileCompressor;
-import com.steeringit.rankstop.utils.HorizontalSpace;
-import com.steeringit.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterUpdateItemImpl;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.Category;
+import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSUpdateItem;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.adapter.ReviewPixAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.BottomSheetDialogListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSBottomSheetDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader;
+import rankstop.steeringit.com.rankstop.utils.FileCompressor;
+import rankstop.steeringit.com.rankstop.utils.HorizontalSpace;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -118,6 +120,10 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     @BindInt(R.integer.m_card_view)
     int marginCardView;
 
+
+    @BindView(R.id.layout_barcode)
+    LinearLayout layoutBarcode ;
+
     @BindString(R.string.loading_msg)
     String loadingMsg;
     private RSLoader rsLoader;
@@ -138,11 +144,17 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         rsUpdateItem.setUrlGooglePlus(inputGoogle.getText().toString());
         rsUpdateItem.setGallery(listNewPics);
         rsUpdateItem.setPicDelete(listDeletedPics);
-        if( inputBarcodeScanner.getText().toString().equalsIgnoreCase("") || TextUtils.isEmpty(inputBarcodeScanner.getText())){
-            rsUpdateItem.setBarcode("");
+        Category category = (Category) itemDetails.getCategory();
+        if (category.isBarcode()){
+            if( inputBarcodeScanner.getText().toString().equalsIgnoreCase("") || TextUtils.isEmpty(inputBarcodeScanner.getText())){
+                rsUpdateItem.setBarcode("");
+            } else {
+                rsUpdateItem.setBarcode(inputBarcodeScanner.getText().toString() + "");
+            }
         } else {
-            rsUpdateItem.setBarcode(inputBarcodeScanner.getText().toString() + "");
+            rsUpdateItem.setBarcode("");
         }
+
             if( isValidSocialNetworks()){
 
                 presenterUpdateItem.updateItem(rsUpdateItem, getContext());
@@ -397,25 +409,34 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
             }
         });
+        Category category = (Category) itemDetails.getCategory();
+        if (category.isBarcode()){
+           layoutBarcode.setVisibility(View.VISIBLE);
+            if (itemDetails.getBarcode() != null) {
+                if (!itemDetails.getBarcode().equalsIgnoreCase("")) {
+                    actionDeleteBarcode.setVisibility(View.VISIBLE);
+                    actionDeleteBarcode.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-        if (itemDetails.getBarcode() != null) {
-            if (!itemDetails.getBarcode().equalsIgnoreCase("")) {
-                actionDeleteBarcode.setVisibility(View.VISIBLE);
-                actionDeleteBarcode.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        inputBarcodeScanner.setText("");
-                        //rsAddItem.setBarcode(barcode);
-                        actionDeleteBarcode.setVisibility(View.GONE);
-                    }
-                });
+                            inputBarcodeScanner.setText("");
+                            //rsAddItem.setBarcode(barcode);
+                            actionDeleteBarcode.setVisibility(View.GONE);
+                        }
+                    });
+                } else {
+                    actionDeleteBarcode.setVisibility(View.GONE);
+                }
             } else {
                 actionDeleteBarcode.setVisibility(View.GONE);
             }
         } else {
-            actionDeleteBarcode.setVisibility(View.GONE);
+            layoutBarcode.setVisibility(View.GONE);
+            itemDetails.setBarcode("");
+
         }
+
+
 
         setFragmentActionListener((ContainerActivity) getActivity());
         actionScanner.setOnClickListener(new View.OnClickListener() {

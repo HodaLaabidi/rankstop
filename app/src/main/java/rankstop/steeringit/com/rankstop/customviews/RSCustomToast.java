@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.customviews;
+package rankstop.steeringit.com.rankstop.customviews;
 
 import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.steeringit.rankstop.R;
+import rankstop.steeringit.com.rankstop.R;
 
 public class RSCustomToast {
 
@@ -21,7 +21,7 @@ public class RSCustomToast {
     public final static int SUCCESS = 3;
     Toast toast;
     ImageView ivClose, ivToast;
-    RSTVRegular tvToastMessage, tvToastTitle;
+    rankstop.steeringit.com.rankstop.customviews.RSTVRegular tvToastMessage, tvToastTitle;
     String title, message;
     LinearLayout layoutBorder;
     private int mode;

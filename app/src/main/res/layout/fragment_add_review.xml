@@ -48,7 +48,7 @@
                         android:paddingRight="@dimen/m_activity"
                         android:paddingBottom="16dp">
 
-                        <com.steeringit.rankstop.customviews.RSTVBold
+                        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -80,7 +80,7 @@
                         app:counterOverflowTextAppearance="@style/counterOverride"
                         app:counterTextAppearance="@style/counterText">
 
-                        <com.steeringit.rankstop.customviews.RSETMedium
+                        <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                             android:id="@+id/input_comment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                         android:paddingRight="@dimen/m_activity"
                         android:paddingBottom="16dp">
 
-                        <com.steeringit.rankstop.customviews.RSTVBold
+                        <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -147,7 +147,7 @@
                         android:minHeight="150dp"
                         android:visibility="gone">
 
-                        <com.steeringit.rankstop.customviews.RSBTNBold
+                        <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
                             android:id="@+id/btn_take_pic"
                             style="@style/Widget.MaterialComponents.Button.Icon"
                             android:layout_width="wrap_content"
@@ -158,7 +158,7 @@
                             app:cornerRadius="0dp"
                             app:icon="@drawable/ic_photo_camera" />
 
-                        <com.steeringit.rankstop.customviews.RSTVMedium
+                        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                             android:id="@+id/tv_add_pix"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -176,7 +176,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <com.steeringit.rankstop.customviews.RSBTNBold
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
                 android:id="@+id/btn_add_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

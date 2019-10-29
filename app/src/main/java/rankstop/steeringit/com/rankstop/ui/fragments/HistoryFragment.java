@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.fragments;
+package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -26,28 +26,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterUserHistoryImpl;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSBTNBold;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.customviews.RSTVMedium;
-import com.steeringit.rankstop.customviews.RSTVRegular;
-import com.steeringit.rankstop.data.model.db.History;
-import com.steeringit.rankstop.data.model.network.RSNavigationData;
-import com.steeringit.rankstop.data.model.network.RSRequestListItem;
-import com.steeringit.rankstop.data.model.network.RSResponseHistory;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.ui.adapter.HistoryAdapter;
-import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
-import com.steeringit.rankstop.ui.callbacks.ItemHistoryListener;
-import com.steeringit.rankstop.utils.EndlessScrollListener;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSNetwork;
-import com.steeringit.rankstop.utils.VerticalSpace;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterUserHistoryImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNBold;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.History;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseHistory;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.adapter.HistoryAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ItemHistoryListener;
+import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
 public class HistoryFragment extends Fragment implements RSView.StandardView {
 

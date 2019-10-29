@@ -15,7 +15,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.steeringit.rankstop.customviews.RSTVBold
+            <rankstop.steeringit.com.rankstop.customviews.RSTVBold
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.steeringit.rankstop.customviews.RSRBMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
                     android:id="@+id/rb_en"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                     android:padding="16dp"
                     android:text="@string/english" />
 
-                <com.steeringit.rankstop.customviews.RSRBMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
                     android:id="@+id/rb_fr"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                     android:padding="16dp"
                     android:text="@string/french" />
 
-                <com.steeringit.rankstop.customviews.RSRBMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSRBMedium
                     android:id="@+id/rb_de"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.steeringit.rankstop.customviews.RSTVMedium
+        <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:visibility="gone"
             android:gravity="center"
             android:layout_gravity="center"

@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.steeringit.rankstop.customviews.RSTVRegular
+            <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
                 android:id="@+id/tv_no_notif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
                 android:text="@string/no_notif"
                 android:visibility="gone" />
 
-            <com.steeringit.rankstop.customviews.RSTVRegular
+            <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
                 android:id="@+id/tv_msg_connect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:text="@string/msg_connect_notif"
                 android:visibility="gone" />
 
-            <com.steeringit.rankstop.customviews.RSBTNBold
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
                 android:id="@+id/btn_connect"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"

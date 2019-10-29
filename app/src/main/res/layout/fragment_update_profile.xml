@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_last_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                     android:background="@drawable/category_bg"
                     android:spinnerMode="dropdown" />
 
-                <com.steeringit.rankstop.customviews.RSTVMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -118,7 +118,7 @@
                     android:text="@string/public_name" />
             </RelativeLayout>
 
-            <com.steeringit.rankstop.customviews.RSTVRegular
+            <rankstop.steeringit.com.rankstop.customviews.RSTVRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -139,7 +139,7 @@
                     android:background="@drawable/category_bg"
                     android:spinnerMode="dropdown" />
 
-                <com.steeringit.rankstop.customviews.RSTVMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -153,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.steeringit.rankstop.customviews.RSBTNMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
                     android:id="@+id/et_birth_date"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
@@ -165,7 +165,7 @@
                     android:textColor="@color/colorPrimary"
                     app:rippleColor="@android:color/transparent" />
 
-                <com.steeringit.rankstop.customviews.RSTVMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -175,7 +175,7 @@
                     android:text="@string/hint_birthday" />
             </RelativeLayout>
 
-            <com.steeringit.rankstop.customviews.RSTVMedium
+            <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                 android:id="@+id/tv_error_birthday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -198,7 +198,7 @@
                     android:background="@drawable/category_bg"
                     android:spinnerMode="dialog" />
 
-                <com.steeringit.rankstop.customviews.RSTVMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_city"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -224,7 +224,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.steeringit.rankstop.customviews.RSBTNBold
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
                 android:id="@+id/btn_use_c_location"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
@@ -240,7 +240,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -249,7 +249,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.steeringit.rankstop.customviews.RSBTNBold
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
                 android:id="@+id/btn_change_pwd"
                 style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="wrap_content"
@@ -270,7 +270,7 @@
                 android:visibility="gone"
                 app:passwordToggleEnabled="true">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_old_pwd"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -288,7 +288,7 @@
                 android:visibility="gone"
                 app:passwordToggleEnabled="true">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_new_pwd"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -306,7 +306,7 @@
                 android:visibility="gone"
                 app:passwordToggleEnabled="true">
 
-                <com.steeringit.rankstop.customviews.RSETMedium
+                <rankstop.steeringit.com.rankstop.customviews.RSETMedium
                     android:id="@+id/input_confirm_pwd"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -315,7 +315,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.steeringit.rankstop.customviews.RSBTNBold
+            <rankstop.steeringit.com.rankstop.customviews.RSBTNBold
                 android:id="@+id/btn_save_changes"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="match_parent"

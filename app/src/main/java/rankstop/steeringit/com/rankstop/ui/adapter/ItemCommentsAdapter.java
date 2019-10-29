@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.adapter;
+package rankstop.steeringit.com.rankstop.ui.adapter;
 
 import android.net.Uri;
 import androidx.annotation.NonNull;
@@ -29,14 +29,14 @@ import java.util.List;
 
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSTVMedium;
-import com.steeringit.rankstop.data.model.db.Comment;
-import com.steeringit.rankstop.ui.callbacks.ReviewCardListener;
-import com.steeringit.rankstop.ui.dialogFragment.UserInfoDialog;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSDateParser;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.data.model.db.Comment;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.UserInfoDialog;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class ItemCommentsAdapter extends RecyclerView.Adapter<ItemCommentsAdapter.ViewHolder> {
 

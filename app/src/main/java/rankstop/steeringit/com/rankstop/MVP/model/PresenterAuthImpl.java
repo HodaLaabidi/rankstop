@@ -1,38 +1,42 @@
-package com.steeringit.rankstop.MVP.model;
+package rankstop.steeringit.com.rankstop.MVP.model;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.steeringit.rankstop.data.model.db.User;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.data.model.network.GeoPluginResponse;
-import com.steeringit.rankstop.data.model.network.RSDeviceIP;
-import com.steeringit.rankstop.data.model.network.RSFollow;
-import com.steeringit.rankstop.data.model.network.RSRequestSocialLogin;
-import com.steeringit.rankstop.data.model.network.RSResponse;
-import com.steeringit.rankstop.data.webservices.Urls;
-import com.steeringit.rankstop.data.webservices.WebService;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.session.RSSessionToken;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSNetwork;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponse;
+import rankstop.steeringit.com.rankstop.data.webservices.Urls;
+import rankstop.steeringit.com.rankstop.data.webservices.WebService;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.session.RSSessionToken;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresenter.SignupPresenter, RSPresenter.RegisterPresenter {
+public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresenter.SignupPresenter, RSPresenter.RegisterPresenter , RSPresenter.fcmPresenter{
 
     private RSView.LoginView loginView;
     private RSView.SignupView signupView;
     private RSView.RegisterView registerView;
+    private RSView.StandardService standardService ;
     private static final String TAG = "PresenterAuthImpl";
 
     public PresenterAuthImpl(RSView.LoginView loginView) {
         this.loginView = loginView;
     }
+
+
+    public PresenterAuthImpl(RSView.StandardService standardService) { this.standardService = standardService ;}
 
     public PresenterAuthImpl(RSView.SignupView signupView) {
         this.signupView = signupView;
@@ -42,7 +46,7 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
         this.registerView = registerView;
     }
 
-    private Call<RSResponse> callFindEmail, callLogin, callForgotPwd, callRegister, callFollowItem, callSocialLogin;
+    private Call<RSResponse> callFindEmail, callLogin, callForgotPwd, callRegister, callFollowItem, callSocialLogin, CallFCM;
     private Call<GeoPluginResponse> callAddress;
     private Call<RSDeviceIP> callDeviceIP;
 
@@ -78,6 +82,42 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
                 } else {
                     signupView.findEmailValidations();
                 }
+            }
+        } else {
+            signupView.onOffLine();
+        }
+    }
+
+
+    @Override
+    public void findEmailByToken(String token, Context context) {
+        if (RSNetwork.isConnected(context)) {
+            if (signupView != null) {
+                    signupView.showProgressBar(RSConstants.LOGIN);
+                    callFindEmail = WebService.getInstance().getApi().findEmailByToken(token);
+                    callFindEmail.enqueue(new Callback<RSResponse>() {
+
+                        @Override
+                        public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                            if (response.code() == 403){
+                                signupView.findTokenSuccess(false, null);
+                            } else if (response.body() != null) {
+                                if (response.body().getStatus() == 0) {
+                                    signupView.findTokenSuccess(true, response.body().getData());
+                                } else if (response.body().getStatus() == 1) {
+                                    signupView.findTokenSuccess(false, null);
+                                }
+                            }
+                            signupView.hideProgressBar(RSConstants.LOGIN);
+                        }
+
+                        @Override
+                        public void onFailure(Call<RSResponse> call, Throwable t) {
+                            if (!call.isCanceled())
+                                signupView.hideProgressBar(RSConstants.LOGIN);
+                        }
+                    });
+
             }
         } else {
             signupView.onOffLine();
@@ -427,5 +467,38 @@ public class PresenterAuthImpl implements RSPresenter.LoginPresenter, RSPresente
         if (callDeviceIP != null)
             if (callDeviceIP.isExecuted())
                 callDeviceIP.cancel();
+    }
+
+    @Override
+    public void sendRegistrationTokenToServer(String token, Context context) {
+        if (RSNetwork.isConnected(context)) {
+            if (standardService != null) {
+
+                CallFCM = WebService.getInstance().getApi().updateRegistrationToken(RSSession.getCurrentUser().get_id() ,token);
+                CallFCM.enqueue(new Callback<RSResponse>() {
+
+                    @Override
+                    public void onResponse(Call<RSResponse> call, Response<RSResponse> response) {
+                         if (response.body() != null) {
+                            if (response.body().getStatus() == 0) {
+                                standardService.onFailure();
+                            } else if (response.body().getStatus() == 1) {
+                                standardService.onSuccess( response.body().getData());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RSResponse> call, Throwable t) {
+                        if (!call.isCanceled()){
+                            standardService.onFailure();
+
+                        }
+                    }
+                });
+
+            }
+        }
+
     }
 }

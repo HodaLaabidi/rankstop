@@ -1,23 +1,23 @@
-package com.steeringit.rankstop.MVP.presenter;
+package rankstop.steeringit.com.rankstop.MVP.presenter;
 
 import android.content.Context;
 
 import java.util.List;
 
-import com.steeringit.rankstop.data.model.db.Item;
-import com.steeringit.rankstop.data.model.db.RSContact;
-import com.steeringit.rankstop.data.model.db.RSRequestEditProfile;
-import com.steeringit.rankstop.data.model.db.RequestOwnership;
-import com.steeringit.rankstop.data.model.db.User;
-import com.steeringit.rankstop.data.model.network.RSAddReview;
-import com.steeringit.rankstop.data.model.network.RSFollow;
-import com.steeringit.rankstop.data.model.network.RSRequestFilter;
-import com.steeringit.rankstop.data.model.network.RSRequestItemByCategory;
-import com.steeringit.rankstop.data.model.network.RSRequestItemData;
-import com.steeringit.rankstop.data.model.network.RSRequestListItem;
-import com.steeringit.rankstop.data.model.network.RSRequestReportAbuse;
-import com.steeringit.rankstop.data.model.network.RSRequestSocialLogin;
-import com.steeringit.rankstop.data.model.network.RSUpdateItem;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.RSContact;
+import rankstop.steeringit.com.rankstop.data.model.db.RSRequestEditProfile;
+import rankstop.steeringit.com.rankstop.data.model.db.RequestOwnership;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.data.model.network.RSAddReview;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestListItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestReportAbuse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestSocialLogin;
+import rankstop.steeringit.com.rankstop.data.model.network.RSUpdateItem;
 
 public interface RSPresenter {
 
@@ -43,6 +43,8 @@ public interface RSPresenter {
         void getAddress(String ip, String target, Context context);
         void getPublicIP(String format, String target, Context context);
         void onDestroyFindEmail(Context context);
+
+        void findEmailByToken(String token, Context context);
     }
 
     interface UserPresenter{
@@ -137,5 +139,9 @@ public interface RSPresenter {
 
     interface BarcodePresenter {
         void getItemByBarcode (String barcode , Context context);
+    }
+
+    interface   fcmPresenter {
+        void sendRegistrationTokenToServer(String token, Context context);
     }
 }

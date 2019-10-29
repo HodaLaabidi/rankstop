@@ -1,9 +1,11 @@
-package com.steeringit.rankstop.ui.dialogFragment;
+package rankstop.steeringit.com.rankstop.ui.dialogFragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +18,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 
 import butterknife.BindInt;
@@ -24,24 +28,24 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import com.steeringit.rankstop.MVP.model.PresenterAuthImpl;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.customviews.RSETRegular;
-import com.steeringit.rankstop.data.model.db.Country;
-import com.steeringit.rankstop.data.model.db.RSAddress;
-import com.steeringit.rankstop.data.model.network.GeoPluginResponse;
-import com.steeringit.rankstop.data.model.network.RSDeviceIP;
-import com.steeringit.rankstop.data.model.network.RSFollow;
-import com.steeringit.rankstop.data.model.network.RSNavigationData;
-import com.steeringit.rankstop.data.model.network.RSResponseLogin;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.data.model.db.User;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSNetwork;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterAuthImpl;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.customviews.RSETRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.Country;
+import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
+import rankstop.steeringit.com.rankstop.data.model.network.GeoPluginResponse;
+import rankstop.steeringit.com.rankstop.data.model.network.RSDeviceIP;
+import rankstop.steeringit.com.rankstop.data.model.network.RSFollow;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseLogin;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.data.model.db.User;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
 
 public class RegisterDialog extends DialogFragment implements RSView.RegisterView {
 
@@ -72,6 +76,19 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
                 user = new User();
                 user.setPassword(passwordEditText.getText().toString().trim());
                 user.setEmail(getArguments().getString(RSConstants.EMAIL));
+                FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        user.setFcmRegistrationToken(task.getResult().getToken());
+                        Log.e("FCM" , task.getResult().getToken());
+
+                    }
+                });
                 registerPresenter.getPublicIP("json", RSConstants.REGISTER, getContext());
             } else {
                 onOffLine();
@@ -113,10 +130,10 @@ public class RegisterDialog extends DialogFragment implements RSView.RegisterVie
 
     @BindString(R.string.loading_msg)
     String loadingMsg;
-    private RSLoader rsLoader;
+    private rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader rsLoader;
 
     private void createLoader() {
-        rsLoader = RSLoader.newInstance(loadingMsg);
+        rsLoader = rankstop.steeringit.com.rankstop.ui.dialogFragment.RSLoader.newInstance(loadingMsg);
         rsLoader.setCancelable(false);
     }
 

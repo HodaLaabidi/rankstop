@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.adapter;
+package rankstop.steeringit.com.rankstop.ui.adapter;
 
 import android.content.Context;
 import android.net.Uri;
@@ -30,16 +30,16 @@ import java.util.List;
 
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSTVMedium;
-import com.steeringit.rankstop.data.model.db.ItemDetails;
-import com.steeringit.rankstop.data.model.db.Picture;
-import com.steeringit.rankstop.ui.callbacks.ReviewCardForItemPicsListener;
-import com.steeringit.rankstop.ui.dialogFragment.ItemInfoDialog;
-import com.steeringit.rankstop.ui.dialogFragment.UserInfoDialog;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSDateParser;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSTVMedium;
+import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
+import rankstop.steeringit.com.rankstop.data.model.db.Picture;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ReviewCardForItemPicsListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.ItemInfoDialog;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.UserInfoDialog;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSDateParser;
 
 public class ItemPixAdapter extends RecyclerView.Adapter<ItemPixAdapter.ViewHolder> {
 

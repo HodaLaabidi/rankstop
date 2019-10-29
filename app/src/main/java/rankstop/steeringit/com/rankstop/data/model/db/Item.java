@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.data.model.db;
+package rankstop.steeringit.com.rankstop.data.model.db;
 
 import java.io.Serializable;
 import java.util.List;

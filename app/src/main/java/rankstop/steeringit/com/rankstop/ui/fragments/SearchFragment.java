@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.fragments;
+package rankstop.steeringit.com.rankstop.ui.fragments;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -45,40 +45,40 @@ import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import com.steeringit.rankstop.MVP.model.PresenterSearchImpl;
-import com.steeringit.rankstop.MVP.presenter.RSPresenter;
-import com.steeringit.rankstop.MVP.view.RSView;
-import com.steeringit.rankstop.R;
-import com.steeringit.rankstop.RankStop;
-import com.steeringit.rankstop.customviews.RSBTNMedium;
-import com.steeringit.rankstop.customviews.RSCustomToast;
-import com.steeringit.rankstop.customviews.RSTVBold;
-import com.steeringit.rankstop.customviews.RSTVRegular;
-import com.steeringit.rankstop.data.model.db.Category;
-import com.steeringit.rankstop.data.model.db.Item;
-import com.steeringit.rankstop.data.model.db.ItemDetails;
-import com.steeringit.rankstop.data.model.network.RSNavigationData;
-import com.steeringit.rankstop.data.model.network.RSRequestFilter;
-import com.steeringit.rankstop.data.model.network.RSRequestItemByCategory;
-import com.steeringit.rankstop.data.model.network.RSResponseListingItem;
-import com.steeringit.rankstop.data.model.network.RSResponseSearch;
-import com.steeringit.rankstop.session.RSSession;
-import com.steeringit.rankstop.ui.activities.ContainerActivity;
-import com.steeringit.rankstop.ui.adapter.DataFetchedAdapter;
-import com.steeringit.rankstop.ui.adapter.ItemsAdapter;
-import com.steeringit.rankstop.ui.adapter.ItemsFetchedAdapter;
-import com.steeringit.rankstop.ui.callbacks.FilterDialogListener;
-import com.steeringit.rankstop.ui.callbacks.FragmentActionListener;
-import com.steeringit.rankstop.ui.callbacks.ItemPieListener;
-import com.steeringit.rankstop.ui.callbacks.RecyclerViewClickListener;
-import com.steeringit.rankstop.ui.dialogFragment.RSFilterDialog;
-import com.steeringit.rankstop.utils.EndlessScrollListener;
-import com.steeringit.rankstop.utils.RSConstants;
-import com.steeringit.rankstop.utils.RSNetwork;
-import com.steeringit.rankstop.utils.RxSearchObservable;
-import com.steeringit.rankstop.utils.VerticalSpace;
+import rankstop.steeringit.com.rankstop.MVP.model.PresenterSearchImpl;
+import rankstop.steeringit.com.rankstop.MVP.presenter.RSPresenter;
+import rankstop.steeringit.com.rankstop.MVP.view.RSView;
+import rankstop.steeringit.com.rankstop.R;
+import rankstop.steeringit.com.rankstop.RankStop;
+import rankstop.steeringit.com.rankstop.customviews.RSBTNMedium;
+import rankstop.steeringit.com.rankstop.customviews.RSCustomToast;
+import rankstop.steeringit.com.rankstop.customviews.RSTVBold;
+import rankstop.steeringit.com.rankstop.customviews.RSTVRegular;
+import rankstop.steeringit.com.rankstop.data.model.db.Category;
+import rankstop.steeringit.com.rankstop.data.model.db.Item;
+import rankstop.steeringit.com.rankstop.data.model.db.ItemDetails;
+import rankstop.steeringit.com.rankstop.data.model.network.RSNavigationData;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestFilter;
+import rankstop.steeringit.com.rankstop.data.model.network.RSRequestItemByCategory;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseListingItem;
+import rankstop.steeringit.com.rankstop.data.model.network.RSResponseSearch;
+import rankstop.steeringit.com.rankstop.session.RSSession;
+import rankstop.steeringit.com.rankstop.ui.activities.ContainerActivity;
+import rankstop.steeringit.com.rankstop.ui.adapter.DataFetchedAdapter;
+import rankstop.steeringit.com.rankstop.ui.adapter.ItemsAdapter;
+import rankstop.steeringit.com.rankstop.ui.adapter.ItemsFetchedAdapter;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FilterDialogListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.FragmentActionListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.ItemPieListener;
+import rankstop.steeringit.com.rankstop.ui.callbacks.RecyclerViewClickListener;
+import rankstop.steeringit.com.rankstop.ui.dialogFragment.RSFilterDialog;
+import rankstop.steeringit.com.rankstop.utils.EndlessScrollListener;
+import rankstop.steeringit.com.rankstop.utils.RSConstants;
+import rankstop.steeringit.com.rankstop.utils.RSNetwork;
+import rankstop.steeringit.com.rankstop.utils.RxSearchObservable;
+import rankstop.steeringit.com.rankstop.utils.VerticalSpace;
 
-import static com.steeringit.rankstop.utils.RSConstants.FRAGMENT_ADD_ITEM;
+import static rankstop.steeringit.com.rankstop.utils.RSConstants.FRAGMENT_ADD_ITEM;
 
 public class SearchFragment extends Fragment implements RSView.SearchView, FilterDialogListener {
     //views
@@ -361,7 +361,11 @@ public class SearchFragment extends Fragment implements RSView.SearchView, Filte
         this.query = query;
         searchView.setOnCloseListener(() -> false);
         searchPresenter.search(query, RankStop.getDeviceLanguage(), getContext());
-        itemsByCategoryRV.post(() -> itemsByCategoryRV.setVisibility(View.GONE));
+        itemsByCategoryRV.post(() -> {
+            if (itemsByCategoryRV != null){
+                itemsByCategoryRV.setVisibility(View.GONE);
+            }
+          });
 
         return Observable.just(true)
                 //.delay(200, TimeUnit.MILLISECONDS)

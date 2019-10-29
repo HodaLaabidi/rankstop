@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.utils;
+package rankstop.steeringit.com.rankstop.utils;
 
 import androidx.appcompat.widget.SearchView;
 import io.reactivex.Observable;

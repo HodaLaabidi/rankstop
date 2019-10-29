@@ -1,13 +1,38 @@
-package com.steeringit.rankstop.data.model.network;
+package rankstop.steeringit.com.rankstop.data.model.network;
 
 import java.io.Serializable;
 
-import com.steeringit.rankstop.data.model.db.RSAddress;
+import rankstop.steeringit.com.rankstop.data.model.db.RSAddress;
 
 public class RSRequestSocialLogin implements Serializable {
 
-    private String photoUrl, email, provider, lastName, firstName, id, gender, birthday;
+    private String photoUrl;
+    private String email;
+    private String provider;
+    private String lastName;
+    private String firstName;
+    private String id;
+    private String gender;
+    private String birthday;
+    private String fcmRegistrationToken;
     private RSAddress location;
+    private String language ;
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getFcmRegistrationToken() {
+        return fcmRegistrationToken;
+    }
+
+    public void setFcmRegistrationToken(String fcmRegistrationToken) {
+        this.fcmRegistrationToken = fcmRegistrationToken;
+    }
 
     public String getPhotoUrl() {
         return photoUrl;

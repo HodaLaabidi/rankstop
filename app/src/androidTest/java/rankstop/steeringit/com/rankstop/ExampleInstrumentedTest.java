@@ -1,4 +1,4 @@
-package com.steeringit.rankstop;
+package rankstop.steeringit.com.rankstop;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.steeringit.rankstop", appContext.getPackageName());
+        assertEquals("rankstop.steeringit.com.rankstop", appContext.getPackageName());
     }
 }

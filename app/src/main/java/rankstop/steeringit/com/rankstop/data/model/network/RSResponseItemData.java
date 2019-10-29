@@ -1,10 +1,10 @@
-package com.steeringit.rankstop.data.model.network;
+package rankstop.steeringit.com.rankstop.data.model.network;
 
 import java.io.Serializable;
 import java.util.List;
 
-import com.steeringit.rankstop.data.model.db.Comment;
-import com.steeringit.rankstop.data.model.db.Picture;
+import rankstop.steeringit.com.rankstop.data.model.db.Comment;
+import rankstop.steeringit.com.rankstop.data.model.db.Picture;
 
 public class RSResponseItemData implements Serializable {
     private int pages, current;

@@ -1,4 +1,4 @@
-package com.steeringit.rankstop.ui.activities;
+package rankstop.steeringit.com.rankstop.ui.activities;
 
 import android.content.Intent;
 import android.content.IntentSender;
@@ -16,7 +16,7 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
 
-import com.steeringit.rankstop.R;
+import rankstop.steeringit.com.rankstop.R;
 
 import static com.crashlytics.android.Crashlytics.log;
 
