@@ -1,4 +1,4 @@
-image: unitedclassifiedsappa/gitlab-ci-android-fastlane
+image: unitedclassifiedsapps/gitlab-ci-android-fastlane
 
 cache:
   key: ${CI_PROJECT_ID}
