@@ -1,9 +1,9 @@
 image: unitedclassifiedsapps/gitlab-ci-android-fastlane
 
 cache:
-  key: ${CI_PROJECT_ID}
   paths:
     - .gradle/
+    - .m2/
 
 before_script:
   - export GRADLE_USER_HOME=$(pwd)/.gradle
