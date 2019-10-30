@@ -2,15 +2,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 android {
+    compileSdkVersion 29
     signingConfigs {
         release {
-            storeFile file('C:/Users/admin/Desktop/RS/mobile app/Beta release version/rankstop.jks')
+            storeFile file('C:/Users/admin/Desktop/RS/mobileapp/Betareleaseversion/rankstop.jks')
             storePassword 'rankstop'
             keyAlias = 'Rankstop'
             keyPassword 'rankstop'
         }
     }
-    compileSdkVersion 29
+
 
     dataBinding {
         enabled = true
