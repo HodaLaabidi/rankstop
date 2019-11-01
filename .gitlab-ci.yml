@@ -1,9 +1,9 @@
-image: unitedclassifiedsapps/gitlab-ci-android-fastlane
+image: jainamjhaveri/gitlab-ci-android-fastlane
 
 cache:
   paths:
     - .gradle/
-    - .m2/
+
 
 before_script:
   - export GRADLE_USER_HOME=$(pwd)/.gradle
@@ -18,4 +18,4 @@ build:
     - ./gradlew assembleDebug
   artifacts:
     paths:
-      - app/build/outputs/apk/app-debug.apk
+      - app/build/outputs
