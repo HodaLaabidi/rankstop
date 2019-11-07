@@ -8,7 +8,7 @@ android {
             storeFile file('../rankstop.jks')
             storePassword 'rankstop'
             keyAlias = 'Rankstop'
-            keyPassword 'rankstop'
+            keyPakeyAliasssword 'rankstop'
         }
     }
 
