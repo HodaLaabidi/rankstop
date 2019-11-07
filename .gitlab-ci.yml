@@ -10,8 +10,8 @@ before_script:
 
 stages:
   - build
-  - test
-  - static analysis
+#  - test
+#  - static analysis
   - beta
   - prod
 
@@ -23,18 +23,18 @@ build:
     paths:
       - app/build/outputs
 
-unitTests:
-  stage: test
-  script:
-    - ./gradlew test
-
-quality_assurance:
-  stage: static analysis
-  script:
-    - ./gradlew lint
-  artifacts:
-    paths:
-      - app/build/outputs/reports
+#unitTests:
+#  stage: test
+#  script:
+#    - ./gradlew test
+#
+#quality_assurance:
+#  stage: static analysis
+#  script:
+#    - ./gradlew lint
+#  artifacts:
+#    paths:
+#      - app/build/outputs/reports
 
 deploy_beta:
   stage: beta
