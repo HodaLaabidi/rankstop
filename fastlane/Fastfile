@@ -29,7 +29,7 @@ platform :android do
   desc "Deploy a beta version to the Google Play"
   lane :beta do
     gradle(task: "assemble" , build_type: "Release")
-    upload_to_play_store(track:'beta')
+    upload_to_play_store(track:'beta', apk : "/app/build/outputs/apk/app-release.apk")
     slack(message: "Successful distributed a new Beta version")
   end
 
