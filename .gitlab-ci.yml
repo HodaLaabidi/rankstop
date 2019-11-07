@@ -4,16 +4,13 @@ cache:
   paths:
     - .gradle/
 
+
 before_script:
   - export GRADLE_USER_HOME=$(pwd)/.gradle
   - chmod +x ./gradlew
 
 stages:
   - build
-  - test
-  - static analysis
-  - beta
-  - prod
 
 build:
   stage: build
@@ -22,31 +19,3 @@ build:
   artifacts:
     paths:
       - app/build/outputs
-
-unitTests:
-  stage: test
-  script:
-    - ./gradlew test
-
-quality_assurance:
-  stage: static analysis
-  script:
-    - ./gradlew lint
-  artifacts:
-    paths:
-      - app/build/outputs/reports
-
-deploy_beta:
-  stage: beta
-  script:
-    - fastlane beta
-  only:
-    - release
-
-
-deploy_prod:
-  stage: prod
-  script:
-    - fastlane playstore
-  only:
-    - master
