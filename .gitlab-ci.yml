@@ -42,6 +42,9 @@ deploy_beta:
     - fastlane beta
   only:
     - release
+  artifacts:
+    paths:
+      - app/build/outputs/apk/release
 
 
 deploy_prod:
