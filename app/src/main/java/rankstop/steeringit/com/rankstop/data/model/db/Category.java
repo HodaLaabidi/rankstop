@@ -12,7 +12,8 @@ public class Category implements Serializable {
     private boolean barcode ;
     private Object criterias;
 
-
+    public Category() {
+    }
 
     public String getName() {
         return name;

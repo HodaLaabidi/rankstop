@@ -749,7 +749,7 @@ public class AddReviewFragment extends Fragment implements RSView.StandardView, 
     private void addPicToList(Uri imageUri) {
         if (listPics.size() == 0)
             addPixTV.setVisibility(View.GONE);
-        listPics.add(imageUri);
+        listPics.add(0,imageUri);
         reviewPixAdapter.notifyDataSetChanged();
     }
 

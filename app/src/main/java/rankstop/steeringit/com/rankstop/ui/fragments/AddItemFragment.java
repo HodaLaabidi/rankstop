@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -48,9 +49,11 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -235,9 +238,15 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
         if (itemDescription.length() > maxLength500) {
             x++;
         }
-        if (selectedCategory == null) {
+        if (selectedCategory == null ) {
             x++;
         }
+        if(  selectedCategory.getName() == getString(R.string.select_category)){
+            x++ ;
+            Toast.makeText(getContext(), getString(R.string.select_category), Toast.LENGTH_LONG).show();
+
+        }
+
         return x == 0;
     }
 
@@ -801,9 +810,16 @@ public class AddItemFragment extends Fragment implements RSView.StandardView, RS
             case RSConstants.LOAD_CATEGORIES:
                 Log.e("spinnerCategories", data.toString() );
                 Category[] categories = new Gson().fromJson(new Gson().toJson(data), Category[].class);
-                List<Category> categoryList = Arrays.asList(categories);
+                List<Category> categoryList =  Arrays.asList(categories);
+                ArrayList<Category> listOfCategories = new ArrayList<>(categoryList.size());
+                listOfCategories.addAll(categoryList);
+                Category category = new Category();
+                category.setLocation(true);
+                category.setName(getString(R.string.select_category));
+                listOfCategories.add(0, category);
 
-                 spinnerCategoryAdapter = new SpinnerCategoryAdapter(getContext(), categoryList);
+
+                spinnerCategoryAdapter = new SpinnerCategoryAdapter(getContext(), listOfCategories);
                 categorySpinner.setAdapter(spinnerCategoryAdapter);
                 break;
         }

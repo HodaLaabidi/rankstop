@@ -23,6 +23,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
+
         <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
             android:id="@+id/tv_login"
             android:layout_width="wrap_content"
@@ -44,9 +45,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/app_bar"
-        android:visibility="gone"
+        android:visibility="gone" >
 
-        >
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,6 +76,31 @@
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/categories_spinner"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_spinner"
+                    android:layout_marginTop="@dimen/mb_input"
+                    android:layout_marginBottom="@dimen/mb_input"
+                    android:background="@drawable/category_bg"
+                    android:tooltipText="Veuillez saisir une catégorie"
+                    android:spinnerMode="dialog" />
+
+                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/ms_spinner_title"
+                    android:background="@android:color/white"
+                    android:paddingLeft="@dimen/padding_spinner_title"
+                    android:paddingRight="@dimen/padding_spinner_title"
+                    android:text="@string/text_category" />
+            </RelativeLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_scanner"
@@ -147,29 +173,7 @@
                     android:scrollbars="vertical" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/categories_spinner"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spinner"
-                    android:layout_marginTop="@dimen/mb_input"
-                    android:layout_marginBottom="@dimen/mb_input"
-                    android:background="@drawable/category_bg"
-                    android:spinnerMode="dialog" />
-
-                <rankstop.steeringit.com.rankstop.customviews.RSTVMedium
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/ms_spinner_title"
-                    android:background="@android:color/white"
-                    android:paddingLeft="@dimen/padding_spinner_title"
-                    android:paddingRight="@dimen/padding_spinner_title"
-                    android:text="@string/text_category" />
-            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/layout_location"

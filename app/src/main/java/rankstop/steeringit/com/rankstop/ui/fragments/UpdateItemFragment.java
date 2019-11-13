@@ -144,6 +144,10 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
         rsUpdateItem.setUrlGooglePlus(inputGoogle.getText().toString());
         rsUpdateItem.setGallery(listNewPics);
         rsUpdateItem.setPicDelete(listDeletedPics);
+        Log.e("test listPic", listPics.toString());
+        Log.e("test listNewPics", listNewPics.toString());
+        Log.e("test listDeletedPics", listDeletedPics.toString());
+
         Category category = (Category) itemDetails.getCategory();
         if (category.isBarcode()){
             if( inputBarcodeScanner.getText().toString().equalsIgnoreCase("") || TextUtils.isEmpty(inputBarcodeScanner.getText())){
@@ -237,7 +241,7 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
 
     private PresenterUpdateItemImpl presenterUpdateItem;
 
-    private List<Uri> listPics = new ArrayList<>(), listNewPics = new ArrayList<>();
+    private ArrayList<Uri> listPics = new ArrayList<>(), listNewPics = new ArrayList<>();
     private ArrayList<String> listDeletedPics = new ArrayList();
 
     private FileCompressor mCompressor;
@@ -686,10 +690,11 @@ public class UpdateItemFragment extends Fragment implements RSView.UpdateItemVie
     }
 
     private void addPicToList(Uri imageUri) {
-        if (listPics.size() == 0)
+        if (listPics.size() == 0){
             addPixTV.setVisibility(View.GONE);
-        listPics.add(imageUri);
-        listNewPics.add(imageUri);
+        }
+        listPics.add(0,imageUri);
+        listNewPics.add(0,imageUri);
         reviewPixAdapter.notifyDataSetChanged();
     }
 

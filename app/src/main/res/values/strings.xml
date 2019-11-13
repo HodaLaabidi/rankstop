@@ -281,5 +281,6 @@
     <string name ="version_name">Version</string>
     <string name="email_confirmation_sent">A confirmation email has been sent</string>
     <string name="email_confirmation_not_not_found">Try again</string>
+    <string name="select_category">Choose a category</string>
 
 </resources>
