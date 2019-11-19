@@ -82,7 +82,7 @@ public class PresenterNotifImpl implements RSPresenter.ListNotifPresenter {
                         } else {
                             if(response.body() != null) {
                                 if (response.body().getStatus() == 1) {
-                                    notifView.onSuccess(RSConstants.EDIT_NOTIF_VISIBILITY, response.body().getData(), itemId);
+                                    notifView.onSuccess(RSConstants.EDIT_NOTIF_VISIBILITY, notifId, itemId);
                                 } else if (response.body().getStatus() == 0) {
                                     notifView.onError(RSConstants.EDIT_NOTIF_VISIBILITY);
                                 }

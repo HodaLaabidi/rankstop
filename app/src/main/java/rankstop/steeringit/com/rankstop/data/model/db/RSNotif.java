@@ -4,9 +4,17 @@ import java.io.Serializable;
 
 public class RSNotif implements Serializable {
 
-    private String date, _id, text, userId;
+    private String date, _id, text, userId, preNotifId;
     private boolean visibility;
     private ItemDetails item;
+
+    public String getPreNotifId() {
+        return preNotifId;
+    }
+
+    public void setPreNotifId(String preNotifId) {
+        this.preNotifId = preNotifId;
+    }
 
     public String getDate() {
         return date;

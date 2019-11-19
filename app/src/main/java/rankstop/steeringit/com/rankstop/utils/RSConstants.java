@@ -8,6 +8,8 @@ public class RSConstants {
     public static final String PRIVACY_POLICY_LINK = "https://rankstop.com/PrivacyPolicy";
     public static final String WEBSITE_URL = "https://rankstop.com";
 
+
+    public static final String  IdOfPredefinedNotif = "5d933ad239aded336091f824";
     public static final String ACTIVITY_CONTAINER="container activity";
     public static final String ITEM_CREATED = "created";
     public static final String ITEM_FOLLOWED = "followed";

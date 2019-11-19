@@ -147,9 +147,10 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
         RecyclerViewClickListener itemListener = (view, position) -> {
             if (RSNetwork.isConnected(getContext())) {
                 if (notifsList.get(position).isVisibility()) {
-                    listNotifPresenter.editNotifVisibility(notifsList.get(position).get_id(),notifsList.get(position).getItem().get_id(), getContext());
+                    listNotifPresenter.editNotifVisibility(notifsList.get(position).getPreNotifId(),notifsList.get(position).getItem().get_id(), getContext());
                 } else {
-                    if (notifsList.get(position).getItem().get_id() != null) {
+                    if ((notifsList.get(position).getItem().get_id() != null) && (!notifsList.get(position).getPreNotifId().equalsIgnoreCase(RSConstants.IdOfPredefinedNotif))) {
+                        Log.e("test", notifsList.get(position).getPreNotifId());
                         fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(notifsList.get(position).getItem().get_id()), RSConstants.FRAGMENT_ITEM_DETAILS);
                     }
                 }
@@ -280,6 +281,8 @@ public class ListNotifFragment extends Fragment implements RSView.ListNotifView 
                 break;
             case RSConstants.EDIT_NOTIF_VISIBILITY:
                 if (itemId != null) {
+                   String predefinedNotifId = (String) data;
+                   if (!predefinedNotifId.equalsIgnoreCase(RSConstants.IdOfPredefinedNotif))
                     fragmentActionListener.startFragment(ItemDetailsFragment.getInstance(itemId), RSConstants.FRAGMENT_ITEM_DETAILS);
                 }
                 break;
