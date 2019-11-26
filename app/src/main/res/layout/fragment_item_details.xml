@@ -117,6 +117,12 @@
                                 android:visibility="gone"
                                 android:textSize="@dimen/size_btn_edit"
                                 app:icon="@drawable/ic_flag" />
+                            <LinearLayout
+                                android:id="@+id/ll_buttons"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
 
                             <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium
                                 android:id="@+id/btn_add_review"
@@ -128,6 +134,7 @@
                                 android:text="@string/add_review"
                                 android:visibility="visible"
                                 android:textAllCaps="false" />
+                            </LinearLayout>
                         </LinearLayout>
 
                         <rankstop.steeringit.com.rankstop.customviews.RSBTNMedium

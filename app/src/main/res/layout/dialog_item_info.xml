@@ -247,6 +247,14 @@
                        android:layout_marginTop="@dimen/mt_contact_section"
                        android:gravity="center"
                        android:orientation="horizontal">
+                       <ImageButton
+                           android:id="@+id/ic_google_plus"
+                           android:layout_width="@dimen/btn_width_contact"
+                           android:layout_height="@dimen/btn_width_contact"
+                           android:layout_margin="@dimen/btn_m_contact"
+                           android:background="@drawable/browser"
+                           android:contentDescription="@string/icon_website"
+                           android:visibility="gone" />
 
                        <ImageButton
                            android:id="@+id/ic_facebook"
@@ -266,14 +274,7 @@
                            android:contentDescription="@string/icon_instagram"
                            android:visibility="gone" />
 
-                       <ImageButton
-                           android:id="@+id/ic_google_plus"
-                           android:layout_width="@dimen/btn_width_contact"
-                           android:layout_height="@dimen/btn_width_contact"
-                           android:layout_margin="@dimen/btn_m_contact"
-                           android:background="@drawable/ic_google_plus"
-                           android:contentDescription="@string/icon_google_plus"
-                           android:visibility="gone" />
+
 
                        <ImageButton
                            android:id="@+id/ic_twitter"

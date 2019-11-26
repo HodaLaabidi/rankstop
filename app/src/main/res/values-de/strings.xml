@@ -101,6 +101,7 @@
     <string name="no_history">Keine Historie</string>
     <string name="close">Schließen</string>
     <string name="about_item">Mehr Lesen</string>
+    <string name="hint_website">Website</string>
     <string name="posted_by">Beitrag von</string>
     <string name="public_name">Öffentlicher Name:</string>
     <string name="public_name_value">Vollständiger Name</string>

@@ -33,6 +33,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -138,6 +139,9 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
 
     @BindView(R.id.header_content)
     RelativeLayout headerContent;
+
+    @BindView(R.id.ll_buttons)
+    LinearLayout llButtons ;
 
     @BindString(R.string.ownership_open)
     String ownershipOpen;
@@ -718,6 +722,11 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
                            if (((User) item.getItemDetails().getCreator()).get_id().equals(currentUser.get_id())) {
                                addItemPixBtn.setVisibility(View.VISIBLE);
                            }
+                       } else {
+                           //addReviewBtn.setwidth
+                           LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT ,LinearLayout.LayoutParams.WRAP_CONTENT , 1f);
+                           llButtons.setLayoutParams(layoutParams);
+
                        }
                    }
                 }
@@ -729,6 +738,11 @@ public class ItemDetailsFragment extends Fragment implements AppBarLayout.OnOffs
             } else {
                 if (((User) item.getItemDetails().getOwner()).get_id().equals(currentUser.get_id())) {
                     addItemPixBtn.setVisibility(View.VISIBLE);
+                } else {
+                    //addReviewBtn.setwidth
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT ,LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                    llButtons.setLayoutParams(layoutParams);
+
                 }
             }
             if (item.getLastEvalUser() != null)

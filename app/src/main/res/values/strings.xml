@@ -3,7 +3,7 @@
     <string name="icon_layout" translatable="false">layout icon</string>
     <string name="icon_linkedin" translatable="false">LinkedIn icon</string>
     <string name="icon_twitter" translatable="false">Twitter icon</string>
-    <string name="icon_google_plus" translatable="false">Google plus icon</string>
+    <string name="icon_website" translatable="false">Website icon</string>
     <string name="icon_instagram" translatable="false">Instagram icon</string>
     <string name="icon_facebook" translatable="false">Facebook icon</string>
     <string name="app_name" translatable="false">RankStop</string>
@@ -15,7 +15,7 @@
     <string name="linkedin_text" translatable="false">Linkedin</string>
     <string name="server_date_format" translatable="false">yyyy-MM-dd</string>
     <string name="hint_twitter" translatable="false">Twitter</string>
-    <string name="hint_google" translatable="false">Google</string>
+
     <string name="hint_linkedin" translatable="false">LinkedIn</string>
     <string name="hint_facebook" translatable="false">Facebook</string>
     <string name="hint_instagram" translatable="false">Instagram</string>
@@ -115,6 +115,7 @@
     <string name="start_with_rs">Start with</string>
     <string name="or_connect_with">or connect with</string>
     <string name="text_btn_login">Login</string>
+    <string name="hint_website">Website</string>
     <string name="title_search">Search</string>
     <string name="hint_gender">Gender</string>
     <string name="hint_birthday">Birthday</string>
@@ -188,7 +189,7 @@
     <string name="be_the_first">Not yet evaluated,\nbe the first to evaluate this item.</string>
     <string name="loading_msg">Loading ...</string>
     <string name="english">English</string>
-    <string name="french">Frensh</string>
+    <string name="french">French</string>
     <string name="german">German</string>
     <string name="no_item_fetched">No item avaialable</string>
     <string name="langue_title">Language:</string>

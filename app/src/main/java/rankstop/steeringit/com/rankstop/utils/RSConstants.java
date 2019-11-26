@@ -104,7 +104,7 @@ public class RSConstants {
     public static final String INSTAGRAM_URL_REGEX = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
     public static final String TWITTER_URL_REGEX  = "(?:https?:\\/\\/)?(?:www\\.)?twitter\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
     public static final String LINKEDIN_URL_REGEX  = "(?:https?:\\/\\/)?(?:www\\.)?linkedin\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
-    public static final String GOOGLE_URL_REGEX  = "(?:https?:\\/\\/)?(?:www\\.)?google\\.com\\/.(?:(?:\\w)*#!\\/)?(?:pages\\/)?(?:[\\w\\-]*\\/)*([\\w\\-\\.]*)";
+    public static final String GOOGLE_URL_REGEX  = "(?:http?:\\/\\/)?(?:www\\.)";
     public static final String REFRESH_ITEM = "refresh item";
     public static final String REGEX_YEAR ="\\d{4}" ;
     public static final String RS_ITEM = "item";
